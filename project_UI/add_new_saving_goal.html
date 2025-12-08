@@ -1,0 +1,68 @@
+<html><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body>
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-[#11221a] dark justify-between group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
+<div>
+<div class="flex items-center bg-[#11221a] p-4 pb-2 justify-between">
+<div class="text-white flex size-12 shrink-0 items-center" data-icon="X" data-size="24px" data-weight="regular">
+<svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg">
+<path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+</svg>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">New Saving Goal</h2>
+</div>
+<div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+<label class="flex flex-col min-w-40 flex-1">
+<p class="text-white text-base font-medium leading-normal pb-2">Goal Name</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-[#234836] focus:border-none h-14 placeholder:text-[#92c9ad] p-4 text-base font-normal leading-normal" placeholder="e.g., Vacation" value=""/>
+</label>
+</div>
+<div class="flex max-w-[480px] flex-col gap-4 px-4 py-3">
+<label class="flex flex-col min-w-40 flex-1">
+<p class="text-white text-base font-medium leading-normal pb-2">Target Amount</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-[#234836] focus:border-none h-14 placeholder:text-[#92c9ad] p-4 text-base font-normal leading-normal" placeholder="$0.00" value=""/>
+</label>
+<div class="flex items-center gap-2">
+<hr class="flex-1 border-t border-[#3c5d4d]"/>
+<p class="text-[#92c9ad] text-sm font-medium">OR</p>
+<hr class="flex-1 border-t border-[#3c5d4d]"/>
+</div>
+<label class="flex flex-col min-w-40 flex-1">
+<p class="text-white text-base font-medium leading-normal pb-2">Target Date</p>
+<div class="flex w-full flex-1 items-stretch rounded-lg">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-[#234836] focus:border-none h-14 placeholder:text-[#92c9ad] p-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal" placeholder="Select Date" value=""/>
+<div class="text-[#92c9ad] flex border-none bg-[#234836] items-center justify-center pr-4 rounded-r-lg border-l-0" data-icon="Calendar" data-size="24px" data-weight="regular">
+<svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg">
+<path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-96-88v64a8,8,0,0,1-16,0V132.94l-4.42,2.22a8,8,0,0,1-7.16-14.32l16-8A8,8,0,0,1,112,120Zm59.16,30.45L152,176h16a8,8,0,0,1,0,16H136a8,8,0,0,1-6.4-12.8l28.78-38.37A8,8,0,1,0,145.07,132a8,8,0,1,1-13.85-8A24,24,0,0,1,176,136,23.76,23.76,0,0,1,171.16,150.45Z"></path>
+</svg>
+</div>
+</div>
+</label>
+</div>
+<p class="text-white text-base font-normal leading-normal pb-3 pt-1 px-4">
+          This app uses a unique saving method. Each day, the amount you save increases by $1. For example, on day 1 you save $1, on day 2 you save $2, and so on. We'll calculate
+          the daily amount needed to reach your goal by the target date.
+        </p>
+</div>
+<div>
+<div class="flex px-4 py-3">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-[#13ec80] text-[#11221a] text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Create Goal</span>
+</button>
+</div>
+<div class="h-5 bg-[#11221a]"></div>
+</div>
+</div>
+
+</body></html>
