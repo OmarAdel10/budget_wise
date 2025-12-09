@@ -93,16 +93,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get login => 'تسجيل الدخول';
 
   @override
-  String get googleLogin => 'تسجيل الدخول باستخدام جوجل';
+  String get loginWithGoogle => 'تسجيل الدخول باستخدام Google';
 
   @override
-  String get dontHaveAccount => 'ليس لديك حساب؟ إنشاء حساب';
+  String get dontHaveAccount => 'ليس لديك حساب؟';
+
+  @override
+  String get signUp => 'إنشاء حساب';
 
   @override
   String get createAccount => 'إنشاء حساب';
 
   @override
-  String get alreadyHaveAccount => 'لديك حساب بالفعل؟ تسجيل الدخول';
+  String get alreadyHaveAccount => 'لديك حساب بالفعل؟';
 
   @override
   String get enterEmail => 'أدخل بريدك الإلكتروني';

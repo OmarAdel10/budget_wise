@@ -8,6 +8,7 @@ import '../widgets/onboarding_page_widget.dart';
 import '../widgets/page_indicator_widget.dart';
 import '../widgets/income_setup_page.dart';
 import '../widgets/category_selection_page.dart';
+import '../../auth/view/screens/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -33,21 +34,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _nextPage() {
     if (_currentPage < 3) {
-       // Validation check before moving from Income Page (Page 2)
-       if (_currentPage == 2) {
-         if (_incomeAmount <= 0) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Please enter a valid income amount')),
-            );
-            return;
-         }
-         if (_incomeSource == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-               const SnackBar(content: Text('Please select an income source')),
-            );
-            return;
-         }
-       }
+      // Validation check before moving from Income Page (Page 2)
+      if (_currentPage == 2) {
+        if (_incomeAmount <= 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please enter a valid income amount')),
+          );
+          return;
+        }
+        if (_incomeSource == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please select an income source')),
+          );
+          return;
+        }
+      }
 
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -56,21 +57,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } else {
       // Final Validation (Category Selection - Page 3)
       if (_selectedCategories.length < 3) {
-         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text(AppLocalizations.of(context)!.errorSelectCategories)),
-         );
-         return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorSelectCategories),
+          ),
+        );
+        return;
       }
       _finishOnboarding();
     }
   }
 
   void _finishOnboarding() {
-     // TODO: Save state (_incomeAmount, _incomeSource, _selectedCategories)
-     // Navigate to Auth or Main Screen
-     debugPrint("Onboarding Completed!");
-     debugPrint("Income: $_incomeAmount, Source: $_incomeSource");
-     debugPrint("Categories: $_selectedCategories");
+    // TODO: Save state (_incomeAmount, _incomeSource, _selectedCategories)
+    debugPrint("Onboarding Completed!");
+    debugPrint("Income: $_incomeAmount, Source: $_incomeSource");
+    debugPrint("Categories: $_selectedCategories");
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
   }
 
   void _previousPage() {
@@ -83,21 +89,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       body: SafeArea(
         child: Column(
           children: [
-            Align( // Top Bar / Logo Area
+            Align(
+              // Top Bar / Logo Area
               alignment: Alignment.centerRight,
-               child: Padding(
+              child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                child: Text(
-                  l10n.appTitle,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary, 
-                    fontWeight: FontWeight.bold,
+                child: Center(
+                  child: Text(
+                    l10n.appTitle,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -105,7 +114,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Expanded(
               child: PageView(
                 controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(), // Disable swipe to enforce next button validation
+                physics:
+                    const NeverScrollableScrollPhysics(), // Disable swipe to enforce next button validation
                 onPageChanged: (index) {
                   setState(() {
                     _currentPage = index;
@@ -115,12 +125,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   OnboardingPageWidget(
                     title: l10n.onboardingTitle1,
                     description: l10n.onboardingDesc1,
-                    placeholderIcon: PhosphorIcons.chartBar(PhosphorIconsStyle.duotone),
+                    placeholderIcon: PhosphorIcons.chartBar(
+                      PhosphorIconsStyle.duotone,
+                    ),
                   ),
                   OnboardingPageWidget(
                     title: l10n.onboardingTitle2,
                     description: l10n.onboardingDesc2,
-                    placeholderIcon: PhosphorIcons.piggyBank(PhosphorIconsStyle.duotone),
+                    placeholderIcon: PhosphorIcons.piggyBank(
+                      PhosphorIconsStyle.duotone,
+                    ),
                   ),
                   IncomeSetupPage(
                     onDataChanged: (amount, source) {
@@ -144,17 +158,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               child: Column(
                 children: [
-                  PageIndicatorWidget(
-                    count: 4,
-                    currentPage: _currentPage,
-                  ),
+                  PageIndicatorWidget(count: 4, currentPage: _currentPage),
                   const SizedBox(height: AppSpacing.xl),
                   // Button Logic
                   if (_currentPage == 0)
-                    CustomButton(
-                      text: l10n.getStarted,
-                      onPressed: _nextPage,
-                    )
+                    CustomButton(text: l10n.getStarted, onPressed: _nextPage)
                   else
                     Row(
                       children: [
@@ -168,7 +176,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: CustomButton(
-                            text: _currentPage == 3 ? l10n.getStarted : l10n.next,
+                            text: _currentPage == 3
+                                ? l10n.getStarted
+                                : l10n.next,
                             onPressed: _nextPage,
                           ),
                         ),

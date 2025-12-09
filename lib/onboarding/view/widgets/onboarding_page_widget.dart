@@ -41,7 +41,7 @@ class OnboardingPageWidget extends StatelessWidget {
               child: imageUrl == null
                   ? Icon(
                       placeholderIcon ?? Icons.image,
-                      size: 64,
+                      size: 64 * 2.5,
                       color: AppColors.textSecondary,
                     )
                   : null,

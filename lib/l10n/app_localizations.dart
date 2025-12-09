@@ -266,17 +266,23 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get login;
 
-  /// No description provided for @googleLogin.
+  /// No description provided for @loginWithGoogle.
   ///
   /// In en, this message translates to:
   /// **'Login with Google'**
-  String get googleLogin;
+  String get loginWithGoogle;
 
   /// No description provided for @dontHaveAccount.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t have an account? Sign Up'**
+  /// **'Don\'t have an account?'**
   String get dontHaveAccount;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signUp;
 
   /// No description provided for @createAccount.
   ///
@@ -287,7 +293,7 @@ abstract class AppLocalizations {
   /// No description provided for @alreadyHaveAccount.
   ///
   /// In en, this message translates to:
-  /// **'Already have an account? Login'**
+  /// **'Already have an account?'**
   String get alreadyHaveAccount;
 
   /// No description provided for @enterEmail.

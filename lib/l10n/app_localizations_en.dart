@@ -93,16 +93,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get login => 'Login';
 
   @override
-  String get googleLogin => 'Login with Google';
+  String get loginWithGoogle => 'Login with Google';
 
   @override
-  String get dontHaveAccount => 'Don\'t have an account? Sign Up';
+  String get dontHaveAccount => 'Don\'t have an account?';
+
+  @override
+  String get signUp => 'Sign Up';
 
   @override
   String get createAccount => 'Create Account';
 
   @override
-  String get alreadyHaveAccount => 'Already have an account? Login';
+  String get alreadyHaveAccount => 'Already have an account?';
 
   @override
   String get enterEmail => 'Enter your email';
