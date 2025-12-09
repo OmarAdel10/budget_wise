@@ -4,7 +4,7 @@ import '../constants/text_styles.dart';
 
 class CustomTextField extends StatefulWidget {
   final String hintText;
-  final TextEditingController? controller;
+  final TextEditingController controller;
   final bool isPassword;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
@@ -15,7 +15,7 @@ class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
     required this.hintText,
-    this.controller,
+    required this.controller,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
     this.validator,

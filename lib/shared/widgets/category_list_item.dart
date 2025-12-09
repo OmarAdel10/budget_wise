@@ -26,7 +26,10 @@ class CategoryListItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         color: Colors.transparent, // Ensures tap target
         child: Row(
           children: [
@@ -37,20 +40,18 @@ class CategoryListItem extends StatelessWidget {
                 color: AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: Icon(
-                icon,
-                color: AppColors.textPrimary,
-                size: 24,
-              ),
+              child: Icon(icon, color: AppColors.textPrimary, size: 24),
             ),
             const SizedBox(width: AppSpacing.md),
-             Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,
-                    style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w500),
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(

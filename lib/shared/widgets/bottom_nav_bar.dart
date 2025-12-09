@@ -1,3 +1,4 @@
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../constants/colors.dart';
@@ -20,6 +21,7 @@ class CustomBottomNavBar extends StatefulWidget {
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.secondaryBackground,
@@ -40,19 +42,19 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(widget.currentIndex == 0 ? PhosphorIcons.house(PhosphorIconsStyle.fill) : PhosphorIcons.house()),
-            label: 'Home',
+            label: l10n.navHome,
           ),
           BottomNavigationBarItem(
             icon: Icon(widget.currentIndex == 1 ? PhosphorIcons.piggyBank(PhosphorIconsStyle.fill) : PhosphorIcons.piggyBank()),
-            label: 'Savings',
+            label: l10n.navSavings,
           ),
           BottomNavigationBarItem(
             icon: Icon(widget.currentIndex == 2 ? PhosphorIcons.chartLine(PhosphorIconsStyle.fill) : PhosphorIcons.chartLine()),
-            label: 'Statistics',
+            label: l10n.navStatistics,
           ),
           BottomNavigationBarItem(
             icon: Icon(widget.currentIndex == 3 ? PhosphorIcons.gear(PhosphorIconsStyle.fill) : PhosphorIcons.gear()),
-            label: 'Settings',
+            label: l10n.navSettings,
           ),
         ],
       ),
