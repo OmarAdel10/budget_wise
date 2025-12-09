@@ -61,7 +61,7 @@
   "sourcePersonal": "شخصي",
   "sourceFreelance": "عمل حر",
   "sourceOther": "آخر",
-  "categorySelectionTitle": "اختر التصنيفات",
+  "categorySelectionTitle": "اختر تصنيفات المصاريف",
   "categorySelectionDesc": "اختر 3 تصنيفات على الأقل للتتبع.",
   "errorSelectCategories": "يرجى اختيار 3 تصنيفات على الأقل.",
   "catSmoking": "تدخين",

@@ -194,7 +194,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sourceOther => 'Other';
 
   @override
-  String get categorySelectionTitle => 'Select Categories';
+  String get categorySelectionTitle => 'Select Expenses Categories';
 
   @override
   String get categorySelectionDesc => 'Choose at least 3 categories to track.';
