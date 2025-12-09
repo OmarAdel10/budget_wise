@@ -6,14 +6,12 @@ import '../../../shared/constants/text_styles.dart';
 class OnboardingPageWidget extends StatelessWidget {
   final String title;
   final String description;
-  final String? imageUrl;
   final IconData? placeholderIcon;
 
   const OnboardingPageWidget({
     super.key,
     required this.title,
     required this.description,
-    this.imageUrl,
     this.placeholderIcon,
   });
 
@@ -25,26 +23,18 @@ class OnboardingPageWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            flex: 3,
+            flex: 5,
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
                 color: AppColors.secondaryBackground,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                image: imageUrl != null
-                    ? DecorationImage(
-                        image: NetworkImage(imageUrl!),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
               ),
-              child: imageUrl == null
-                  ? Icon(
-                      placeholderIcon ?? Icons.image,
-                      size: 64,
-                      color: AppColors.textSecondary,
-                    )
-                  : null,
+              child: Icon(
+                placeholderIcon ?? Icons.image,
+                size: 64 * 2,
+                color: AppColors.textSecondary,
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -56,7 +46,9 @@ class OnboardingPageWidget extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             description,
-            style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: AppColors.textSecondary,
+            ),
             textAlign: TextAlign.center,
           ),
           const Spacer(flex: 1),

@@ -467,7 +467,7 @@ abstract class AppLocalizations {
   /// No description provided for @categorySelectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Select Categories'**
+  /// **'Select Expenses Categories'**
   String get categorySelectionTitle;
 
   /// No description provided for @categorySelectionDesc.

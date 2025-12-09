@@ -64,7 +64,7 @@
   "sourcePersonal": "Personal",
   "sourceFreelance": "Freelance",
   "sourceOther": "Other",
-  "categorySelectionTitle": "Select Categories",
+  "categorySelectionTitle": "Select Expenses Categories",
   "categorySelectionDesc": "Choose at least 3 categories to track.",
   "errorSelectCategories": "Please select at least 3 categories.",
   "catSmoking": "Smoking",

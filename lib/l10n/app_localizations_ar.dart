@@ -194,7 +194,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sourceOther => 'آخر';
 
   @override
-  String get categorySelectionTitle => 'اختر التصنيفات';
+  String get categorySelectionTitle => 'اختر تصنيفات المصاريف';
 
   @override
   String get categorySelectionDesc => 'اختر 3 تصنيفات على الأقل للتتبع.';
