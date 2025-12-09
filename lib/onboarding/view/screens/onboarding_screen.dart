@@ -6,6 +6,8 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../widgets/onboarding_page_widget.dart';
 import '../widgets/page_indicator_widget.dart';
+import '../widgets/income_setup_page.dart';
+import '../widgets/category_selection_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -18,6 +20,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  // State for new pages
+  double _incomeAmount = 0.0;
+  String? _incomeSource;
+  List<String> _selectedCategories = [];
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -25,17 +32,45 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _nextPage() {
-    if (_currentPage < 1) {
+    if (_currentPage < 3) {
+       // Validation check before moving from Income Page (Page 2)
+       if (_currentPage == 2) {
+         if (_incomeAmount <= 0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Please enter a valid income amount')),
+            );
+            return;
+         }
+         if (_incomeSource == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+               const SnackBar(content: Text('Please select an income source')),
+            );
+            return;
+         }
+       }
+
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
-      // Navigate to Auth or Main Screen
-      // Navigator.pushReplacementNamed(context, '/login'); 
-      // For now, since we don't have routes set up, we'll just log it.
-      debugPrint("Navigate to Login");
+      // Final Validation (Category Selection - Page 3)
+      if (_selectedCategories.length < 3) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(content: Text(AppLocalizations.of(context)!.errorSelectCategories)),
+         );
+         return;
+      }
+      _finishOnboarding();
     }
+  }
+
+  void _finishOnboarding() {
+     // TODO: Save state (_incomeAmount, _incomeSource, _selectedCategories)
+     // Navigate to Auth or Main Screen
+     debugPrint("Onboarding Completed!");
+     debugPrint("Income: $_incomeAmount, Source: $_incomeSource");
+     debugPrint("Categories: $_selectedCategories");
   }
 
   void _previousPage() {
@@ -54,9 +89,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Align(
+            Align( // Top Bar / Logo Area
               alignment: Alignment.centerRight,
-              child: Padding(
+               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Text(
                   l10n.appTitle,
@@ -70,6 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Expanded(
               child: PageView(
                 controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(), // Disable swipe to enforce next button validation
                 onPageChanged: (index) {
                   setState(() {
                     _currentPage = index;
@@ -82,16 +118,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     placeholderIcon: PhosphorIcons.chartBar(PhosphorIconsStyle.duotone),
                   ),
                   OnboardingPageWidget(
-                    title: l10n.onboardingTitle1, // Reusing title? Or should we have a second one? 
-                    // Plan didn't specify second title details, using generic for now or same.
-                    // Design analysis says "Welcome to BudgetWise" for screen 1.
-                    // Screen 2 usually has different text. Let's use existing strings.
-                    // Changed in ARB to have title 1. Detailed analysis of screen 2 png is needed.
-                    // Screen 2 png view analysis: "Welcome to BudgetWise" also? 
-                    // Let's assume dynamic for now. The ARB has onboardingDesc2.
-                    // I will use Title 1 for both if no Title 2 is provided, or add a generic Title 2.
+                    title: l10n.onboardingTitle2,
                     description: l10n.onboardingDesc2,
                     placeholderIcon: PhosphorIcons.piggyBank(PhosphorIconsStyle.duotone),
+                  ),
+                  IncomeSetupPage(
+                    onDataChanged: (amount, source) {
+                      setState(() {
+                        _incomeAmount = amount;
+                        _incomeSource = source;
+                      });
+                    },
+                  ),
+                  CategorySelectionPage(
+                    onSelectionChanged: (categories) {
+                      setState(() {
+                        _selectedCategories = categories;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -101,10 +145,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 children: [
                   PageIndicatorWidget(
-                    count: 2,
+                    count: 4,
                     currentPage: _currentPage,
                   ),
                   const SizedBox(height: AppSpacing.xl),
+                  // Button Logic
                   if (_currentPage == 0)
                     CustomButton(
                       text: l10n.getStarted,
@@ -123,7 +168,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: CustomButton(
-                            text: l10n.next,
+                            text: _currentPage == 3 ? l10n.getStarted : l10n.next,
                             onPressed: _nextPage,
                           ),
                         ),

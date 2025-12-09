@@ -150,12 +150,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingTitle1 => 'مرحبًا بك في BudgetWise';
 
   @override
+  String get onboardingTitle2 => 'إدارة دخلك وميزانيتك';
+
+  @override
   String get onboardingDesc1 =>
       'تحكم في أموالك مع BudgetWise. تتبع دخلك ونفقاتك ومدخراتك بسهولة.';
 
   @override
   String get onboardingDesc2 =>
-      'حقق أهدافك المالية من خلال ميزات التوفير الذكية.';
+      'أدخل دخلك الشهري وحدد تصنيفات مخصصة لتقسيم ميزانيتك.';
 
   @override
   String get getStarted => 'ابدأ الآن';
@@ -165,4 +168,73 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get next => 'التالي';
+
+  @override
+  String get incomeSetupTitle => 'الملف المالي';
+
+  @override
+  String get incomeSetupDesc => 'لنقم بإعداد ملف الدخل الخاص بك.';
+
+  @override
+  String get incomeAmountLabel => 'الدخل الشهري';
+
+  @override
+  String get incomeSourceLabel => 'مصدر الدخل';
+
+  @override
+  String get sourceWork => 'عمل';
+
+  @override
+  String get sourcePersonal => 'شخصي';
+
+  @override
+  String get sourceFreelance => 'عمل حر';
+
+  @override
+  String get sourceOther => 'آخر';
+
+  @override
+  String get categorySelectionTitle => 'اختر التصنيفات';
+
+  @override
+  String get categorySelectionDesc => 'اختر 3 تصنيفات على الأقل للتتبع.';
+
+  @override
+  String get errorSelectCategories => 'يرجى اختيار 3 تصنيفات على الأقل.';
+
+  @override
+  String get catSmoking => 'تدخين';
+
+  @override
+  String get catEating => 'طعام';
+
+  @override
+  String get catTransport => 'مواصلات';
+
+  @override
+  String get catUtils => 'فواتير';
+
+  @override
+  String get catDebts => 'ديون';
+
+  @override
+  String get catInvestments => 'استثمارات';
+
+  @override
+  String get catMobile => 'شحن رصيد';
+
+  @override
+  String get catRent => 'إيجار';
+
+  @override
+  String get catHealth => 'صحة';
+
+  @override
+  String get catEntertainment => 'ترفيه';
+
+  @override
+  String get catEducation => 'تعليم';
+
+  @override
+  String get catGroceries => 'بقالة';
 }

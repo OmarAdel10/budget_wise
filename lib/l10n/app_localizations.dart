@@ -380,6 +380,12 @@ abstract class AppLocalizations {
   /// **'Welcome to BudgetWise'**
   String get onboardingTitle1;
 
+  /// No description provided for @onboardingTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Your Income & Budget'**
+  String get onboardingTitle2;
+
   /// No description provided for @onboardingDesc1.
   ///
   /// In en, this message translates to:
@@ -389,7 +395,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingDesc2.
   ///
   /// In en, this message translates to:
-  /// **'Achieve your financial goals with smart saving features.'**
+  /// **'Add your monthly income and define custom categories to split your budget.'**
   String get onboardingDesc2;
 
   /// No description provided for @getStarted.
@@ -409,6 +415,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
+
+  /// No description provided for @incomeSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial Profile'**
+  String get incomeSetupTitle;
+
+  /// No description provided for @incomeSetupDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s set up your income profile.'**
+  String get incomeSetupDesc;
+
+  /// No description provided for @incomeAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Income'**
+  String get incomeAmountLabel;
+
+  /// No description provided for @incomeSourceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Source'**
+  String get incomeSourceLabel;
+
+  /// No description provided for @sourceWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get sourceWork;
+
+  /// No description provided for @sourcePersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal'**
+  String get sourcePersonal;
+
+  /// No description provided for @sourceFreelance.
+  ///
+  /// In en, this message translates to:
+  /// **'Freelance'**
+  String get sourceFreelance;
+
+  /// No description provided for @sourceOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get sourceOther;
+
+  /// No description provided for @categorySelectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Categories'**
+  String get categorySelectionTitle;
+
+  /// No description provided for @categorySelectionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least 3 categories to track.'**
+  String get categorySelectionDesc;
+
+  /// No description provided for @errorSelectCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least 3 categories.'**
+  String get errorSelectCategories;
+
+  /// No description provided for @catSmoking.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoking'**
+  String get catSmoking;
+
+  /// No description provided for @catEating.
+  ///
+  /// In en, this message translates to:
+  /// **'Eating'**
+  String get catEating;
+
+  /// No description provided for @catTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transporting'**
+  String get catTransport;
+
+  /// No description provided for @catUtils.
+  ///
+  /// In en, this message translates to:
+  /// **'Utilities'**
+  String get catUtils;
+
+  /// No description provided for @catDebts.
+  ///
+  /// In en, this message translates to:
+  /// **'Debts'**
+  String get catDebts;
+
+  /// No description provided for @catInvestments.
+  ///
+  /// In en, this message translates to:
+  /// **'Investments'**
+  String get catInvestments;
+
+  /// No description provided for @catMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Recharge'**
+  String get catMobile;
+
+  /// No description provided for @catRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get catRent;
+
+  /// No description provided for @catHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthcare'**
+  String get catHealth;
+
+  /// No description provided for @catEntertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get catEntertainment;
+
+  /// No description provided for @catEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get catEducation;
+
+  /// No description provided for @catGroceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get catGroceries;
 }
 
 class _AppLocalizationsDelegate

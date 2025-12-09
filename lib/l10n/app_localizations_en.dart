@@ -150,12 +150,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingTitle1 => 'Welcome to BudgetWise';
 
   @override
+  String get onboardingTitle2 => 'Manage Your Income & Budget';
+
+  @override
   String get onboardingDesc1 =>
       'Take control of your finances with BudgetWise. Track your income, expenses, and savings effortlessly.';
 
   @override
   String get onboardingDesc2 =>
-      'Achieve your financial goals with smart saving features.';
+      'Add your monthly income and define custom categories to split your budget.';
 
   @override
   String get getStarted => 'Get Started';
@@ -165,4 +168,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get next => 'Next';
+
+  @override
+  String get incomeSetupTitle => 'Financial Profile';
+
+  @override
+  String get incomeSetupDesc => 'Let\'s set up your income profile.';
+
+  @override
+  String get incomeAmountLabel => 'Monthly Income';
+
+  @override
+  String get incomeSourceLabel => 'Income Source';
+
+  @override
+  String get sourceWork => 'Work';
+
+  @override
+  String get sourcePersonal => 'Personal';
+
+  @override
+  String get sourceFreelance => 'Freelance';
+
+  @override
+  String get sourceOther => 'Other';
+
+  @override
+  String get categorySelectionTitle => 'Select Categories';
+
+  @override
+  String get categorySelectionDesc => 'Choose at least 3 categories to track.';
+
+  @override
+  String get errorSelectCategories => 'Please select at least 3 categories.';
+
+  @override
+  String get catSmoking => 'Smoking';
+
+  @override
+  String get catEating => 'Eating';
+
+  @override
+  String get catTransport => 'Transporting';
+
+  @override
+  String get catUtils => 'Utilities';
+
+  @override
+  String get catDebts => 'Debts';
+
+  @override
+  String get catInvestments => 'Investments';
+
+  @override
+  String get catMobile => 'Mobile Recharge';
+
+  @override
+  String get catRent => 'Rent';
+
+  @override
+  String get catHealth => 'Healthcare';
+
+  @override
+  String get catEntertainment => 'Entertainment';
+
+  @override
+  String get catEducation => 'Education';
+
+  @override
+  String get catGroceries => 'Groceries';
 }
