@@ -1,0 +1,148 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get appTitle => 'BudgetWise';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navSavings => 'Savings';
+
+  @override
+  String get navStatistics => 'Statistics';
+
+  @override
+  String get navSettings => 'Settings';
+
+  @override
+  String get newExpense => 'New Expense';
+
+  @override
+  String get income => 'Income';
+
+  @override
+  String get outcome => 'Outcome';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get addCategory => 'Add Category';
+
+  @override
+  String get allSavingGoals => 'All Saving Goals';
+
+  @override
+  String get newGoal => 'New Goal';
+
+  @override
+  String get financialStatistics => 'Financial Statistics';
+
+  @override
+  String get totalIncome => 'Total Income';
+
+  @override
+  String get totalExpenses => 'Total Expenses';
+
+  @override
+  String get currentSavings => 'Current Savings';
+
+  @override
+  String get spendingByCategory => 'Spending by Category';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get appSettings => 'App Settings';
+
+  @override
+  String get secureApp => 'Secure The App Using BioMetrics';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get welcomeBack => 'Welcome back';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get forgotPassword => 'Forgot Password?';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get googleLogin => 'Login with Google';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account? Sign Up';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account? Login';
+
+  @override
+  String get enterEmail => 'Enter your email';
+
+  @override
+  String get sendResetLink => 'Send Reset Link';
+
+  @override
+  String get rememberPassword => 'Remember your password?';
+
+  @override
+  String get goalName => 'Goal Name';
+
+  @override
+  String get targetAmount => 'Target Amount';
+
+  @override
+  String get targetDate => 'Target Date';
+
+  @override
+  String get createGoal => 'Create Goal';
+
+  @override
+  String get progress => 'Progress';
+
+  @override
+  String get dailySavings => 'Daily Savings';
+
+  @override
+  String get addExpense => 'Add Expense';
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get notes => 'Notes (optional)';
+
+  @override
+  String get category => 'Category';
+}
