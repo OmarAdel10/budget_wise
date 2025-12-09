@@ -145,4 +145,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get category => 'Category';
+
+  @override
+  String get onboardingTitle1 => 'Welcome to BudgetWise';
+
+  @override
+  String get onboardingDesc1 =>
+      'Take control of your finances with BudgetWise. Track your income, expenses, and savings effortlessly.';
+
+  @override
+  String get onboardingDesc2 =>
+      'Achieve your financial goals with smart saving features.';
+
+  @override
+  String get getStarted => 'Get Started';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get next => 'Next';
 }

@@ -4,6 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:budget_wise/shared/app_theme.dart';
 
+import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart'; // Import OnboardingScreen
+
 void main() {
   runApp(const MyApp());
 }
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
         Locale('en'), // English
         Locale('ar'), // Arabic
       ],
-      // home: const MyHomePage(title: 'BudgetWise MVP'),
+      home: const OnboardingScreen(),
     );
   }
 }

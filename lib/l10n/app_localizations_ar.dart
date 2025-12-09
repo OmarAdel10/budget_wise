@@ -145,4 +145,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get category => 'التصنيف';
+
+  @override
+  String get onboardingTitle1 => 'مرحبًا بك في BudgetWise';
+
+  @override
+  String get onboardingDesc1 =>
+      'تحكم في أموالك مع BudgetWise. تتبع دخلك ونفقاتك ومدخراتك بسهولة.';
+
+  @override
+  String get onboardingDesc2 =>
+      'حقق أهدافك المالية من خلال ميزات التوفير الذكية.';
+
+  @override
+  String get getStarted => 'ابدأ الآن';
+
+  @override
+  String get back => 'رجوع';
+
+  @override
+  String get next => 'التالي';
 }
