@@ -1,5 +1,5 @@
-import 'dart:developer';
 
+import 'dart:developer';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -13,6 +13,7 @@ import '../widgets/income_setup_page.dart';
 import '../widgets/category_selection_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  static const String routeName = '/onboarding';
   const OnboardingScreen({super.key});
 
   @override
@@ -80,9 +81,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     log("Income: $_incomeAmount, Source: $_incomeSource");
     log("Categories: $_selectedCategories");
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
+    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
 
   void _previousPage() {

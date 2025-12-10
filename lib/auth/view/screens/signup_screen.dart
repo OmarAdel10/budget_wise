@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -8,16 +6,16 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  static const String routeName = '/login';
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -28,26 +26,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _onLogin() {
-    // TODO: Implement login logic
-    log("Login Pressed");
-    log("Email: ${_emailController.text}");
-    // Navigate to Main Screen
+  void _onSignUp() {
+    // TODO: Implement sign up logic
+    debugPrint("Sign Up Pressed");
+    debugPrint("Email: ${_emailController.text}");
+    // Navigate to Main Screen or Onboarding success
   }
 
   void _onGoogleLogin() {
     // TODO: Implement Google login logic
-    log("Google Login Pressed");
+    debugPrint("Google Login Pressed");
   }
 
-  void _onForgotPassword() {
-    // TODO: Navigate to Forgot Password Screen
-    log("Navigate to Forgot Password");
-  }
-
-  void _onSignUp() {
+  void _onLogin() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const SignUpScreen()),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
@@ -60,14 +53,18 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primaryBackground,
         elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "BudgetWise",
-          style: TextStyle(
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: AppColors.textPrimary),
+          onPressed: () => Navigator.of(context).pop(), // Or navigate to welcome
+        ),
+        title: Text(
+          l10n.createAccount,
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -76,14 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: AppSpacing.xxl),
-
-              // Welcome Header
-              Text(
-                l10n.welcomeBack,
-                style: AppTextStyles.heading2,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.xl),
 
               // Email Input
               CustomTextField(
@@ -99,31 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 isPassword: true,
               ),
+              const SizedBox(height: AppSpacing.xl),
 
-              // Forgot Password Link
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: _onForgotPassword,
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.sm,
-                      horizontal: 0,
-                    ),
-                    foregroundColor: AppColors.textSecondary,
-                  ),
-                  child: Text(
-                    l10n.forgotPassword,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
+              // Sign Up Button
+              CustomButton(
+                text: l10n.createAccount,
+                onPressed: _onSignUp,
               ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Login Button
-              CustomButton(text: l10n.login, onPressed: _onLogin),
               const SizedBox(height: AppSpacing.md),
 
               // Google Login Button
@@ -136,20 +107,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: AppSpacing.xl),
 
-              // Sign Up Link (Footer)
+              // Login Link (Footer)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    l10n.dontHaveAccount,
+                    l10n.alreadyHaveAccount,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.textSecondary,
                     ),
                   ),
                   TextButton(
-                    onPressed: _onSignUp,
+                    onPressed: _onLogin,
                     child: Text(
-                      l10n.signUp,
+                      l10n.login,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                         decoration: TextDecoration.underline,

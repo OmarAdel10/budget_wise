@@ -1,10 +1,12 @@
+import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:budget_wise/shared/app_theme.dart';
 
-import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart'; // Import OnboardingScreen
+import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
+import 'package:page_transition/page_transition.dart'; // Import OnboardingScreen
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +31,34 @@ class MyApp extends StatelessWidget {
         Locale('en'), // English
         Locale('ar'), // Arabic
       ],
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case OnboardingScreen.routeName:
+            return PageTransition(
+              type: PageTransitionType.fade,
+              reverseType: PageTransitionType.fade,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              reverseDuration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const OnboardingScreen(),
+            );
+          case LoginScreen.routeName:
+            return PageTransition(
+              type: PageTransitionType.rightToLeftWithFade,
+              reverseType: PageTransitionType.fade,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              reverseDuration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const LoginScreen(),
+            );
+          default:
+            return null;
+        }
+      },
       home: const OnboardingScreen(),
     );
   }
