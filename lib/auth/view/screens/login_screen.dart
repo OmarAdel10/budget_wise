@@ -8,6 +8,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = '/login';
