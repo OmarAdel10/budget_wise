@@ -41,6 +41,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       onTap: widget.onTap,
       readOnly: widget.readOnly,
       style: AppTextStyles.bodyLarge,
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),

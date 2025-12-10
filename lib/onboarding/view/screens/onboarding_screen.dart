@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -8,7 +11,6 @@ import '../widgets/onboarding_page_widget.dart';
 import '../widgets/page_indicator_widget.dart';
 import '../widgets/income_setup_page.dart';
 import '../widgets/category_selection_page.dart';
-import '../../auth/view/screens/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -36,9 +38,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (_currentPage < 3) {
       // Validation check before moving from Income Page (Page 2)
       if (_currentPage == 2) {
-        if (_incomeAmount <= 0) {
+        if (_incomeAmount <= 0 && _incomeAmount < 100) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please enter a valid income amount')),
+            const SnackBar(
+              content: Text(
+                'Please enter a valid income amount.\nAmount should be greater than 100.',
+              ),
+            ),
           );
           return;
         }
@@ -70,9 +76,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _finishOnboarding() {
     // TODO: Save state (_incomeAmount, _incomeSource, _selectedCategories)
-    debugPrint("Onboarding Completed!");
-    debugPrint("Income: $_incomeAmount, Source: $_incomeSource");
-    debugPrint("Categories: $_selectedCategories");
+    log("Onboarding Completed!");
+    log("Income: $_incomeAmount, Source: $_incomeSource");
+    log("Categories: $_selectedCategories");
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -91,6 +97,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.primaryBackground,
       body: SafeArea(
         child: Column(
@@ -162,7 +169,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const SizedBox(height: AppSpacing.xl),
                   // Button Logic
                   if (_currentPage == 0)
-                    CustomButton(text: l10n.getStarted, onPressed: _nextPage)
+                    CustomButton(text: l10n.next, onPressed: _nextPage)
                   else
                     Row(
                       children: [
