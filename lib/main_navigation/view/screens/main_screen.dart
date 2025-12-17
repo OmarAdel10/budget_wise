@@ -4,7 +4,7 @@ import '../../../home/view/screens/home_screen.dart';
 import '../../../savings/view/screens/savings_screen.dart';
 import '../../../statistics/view/screens/statistics_screen.dart';
 // TODO: Import other screens as they are implemented
-// import '../../settings/view/screens/settings_screen.dart';
+import '../../../settings/view/screens/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routeName = '/main';
@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     const SavingsScreen(),
     const StatisticsScreen(),
-    const Center(child: Text("Settings Screen (Coming Soon)")),
+    const SettingsScreen(),
   ];
 
   void _onTabSelected(int index) {
