@@ -5,6 +5,7 @@ class AppColors {
   static const Color primaryBackground = Color(0xFF111814);
   static const Color secondaryBackground = Color(0xFF1C2721);
   static const Color cardBackground = Color(0xFF283930);
+  static const Color inputBackground = Color(0xFF1C2721);
   
   // Accents & Actions
   static const Color primaryAccent = Color(0xFF13EC80); // Bright Green
