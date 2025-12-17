@@ -8,6 +8,7 @@ import '../../../shared/widgets/summary_card.dart';
 import '../../../shared/widgets/category_list_item.dart';
 import 'add_category_screen.dart';
 import 'category_detail_screen.dart';
+import 'add_expense_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -173,7 +174,7 @@ class HomeScreen extends StatelessWidget {
               elevation: 4,
               child: InkWell(
                 onTap: () {
-                  // TODO: Navigate to Add Expense Screen (Phase 5)
+                  Navigator.of(context).pushNamed(AddExpenseScreen.routeName);
                 },
                 borderRadius: BorderRadius.circular(16),
                 child: Container(
