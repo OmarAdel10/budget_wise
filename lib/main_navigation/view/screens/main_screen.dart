@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../home/view/screens/home_screen.dart';
 import '../../../savings/view/screens/savings_screen.dart';
+import '../../../statistics/view/screens/statistics_screen.dart';
 // TODO: Import other screens as they are implemented
-// import '../../statistics/view/screens/statistics_screen.dart';
 // import '../../settings/view/screens/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const SavingsScreen(),
-    const Center(child: Text("Statistics Screen (Coming Soon)")),
+    const StatisticsScreen(),
     const Center(child: Text("Settings Screen (Coming Soon)")),
   ];
 
