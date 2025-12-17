@@ -17,8 +17,13 @@ class CategoryListItem extends StatelessWidget {
     required this.amount,
     required this.totalBudget,
     required this.icon,
+    this.iconColor,
+    this.backgroundColor,
     required this.onTap,
   });
+
+  final Color? iconColor;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +42,10 @@ class CategoryListItem extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: AppColors.cardBackground,
+                color: backgroundColor ?? AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: Icon(icon, color: AppColors.textPrimary, size: 24),
+              child: Icon(icon, color: iconColor ?? AppColors.textPrimary, size: 24),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(

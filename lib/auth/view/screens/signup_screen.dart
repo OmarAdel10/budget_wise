@@ -8,6 +8,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import '../../../main_navigation/view/screens/main_screen.dart';
 import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -32,8 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void _onSignUp() {
     // TODO: Implement sign up logic
     log("Sign Up Pressed");
-    log("Email: ${_emailController.text}");
-    // Navigate to Main Screen or Onboarding success
+    Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
   }
 
   void _onGoogleLogin() {

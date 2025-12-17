@@ -1,6 +1,7 @@
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/auth/view/screens/signup_screen.dart';
 import 'package:budget_wise/auth/view/screens/forgot_password_screen.dart';
+import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -78,6 +79,15 @@ class MyApp extends StatelessWidget {
               curve: Curves.easeIn,
               settings: settings,
               child: const ForgotPasswordScreen(),
+            );
+          case MainScreen.routeName:
+            return PageTransition(
+              type: PageTransitionType.fade,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const MainScreen(),
             );
           default:
             return null;

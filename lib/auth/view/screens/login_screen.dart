@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -8,6 +7,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import '../../../main_navigation/view/screens/main_screen.dart';
 import 'forgot_password_screen.dart';
 import 'signup_screen.dart';
 
@@ -31,15 +31,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onLogin() {
-    // TODO: Implement login logic
-    log("Login Pressed");
-    log("Email: ${_emailController.text}");
-    // Navigate to Main Screen
+    // TODO: Implement actual login logic
+    Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
   }
 
   void _onGoogleLogin() {
     // TODO: Implement Google login logic
-    log("Google Login Pressed");
+    Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
   }
 
   void _onForgotPassword() {
