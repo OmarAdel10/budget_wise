@@ -47,9 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onSignUp() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const SignUpScreen()),
-    );
+    Navigator.of(context).pushReplacementNamed(SignUpScreen.routeName);
   }
 
   @override
@@ -76,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: AppSpacing.xxl),
+              SizedBox(height: MediaQuery.sizeOf(context).height / 5),
 
               // Welcome Header
               Text(

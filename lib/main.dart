@@ -1,4 +1,5 @@
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
+import 'package:budget_wise/auth/view/screens/signup_screen.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -54,6 +55,17 @@ class MyApp extends StatelessWidget {
               curve: Curves.easeIn,
               settings: settings,
               child: const LoginScreen(),
+            );
+          case SignUpScreen.routeName:
+            return PageTransition(
+              type: PageTransitionType.rightToLeftWithFade,
+              reverseType: PageTransitionType.fade,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              reverseDuration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const SignUpScreen(),
             );
           default:
             return null;

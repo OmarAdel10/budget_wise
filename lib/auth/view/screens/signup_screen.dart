@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -9,6 +11,7 @@ import '../../../shared/widgets/custom_text_field.dart';
 import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
+  static const String routeName = '/signup';
   const SignUpScreen({super.key});
 
   @override
@@ -28,20 +31,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onSignUp() {
     // TODO: Implement sign up logic
-    debugPrint("Sign Up Pressed");
-    debugPrint("Email: ${_emailController.text}");
+    log("Sign Up Pressed");
+    log("Email: ${_emailController.text}");
     // Navigate to Main Screen or Onboarding success
   }
 
   void _onGoogleLogin() {
     // TODO: Implement Google login logic
-    debugPrint("Google Login Pressed");
+    log("Google Login Pressed");
   }
 
   void _onLogin() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
+    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
 
   @override
@@ -67,72 +68,85 @@ class _SignUpScreenState extends State<SignUpScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: AppSpacing.xxl),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height / 4.7),
 
-              // Email Input
-              CustomTextField(
-                hintText: l10n.email,
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: AppSpacing.md),
+                        // Email Input
+                        CustomTextField(
+                          hintText: l10n.email,
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
 
-              // Password Input
-              CustomTextField(
-                hintText: l10n.password,
-                controller: _passwordController,
-                isPassword: true,
-              ),
-              const SizedBox(height: AppSpacing.xl),
+                        // Password Input
+                        CustomTextField(
+                          hintText: l10n.password,
+                          controller: _passwordController,
+                          isPassword: true,
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
 
-              // Sign Up Button
-              CustomButton(
-                text: l10n.createAccount,
-                onPressed: _onSignUp,
-              ),
-              const SizedBox(height: AppSpacing.md),
+                        // Sign Up Button
+                        CustomButton(
+                          text: l10n.createAccount,
+                          onPressed: _onSignUp,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
 
-              // Google Login Button
-              CustomButton(
-                text: l10n.loginWithGoogle,
-                type: CustomButtonType.secondary,
-                onPressed: _onGoogleLogin,
-                icon: Icon(PhosphorIcons.googleLogo(PhosphorIconsStyle.bold)),
-              ),
+                        // Google Login Button
+                        CustomButton(
+                          text: l10n.loginWithGoogle,
+                          type: CustomButtonType.secondary,
+                          onPressed: _onGoogleLogin,
+                          icon: Icon(PhosphorIcons.googleLogo(PhosphorIconsStyle.bold)),
+                        ),
 
-              const SizedBox(height: AppSpacing.xl),
+                        const Spacer(),
 
-              // Login Link (Footer)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.alreadyHaveAccount,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
+                        // Login Link (Footer)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              l10n.alreadyHaveAccount,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: _onLogin,
+                              child: Text(
+                                l10n.login,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.textSecondary,
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                      ],
                     ),
                   ),
-                  TextButton(
-                    onPressed: _onLogin,
-                    child: Text(
-                      l10n.login,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-              const SizedBox(height: AppSpacing.lg),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
