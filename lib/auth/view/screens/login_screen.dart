@@ -8,6 +8,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import 'forgot_password_screen.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,8 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onForgotPassword() {
-    // TODO: Navigate to Forgot Password Screen
-    log("Navigate to Forgot Password");
+    Navigator.of(context).pushNamed(ForgotPasswordScreen.routeName);
   }
 
   void _onSignUp() {
