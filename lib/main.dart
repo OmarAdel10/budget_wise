@@ -11,6 +11,9 @@ import 'package:budget_wise/shared/app_theme.dart';
 import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
 import 'package:budget_wise/home/view/screens/add_category_screen.dart';
 import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
+import 'package:budget_wise/home/view/screens/add_expense_screen.dart';
+import 'package:budget_wise/savings/view/screens/add_saving_goal_screen.dart';
+import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
 import 'package:page_transition/page_transition.dart'; // Import OnboardingScreen
 
 void main() {
@@ -109,6 +112,34 @@ class MyApp extends StatelessWidget {
               curve: Curves.easeIn,
               settings: settings,
               child: CategoryDetailScreen(category: args),
+            );
+          case AddExpenseScreen.routeName:
+             return PageTransition(
+              type: PageTransitionType.bottomToTop,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const AddExpenseScreen(),
+            );
+          case AddSavingGoalScreen.routeName:
+            return PageTransition(
+              type: PageTransitionType.bottomToTop,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const AddSavingGoalScreen(),
+            );
+          case SavingGoalDetailScreen.routeName:
+            final args = settings.arguments as Map<String, dynamic>;
+            return PageTransition(
+              type: PageTransitionType.rightToLeft,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: SavingGoalDetailScreen(goal: args),
             );
           default:
             return null;

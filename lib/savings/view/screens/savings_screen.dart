@@ -4,6 +4,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 
 import 'add_saving_goal_screen.dart';
+import 'saving_goal_detail_screen.dart';
 
 class SavingsScreen extends StatelessWidget {
   const SavingsScreen({super.key});
@@ -59,56 +60,64 @@ class SavingsScreen extends StatelessWidget {
                   final double progress = goal['currentAmount'] / goal['targetAmount'];
                   final int percentage = (progress * 100).toInt();
 
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              goal['name'],
-                              style: AppTextStyles.heading3,
-                            ),
-                            Text(
-                              "$percentage%",
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.primaryAccent,
-                                fontWeight: FontWeight.bold,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        SavingGoalDetailScreen.routeName,
+                        arguments: goal,
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.cardBackground,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                goal['name'],
+                                style: AppTextStyles.heading3,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Row(
-                          children: [
-                            Text(
-                              "\$${goal['currentAmount'].toInt()}",
-                              style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              " / \$${goal['targetAmount'].toInt()}",
-                              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            backgroundColor: AppColors.primaryBackground,
-                            valueColor: AlwaysStoppedAnimation<Color>(goal['color']),
-                            minHeight: 8,
+                              Text(
+                                "$percentage%",
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.primaryAccent,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: AppSpacing.sm),
+                          Row(
+                            children: [
+                              Text(
+                                "\$${goal['currentAmount'].toInt()}",
+                                style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                " / \$${goal['targetAmount'].toInt()}",
+                                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: progress,
+                              backgroundColor: AppColors.primaryBackground,
+                              valueColor: AlwaysStoppedAnimation<Color>(goal['color']),
+                              minHeight: 8,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
