@@ -14,7 +14,10 @@ import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/home/view/screens/add_expense_screen.dart';
 import 'package:budget_wise/savings/view/screens/add_saving_goal_screen.dart';
 import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
-import 'package:page_transition/page_transition.dart'; // Import OnboardingScreen
+import 'package:budget_wise/home/view/screens/income_detail_screen.dart';
+import 'package:budget_wise/home/view/screens/outcome_detail_screen.dart';
+import 'package:budget_wise/home/view/screens/expense_detail_screen.dart';
+import 'package:page_transition/page_transition.dart';
 
 void main() {
   runApp(const MyApp());
@@ -140,6 +143,34 @@ class MyApp extends StatelessWidget {
               curve: Curves.easeIn,
               settings: settings,
               child: SavingGoalDetailScreen(goal: args),
+            );
+          case IncomeDetailScreen.routeName:
+            return PageTransition(
+              type: PageTransitionType.rightToLeft,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const IncomeDetailScreen(),
+            );
+          case OutcomeDetailScreen.routeName:
+            return PageTransition(
+              type: PageTransitionType.rightToLeft,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const OutcomeDetailScreen(),
+            );
+          case ExpenseDetailScreen.routeName:
+            final args = settings.arguments as Map<String, dynamic>;
+            return PageTransition(
+              type: PageTransitionType.rightToLeft,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: ExpenseDetailScreen(expense: args),
             );
           default:
             return null;

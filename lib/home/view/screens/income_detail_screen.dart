@@ -4,20 +4,18 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import 'expense_detail_screen.dart';
 
-class CategoryDetailScreen extends StatelessWidget {
-  static const String routeName = '/category-detail';
+class IncomeDetailScreen extends StatelessWidget {
+  static const String routeName = '/income-detail';
 
-  final Map<String, dynamic> category;
-
-  const CategoryDetailScreen({super.key, required this.category});
+  const IncomeDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Dummy expenses data
-    final List<Map<String, dynamic>> expenses = [
-      {'title': 'Grocery Run', 'date': 'Today', 'amount': 45.0},
-      {'title': 'Dinner Out', 'date': 'Yesterday', 'amount': 60.0},
-      {'title': 'Coffee', 'date': '2 days ago', 'amount': 15.0},
+    // Dummy income data
+    final List<Map<String, dynamic>> incomeItems = [
+      {'title': 'Monthly Salary', 'date': 'Dec 01, 2025', 'amount': 4000.0, 'categoryName': 'Salary'},
+      {'title': 'Freelance Project', 'date': 'Dec 10, 2025', 'amount': 800.0, 'categoryName': 'Freelance'},
+      {'title': 'Dividends', 'date': 'Dec 15, 2025', 'amount': 200.0, 'categoryName': 'Investment'},
     ];
 
     return Scaffold(
@@ -29,9 +27,9 @@ class CategoryDetailScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
-          category['name'],
-          style: const TextStyle(
+        title: const Text(
+          "Income Details",
+          style: TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),
@@ -46,6 +44,7 @@ class CategoryDetailScreen extends StatelessWidget {
             children: [
               // Header Card
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppColors.cardBackground,
@@ -53,58 +52,30 @@ class CategoryDetailScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Total Spent",
-                          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
-                        ),
-                        Icon(category['icon'], color: category['color'], size: 28),
-                      ],
+                    Text(
+                      "Total Income (Dec)",
+                      style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "\$${category['amount'].toInt()}",
-                          style: AppTextStyles.heading2,
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          "/ \$${category['budget'].toInt()}",
-                          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    // Progress Bar
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: category['amount'] / category['budget'],
-                        backgroundColor: AppColors.primaryBackground,
-                        valueColor: AlwaysStoppedAnimation<Color>(category['color']),
-                        minHeight: 8,
-                      ),
+                    Text(
+                      "\$5,000",
+                      style: AppTextStyles.heading1.copyWith(color: AppColors.primaryAccent),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // Expenses List Header
-              Text("Recent Expenses", style: AppTextStyles.heading3),
+              Text("Transaction History", style: AppTextStyles.heading3),
               const SizedBox(height: AppSpacing.md),
 
-              // Expenses List
+              // Income List
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: expenses.length,
+                itemCount: incomeItems.length,
                 itemBuilder: (context, index) {
-                  final expense = expenses[index];
+                  final item = incomeItems[index];
                   return Container(
                     margin: const EdgeInsets.only(bottom: AppSpacing.md),
                     decoration: BoxDecoration(
@@ -113,15 +84,15 @@ class CategoryDetailScreen extends StatelessWidget {
                     ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                      title: Text(expense['title'], style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
-                      subtitle: Text(expense['date'], style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
+                      title: Text(item['title'], style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
+                      subtitle: Text(item['date'], style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "-\$${expense['amount'].toInt()}",
+                            "+\$${item['amount'].toInt()}",
                             style: AppTextStyles.bodyLarge.copyWith(
-                              color: AppColors.danger,
+                              color: AppColors.primaryAccent,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -132,10 +103,7 @@ class CategoryDetailScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.of(context).pushNamed(
                           ExpenseDetailScreen.routeName,
-                          arguments: {
-                            ...expense,
-                            'categoryName': category['name'],
-                          },
+                          arguments: item,
                         );
                       },
                     ),

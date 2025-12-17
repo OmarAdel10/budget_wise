@@ -81,22 +81,51 @@ class HomeScreen extends StatelessWidget {
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
                         const SizedBox(height: AppSpacing.md),
+                        // Month Selector
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.chevron_left, color: AppColors.textSecondary),
+                            ),
+                            Text(
+                              "December 2025",
+                              style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.md),
                         // Summary Cards
                         Row(
                           children: [
                             Expanded(
-                              child: SummaryCard(
-                                title: l10n.income,
-                                amount: "\$5,000",
-                                amountColor: AppColors.primaryAccent,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed('/income-detail');
+                                },
+                                child: SummaryCard(
+                                  title: l10n.income,
+                                  amount: "\$5,000",
+                                  amountColor: AppColors.primaryAccent,
+                                ),
                               ),
                             ),
                             const SizedBox(width: AppSpacing.md),
                             Expanded(
-                              child: SummaryCard(
-                                title: l10n.outcome,
-                                amount: "\$1,200",
-                                amountColor: Colors.white,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed('/outcome-detail');
+                                },
+                                child: SummaryCard(
+                                  title: l10n.outcome,
+                                  amount: "\$1,200",
+                                  amountColor: Colors.white,
+                                ),
                               ),
                             ),
                           ],

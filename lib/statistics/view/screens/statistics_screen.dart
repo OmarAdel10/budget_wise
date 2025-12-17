@@ -69,6 +69,25 @@ class StatisticsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Month Selector
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.chevron_left, color: AppColors.textSecondary),
+                  ),
+                  Text(
+                    "December 2025",
+                    style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
               // Summary Cards Grid
               GridView.count(
                 crossAxisCount: 2,
