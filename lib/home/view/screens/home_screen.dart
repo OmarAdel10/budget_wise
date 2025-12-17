@@ -6,6 +6,8 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/summary_card.dart';
 import '../../../shared/widgets/category_list_item.dart';
+import 'add_category_screen.dart';
+import 'category_detail_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -110,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                             IconButton(
                               onPressed: () {
-                                // TODO: Add category action
+                                Navigator.of(context).pushNamed(AddCategoryScreen.routeName);
                               },
                               icon: const Icon(
                                 Icons.add,
@@ -141,7 +143,10 @@ class HomeScreen extends StatelessWidget {
                                 (category['color'] as Color).withOpacity(0.2),
                             iconColor: category['color'],
                             onTap: () {
-                              // TODO: Navigate to Category Detail
+                              Navigator.of(context).pushNamed(
+                                CategoryDetailScreen.routeName,
+                                arguments: category,
+                              );
                             },
                           ),
                         );
@@ -168,7 +173,7 @@ class HomeScreen extends StatelessWidget {
               elevation: 4,
               child: InkWell(
                 onTap: () {
-                  // TODO: Navigate to Add Expense Screen
+                  // TODO: Navigate to Add Expense Screen (Phase 5)
                 },
                 borderRadius: BorderRadius.circular(16),
                 child: Container(

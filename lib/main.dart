@@ -9,6 +9,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:budget_wise/shared/app_theme.dart';
 
 import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
+import 'package:budget_wise/home/view/screens/add_category_screen.dart';
+import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
 import 'package:page_transition/page_transition.dart'; // Import OnboardingScreen
 
 void main() {
@@ -88,6 +90,25 @@ class MyApp extends StatelessWidget {
               curve: Curves.easeIn,
               settings: settings,
               child: const MainScreen(),
+            );
+          case AddCategoryScreen.routeName:
+            return PageTransition(
+              type: PageTransitionType.bottomToTop,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: const AddCategoryScreen(),
+            );
+          case CategoryDetailScreen.routeName:
+            final args = settings.arguments as Map<String, dynamic>;
+            return PageTransition(
+              type: PageTransitionType.rightToLeft,
+              ctx: context,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              settings: settings,
+              child: CategoryDetailScreen(category: args),
             );
           default:
             return null;

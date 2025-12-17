@@ -39,6 +39,12 @@ class AppTextStyles {
     color: AppColors.textInverse,
   );
 
+  static TextStyle get bodySmall => GoogleFonts.inter(
+    fontSize: 12,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textSecondary,
+  );
+
   static TextStyle get link => GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.normal,
