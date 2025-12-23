@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "546151690552",
+    "project_id": "budgetwise-bdc7d",
+    "storage_bucket": "budgetwise-bdc7d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546151690552:android:d64aec3e4cfd577469d1cd",
+        "android_client_info": {
+          "package_name": "om.example.budget_wise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "546151690552-kcck3on8brimle9jc7fenc65u8nbebi2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "om.example.budget_wise",
+            "certificate_hash": "3470384eed468a7eb8438240735a7ae71f6870fa"
+          }
+        },
+        {
+          "client_id": "546151690552-1qsb7dv8od5j0art9mkssfvf89rti48d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6DImwZF0bYGlBwFQSHX70imko0OHNWx4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "546151690552-1qsb7dv8od5j0art9mkssfvf89rti48d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
