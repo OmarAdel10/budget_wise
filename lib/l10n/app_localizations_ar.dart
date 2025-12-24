@@ -81,6 +81,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get welcomeBack => 'مرحبًا بعودتك';
 
   @override
+  String get name => 'الاسم';
+
+  @override
   String get email => 'البريد الإلكتروني';
 
   @override
@@ -240,4 +243,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get catGroceries => 'بقالة';
+
+  @override
+  String get nameRequired => 'الاسم مطلوب';
+
+  @override
+  String get emailRequired => 'البريد الإلكتروني مطلوب';
+
+  @override
+  String get passwordRequired => 'كلمة المرور مطلوبة';
 }

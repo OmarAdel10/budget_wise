@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
@@ -22,11 +23,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.signUp(email: event.email, password: event.password);
+      await _authRepository.signUp(
+        email: event.email,
+        password: event.password,
+      );
       await _authRepository.currentUser!.updateDisplayName(event.name);
       emit(AuthStateSuccess(user: _authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
+      log(e.toString());
     }
   }
 
@@ -36,10 +41,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.signIn(email: event.email, password: event.password);
+      await _authRepository.signIn(
+        email: event.email,
+        password: event.password,
+      );
       emit(AuthStateSuccess(user: _authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
+      log(e.toString());
     }
   }
 
@@ -53,6 +62,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthStateSuccess());
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
+      log(e.toString());
     }
   }
 
@@ -66,6 +76,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthStateSuccess());
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
+      log(e.toString());
     }
   }
 
@@ -79,7 +90,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthStateSuccess(user: _authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
+      log(e.toString());
     }
   }
-
 }

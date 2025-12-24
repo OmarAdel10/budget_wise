@@ -27,6 +27,7 @@
   "about": "About",
   "logout": "Logout",
   "welcomeBack": "Welcome back",
+  "name": "Name",
   "email": "Email",
   "password": "Password",
   "forgotPassword": "Forgot Password?",
@@ -79,5 +80,8 @@
   "catHealth": "Healthcare",
   "catEntertainment": "Entertainment",
   "catEducation": "Education",
-  "catGroceries": "Groceries"
+  "catGroceries": "Groceries",
+  "nameRequired": "Name is required",
+  "emailRequired": "Email is required",
+  "passwordRequired": "Password is required"
 }

@@ -1,7 +1,9 @@
-import 'dart:developer';
-
+import 'package:budget_wise/auth/view_model/auth_event.dart';
+import 'package:budget_wise/auth/view_model/auth_state.dart';
+import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -20,8 +22,10 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -31,14 +35,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _onSignUp() {
-    // TODO: Implement sign up logic
-    log("Sign Up Pressed");
-    Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthBloc>().add(
+        AuthEventSignUp(
+          name: _nameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+        ),
+      );
+    }
   }
 
   void _onGoogleLogin() {
-    // TODO: Implement Google login logic
-    log("Google Login Pressed");
+    context.read<AuthBloc>().add(AuthEventSignInWithGoogle());
   }
 
   void _onLogin() {
@@ -56,7 +65,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(), // Or navigate to welcome
+          onPressed: () =>
+              Navigator.of(context).pop(), // Or navigate to welcome
         ),
         title: Text(
           l10n.createAccount,
@@ -72,75 +82,144 @@ class _SignUpScreenState extends State<SignUpScreen> {
           builder: (context, constraints) {
             return SingleChildScrollView(
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
                   child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height / 4.7),
-
-                        // Email Input
-                        CustomTextField(
-                          hintText: l10n.email,
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-
-                        // Password Input
-                        CustomTextField(
-                          hintText: l10n.password,
-                          controller: _passwordController,
-                          isPassword: true,
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Sign Up Button
-                        CustomButton(
-                          text: l10n.createAccount,
-                          onPressed: _onSignUp,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-
-                        // Google Login Button
-                        CustomButton(
-                          text: l10n.loginWithGoogle,
-                          type: CustomButtonType.secondary,
-                          onPressed: _onGoogleLogin,
-                          icon: Icon(PhosphorIcons.googleLogo(PhosphorIconsStyle.bold)),
-                        ),
-
-                        const Spacer(),
-
-                        // Login Link (Footer)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              l10n.alreadyHaveAccount,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.textSecondary,
+                    child: BlocListener<AuthBloc, AuthState>(
+                      listener: (context, state) {
+                        if (state is AuthStateLoading) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              content: Column(
+                                children: [
+                                  const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  const SizedBox(height: AppSpacing.md),
+                                  const Center(child: Text('Loading...')),
+                                ],
                               ),
                             ),
-                            TextButton(
-                              onPressed: _onLogin,
-                              child: Text(
-                                l10n.login,
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.textSecondary,
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.bold,
+                          );
+                        }
+                        if (state is AuthStateError) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+                        }
+                        if (state is AuthStateSuccess) {
+                          Navigator.of(
+                            context,
+                          ).pushReplacementNamed(MainScreen.routeName);
+                        }
+                      },
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 4.7,
+                            ),
+
+                            // Name Input
+                            CustomTextField(
+                              hintText: l10n.name,
+                              controller: _nameController,
+                              keyboardType: TextInputType.name,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return l10n.nameRequired;
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+
+                            // Email Input
+                            CustomTextField(
+                              hintText: l10n.email,
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return l10n.emailRequired;
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+
+                            // Password Input
+                            CustomTextField(
+                              hintText: l10n.password,
+                              controller: _passwordController,
+                              isPassword: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return l10n.passwordRequired;
+                                }
+
+                                if (value.length < 6) {
+                                  return 'Password must be at least 6 characters long';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+
+                            // Sign Up Button
+                            CustomButton(
+                              text: l10n.createAccount,
+                              onPressed: _onSignUp,
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+
+                            // Google Login Button
+                            CustomButton(
+                              text: l10n.loginWithGoogle,
+                              type: CustomButtonType.secondary,
+                              onPressed: _onGoogleLogin,
+                              icon: Icon(
+                                PhosphorIcons.googleLogo(
+                                  PhosphorIconsStyle.bold,
                                 ),
                               ),
                             ),
+
+                            const Spacer(),
+
+                            // Login Link (Footer)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  l10n.alreadyHaveAccount,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: _onLogin,
+                                  child: Text(
+                                    l10n.login,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      color: AppColors.textSecondary,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.lg),
-                      ],
+                      ),
                     ),
                   ),
                 ),

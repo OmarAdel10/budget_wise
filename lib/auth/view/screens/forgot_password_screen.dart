@@ -1,7 +1,11 @@
 import 'dart:developer';
 
+import 'package:budget_wise/auth/view_model/auth_event.dart';
+import 'package:budget_wise/auth/view_model/auth_state.dart';
+import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -19,6 +23,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -27,15 +32,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   void _onSendResetLink() {
-    // TODO: Implement password reset logic
-    log("Send Reset Link Pressed");
-    log("Email: ${_emailController.text}");
-    // Show success message or navigate
-    Navigator.of(context).pop(); // Go back to login for now
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthBloc>().add(
+        AuthEventResetPassword(email: _emailController.text),
+      );
+    }
   }
 
   void _onLogin() {
-    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -65,66 +70,105 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           builder: (context, constraints) {
             return SingleChildScrollView(
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
                   child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height / 4),
-
-                        // Heading
-                        Text(
-                          l10n.enterEmail,
-                          style: AppTextStyles.heading2,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Email Input
-                        CustomTextField(
-                          hintText: l10n.email,
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Send Reset Link Button
-                        CustomButton(
-                          text: l10n.sendResetLink,
-                          onPressed: _onSendResetLink,
-                        ),
-
-                        const Spacer(),
-
-                        // Login Link (Footer)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    child: BlocListener<AuthBloc, AuthState>(
+                      listener: (context, state) {
+                        if (state is AuthStateLoading) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              content: Column(
+                                children: [
+                                  const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  const SizedBox(height: AppSpacing.md),
+                                  const Center(child: Text('Loading...')),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                        if (state is AuthStateError) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+                        }
+                        if (state is AuthStateSuccess) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 4,
+                            ),
+
+                            // Heading
                             Text(
-                              l10n.rememberPassword,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
+                              l10n.enterEmail,
+                              style: AppTextStyles.heading2,
+                              textAlign: TextAlign.center,
                             ),
-                            TextButton(
-                              onPressed: _onLogin,
-                              child: Text(
-                                l10n.login,
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.textSecondary,
-                                  decoration: TextDecoration.underline,
-                                  fontWeight: FontWeight.bold,
+                            const SizedBox(height: AppSpacing.xl),
+
+                            // Email Input
+                            CustomTextField(
+                              hintText: l10n.email,
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return l10n.emailRequired;
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: AppSpacing.xl),
+
+                            // Send Reset Link Button
+                            CustomButton(
+                              text: l10n.sendResetLink,
+                              onPressed: _onSendResetLink,
+                            ),
+
+                            const Spacer(),
+
+                            // Login Link (Footer)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  l10n.rememberPassword,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
                                 ),
-                              ),
+                                TextButton(
+                                  onPressed: _onLogin,
+                                  child: Text(
+                                    l10n.login,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      color: AppColors.textSecondary,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+                            const SizedBox(height: AppSpacing.lg),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.lg),
-                      ],
+                      ),
                     ),
                   ),
                 ),

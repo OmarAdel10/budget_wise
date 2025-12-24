@@ -24,6 +24,7 @@
   "about": "عن التطبيق",
   "logout": "تسجيل الخروج",
   "welcomeBack": "مرحبًا بعودتك",
+  "name": "الاسم",
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",
   "forgotPassword": "نسيت كلمة المرور؟",
@@ -76,5 +77,8 @@
   "catHealth": "صحة",
   "catEntertainment": "ترفيه",
   "catEducation": "تعليم",
-  "catGroceries": "بقالة"
+  "catGroceries": "بقالة",
+  "nameRequired": "الاسم مطلوب",
+  "emailRequired": "البريد الإلكتروني مطلوب",
+  "passwordRequired": "كلمة المرور مطلوبة"
 }

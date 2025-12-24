@@ -81,6 +81,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeBack => 'Welcome back';
 
   @override
+  String get name => 'Name';
+
+  @override
   String get email => 'Email';
 
   @override
@@ -240,4 +243,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catGroceries => 'Groceries';
+
+  @override
+  String get nameRequired => 'Name is required';
+
+  @override
+  String get emailRequired => 'Email is required';
+
+  @override
+  String get passwordRequired => 'Password is required';
 }
