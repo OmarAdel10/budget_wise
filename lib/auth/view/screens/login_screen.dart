@@ -1,3 +1,4 @@
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
@@ -80,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
+              final AuthRepository _authRepository = AuthRepository();
               if (state is AuthStateLoading) {
                 showDialog(
                   context: context,
@@ -100,9 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ).showSnackBar(SnackBar(content: Text(state.message)));
               }
               if (state is AuthStateSuccess) {
-                Navigator.of(
-                  context,
-                ).pushReplacementNamed(MainScreen.routeName);
+                if (_authRepository.currentUser != null) {
+                  Navigator.of(
+                    context,
+                  ).pushReplacementNamed(MainScreen.routeName);
+                }
               }
             },
             child: Form(

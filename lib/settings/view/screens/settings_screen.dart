@@ -1,4 +1,8 @@
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
+import 'package:budget_wise/auth/view_model/auth_event.dart';
+import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -15,17 +19,20 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _isBiometricEnabled = false;
   String _selectedLanguage = 'en';
+  final AuthRepository _authRepository = AuthRepository();
 
   void _handleLogout() {
-    // TODO: Implement actual logout logic (clear auth state)
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      LoginScreen.routeName,
-      (route) => false,
-    );
+    context.read<AuthBloc>().add(AuthEventSignOut());
+    if (_authRepository.currentUser == null) {
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(LoginScreen.routeName, (route) => false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final AuthRepository authRepository = AuthRepository();
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
@@ -61,17 +68,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     CircleAvatar(
                       radius: 30,
                       backgroundColor: AppColors.primaryAccent,
-                      child: Text(
-                        "OA",
-                        style: AppTextStyles.heading2.copyWith(color: AppColors.textInverse),
-                      ),
+                      backgroundImage: authRepository.currentUser!.photoURL != null
+                          ? NetworkImage(
+                              authRepository.currentUser!.photoURL!,
+                            )
+                          : null,
+                      child: authRepository.currentUser!.photoURL == null
+                          ? Text(
+                              "U",
+                              style: AppTextStyles.heading2.copyWith(
+                                color: AppColors.textInverse,
+                              ),
+                            )
+                          : null,
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Omar Adel", style: AppTextStyles.heading3),
-                        Text("omar.adel@example.com", style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+                        Text(authRepository.currentUser!.displayName!, style: AppTextStyles.heading3),
+                        Text(
+                          authRepository.currentUser!.email!,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -95,13 +116,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       children: [
                         Row(
                           children: [
-                            Icon(PhosphorIcons.fingerprint(PhosphorIconsStyle.regular), color: AppColors.textPrimary),
+                            Icon(
+                              PhosphorIcons.fingerprint(
+                                PhosphorIconsStyle.regular,
+                              ),
+                              color: AppColors.textPrimary,
+                            ),
                             const SizedBox(width: AppSpacing.md),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Security", style: AppTextStyles.bodyLarge),
-                                Text("Fingerprint", style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
+                                Text(
+                                  "Security",
+                                  style: AppTextStyles.bodyLarge,
+                                ),
+                                Text(
+                                  "Fingerprint",
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
                               ],
                             ),
                           ],
@@ -114,7 +148,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             });
                           },
                           activeThumbColor: AppColors.primaryAccent,
-                          activeTrackColor: AppColors.primaryAccent.withOpacity(0.3),
+                          activeTrackColor: AppColors.primaryAccent.withValues(
+                            alpha: 0.3,
+                          ),
                         ),
                       ],
                     ),
@@ -124,7 +160,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       children: [
                         Row(
                           children: [
-                            Icon(PhosphorIcons.globe(PhosphorIconsStyle.regular), color: AppColors.textPrimary),
+                            Icon(
+                              PhosphorIcons.globe(PhosphorIconsStyle.regular),
+                              color: AppColors.textPrimary,
+                            ),
                             const SizedBox(width: AppSpacing.md),
                             Text("Language", style: AppTextStyles.bodyLarge),
                           ],
@@ -133,10 +172,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: DropdownButton<String>(
                             value: _selectedLanguage,
                             dropdownColor: AppColors.cardBackground,
-                            icon: const Icon(Icons.arrow_drop_down, color: AppColors.textSecondary),
+                            icon: const Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColors.textSecondary,
+                            ),
                             items: const [
-                              DropdownMenuItem(value: 'en', child: Text("English", style: TextStyle(color: AppColors.textPrimary))),
-                              DropdownMenuItem(value: 'ar', child: Text("Arabic", style: TextStyle(color: AppColors.textPrimary))),
+                              DropdownMenuItem(
+                                value: 'en',
+                                child: Text(
+                                  "English",
+                                  style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'ar',
+                                child: Text(
+                                  "Arabic",
+                                  style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ),
                             ],
                             onChanged: (String? newValue) {
                               if (newValue != null) {
@@ -169,7 +227,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("App Version", style: AppTextStyles.bodyLarge),
-                        Text("v1.0.0", style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+                        Text(
+                          "v1.0.0",
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: AppSpacing.md),
@@ -177,11 +240,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          icon: Icon(PhosphorIcons.envelope(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
+                          icon: Icon(
+                            PhosphorIcons.envelope(PhosphorIconsStyle.regular),
+                            color: AppColors.textSecondary,
+                          ),
                           onPressed: () {},
                         ),
                         IconButton(
-                          icon: Icon(PhosphorIcons.linkedinLogo(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
+                          icon: Icon(
+                            PhosphorIcons.linkedinLogo(
+                              PhosphorIconsStyle.regular,
+                            ),
+                            color: AppColors.textSecondary,
+                          ),
                           onPressed: () {},
                         ),
                       ],
@@ -197,13 +268,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: TextButton(
                   onPressed: _handleLogout,
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                    ),
                     side: const BorderSide(color: AppColors.danger),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
                   ),
                   child: Text(
                     "Log Out",
-                    style: AppTextStyles.bodyLarge.copyWith(color: AppColors.danger, fontWeight: FontWeight.bold),
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      color: AppColors.danger,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

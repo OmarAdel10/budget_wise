@@ -1,3 +1,4 @@
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
@@ -90,6 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: IntrinsicHeight(
                     child: BlocListener<AuthBloc, AuthState>(
                       listener: (context, state) {
+                        final AuthRepository authRepository = AuthRepository();
                         if (state is AuthStateLoading) {
                           showDialog(
                             context: context,
@@ -112,9 +114,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           );
                         }
                         if (state is AuthStateSuccess) {
-                          Navigator.of(
-                            context,
-                          ).pushReplacementNamed(MainScreen.routeName);
+                          if (authRepository.currentUser != null) {
+                            Navigator.of(
+                              context,
+                            ).pushReplacementNamed(MainScreen.routeName);
+                          }
                         }
                       },
                       child: Form(
