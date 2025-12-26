@@ -9,21 +9,6 @@ class AuthRepository {
   User? get currentUser => _firebaseAuth.currentUser;
   bool get isEmailPasswordProvider => _firebaseAuth.currentUser?.providerData.any((provider) => provider.providerId == 'password') ?? false;
 
-
-  Future<bool> isUserUsingGoogleProvider() async {
-    try {
-      return _firebaseAuth.currentUser?.providerData.any(
-            (provider) => provider.providerId == 'google.com',
-          ) ??
-          false;
-    } catch (e) {
-      throw Exception(
-        'Exception Is User Using Google Provider: ${e.toString()}',
-      );
-    }
-  }
-
-
   Future<UserCredential> signUp({
     required String email,
     required String password,
@@ -76,18 +61,25 @@ class AuthRepository {
     }
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    try {
+  bool _isGoogleSignInInitialized = false;
+
+  Future<void> _ensureGoogleSignInInitialized() async {
+    if (!_isGoogleSignInInitialized) {
       await _googleSignIn.initialize(
         serverClientId:
             "546151690552-1qsb7dv8od5j0art9mkssfvf89rti48d.apps.googleusercontent.com",
       );
+      _isGoogleSignInInitialized = true;
+    }
+  }
 
-      final GoogleSignInAccount googleUser = await GoogleSignIn.instance
-          .authenticate();
+  Future<UserCredential> signInWithGoogle() async {
+    try {
+      await _ensureGoogleSignInInitialized();
 
-      final GoogleSignInAuthentication googleAuth =
-          googleUser.authentication;
+      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,

@@ -1,6 +1,5 @@
 
 import 'dart:developer';
-import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
