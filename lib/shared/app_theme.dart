@@ -50,6 +50,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: const BorderSide(color: AppColors.primaryAccent),
         ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          borderSide: const BorderSide(color: AppColors.danger),
+        ),
       ),
 
       // ElevatedButton Theme

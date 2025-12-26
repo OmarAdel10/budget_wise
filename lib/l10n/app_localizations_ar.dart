@@ -266,5 +266,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get arabic => 'العربية';
 
   @override
-  String get appVersion => 'App Version';
+  String get appVersion => 'إصدار التطبيق';
+
+  @override
+  String get editProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get redBorderMeansThatYouCantChange =>
+      'الاطار الأحمر يعني أنه لا يمكنك تغيير';
+
+  @override
+  String get thisFielditsOnlyForDisplay => 'هذا الحقل، لانه مخصص للعرض فقط';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
 }

@@ -6,6 +6,7 @@ import 'package:budget_wise/auth/view/screens/forgot_password_screen.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -211,6 +212,17 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: const LocalAuthScreen(),
+                );
+              case EditProfileScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.fade,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: const EditProfileScreen(),
                 );
               default:
                 return null;

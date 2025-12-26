@@ -6,8 +6,23 @@ class AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   final LocalAuthentication _localAuth = LocalAuthentication();
-
   User? get currentUser => _firebaseAuth.currentUser;
+  bool get isEmailPasswordProvider => _firebaseAuth.currentUser?.providerData.any((provider) => provider.providerId == 'password') ?? false;
+
+
+  Future<bool> isUserUsingGoogleProvider() async {
+    try {
+      return _firebaseAuth.currentUser?.providerData.any(
+            (provider) => provider.providerId == 'google.com',
+          ) ??
+          false;
+    } catch (e) {
+      throw Exception(
+        'Exception Is User Using Google Provider: ${e.toString()}',
+      );
+    }
+  }
+
 
   Future<UserCredential> signUp({
     required String email,
@@ -107,4 +122,68 @@ class AuthRepository {
       throw Exception('Exception Local Auth: ${e.toString()}');
     }
   }
+
+  Future<void> updateProfileUserName({required String name}) async {
+    try {
+      await _firebaseAuth.currentUser?.updateDisplayName(name);
+      await _firebaseAuth.currentUser?.reload();
+    } on FirebaseAuthException catch (e) {
+      throw Exception(
+        'FireBase Auth Update Profile User Name Exception: ${e.message}',
+      );
+    } catch (e) {
+      throw Exception('Exception Update Profile User Name: ${e.toString()}');
+    }
+  }
+
+  Future<void> updateProfileUserPassword({required String password}) async {
+    try {
+      await _firebaseAuth.currentUser?.updatePassword(password);
+      await _firebaseAuth.currentUser?.reload();
+    } on FirebaseAuthException catch (e) {
+      throw Exception(
+        'FireBase Auth Update Profile User Password Exception: ${e.message}',
+      );
+    } catch (e) {
+      throw Exception(
+        'Exception Update Profile User Password: ${e.toString()}',
+      );
+    }
+  }
+
+  // Future<void> updateProfileUserEmail({required String newEmail}) async {
+  //   try {
+  //     if (isEmailPasswordProvider) {
+  //       final credential = EmailAuthProvider.credential(
+  //         email: _firebaseAuth.currentUser!.email!,
+  //         password: currentUser?.,
+  //       );
+  //       await currentUser?.reauthenticateWithCredential(credential);
+  //       await currentUser?.updateEmail(newEmail);
+  //       await currentUser?.reload();
+  //     } else {
+  //       throw Exception('User is not using email password provider');
+  //     }
+  //   } on FirebaseAuthException catch (e) {
+  //     throw Exception(
+  //       'FireBase Auth Update Profile User Email Exception: ${e.message}',
+  //     );
+  //   } catch (e) {
+  //     throw Exception('Exception Update Profile User Email: ${e.toString()}');
+  //   }
+  // }
+
+  // Future<void> updateProfileUserPhoto({required String photoUrl}) async {
+  //   try {
+  //     await _firebaseAuth.currentUser?.updatePhotoURL(photoUrl);
+  //   } on FirebaseAuthException catch (e) {
+  //     throw Exception(
+  //       'FireBase Auth Update Profile User Photo Exception: ${e.message}',
+  //     );
+  //   } catch (e) {
+  //     throw Exception('Exception Update Profile User Photo: ${e.toString()}');
+  //   }
+  // }
+
+  
 }

@@ -88,5 +88,10 @@
   "bioMetrics": "BioMetrics",
   "english": "English",
   "arabic": "العربية",
-  "appVersion": "App Version"
+  "appVersion": "App Version",
+  "editProfile": "Edit Profile",
+  "redBorderMeansThatYouCantChange": "Red Border Means That You Can't Change",
+  "thisFielditsOnlyForDisplay": "This Field, it's Only For Display.",
+  "saveChanges": "Save Changes",
+  "newPassword": "New Password"
 }

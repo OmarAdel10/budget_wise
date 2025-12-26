@@ -13,6 +13,7 @@ class CustomTextField extends StatefulWidget {
   final VoidCallback? onTap;
   final bool readOnly;
   final int maxLines;
+  final bool enabled;
 
   const CustomTextField({
     super.key,
@@ -26,6 +27,7 @@ class CustomTextField extends StatefulWidget {
     this.onTap,
     this.readOnly = false,
     this.maxLines = 1,
+    this.enabled = true,
   });
 
   @override
@@ -38,6 +40,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: widget.enabled,
       controller: widget.controller,
       obscureText: widget.isPassword ? _obscureText : false,
       keyboardType: widget.keyboardType,

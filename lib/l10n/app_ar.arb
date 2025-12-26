@@ -85,5 +85,10 @@
   "bioMetrics": "البصمة",
   "english": "English",
   "arabic": "العربية",
-  "appVersion": "App Version"
+  "appVersion": "إصدار التطبيق",
+  "editProfile": "تعديل الملف الشخصي",
+  "redBorderMeansThatYouCantChange": "الاطار الأحمر يعني أنه لا يمكنك تغيير",
+  "thisFielditsOnlyForDisplay": "هذا الحقل، لانه مخصص للعرض فقط",
+  "saveChanges": "حفظ التغييرات",
+  "newPassword": "كلمة المرور الجديدة"
 }

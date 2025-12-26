@@ -267,4 +267,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appVersion => 'App Version';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get redBorderMeansThatYouCantChange =>
+      'Red Border Means That You Can\'t Change';
+
+  @override
+  String get thisFielditsOnlyForDisplay =>
+      'This Field, it\'s Only For Display.';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get newPassword => 'New Password';
 }

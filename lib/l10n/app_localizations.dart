@@ -613,6 +613,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App Version'**
   String get appVersion;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfile;
+
+  /// No description provided for @redBorderMeansThatYouCantChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Red Border Means That You Can\'t Change'**
+  String get redBorderMeansThatYouCantChange;
+
+  /// No description provided for @thisFielditsOnlyForDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'This Field, it\'s Only For Display.'**
+  String get thisFielditsOnlyForDisplay;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPassword;
 }
 
 class _AppLocalizationsDelegate

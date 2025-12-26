@@ -82,7 +82,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
+                              scrollable: false,
+                              constraints: BoxConstraints(
+                                minHeight:
+                                    MediaQuery.sizeOf(context).height * 0.25,
+                                maxHeight:
+                                    MediaQuery.sizeOf(context).height * 0.25,
+                                minWidth:
+                                    MediaQuery.sizeOf(context).width * 0.75,
+                                maxWidth:
+                                    MediaQuery.sizeOf(context).width * 0.75,
+                              ),
                               content: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const Center(
                                     child: CircularProgressIndicator(),

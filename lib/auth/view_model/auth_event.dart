@@ -7,6 +7,7 @@ sealed class AuthEvent extends Equatable{
   List<Object?> get props => [];
 }
 
+
 class AuthEventSignUp extends AuthEvent{
   final String name;
   final String email;
@@ -56,4 +57,22 @@ class AuthEventLocalAuth extends AuthEvent{
 
   @override
   List<Object?> get props => [];
+}
+
+class AuthEventEditProfileChangeName extends AuthEvent {
+  final String name;
+
+  const AuthEventEditProfileChangeName({required this.name});
+
+  @override
+  List<Object?> get props => [name];
+}
+
+class AuthEventEditProfileChangePassword  extends AuthEvent {
+  final String password;
+
+  const AuthEventEditProfileChangePassword({ required this.password});
+
+  @override
+  List<Object?> get props => [password];
 }

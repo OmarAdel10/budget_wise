@@ -1,7 +1,9 @@
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
+import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
@@ -26,11 +28,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _handleLogout() {
     context.read<AuthBloc>().add(AuthEventSignOut());
-    if (_authRepository.currentUser == null) {
-      Navigator.of(
-        context,
-      ).pushNamedAndRemoveUntil(LoginScreen.routeName, (route) => false);
-    }
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(LoginScreen.routeName, (route) => false);
   }
 
   @override
@@ -38,6 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final linkedInUri = Uri.parse('https://www.linkedin.com/in/omaradel10');
     final emailUri = Uri(scheme: 'mailto', path: 'omaradel1.dev@gmail.com');
     final AuthRepository authRepository = AuthRepository();
+    final user = authRepository.currentUser;
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
@@ -75,12 +76,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       radius: 30,
                       backgroundColor: AppColors.primaryAccent,
                       backgroundImage:
-                          authRepository.currentUser!.photoURL != null
-                          ? NetworkImage(authRepository.currentUser!.photoURL!)
+                          user?.photoURL != null
+                          ? NetworkImage(user!.photoURL!)
                           : null,
-                      child: authRepository.currentUser!.photoURL == null
+                      child: user?.photoURL == null
                           ? Text(
-                              "U",
+                              (user?.displayName ?? "U").substring(0, 1).toUpperCase(),
                               style: AppTextStyles.heading2.copyWith(
                                 color: AppColors.textInverse,
                               ),
@@ -88,24 +89,72 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           : null,
                     ),
                     const SizedBox(width: AppSpacing.md),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          authRepository.currentUser!.displayName!,
-                          style: AppTextStyles.heading3,
-                        ),
-                        Text(
-                          authRepository.currentUser!.email!,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                              return Text(
+                                user?.displayName ?? '',
+                                style: AppTextStyles.heading3,
+                                overflow: TextOverflow.ellipsis,
+                              );
+                            },
                           ),
-                        ),
-                      ],
+                          Text(
+                            user?.email ?? '',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
+              _authRepository.isEmailPasswordProvider
+                  ? Column(
+                      children: [
+                        const SizedBox(height: AppSpacing.sm),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(
+                              context,
+                            ).pushNamed(EditProfileScreen.routeName);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            decoration: BoxDecoration(
+                              color: AppColors.cardBackground,
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusMd,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  PhosphorIcons.pencil(
+                                    PhosphorIconsStyle.regular,
+                                  ),
+                                  color: AppColors.textPrimary,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: AppSpacing.sm),
+                                Text(
+                                  l10n.editProfile,
+                                  style: AppTextStyles.bodyLarge,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
               const SizedBox(height: AppSpacing.xl),
 
               // App Settings Section

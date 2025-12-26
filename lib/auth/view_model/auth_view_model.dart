@@ -14,6 +14,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventResetPassword>(_onAuthEventResetPassword);
     on<AuthEventSignInWithGoogle>(_onAuthEventSignInWithGoogle);
     on<AuthEventLocalAuth>(_onAuthEventLocalAuth);
+    on<AuthEventEditProfileChangeName>(_onAuthEventEditProfileChangeName);
+    on<AuthEventEditProfileChangePassword>(_onAuthEventEditProfileChangePassword);
   }
 
   final AuthRepository _authRepository = AuthRepository();
@@ -102,6 +104,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthStateLoading());
       await _authRepository.localAuth();
+      emit(AuthStateSuccess(user: _authRepository.currentUser));
+    } on Exception catch (e) {
+      emit(AuthStateError(message: e.toString()));
+      log(e.toString());
+    }
+  }
+
+  Future<void> _onAuthEventEditProfileChangeName(AuthEventEditProfileChangeName event, Emitter<AuthState> emit) async {
+    try {
+      emit(AuthStateLoading());
+      await _authRepository.updateProfileUserName(name: event.name);
+      emit(AuthStateSuccess(user: _authRepository.currentUser));
+    } on Exception catch (e) {
+      emit(AuthStateError(message: e.toString()));
+      log(e.toString());
+    }
+  }
+
+  Future<void> _onAuthEventEditProfileChangePassword(AuthEventEditProfileChangePassword event, Emitter<AuthState> emit) async {
+    try {
+      emit(AuthStateLoading());
+      await _authRepository.updateProfileUserPassword(password: event.password);
       emit(AuthStateSuccess(user: _authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
