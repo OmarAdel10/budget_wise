@@ -83,5 +83,10 @@
   "catGroceries": "Groceries",
   "nameRequired": "Name is required",
   "emailRequired": "Email is required",
-  "passwordRequired": "Password is required"
+  "passwordRequired": "Password is required",
+  "security": "Security",
+  "bioMetrics": "BioMetrics",
+  "english": "English",
+  "arabic": "العربية",
+  "appVersion": "App Version"
 }

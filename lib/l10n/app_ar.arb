@@ -80,5 +80,10 @@
   "catGroceries": "بقالة",
   "nameRequired": "الاسم مطلوب",
   "emailRequired": "البريد الإلكتروني مطلوب",
-  "passwordRequired": "كلمة المرور مطلوبة"
+  "passwordRequired": "كلمة المرور مطلوبة",
+  "security": "الحماية",
+  "bioMetrics": "البصمة",
+  "english": "English",
+  "arabic": "العربية",
+  "appVersion": "App Version"
 }

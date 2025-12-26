@@ -1,9 +1,14 @@
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
+import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/settings/view_model/settings_event.dart';
+import 'package:budget_wise/settings/view_model/settings_state.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:url_launcher/link.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -17,8 +22,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _isBiometricEnabled = false;
-  String _selectedLanguage = 'en';
   final AuthRepository _authRepository = AuthRepository();
 
   void _handleLogout() {
@@ -32,15 +35,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final linkedInUri = Uri.parse('https://www.linkedin.com/in/omaradel10');
+    final emailUri = Uri(scheme: 'mailto', path: 'omaradel1.dev@gmail.com');
     final AuthRepository authRepository = AuthRepository();
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
         backgroundColor: AppColors.primaryBackground,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: const Text(
-          "Settings",
+        title: Text(
+          l10n.navSettings,
           style: TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
@@ -55,7 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Profile Section
-              Text("Profile", style: AppTextStyles.heading3),
+              Text(l10n.profile, style: AppTextStyles.heading3),
               const SizedBox(height: AppSpacing.md),
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
@@ -68,10 +74,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     CircleAvatar(
                       radius: 30,
                       backgroundColor: AppColors.primaryAccent,
-                      backgroundImage: authRepository.currentUser!.photoURL != null
-                          ? NetworkImage(
-                              authRepository.currentUser!.photoURL!,
-                            )
+                      backgroundImage:
+                          authRepository.currentUser!.photoURL != null
+                          ? NetworkImage(authRepository.currentUser!.photoURL!)
                           : null,
                       child: authRepository.currentUser!.photoURL == null
                           ? Text(
@@ -86,7 +91,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(authRepository.currentUser!.displayName!, style: AppTextStyles.heading3),
+                        Text(
+                          authRepository.currentUser!.displayName!,
+                          style: AppTextStyles.heading3,
+                        ),
                         Text(
                           authRepository.currentUser!.email!,
                           style: AppTextStyles.bodyMedium.copyWith(
@@ -101,7 +109,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: AppSpacing.xl),
 
               // App Settings Section
-              Text("App Settings", style: AppTextStyles.heading3),
+              Text(l10n.appSettings, style: AppTextStyles.heading3),
               const SizedBox(height: AppSpacing.md),
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
@@ -127,11 +135,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Security",
+                                  l10n.security,
                                   style: AppTextStyles.bodyLarge,
                                 ),
                                 Text(
-                                  "Fingerprint",
+                                  l10n.bioMetrics,
                                   style: AppTextStyles.bodySmall.copyWith(
                                     color: AppColors.textSecondary,
                                   ),
@@ -140,17 +148,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ],
                         ),
-                        Switch(
-                          value: _isBiometricEnabled,
-                          onChanged: (value) {
-                            setState(() {
-                              _isBiometricEnabled = value;
-                            });
+                        BlocBuilder<SettingsBloc, SettingsState>(
+                          builder: (context, state) {
+                            return Switch(
+                              value: state.model.localAuthEnabled,
+                              onChanged: (value) {
+                                context.read<SettingsBloc>().add(
+                                  const SettingsEventLocalAuth(),
+                                );
+                              },
+                              activeThumbColor: AppColors.primaryAccent,
+                              activeTrackColor: AppColors.primaryAccent
+                                  .withValues(alpha: 0.3),
+                            );
                           },
-                          activeThumbColor: AppColors.primaryAccent,
-                          activeTrackColor: AppColors.primaryAccent.withValues(
-                            alpha: 0.3,
-                          ),
                         ),
                       ],
                     ),
@@ -165,45 +176,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               color: AppColors.textPrimary,
                             ),
                             const SizedBox(width: AppSpacing.md),
-                            Text("Language", style: AppTextStyles.bodyLarge),
+                            Text(l10n.language, style: AppTextStyles.bodyLarge),
                           ],
                         ),
-                        DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: _selectedLanguage,
-                            dropdownColor: AppColors.cardBackground,
-                            icon: const Icon(
-                              Icons.arrow_drop_down,
-                              color: AppColors.textSecondary,
-                            ),
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'en',
-                                child: Text(
-                                  "English",
-                                  style: TextStyle(
-                                    color: AppColors.textPrimary,
-                                  ),
+                        BlocBuilder<SettingsBloc, SettingsState>(
+                          builder: (context, state) {
+                            return DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: state.model.language == 'en'
+                                    ? 'en'
+                                    : 'ar',
+                                dropdownColor: AppColors.cardBackground,
+                                icon: const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: AppColors.textSecondary,
                                 ),
-                              ),
-                              DropdownMenuItem(
-                                value: 'ar',
-                                child: Text(
-                                  "Arabic",
-                                  style: TextStyle(
-                                    color: AppColors.textPrimary,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: 'en',
+                                    child: Text(
+                                      l10n.english,
+                                      style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  DropdownMenuItem(
+                                    value: 'ar',
+                                    child: Text(
+                                      l10n.arabic,
+                                      style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                onChanged: (String? newLangCode) {
+                                  if (newLangCode != null) {
+                                    context.read<SettingsBloc>().add(
+                                      SettingsEventLanguageChange(newLangCode),
+                                    );
+                                  }
+                                },
                               ),
-                            ],
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  _selectedLanguage = newValue;
-                                });
-                              }
-                            },
-                          ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -213,7 +230,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: AppSpacing.xl),
 
               // About Section
-              Text("About", style: AppTextStyles.heading3),
+              Text(l10n.about, style: AppTextStyles.heading3),
               const SizedBox(height: AppSpacing.md),
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
@@ -226,7 +243,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("App Version", style: AppTextStyles.bodyLarge),
+                        Text(l10n.appVersion, style: AppTextStyles.bodyLarge),
                         Text(
                           "v1.0.0",
                           style: AppTextStyles.bodyMedium.copyWith(
@@ -239,21 +256,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(
-                          icon: Icon(
-                            PhosphorIcons.envelope(PhosphorIconsStyle.regular),
-                            color: AppColors.textSecondary,
-                          ),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            PhosphorIcons.linkedinLogo(
-                              PhosphorIconsStyle.regular,
+                        Link(
+                          uri: emailUri,
+                          target: LinkTarget.blank,
+                          builder: (context, followLink) => IconButton(
+                            icon: Icon(
+                              PhosphorIcons.envelope(
+                                PhosphorIconsStyle.regular,
+                              ),
+                              color: AppColors.textSecondary,
                             ),
-                            color: AppColors.textSecondary,
+                            onPressed: followLink,
                           ),
-                          onPressed: () {},
+                        ),
+                        Link(
+                          uri: linkedInUri,
+                          target: LinkTarget.blank,
+                          builder: (context, followLink) => IconButton(
+                            icon: Icon(
+                              PhosphorIcons.linkedinLogo(
+                                PhosphorIconsStyle.regular,
+                              ),
+                              color: AppColors.textSecondary,
+                            ),
+                            onPressed: followLink,
+                          ),
                         ),
                       ],
                     ),
@@ -277,7 +304,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   child: Text(
-                    "Log Out",
+                    l10n.logout,
                     style: AppTextStyles.bodyLarge.copyWith(
                       color: AppColors.danger,
                       fontWeight: FontWeight.bold,

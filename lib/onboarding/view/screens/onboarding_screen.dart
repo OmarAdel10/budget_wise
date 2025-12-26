@@ -1,9 +1,8 @@
 
 import 'dart:developer';
-import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
-import 'package:budget_wise/auth/view_model/auth_view_model.dart';
-import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
+import 'package:budget_wise/settings/view_model/settings_event.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,8 +83,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     log("Onboarding Completed!");
     log("Income: $_incomeAmount, Source: $_incomeSource");
     log("Categories: $_selectedCategories");
-    final AuthRepository authRepository = AuthRepository();
-    Navigator.of(context).pushReplacementNamed(authRepository.currentUser == null ? LoginScreen.routeName : MainScreen.routeName);
+    context.read<SettingsBloc>().add(SettingsEventOnBoardingChange(true));
+    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
 
   void _previousPage() {

@@ -50,3 +50,10 @@ class AuthEventSignInWithGoogle extends AuthEvent{
   @override
   List<Object?> get props => [];
 }
+
+class AuthEventLocalAuth extends AuthEvent{
+  const AuthEventLocalAuth();
+
+  @override
+  List<Object?> get props => [];
+}

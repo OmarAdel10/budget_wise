@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:local_auth/local_auth.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  final LocalAuthentication _localAuth = LocalAuthentication();
 
   User? get currentUser => _firebaseAuth.currentUser;
 
@@ -82,6 +84,27 @@ class AuthRepository {
       );
     } catch (e) {
       throw Exception('Exception Sign In With Google: ${e.toString()}');
+    }
+  }
+
+  Future<bool> localAuth() async {
+    try {
+      final bool canAuthenticateWithBiometrics =
+          await _localAuth.canCheckBiometrics;
+
+      if (canAuthenticateWithBiometrics) {
+        final bool didAuthenticate = await _localAuth.authenticate(
+          localizedReason: 'Please authenticate to access the app',
+          biometricOnly: false,
+          persistAcrossBackgrounding: true,
+        );
+
+        return didAuthenticate;
+      } else {
+        throw Exception('Biometrics not available');
+      }
+    } catch (e) {
+      throw Exception('Exception Local Auth: ${e.toString()}');
     }
   }
 }

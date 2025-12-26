@@ -13,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventSignOut>(_onAuthEventSignOut);
     on<AuthEventResetPassword>(_onAuthEventResetPassword);
     on<AuthEventSignInWithGoogle>(_onAuthEventSignInWithGoogle);
+    on<AuthEventLocalAuth>(_onAuthEventLocalAuth);
   }
 
   final AuthRepository _authRepository = AuthRepository();
@@ -87,6 +88,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthStateLoading());
       await _authRepository.signInWithGoogle();
+      emit(AuthStateSuccess(user: _authRepository.currentUser));
+    } on Exception catch (e) {
+      emit(AuthStateError(message: e.toString()));
+      log(e.toString());
+    }
+  }
+
+  Future<void> _onAuthEventLocalAuth(
+    AuthEventLocalAuth event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      emit(AuthStateLoading());
+      await _authRepository.localAuth();
       emit(AuthStateSuccess(user: _authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));

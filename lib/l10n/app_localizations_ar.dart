@@ -252,4 +252,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordRequired => 'كلمة المرور مطلوبة';
+
+  @override
+  String get security => 'الحماية';
+
+  @override
+  String get bioMetrics => 'البصمة';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get arabic => 'العربية';
+
+  @override
+  String get appVersion => 'App Version';
 }
