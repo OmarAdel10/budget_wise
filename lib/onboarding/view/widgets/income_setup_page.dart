@@ -4,9 +4,15 @@ import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import 'package:budget_wise/home/data/models/category_model.dart';
+import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/home/view_model/category_event.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class IncomeSetupPage extends StatefulWidget {
-  final Function(double amount, String source) onDataChanged;
+  final Function(double amount, String categoryId) onDataChanged;
 
   const IncomeSetupPage({super.key, required this.onDataChanged});
 
@@ -14,15 +20,40 @@ class IncomeSetupPage extends StatefulWidget {
   State<IncomeSetupPage> createState() => _IncomeSetupPageState();
 }
 
-class _IncomeSetupPageState extends State<IncomeSetupPage> {
+class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAliveClientMixin {
   final TextEditingController _amountController = TextEditingController();
-  final List<String> _incomeSources = ['Work', 'Personal', 'Freelance', 'Other'];
-  String? _selectedSource;
+  List<CategoryModel> _incomeCategories = [];
+  String? _selectedCategoryId;
 
   @override
   void initState() {
     super.initState();
     _amountController.addListener(_updateData);
+    _initializeIncomeCategories();
+  }
+
+  void _initializeIncomeCategories() {
+    final categoryNames = ['Work', 'Personal', 'Freelance', 'Other'];
+    final categoryIcons = [
+      PhosphorIconsRegular.briefcase,
+      PhosphorIconsRegular.user,
+      PhosphorIconsRegular.laptop,
+      PhosphorIconsRegular.dotsThree,
+    ];
+
+    _incomeCategories = List.generate(categoryNames.length, (index) {
+      return CategoryModel(
+        categoryTitle: categoryNames[index],
+        categoryIcon: categoryIcons[index],
+        budgetAmount: 0.0,
+        type: TransactionType.income,
+      );
+    });
+    
+    // Save categories immediately
+    for (final category in _incomeCategories) {
+      context.read<CategoryBloc>().add(CategoryEventCreateCategory(category));
+    }
   }
 
   @override
@@ -33,10 +64,13 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> {
 
   void _updateData() {
     final amount = double.tryParse(_amountController.text) ?? 0.0;
-    if (_selectedSource != null) {
-      widget.onDataChanged(amount, _selectedSource!);
+    if (_selectedCategoryId != null) {
+      widget.onDataChanged(amount, _selectedCategoryId!);
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   // Helper to get localized source name
   String _getLocalizedSource(BuildContext context, String sourceKey) {
@@ -52,6 +86,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
@@ -73,7 +108,8 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> {
             l10n.incomeSetupDesc,
             style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
-          )),
+            ),
+          ),
           const SizedBox(height: AppSpacing.xl * 2),
       
           // Amount Input
@@ -94,11 +130,11 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> {
           Wrap(
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
-            children: _incomeSources.map((source) {
-              final isSelected = _selectedSource == source;
+            children: _incomeCategories.map((category) {
+              final isSelected = _selectedCategoryId == category.id;
               return ChoiceChip(
                 label: Text(
-                  _getLocalizedSource(context, source),
+                  _getLocalizedSource(context, category.categoryTitle),
                   style: TextStyle(
                     color: isSelected ? AppColors.textInverse : AppColors.textPrimary,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -107,7 +143,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> {
                 selected: isSelected,
                 onSelected: (selected) {
                   setState(() {
-                    _selectedSource = selected ? source : null;
+                    _selectedCategoryId = selected ? category.id : null;
                     _updateData();
                   });
                 },

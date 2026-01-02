@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:budget_wise/home/data/models/category_model.dart';
+import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
@@ -6,7 +8,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 
 class CategorySelectionPage extends StatefulWidget {
-  final Function(List<String> selectedCategories) onSelectionChanged;
+  final Function(List<CategoryModel> selectedCategories) onSelectionChanged;
 
   const CategorySelectionPage({super.key, required this.onSelectionChanged});
 
@@ -19,18 +21,18 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
 
   // Map of category keys to icons
   final Map<String, IconData> _categoryIcons = {
-    'catSmoking': PhosphorIconsRegular.fire,
-    'catEating': PhosphorIconsRegular.forkKnife,
-    'catTransport': PhosphorIconsRegular.car,
-    'catUtils': PhosphorIconsRegular.lightbulb,
-    'catDebts': PhosphorIconsRegular.creditCard,
-    'catInvestments': PhosphorIconsRegular.chartLineUp,
-    'catMobile': PhosphorIconsRegular.phone,
-    'catRent': PhosphorIconsRegular.house,
-    'catHealth': PhosphorIconsRegular.firstAid,
-    'catEntertainment': PhosphorIconsRegular.filmSlate,
-    'catEducation': PhosphorIconsRegular.graduationCap,
-    'catGroceries': PhosphorIconsRegular.shoppingCart,
+    'Smoking': PhosphorIconsRegular.fire,
+    'Eating': PhosphorIconsRegular.forkKnife,
+    'Transport': PhosphorIconsRegular.car,
+    'Utils': PhosphorIconsRegular.lightbulb,
+    'Debts': PhosphorIconsRegular.creditCard,
+    'Investments': PhosphorIconsRegular.chartLineUp,
+    'Mobile': PhosphorIconsRegular.phone,
+    'Rent': PhosphorIconsRegular.house,
+    'Health': PhosphorIconsRegular.firstAid,
+    'Entertainment': PhosphorIconsRegular.filmSlate,
+    'Education': PhosphorIconsRegular.graduationCap,
+    'Groceries': PhosphorIconsRegular.shoppingCart,
   };
 
   void _toggleCategory(String categoryKey) {
@@ -40,25 +42,35 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
       } else {
         _selectedCategories.add(categoryKey);
       }
-      widget.onSelectionChanged(_selectedCategories);
+      
+      final selectedModels = _selectedCategories.map((key) {
+        return CategoryModel(
+          categoryTitle: key,
+          categoryIcon: _categoryIcons[key]!,
+          budgetAmount: 0.0,
+          type: TransactionType.expense,
+        );
+      }).toList();
+
+      widget.onSelectionChanged(selectedModels);
     });
   }
 
   String _getLocalizedCategoryName(BuildContext context, String key) {
     final l10n = AppLocalizations.of(context)!;
     switch (key) {
-      case 'catSmoking': return l10n.catSmoking;
-      case 'catEating': return l10n.catEating;
-      case 'catTransport': return l10n.catTransport;
-      case 'catUtils': return l10n.catUtils;
-      case 'catDebts': return l10n.catDebts;
-      case 'catInvestments': return l10n.catInvestments;
-      case 'catMobile': return l10n.catMobile;
-      case 'catRent': return l10n.catRent;
-      case 'catHealth': return l10n.catHealth;
-      case 'catEntertainment': return l10n.catEntertainment;
-      case 'catEducation': return l10n.catEducation;
-      case 'catGroceries': return l10n.catGroceries;
+      case 'Smoking': return l10n.catSmoking;
+      case 'Eating': return l10n.catEating;
+      case 'Transport': return l10n.catTransport;
+      case 'Utils': return l10n.catUtils;
+      case 'Debts': return l10n.catDebts;
+      case 'Investments': return l10n.catInvestments;
+      case 'Mobile': return l10n.catMobile;
+      case 'Rent': return l10n.catRent;
+      case 'Health': return l10n.catHealth;
+      case 'Entertainment': return l10n.catEntertainment;
+      case 'Education': return l10n.catEducation;
+      case 'Groceries': return l10n.catGroceries;
       default: return key;
     }
   }

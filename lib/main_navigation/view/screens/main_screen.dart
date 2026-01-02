@@ -1,9 +1,15 @@
+import 'package:budget_wise/home/view_model/category_event.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/home/view_model/transaction_event.dart';
+import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/settings/view_model/settings_event.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../home/view/screens/home_screen.dart';
 import '../../../savings/view/screens/savings_screen.dart';
 import '../../../statistics/view/screens/statistics_screen.dart';
-// TODO: Import other screens as they are implemented
 import '../../../settings/view/screens/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -16,7 +22,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-
   final List<Widget> _screens = [
     const HomeScreen(),
     const SavingsScreen(),
@@ -28,6 +33,23 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (context.read<SettingsBloc>().state.model.isDataSyncedAfterFirstLogin ==
+        false) {
+      context.read<TransactionBloc>().add(
+        TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly(),
+      );
+      context.read<CategoryBloc>().add(
+        CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+      );
+      context.read<SettingsBloc>().add(
+        SettingsEventSyncDataAfterFirstLogin(true),
+      );
+    }
   }
 
   @override

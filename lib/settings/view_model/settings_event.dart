@@ -15,3 +15,8 @@ class SettingsEventOnBoardingChange extends SettingsEvent{
   final bool isOnboardingCompleted;
   const SettingsEventOnBoardingChange(this.isOnboardingCompleted);
 }
+
+class SettingsEventSyncDataAfterFirstLogin extends SettingsEvent{
+  final bool isDataSyncedAfterFirstLogin;
+  const SettingsEventSyncDataAfterFirstLogin(this.isDataSyncedAfterFirstLogin);
+}

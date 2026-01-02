@@ -50,6 +50,7 @@ dependencies:
   hydrated_bloc: ^10.1.1
   path_provider: ^2.1.5
   url_launcher: ^6.3.2
+  cloud_firestore: ^6.1.1
 
 dev_dependencies:
   flutter_test:

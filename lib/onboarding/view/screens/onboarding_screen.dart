@@ -1,11 +1,17 @@
-
 import 'dart:developer';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
+import 'package:budget_wise/home/data/models/category_model.dart';
+import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/home/view_model/category_event.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/home/view_model/transaction_event.dart';
+import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -29,8 +35,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // State for new pages
   double _incomeAmount = 0.0;
-  String? _incomeSource;
-  List<String> _selectedCategories = [];
+  String? _incomeCategoryId;
+  List<CategoryModel> _selectedCategories = [];
 
   @override
   void dispose() {
@@ -52,12 +58,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           );
           return;
         }
-        if (_incomeSource == null) {
+        if (_incomeCategoryId == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Please select an income source')),
           );
           return;
         }
+        final DateFormat date = DateFormat('dd/MM/yyyy');
+        final transaction = TransactionModel(
+          type: TransactionType.income,
+          transactionAmount: _incomeAmount,
+          transactionTitle: 'Income${date.format(DateTime.now())}',
+          transactionDate: DateTime.now(),
+          categoryId: _incomeCategoryId!,
+        );
+        context.read<TransactionBloc>().add(
+          TransactionEventCreateTransaction(transaction),
+        );
       }
 
       _pageController.nextPage(
@@ -73,16 +90,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         );
         return;
+      } else {
+        for (final category in _selectedCategories) {
+          context.read<CategoryBloc>().add(
+            CategoryEventCreateCategory(category),
+          );
+        }
       }
+
       _finishOnboarding();
     }
   }
 
   void _finishOnboarding() {
-    // TODO: Save state (_incomeAmount, _incomeSource, _selectedCategories)
     log("Onboarding Completed!");
-    log("Income: $_incomeAmount, Source: $_incomeSource");
-    log("Categories: $_selectedCategories");
+    log("Income: $_incomeAmount, CategoryId: $_incomeCategoryId");
+    log(
+      "Categories: ${_selectedCategories.map((e) => e.categoryTitle).toList()}",
+    );
     context.read<SettingsBloc>().add(SettingsEventOnBoardingChange(true));
     Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
@@ -146,10 +171,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                   IncomeSetupPage(
-                    onDataChanged: (amount, source) {
+                    onDataChanged: (amount, categoryId) {
                       setState(() {
                         _incomeAmount = amount;
-                        _incomeSource = source;
+                        _incomeCategoryId = categoryId;
                       });
                     },
                   ),

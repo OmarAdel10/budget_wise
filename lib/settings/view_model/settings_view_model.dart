@@ -30,6 +30,15 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
         ),
       );
     });
+    on<SettingsEventSyncDataAfterFirstLogin>((event, emit) {
+      emit(
+        SettingsStateSuccess(
+          state.model.copyWith(
+            isDataSyncedAfterFirstLogin: event.isDataSyncedAfterFirstLogin,
+          ),
+        ),
+      );
+    });
   }
 
   @override
