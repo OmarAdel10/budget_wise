@@ -1,3 +1,7 @@
+import 'package:budget_wise/home/view_model/category_event.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/home/view_model/transaction_event.dart';
+import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
@@ -81,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              final AuthRepository _authRepository = AuthRepository();
+              final AuthRepository authRepository = AuthRepository();
               if (state is AuthStateLoading) {
                 showDialog(
                   context: context,
@@ -111,7 +115,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ).showSnackBar(SnackBar(content: Text(state.message)));
               }
               if (state is AuthStateSuccess) {
-                if (_authRepository.currentUser != null) {
+                if (authRepository.currentUser != null) {
+                  context.read<TransactionBloc>().add(
+                    const TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+                  );
+                  context.read<CategoryBloc>().add(
+                    const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+                  );
                   Navigator.of(
                     context,
                   ).pushReplacementNamed(MainScreen.routeName);

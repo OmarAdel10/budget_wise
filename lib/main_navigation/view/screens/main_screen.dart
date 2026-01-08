@@ -1,3 +1,4 @@
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
@@ -38,10 +39,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    final AuthRepository authRepository = AuthRepository();
     if (context.read<SettingsBloc>().state.model.isDataSyncedAfterFirstLogin ==
-        false) {
+        false && authRepository.currentUser != null) {
       context.read<TransactionBloc>().add(
-        TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly(),
+        TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
       );
       context.read<CategoryBloc>().add(
         CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),

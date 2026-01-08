@@ -4,6 +4,10 @@ import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/auth/view/screens/signup_screen.dart';
 import 'package:budget_wise/auth/view/screens/forgot_password_screen.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
+import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/home/data/repositories/category_repository.dart';
+import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
+import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
@@ -16,18 +20,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:budget_wise/shared/app_theme.dart';
-
 import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
 import 'package:budget_wise/home/view/screens/add_category_screen.dart';
 import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/home/view/screens/add_expense_screen.dart';
 import 'package:budget_wise/savings/view/screens/add_saving_goal_screen.dart';
 import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
-import 'package:budget_wise/home/view/screens/income_detail_screen.dart';
-import 'package:budget_wise/home/view/screens/outcome_detail_screen.dart';
-import 'package:budget_wise/home/view/screens/expense_detail_screen.dart';
+import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
+import 'package:budget_wise/home/view/screens/transaction_detail_screen.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -35,33 +36,55 @@ import 'package:path_provider/path_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseFirestore.instance.settings = Settings(
-    persistenceEnabled: true,
-  );
+  FirebaseFirestore.instance.settings = Settings(persistenceEnabled: true);
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: HydratedStorageDirectory(
       (await getApplicationDocumentsDirectory()).path,
     ),
   );
+  final AuthRepository authRepo = AuthRepository();
+  final TransactionRepository transactionRepo = TransactionRepository();
+  final CategoryRepository categoryRepo = CategoryRepository();
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthBloc()),
         BlocProvider(create: (context) => SettingsBloc()),
-        BlocProvider(create: (context) => TransactionBloc()),
-        BlocProvider(create: (context) => CategoryBloc()),
+        BlocProvider(
+          create: (context) => TransactionBloc(
+            settingsBloc: context.read<SettingsBloc>(),
+            authRepository: authRepo,
+            transactionRepository: transactionRepo,
+          ),
+        ),
+        BlocProvider(
+          create: (context) => CategoryBloc(
+            authRepository: authRepo,
+            categoryRepository: categoryRepo,
+            settingsBloc: context.read<SettingsBloc>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => HomeBloc(
+            categoryBloc: context.read<CategoryBloc>(),
+            settingsBloc: context.read<SettingsBloc>(),
+            transactionBloc: context.read<TransactionBloc>(),
+            categoryRepository: categoryRepo,
+            transactionRepository: transactionRepo,
+          ),
+        ),
       ],
-      child: const MyApp(),
+      child: MyApp(authRepo: authRepo),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AuthRepository authRepo;
+  const MyApp({super.key, required this.authRepo});
 
   @override
   Widget build(BuildContext context) {
-    final AuthRepository authRepo = AuthRepository();
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {
         return MaterialApp(
@@ -94,8 +117,8 @@ class MyApp extends StatelessWidget {
                 );
               case LoginScreen.routeName:
                 return PageTransition(
-                  type: PageTransitionType.rightToLeftWithFade,
-                  reverseType: PageTransitionType.fade,
+                  type: PageTransitionType.fade,
+                  reverseType: PageTransitionType.leftToRightWithFade,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
                   reverseDuration: Duration(milliseconds: 500),
@@ -106,7 +129,7 @@ class MyApp extends StatelessWidget {
               case SignUpScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.rightToLeftWithFade,
-                  reverseType: PageTransitionType.fade,
+                  reverseType: PageTransitionType.leftToRightWithFade,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
                   reverseDuration: Duration(milliseconds: 500),
@@ -117,7 +140,7 @@ class MyApp extends StatelessWidget {
               case ForgotPasswordScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.rightToLeftWithFade,
-                  reverseType: PageTransitionType.fade,
+                  reverseType: PageTransitionType.leftToRightWithFade,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
                   reverseDuration: Duration(milliseconds: 500),
@@ -137,8 +160,10 @@ class MyApp extends StatelessWidget {
               case AddCategoryScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.bottomToTop,
+                  reverseType: PageTransitionType.topToBottom,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
                   child: const AddCategoryScreen(),
@@ -147,8 +172,10 @@ class MyApp extends StatelessWidget {
                 final args = settings.arguments as Map<String, dynamic>;
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
                   child: CategoryDetailScreen(category: args),
@@ -156,8 +183,10 @@ class MyApp extends StatelessWidget {
               case AddExpenseScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.bottomToTop,
+                  reverseType: PageTransitionType.topToBottom,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
                   child: const AddExpenseScreen(),
@@ -165,8 +194,10 @@ class MyApp extends StatelessWidget {
               case AddSavingGoalScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.bottomToTop,
+                  reverseType: PageTransitionType.topToBottom,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
                   child: const AddSavingGoalScreen(),
@@ -175,47 +206,42 @@ class MyApp extends StatelessWidget {
                 final args = settings.arguments as Map<String, dynamic>;
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
                   child: SavingGoalDetailScreen(goal: args),
                 );
-              case IncomeDetailScreen.routeName:
+              case TransactionTypeDetailScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
-                  ctx: context,
-                  duration: Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                  settings: settings,
-                  child: const IncomeDetailScreen(),
-                );
-              case OutcomeDetailScreen.routeName:
-                return PageTransition(
-                  type: PageTransitionType.rightToLeft,
-                  ctx: context,
-                  duration: Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                  settings: settings,
-                  child: const OutcomeDetailScreen(),
-                );
-              case ExpenseDetailScreen.routeName:
-                final args = settings.arguments as Map<String, dynamic>;
-                return PageTransition(
-                  type: PageTransitionType.rightToLeft,
-                  ctx: context,
-                  duration: Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                  settings: settings,
-                  child: ExpenseDetailScreen(expense: args),
-                );
-              case LocalAuthScreen.routeName:
-                return PageTransition(
-                  type: PageTransitionType.rightToLeft,
-                  reverseType: PageTransitionType.fade,
+                  reverseType: PageTransitionType.leftToRight,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
                   reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: TransactionTypeDetailScreen(),
+                );
+              case TransactionDetailScreen.routeName:
+                final args = settings.arguments as TransactionModel;
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: TransactionDetailScreen(transModel: args),
+                );
+              case LocalAuthScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.fade,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
                   child: const LocalAuthScreen(),
@@ -223,7 +249,7 @@ class MyApp extends StatelessWidget {
               case EditProfileScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
-                  reverseType: PageTransitionType.fade,
+                  reverseType: PageTransitionType.leftToRight,
                   ctx: context,
                   duration: Duration(milliseconds: 500),
                   reverseDuration: Duration(milliseconds: 500),

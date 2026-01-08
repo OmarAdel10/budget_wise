@@ -1,3 +1,7 @@
+import 'package:budget_wise/home/view_model/category_event.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/home/view_model/transaction_event.dart';
+import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
@@ -128,6 +132,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                         if (state is AuthStateSuccess) {
                           if (authRepository.currentUser != null) {
+                            context.read<TransactionBloc>().add(
+                              const TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+                            );
+                            context.read<CategoryBloc>().add(
+                              const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+                            );
                             Navigator.of(
                               context,
                             ).pushReplacementNamed(MainScreen.routeName);
