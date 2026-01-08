@@ -14,15 +14,38 @@ class CategoryEventCreateCategory extends CategoryEvent {
   List<Object?> get props => [category];
 }
 
-class CategoryEventLoadCategories extends CategoryEvent {
-  const CategoryEventLoadCategories();
+class CategoryEventMarkSynced extends CategoryEvent {
+  final String categoryId;
+
+  const CategoryEventMarkSynced({required this.categoryId});
+
+  @override
+  List<Object?> get props => [categoryId];
+}
+
+class CategoryEventSyncUnsynced extends CategoryEvent {
+  const CategoryEventSyncUnsynced();
 
   @override
   List<Object?> get props => [];
 }
 
+// class CategoryEventLoadCategories extends CategoryEvent {
+//   const CategoryEventLoadCategories();
+
+//   @override
+//   List<Object?> get props => [];
+// }
+
 class CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly extends CategoryEvent {
   const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class CategoryEventFetchAll extends CategoryEvent {
+  const CategoryEventFetchAll();
 
   @override
   List<Object?> get props => [];
