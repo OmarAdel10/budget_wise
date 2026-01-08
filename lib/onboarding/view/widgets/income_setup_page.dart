@@ -10,6 +10,7 @@ import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 class IncomeSetupPage extends StatefulWidget {
   final Function(double amount, String categoryId) onDataChanged;
@@ -43,6 +44,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAli
 
     _incomeCategories = List.generate(categoryNames.length, (index) {
       return CategoryModel(
+        id: const Uuid().v4(),
         categoryTitle: categoryNames[index],
         categoryIcon: categoryIcons[index],
         budgetAmount: 0.0,
