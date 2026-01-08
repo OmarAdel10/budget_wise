@@ -17,11 +17,9 @@ class CategoryRepository {
   Future<void> addCategory(CategoryModel categoryModel) async {
     final CollectionReference<CategoryModel> collection =
         getCategoriesCollection();
-    final DocumentReference<CategoryModel> doc = collection.doc();
-    categoryModel.id = doc.id;
-    if (_authRepository.currentUser != null) {
-      categoryModel.userId = _authRepository.currentUser!.uid;
-    }
+    final DocumentReference<CategoryModel> doc = collection.doc(
+      categoryModel.id,
+    );
     await doc.set(categoryModel);
   }
 
@@ -36,5 +34,31 @@ class CategoryRepository {
         });
       }
     }
+  }
+
+  Future<List<CategoryModel>> getAllCategories() async {
+    final CollectionReference<CategoryModel> collection =
+        getCategoriesCollection();
+    final user = _authRepository.currentUser;
+    if (user != null) {
+      final querySnapShot = await collection
+          .where('userId', isEqualTo: user.uid)
+          .where('type', isEqualTo: 'expense')
+          .get();
+      return querySnapShot.docs.map((doc) => doc.data()).toList();
+    }
+    return [];
+  }
+  Future<List<CategoryModel>> fetchAllCategories() async {
+    final CollectionReference<CategoryModel> collection =
+        getCategoriesCollection();
+    final user = _authRepository.currentUser;
+    if (user != null) {
+      final querySnapShot = await collection
+          .where('userId', isEqualTo: user.uid)
+          .get();
+      return querySnapShot.docs.map((doc) => doc.data()).toList();
+    }
+    return [];
   }
 }

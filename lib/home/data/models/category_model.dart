@@ -10,16 +10,20 @@ class CategoryModel {
   String userId;
   final String categoryTitle;
   final IconData categoryIcon;
-  final double budgetAmount;
+  final bool hasBudgetAmount;
+  final double? budgetAmount;
   final TransactionType type;
+  final bool isSynced;
 
   CategoryModel({
     this.id = '',
     this.userId = '',
     required this.categoryTitle,
     required this.categoryIcon,
-    required this.budgetAmount,
+    this.hasBudgetAmount = false,
+    this.budgetAmount,
     this.type = TransactionType.expense,
+    this.isSynced = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,8 +32,12 @@ class CategoryModel {
       'userId': userId,
       'categoryTitle': categoryTitle,
       'categoryIcon': categoryIcon.codePoint,
+      'categoryIconFontFamily': categoryIcon.fontFamily,
+      'categoryIconFontPackage': categoryIcon.fontPackage,
+      'hasBudgetAmount': hasBudgetAmount,
       'budgetAmount': budgetAmount,
       'type': type.name,
+      'isSynced': isSynced,
     };
   }
 
@@ -38,15 +46,44 @@ class CategoryModel {
       id: map['id'] as String,
       userId: map['userId'] as String,
       categoryTitle: map['categoryTitle'] as String,
-      categoryIcon: IconData(map['categoryIcon'] as int),
-      budgetAmount: map['budgetAmount'] as double,
+      categoryIcon: IconData(
+        map['categoryIcon'] as int,
+        fontFamily: map['categoryIconFontFamily'] as String?,
+        fontPackage: map['categoryIconFontPackage'] as String?,
+      ),
+      hasBudgetAmount: map['hasBudgetAmount'] as bool,
+      budgetAmount: (map['budgetAmount'] as num?)?.toDouble() ?? 0.0,
       type: map['type'] != null
           ? TransactionType.values.firstWhere((e) => e.name == map['type'])
           : TransactionType.expense,
+      isSynced: map['isSynced'] as bool,
+    );
+  }
+
+  CategoryModel copyWith({
+    String? id,
+    String? userId,
+    String? categoryTitle,
+    IconData? categoryIcon,
+    bool? hasBudgetAmount,
+    double? budgetAmount,
+    TransactionType? type,
+    bool? isSynced,
+  }) {
+    return CategoryModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      categoryTitle: categoryTitle ?? this.categoryTitle,
+      categoryIcon: categoryIcon ?? this.categoryIcon,
+      hasBudgetAmount: hasBudgetAmount ?? this.hasBudgetAmount,
+      budgetAmount: budgetAmount ?? this.budgetAmount,
+      type: type ?? this.type,
+      isSynced: isSynced ?? this.isSynced,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory CategoryModel.fromJson(String source) => CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CategoryModel.fromJson(String source) =>
+      CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

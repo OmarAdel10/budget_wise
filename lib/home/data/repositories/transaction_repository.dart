@@ -16,20 +16,95 @@ class TransactionRepository {
           );
 
   Future<void> addTransaction(TransactionModel transactionModel) async {
-    final CollectionReference<TransactionModel> collection = getTransactionsCollection();
-    final DocumentReference<TransactionModel> doc = collection.doc();
-    transactionModel.id = doc.id;
-    if(_authRepository.currentUser != null){transactionModel.userId = _authRepository.currentUser!.uid;}
+    final CollectionReference<TransactionModel> collection =
+        getTransactionsCollection();
+    final DocumentReference<TransactionModel> doc = collection.doc(
+      transactionModel.id,
+    );
     await doc.set(transactionModel);
   }
 
   Future<void> updateUserIdInAllTransactionsAfterFirstTimeLoginOnly() async {
-    final CollectionReference<TransactionModel> collection = getTransactionsCollection();
-    final QuerySnapshot<TransactionModel> querySnapshot = await collection.get();
-    if(_authRepository.currentUser != null){
+    final CollectionReference<TransactionModel> collection =
+        getTransactionsCollection();
+    final QuerySnapshot<TransactionModel> querySnapshot = await collection
+        .get();
+    if (_authRepository.currentUser != null) {
       for (final doc in querySnapshot.docs) {
-        await doc.reference.update({'userId': _authRepository.currentUser!.uid});
+        await doc.reference.update({
+          'userId': _authRepository.currentUser!.uid,
+        });
       }
     }
+  }
+
+  Future<List<TransactionModel>> getAllTransactionsByType(String type) async {
+    final CollectionReference<TransactionModel> collection =
+        getTransactionsCollection();
+    final user = _authRepository.currentUser;
+    if (user != null) {
+      final querySnapShot = await collection
+          .where('userId', isEqualTo: user.uid)
+          .where('type', isEqualTo: type)
+          .get();
+      return querySnapShot.docs.map((doc) => doc.data()).toList();
+    }
+    return [];
+  }
+
+  Future<List<TransactionModel>> getTransactionsByCategoryId(
+    String categoryId,
+  ) async {
+    final CollectionReference<TransactionModel> collection =
+        getTransactionsCollection();
+    final user = _authRepository.currentUser;
+    if (user != null) {
+      final querySnapShot = await collection
+          .where('userId', isEqualTo: user.uid)
+          .where('categoryId', isEqualTo: categoryId)
+          .orderBy('transactionDate', descending: true)
+          .get();
+      return querySnapShot.docs.map((doc) => doc.data()).toList();
+    }
+    return [];
+  }
+
+  Future<List<TransactionModel>> getTransactionsByMonth(DateTime date) async {
+    final CollectionReference<TransactionModel> collection =
+        getTransactionsCollection();
+    final user = _authRepository.currentUser;
+    final startOfMonth = DateTime(date.year, date.month, 1);
+    final endOfMonth = DateTime(date.year, date.month + 1, 0, 23, 59, 59);
+
+    if (user != null) {
+      final querySnapShot = await collection
+          .where('userId', isEqualTo: user.uid)
+          .where(
+            'transactionDate',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(startOfMonth),
+          )
+          .where(
+            'transactionDate',
+            isLessThanOrEqualTo: Timestamp.fromDate(endOfMonth),
+          )
+          .orderBy('transactionDate', descending: true)
+          .get();
+      return querySnapShot.docs.map((doc) => doc.data()).toList();
+    }
+    return [];
+  }
+  Future<List<TransactionModel>> fetchAllTransactions() async {
+    final CollectionReference<TransactionModel> collection =
+        getTransactionsCollection();
+    final user = _authRepository.currentUser;
+
+    if (user != null) {
+      final querySnapShot = await collection
+          .where('userId', isEqualTo: user.uid)
+          .orderBy('transactionDate', descending: true)
+          .get();
+      return querySnapShot.docs.map((doc) => doc.data()).toList();
+    }
+    return [];
   }
 }
