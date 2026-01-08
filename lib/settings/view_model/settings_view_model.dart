@@ -39,6 +39,15 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
         ),
       );
     });
+    on<SettingsEventSyncToCloud>((event, emit) {
+      emit(
+        SettingsStateSuccess(
+          state.model.copyWith(
+            isSyncToCloudEnabled: !state.model.isSyncToCloudEnabled,
+          ),
+        ),
+      );
+    });
   }
 
   @override

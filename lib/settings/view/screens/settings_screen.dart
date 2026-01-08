@@ -75,13 +75,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     CircleAvatar(
                       radius: 30,
                       backgroundColor: AppColors.primaryAccent,
-                      backgroundImage:
-                          user?.photoURL != null
+                      backgroundImage: user?.photoURL != null
                           ? NetworkImage(user!.photoURL!)
                           : null,
                       child: user?.photoURL == null
                           ? Text(
-                              (user?.displayName ?? "U").substring(0, 1).toUpperCase(),
+                              (user?.displayName ?? "U")
+                                  .substring(0, 1)
+                                  .toUpperCase(),
                               style: AppTextStyles.heading2.copyWith(
                                 color: AppColors.textInverse,
                               ),
@@ -204,6 +205,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               onChanged: (value) {
                                 context.read<SettingsBloc>().add(
                                   const SettingsEventLocalAuth(),
+                                );
+                              },
+                              activeThumbColor: AppColors.primaryAccent,
+                              activeTrackColor: AppColors.primaryAccent
+                                  .withValues(alpha: 0.3),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    const Divider(color: AppColors.borderColor),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              PhosphorIcons.cloudArrowUp(PhosphorIconsStyle.regular),
+                              color: AppColors.textPrimary,
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Text(l10n.syncToCloud),
+                          ],
+                        ),
+                        BlocBuilder<SettingsBloc, SettingsState>(
+                          builder: (context, state) {
+                            return Switch(
+                              value: state.model.isSyncToCloudEnabled,
+                              onChanged: (value) {
+                                context.read<SettingsBloc>().add(
+                                  SettingsEventSyncToCloud(),
                                 );
                               },
                               activeThumbColor: AppColors.primaryAccent,

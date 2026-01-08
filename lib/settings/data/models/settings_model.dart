@@ -8,20 +8,23 @@ class SettingsModel extends Equatable {
   final String language;
   final bool isOnboardingCompleted;
   final bool isDataSyncedAfterFirstLogin;
+  final bool isSyncToCloudEnabled;
 
   const SettingsModel({
     this.localAuthEnabled = false,
     this.language = 'en',
     this.isOnboardingCompleted = false,
     this.isDataSyncedAfterFirstLogin = false,
+    this.isSyncToCloudEnabled = false,
   });
 
-  SettingsModel copyWith({bool? localAuthEnabled, String? language, bool? isOnboardingCompleted, bool? isDataSyncedAfterFirstLogin}) {
+  SettingsModel copyWith({bool? localAuthEnabled, String? language, bool? isOnboardingCompleted, bool? isDataSyncedAfterFirstLogin, bool? isSyncToCloudEnabled}) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
       language: language ?? this.language,
       isOnboardingCompleted: isOnboardingCompleted ?? this.isOnboardingCompleted,
       isDataSyncedAfterFirstLogin: isDataSyncedAfterFirstLogin ?? this.isDataSyncedAfterFirstLogin,
+      isSyncToCloudEnabled: isSyncToCloudEnabled ?? this.isSyncToCloudEnabled,
     );
   }
 
@@ -31,6 +34,7 @@ class SettingsModel extends Equatable {
       'language': language,
       'isOnboardingCompleted': isOnboardingCompleted,
       'isDataSyncedAfterFirstLogin' : isDataSyncedAfterFirstLogin,
+      'isSyncToCloudEnabled' : isSyncToCloudEnabled,
     };
   }
 
@@ -40,6 +44,7 @@ class SettingsModel extends Equatable {
       language: map['language'] as String,
       isOnboardingCompleted: map['isOnboardingCompleted'] as bool,
       isDataSyncedAfterFirstLogin: map['isDataSyncedAfterFirstLogin'] as bool,
+      isSyncToCloudEnabled: map['isSyncToCloudEnabled'] as bool,
     );
   }
 
@@ -49,5 +54,5 @@ class SettingsModel extends Equatable {
       SettingsModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  List<Object?> get props => [localAuthEnabled, language, isOnboardingCompleted, isDataSyncedAfterFirstLogin];
+  List<Object?> get props => [localAuthEnabled, language, isOnboardingCompleted, isDataSyncedAfterFirstLogin, isSyncToCloudEnabled];
 }

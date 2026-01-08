@@ -20,3 +20,7 @@ class SettingsEventSyncDataAfterFirstLogin extends SettingsEvent{
   final bool isDataSyncedAfterFirstLogin;
   const SettingsEventSyncDataAfterFirstLogin(this.isDataSyncedAfterFirstLogin);
 }
+
+class SettingsEventSyncToCloud extends SettingsEvent{
+  const SettingsEventSyncToCloud();
+}
