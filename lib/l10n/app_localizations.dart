@@ -140,11 +140,11 @@ abstract class AppLocalizations {
   /// **'Income'**
   String get income;
 
-  /// No description provided for @outcome.
+  /// No description provided for @expenses.
   ///
   /// In en, this message translates to:
-  /// **'Outcome'**
-  String get outcome;
+  /// **'Expenses'**
+  String get expenses;
 
   /// No description provided for @categories.
   ///
@@ -374,11 +374,11 @@ abstract class AppLocalizations {
   /// **'Date'**
   String get date;
 
-  /// No description provided for @notes.
+  /// No description provided for @notesOP.
   ///
   /// In en, this message translates to:
   /// **'Notes (optional)'**
-  String get notes;
+  String get notesOP;
 
   /// No description provided for @category.
   ///
@@ -643,6 +643,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Password'**
   String get newPassword;
+
+  /// No description provided for @syncToCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync To Cloud'**
+  String get syncToCloud;
+
+  /// No description provided for @recentTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Transactions'**
+  String get recentTransactions;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See All'**
+  String get seeAll;
+
+  /// No description provided for @expenseDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Details'**
+  String get expenseDetails;
+
+  /// No description provided for @incomeDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Income Details'**
+  String get incomeDetails;
+
+  /// No description provided for @amountSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Spent'**
+  String get amountSpent;
+
+  /// No description provided for @amountReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Received'**
+  String get amountReceived;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get title;
+
+  /// No description provided for @transactionHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction History'**
+  String get transactionHistory;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
 }
 
 class _AppLocalizationsDelegate

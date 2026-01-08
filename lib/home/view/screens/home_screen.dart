@@ -1,5 +1,12 @@
+import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
+import 'package:budget_wise/home/view/widgets/transaction_list_item.dart';
+import 'package:budget_wise/home/view_model/home_event.dart';
+import 'package:budget_wise/home/view_model/home_state.dart';
+import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -10,130 +17,301 @@ import 'add_category_screen.dart';
 import 'category_detail_screen.dart';
 import 'add_expense_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  DateTime selectedMonth = DateTime.now();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(HomeEventLoadAllData(selectedMonth));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _monthChange(int month) {
+    setState(() {
+      selectedMonth = DateTime(selectedMonth.year, selectedMonth.month + month);
+    });
+    context.read<HomeBloc>().add(HomeEventLoadAllData(selectedMonth));
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    // Dummy data for categories
-    final List<Map<String, dynamic>> categories = [
-      {
-        'name': l10n.catSmoking,
-        'amount': 100.0,
-        'budget': 200.0,
-        'icon': PhosphorIcons.fire(PhosphorIconsStyle.fill),
-        'color': const Color(0xFFFF4081), // Pink
-      },
-      {
-        'name': l10n.catEating,
-        'amount': 300.0,
-        'budget': 500.0,
-        'icon': PhosphorIcons.forkKnife(PhosphorIconsStyle.fill),
-        'color': const Color(0xFF009688), // Teal
-      },
-      {
-        'name': l10n.catTransport,
-        'amount': 200.0,
-        'budget': 300.0,
-        'icon': PhosphorIcons.car(PhosphorIconsStyle.fill),
-        'color': const Color(0xFF2196F3), // Blue
-      },
-      {
-        'name': l10n.catEntertainment,
-        'amount': 150.0,
-        'budget': 250.0,
-        'icon': PhosphorIcons.filmStrip(PhosphorIconsStyle.fill),
-        'color': const Color(0xFF9C27B0), // Purple
-      },
-      {
-        'name': l10n.catUtils,
-        'amount': 50.0,
-        'budget': 100.0,
-        'icon': PhosphorIcons.coffee(PhosphorIconsStyle.fill), // Using coffee for now or lightbulb
-        'color': const Color(0xFFFFEB3B), // Yellow
-      },
-    ];
-
-    return Scaffold(
-      backgroundColor: AppColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "BudgetWise",
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        final recentTransactions = state.model.transactions.take(5).toList();
+        return Scaffold(
+          backgroundColor: AppColors.primaryBackground,
+          appBar: AppBar(
+            backgroundColor: AppColors.primaryBackground,
+            elevation: 0,
+            centerTitle: true,
+            title: const Text(
+              "BudgetWise",
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            automaticallyImplyLeading: false, // Hide back button
           ),
-        ),
-        automaticallyImplyLeading: false, // Hide back button
-      ),
-      body: Stack(
-        children: [
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                        const SizedBox(height: AppSpacing.md),
-                        // Month Selector
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.chevron_left, color: AppColors.textSecondary),
-                            ),
-                            Text(
-                              "December 2025",
-                              style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        // Summary Cards
-                        Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed('/income-detail');
-                                },
-                                child: SummaryCard(
-                                  title: l10n.income,
-                                  amount: "\$5,000",
-                                  amountColor: AppColors.primaryAccent,
+          body: Column(
+            children: [
+              //! Month Picker
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => _monthChange(-1),
+                    icon: const Icon(
+                      Icons.chevron_left,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  Text(
+                    DateFormat("MMM yyyy").format(selectedMonth),
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => _monthChange(1),
+                    icon: const Icon(
+                      Icons.chevron_right,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppSpacing.md),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                      ),
+                      sliver: SliverAppBar(
+                        pinned: true,
+                        // floating: true,
+                        expandedHeight:
+                            MediaQuery.sizeOf(context).height * 0.17,
+                        backgroundColor: AppColors.primaryBackground,
+                        flexibleSpace: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final double percentage =
+                                (constraints.biggest.height - kToolbarHeight) /
+                                ((MediaQuery.sizeOf(context).height * 0.17) -
+                                    kToolbarHeight);
+                            // percentage goes from 1.0 (expanded) to 0.0 (collapsed)
+                            // We want opacity to be 1.0 when collapsed (percentage -> 0)
+                            // and 0.0 when expanded (percentage -> 1)
+                            final double opacity = (1.0 - percentage).clamp(
+                              0.0,
+                              1.0,
+                            );
+                            return FlexibleSpaceBar(
+                              centerTitle: true,
+                              titlePadding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.lg,
+                                vertical: 16,
+                              ),
+                              expandedTitleScale: 1.0,
+                              background: Column(
+                                children: [
+                                  //* Summary Cards
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                              TransactionTypeDetailScreen.routeName,
+                                              arguments: {
+                                                'type': 'income',
+                                              },
+                                            );
+                                          },
+                                          child: SummaryCard(
+                                            title: l10n.income,
+                                            amount:
+                                                "\$${state.model.totalIncome.toStringAsFixed(0)}",
+                                            amountColor:
+                                                AppColors.primaryAccent,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: AppSpacing.md),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                              TransactionTypeDetailScreen.routeName,
+                                              arguments: {
+                                                'type': 'outcome',
+                                              },
+                                            );
+                                          },
+                                          child: SummaryCard(
+                                            title: l10n.expenses,
+                                            amount:
+                                                "\$${state.model.totalExpenses.toStringAsFixed(0)}",
+                                            amountColor: AppColors.danger,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              title: AnimatedOpacity(
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                                opacity: opacity,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _scrollController.animateTo(
+                                      0,
+                                      duration: const Duration(
+                                        milliseconds: 500,
+                                      ),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${l10n.income}: ',
+                                            style: AppTextStyles.bodyMedium
+                                                .copyWith(
+                                                  color: AppColors.textPrimary,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                          ),
+                                          Text(
+                                            '\$${state.model.totalIncome.toStringAsFixed(0)}',
+                                            style: AppTextStyles.bodyLarge
+                                                .copyWith(
+                                                  color:
+                                                      AppColors.primaryAccent,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        '|',
+                                        style: AppTextStyles.bodyLarge.copyWith(
+                                          color: AppColors.textSecondary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${l10n.expenses}: ',
+                                            style: AppTextStyles.bodyMedium
+                                                .copyWith(
+                                                  color: AppColors.textPrimary,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                          ),
+                                          Text(
+                                            '\$${state.model.totalExpenses.toStringAsFixed(0)}',
+                                            style: AppTextStyles.bodyLarge
+                                                .copyWith(
+                                                  color: AppColors.danger,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed('/outcome-detail');
-                                },
-                                child: SummaryCard(
-                                  title: l10n.outcome,
-                                  amount: "\$1,200",
-                                  amountColor: Colors.white,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    if (state.model.transactions.isNotEmpty) ...[
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.lg,
+                        ),
+                        sliver: SliverToBoxAdapter(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                l10n.recentTransactions,
+                                style: AppTextStyles.heading3,
+                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  l10n.seeAll,
+                                  style: AppTextStyles.link,
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Categories Header
-                        Row(
+                      ),
+                      const SliverToBoxAdapter(
+                        child: SizedBox(height: AppSpacing.sm),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.lg,
+                        ),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            final isLast =
+                                index == recentTransactions.length - 1;
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: isLast ? 0 : AppSpacing.sm,
+                              ),
+                              child: TransactionListItem(
+                                model: recentTransactions[index],
+                              ),
+                            );
+                          }, childCount: recentTransactions.length),
+                        ),
+                      ),
+                    ],
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                      ),
+                      sliver: SliverToBoxAdapter(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
@@ -141,98 +319,85 @@ class HomeScreen extends StatelessWidget {
                               style: AppTextStyles.heading3,
                             ),
                             IconButton(
+                              tooltip: 'Add Category',
                               onPressed: () {
-                                Navigator.of(context).pushNamed(AddCategoryScreen.routeName);
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(AddCategoryScreen.routeName);
                               },
-                              icon: const Icon(
-                                Icons.add,
+                              icon: Icon(
+                                PhosphorIcons.plus(PhosphorIconsStyle.bold),
                                 color: AppColors.textSecondary,
+                                size: 20,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.sm),
-                      ]),
-                    )),
-
-                // Category List
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final category = categories[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                          child: CategoryListItem(
-                            name: category['name'],
-                            amount: category['amount'].toInt().toString(),
-                            totalBudget: category['budget'].toInt().toString(),
-                            icon: category['icon'],
-                            backgroundColor:
-                                (category['color'] as Color).withOpacity(0.2),
-                            iconColor: category['color'],
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                CategoryDetailScreen.routeName,
-                                arguments: category,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      childCount: categories.length,
+                      ),
                     ),
-                  ),
-                ),
-                // Bottom padding for FAB
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 80),
-                ),
-              ],
-            ),
-          ),
-          
-          // New Expense Button (Custom Floating Action Button)
-          Positioned(
-            bottom: AppSpacing.lg,
-            right: AppSpacing.lg,
-            child: Material(
-              color: const Color(0xFFE57373), // Red accent for expense
-              borderRadius: BorderRadius.circular(16),
-              elevation: 4,
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pushNamed(AddExpenseScreen.routeName);
-                },
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  height: 56,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        PhosphorIcons.plus(PhosphorIconsStyle.bold),
-                        color: Colors.white,
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppSpacing.sm),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        l10n.newExpense,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final categoryData = state.model.categories[index];
+                          final hasBudget =
+                              categoryData.category.hasBudgetAmount;
+                          final budget =
+                              categoryData.category.budgetAmount ?? 0;
+                          final spending = categoryData.totalSpending;
+
+                          double? progress;
+                          if (hasBudget && budget > 0) {
+                            progress = spending / budget;
+                          }
+
+                          final isLast =
+                              index == state.model.categories.length - 1;
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: isLast ? 0 : AppSpacing.sm,
+                            ),
+                            child: CategoryListItem(
+                              name: categoryData.category.categoryTitle,
+                              amount: spending.toStringAsFixed(0),
+                              totalBudget: budget.toStringAsFixed(0),
+                              hasBudgetAmount: hasBudget,
+                              icon: categoryData.category.categoryIcon,
+                              progress: progress,
+                              onTap: () => Navigator.of(context).pushNamed(
+                                CategoryDetailScreen.routeName,
+                                arguments: categoryData,
+                              ),
+                            ),
+                          );
+                        }, childCount: state.model.categories.length),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: AppSpacing.md),
+                    ),
+                  ],
                 ),
               ),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            tooltip: 'Add Expense',
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AddExpenseScreen.routeName),
+            backgroundColor: const Color(0xFFE57373),
+            child: Icon(
+              PhosphorIcons.plus(PhosphorIconsStyle.bold),
+              color: Colors.white,
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

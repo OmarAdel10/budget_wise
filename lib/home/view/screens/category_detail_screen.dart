@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
-import 'expense_detail_screen.dart';
+import 'transaction_detail_screen.dart';
 
 class CategoryDetailScreen extends StatelessWidget {
   static const String routeName = '/category-detail';
@@ -131,7 +131,7 @@ class CategoryDetailScreen extends StatelessWidget {
                       ),
                       onTap: () {
                         Navigator.of(context).pushNamed(
-                          ExpenseDetailScreen.routeName,
+                          TransactionDetailScreen.routeName,
                           arguments: {
                             ...expense,
                             'categoryName': category['name'],

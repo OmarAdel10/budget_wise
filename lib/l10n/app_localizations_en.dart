@@ -30,7 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get income => 'Income';
 
   @override
-  String get outcome => 'Outcome';
+  String get expenses => 'Expenses';
 
   @override
   String get categories => 'Categories';
@@ -147,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get date => 'Date';
 
   @override
-  String get notes => 'Notes (optional)';
+  String get notesOP => 'Notes (optional)';
 
   @override
   String get category => 'Category';
@@ -284,4 +284,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newPassword => 'New Password';
+
+  @override
+  String get syncToCloud => 'Sync To Cloud';
+
+  @override
+  String get recentTransactions => 'Recent Transactions';
+
+  @override
+  String get seeAll => 'See All';
+
+  @override
+  String get expenseDetails => 'Expense Details';
+
+  @override
+  String get incomeDetails => 'Income Details';
+
+  @override
+  String get amountSpent => 'Amount Spent';
+
+  @override
+  String get amountReceived => 'Amount Received';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get transactionHistory => 'Transaction History';
+
+  @override
+  String get total => 'Total';
 }

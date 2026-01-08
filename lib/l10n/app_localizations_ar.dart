@@ -30,7 +30,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get income => 'الدخل';
 
   @override
-  String get outcome => 'المصروفات';
+  String get expenses => 'المصروفات';
 
   @override
   String get categories => 'التصنيفات';
@@ -147,7 +147,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get date => 'التاريخ';
 
   @override
-  String get notes => 'ملاحظات (اختياري)';
+  String get notesOP => 'ملاحظات (اختياري)';
 
   @override
   String get category => 'التصنيف';
@@ -283,4 +283,43 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get syncToCloud => 'مزامنة البيانات';
+
+  @override
+  String get recentTransactions => 'أحدث العمليات';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get expenseDetails => 'تفاصيل المصروف';
+
+  @override
+  String get incomeDetails => 'تفاصيل الدخل';
+
+  @override
+  String get amountSpent => 'المبلغ المستهلك';
+
+  @override
+  String get amountReceived => 'المبلغ المستلم';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get title => 'العنوان';
+
+  @override
+  String get transactionHistory => 'تاريخ العمليات';
+
+  @override
+  String get total => 'إجمالي';
 }
