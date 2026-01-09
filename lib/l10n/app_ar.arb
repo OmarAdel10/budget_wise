@@ -103,5 +103,14 @@
   "edit": "تعديل",
   "title": "العنوان",
   "transactionHistory": "تاريخ العمليات",
-  "total": "إجمالي"
+  "total": "إجمالي",
+  "totalSpent": "إجمالي المصروفات",
+  "recentExpenses": "أحدث المصروفات",
+  "spent": "مصروف",
+  "totalBudget": "إجمالي الميزانية",
+  "hasNoBudget": "لا يوجد ميزانية",
+  "undo": "تراجع",
+  "transactionDeleted": "تم حذف العملية",
+  "categoryDeleted": "تم حذف التصنيف",
+  "yourExpensesExceedYourIncome": "مصروفاتك تتجاوز دخلك"
 }

@@ -322,4 +322,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get total => 'إجمالي';
+
+  @override
+  String get totalSpent => 'إجمالي المصروفات';
+
+  @override
+  String get recentExpenses => 'أحدث المصروفات';
+
+  @override
+  String get spent => 'مصروف';
+
+  @override
+  String get totalBudget => 'إجمالي الميزانية';
+
+  @override
+  String get hasNoBudget => 'لا يوجد ميزانية';
+
+  @override
+  String get undo => 'تراجع';
+
+  @override
+  String get transactionDeleted => 'تم حذف العملية';
+
+  @override
+  String get categoryDeleted => 'تم حذف التصنيف';
+
+  @override
+  String get yourExpensesExceedYourIncome => 'مصروفاتك تتجاوز دخلك';
 }

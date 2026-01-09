@@ -721,6 +721,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total'**
   String get total;
+
+  /// No description provided for @totalSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Spent'**
+  String get totalSpent;
+
+  /// No description provided for @recentExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Expenses'**
+  String get recentExpenses;
+
+  /// No description provided for @spent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get spent;
+
+  /// No description provided for @totalBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Budget'**
+  String get totalBudget;
+
+  /// No description provided for @hasNoBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Has No Budget'**
+  String get hasNoBudget;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @transactionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Deleted'**
+  String get transactionDeleted;
+
+  /// No description provided for @categoryDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Deleted'**
+  String get categoryDeleted;
+
+  /// No description provided for @yourExpensesExceedYourIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Your expenses exceed your income'**
+  String get yourExpensesExceedYourIncome;
 }
 
 class _AppLocalizationsDelegate

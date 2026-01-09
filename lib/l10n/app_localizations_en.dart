@@ -323,4 +323,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get total => 'Total';
+
+  @override
+  String get totalSpent => 'Total Spent';
+
+  @override
+  String get recentExpenses => 'Recent Expenses';
+
+  @override
+  String get spent => 'Spent';
+
+  @override
+  String get totalBudget => 'Total Budget';
+
+  @override
+  String get hasNoBudget => 'Has No Budget';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get transactionDeleted => 'Transaction Deleted';
+
+  @override
+  String get categoryDeleted => 'Category Deleted';
+
+  @override
+  String get yourExpensesExceedYourIncome => 'Your expenses exceed your income';
 }

@@ -106,5 +106,14 @@
   "edit": "Edit",
   "title": "Title",
   "transactionHistory": "Transaction History",
-  "total": "Total"
+  "total": "Total",
+  "totalSpent": "Total Spent",
+  "recentExpenses": "Recent Expenses",
+  "spent": "Spent",
+  "totalBudget": "Total Budget",
+  "hasNoBudget": "Has No Budget",
+  "undo": "Undo",
+  "transactionDeleted": "Transaction Deleted",
+  "categoryDeleted": "Category Deleted",
+  "yourExpensesExceedYourIncome": "Your expenses exceed your income"
 }
