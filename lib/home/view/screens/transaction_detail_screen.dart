@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/home/view/screens/add_transaction_screen.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart' show HomeBloc;
+import 'package:budget_wise/home/view_model/transaction_event.dart';
+import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -140,7 +144,13 @@ class TransactionDetailScreen extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        // TODO: Implement Edit
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AddTransactionScreen(
+                              transactionToEdit: transModel,
+                            ),
+                          ),
+                        );
                       },
                       icon: Icon(PhosphorIcons.pencilSimple(), size: 20),
                       label: Text(l10n.edit),
@@ -148,8 +158,8 @@ class TransactionDetailScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                           vertical: AppSpacing.md,
                         ),
-                        side: const BorderSide(color: AppColors.primaryAccent),
-                        foregroundColor: AppColors.primaryAccent,
+                        side: const BorderSide(color: AppColors.textSecondary),
+                        foregroundColor: AppColors.textSecondary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                             AppSpacing.radiusMd,
@@ -162,7 +172,42 @@ class TransactionDetailScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // TODO: Implement Delete
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+                        final transactionBloc = context.read<TransactionBloc>();
+                        final navigator = Navigator.of(context);
+
+                        // Capture l10n strings before popping
+                        final deletedMsg = l10n.transactionDeleted;
+                        final undoLabel = l10n.undo;
+
+                        // Pop immediately
+                        if (navigator.canPop()) {
+                          navigator.pop();
+                        }
+
+                        Timer? timer;
+                        timer = Timer(const Duration(seconds: 3), () {
+                          transactionBloc.add(
+                            TransactionEventDeleteTransaction(
+                              transactionId: transModel.id,
+                            ),
+                          );
+                        });
+
+                        scaffoldMessenger.clearSnackBars();
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            dismissDirection: DismissDirection.horizontal,
+                            content: Text(deletedMsg),
+                            action: SnackBarAction(
+                              label: undoLabel,
+                              onPressed: () {
+                                timer?.cancel();
+                              },
+                            ),
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
                       },
                       icon: Icon(PhosphorIcons.trash(), size: 20),
                       label: Text(l10n.delete),
@@ -202,7 +247,7 @@ class TransactionDetailScreen extends StatelessWidget {
             color: AppColors.primaryBackground,
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
-          child: Icon(icon, color: AppColors.primaryAccent, size: 24),
+          child: Icon(icon, color: AppColors.textSecondary, size: 24),
         ),
         const SizedBox(width: AppSpacing.md),
         Column(
