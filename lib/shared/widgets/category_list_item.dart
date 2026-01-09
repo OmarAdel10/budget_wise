@@ -1,4 +1,6 @@
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../constants/colors.dart';
 import '../constants/text_styles.dart';
@@ -10,6 +12,8 @@ class CategoryListItem extends StatelessWidget {
   final String totalBudget;
   final IconData icon;
   final VoidCallback onTap;
+  final VoidCallback? onDelete;
+  final int? index;
   final bool hasBudgetAmount;
 
   const CategoryListItem({
@@ -19,6 +23,8 @@ class CategoryListItem extends StatelessWidget {
     required this.totalBudget,
     required this.icon,
     required this.onTap,
+    this.onDelete,
+    this.index,
     this.progress,
     this.hasBudgetAmount = false,
   });
@@ -27,48 +33,89 @@ class CategoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final l10n = AppLocalizations.of(context)!;
+    final progressPercent =
+        progress != null ? (progress! * 100).clamp(0, 999).toInt() : 0;
+
+    Widget content = GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
+        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
+          horizontal: AppSpacing.sm,
           vertical: AppSpacing.sm,
         ),
-        color: Colors.transparent, // Ensures tap target
+        color: Colors.transparent,
         child: Row(
           children: [
+            if (index != null)
+              ReorderableDragStartListener(
+                index: index!,
+                child: const Padding(
+                  padding: EdgeInsets.only(right: AppSpacing.sm),
+                  child: Icon(
+                    Icons.drag_handle,
+                    color: AppColors.textSecondary,
+                    size: 20,
+                  ),
+                ),
+              ),
             Container(
-              width: 48,
-              height: 48,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 color: AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: Icon(icon, color: AppColors.textPrimary, size: 24),
+              child: Icon(icon, color: AppColors.textPrimary, size: 22),
             ),
-            const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w500,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   hasBudgetAmount
                       ? Text(
-                          '\$$amount Spent / \$$totalBudget Total Budget',
-                          style: AppTextStyles.bodyMedium,
+                          '\$$amount / \$$totalBudget',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         )
-                      : Text('Has No Budget', style: AppTextStyles.bodyMedium),
-                  if (progress != null) ...[
-                    const SizedBox(height: AppSpacing.sm),
+                      : Text(
+                          l10n.hasNoBudget,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                ],
+              ),
+            ),
+            // Progress bar with percentage beside chevron
+            if (progress != null) ...[
+              SizedBox(
+                width: 80,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '$progressPercent%',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: progress! > 1.0
+                            ? Colors.red
+                            : AppColors.primaryAccent,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                      borderRadius: BorderRadius.circular(3),
                       child: LinearProgressIndicator(
                         value: progress!.clamp(0.0, 1.0),
                         backgroundColor: AppColors.cardBackground,
@@ -77,21 +124,44 @@ class CategoryListItem extends StatelessWidget {
                               ? Colors.red
                               : AppColors.primaryAccent,
                         ),
-                        minHeight: 6,
+                        minHeight: 4,
                       ),
                     ),
                   ],
-                ],
+                ),
               ),
-            ),
-            const Icon(
+              const SizedBox(width: AppSpacing.xs),
+            ],
+            Icon(
               Icons.chevron_right,
-              color: AppColors.textPrimary,
-              size: 24,
+              color: AppColors.textSecondary,
+              size: 20,
             ),
           ],
         ),
       ),
     );
+
+    if (onDelete != null) {
+      return Slidable(
+        key: ValueKey(name),
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
+          extentRatio: 0.2,
+          children: [
+            SlidableAction(
+              onPressed: (context) => onDelete?.call(),
+              backgroundColor: AppColors.danger,
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            ),
+          ],
+        ),
+        child: content,
+      );
+    }
+
+    return content;
   }
 }
