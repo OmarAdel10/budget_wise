@@ -44,21 +44,39 @@ class CategoryRepository {
       final querySnapShot = await collection
           .where('userId', isEqualTo: user.uid)
           .where('type', isEqualTo: 'expense')
+          .orderBy('index')
           .get();
       return querySnapShot.docs.map((doc) => doc.data()).toList();
     }
     return [];
   }
+
   Future<List<CategoryModel>> fetchAllCategories() async {
     final CollectionReference<CategoryModel> collection =
         getCategoriesCollection();
     final user = _authRepository.currentUser;
     if (user != null) {
-      final querySnapShot = await collection
-          .where('userId', isEqualTo: user.uid)
-          .get();
+      final querySnapShot =
+          await collection.where('userId', isEqualTo: user.uid).orderBy('index').get();
       return querySnapShot.docs.map((doc) => doc.data()).toList();
     }
     return [];
+  }
+
+  Future<void> updateCategoryIndexes(List<CategoryModel> categories) async {
+    final batch = FirebaseFirestore.instance.batch();
+    final collection = getCategoriesCollection();
+
+    for (var category in categories) {
+      batch.update(collection.doc(category.id), {'index': category.index});
+    }
+
+    await batch.commit();
+  }
+
+  Future<void> deleteCategory(String categoryId) async {
+    final CollectionReference<CategoryModel> collection =
+        getCategoriesCollection();
+    await collection.doc(categoryId).delete();
   }
 }

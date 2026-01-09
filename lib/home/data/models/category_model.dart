@@ -14,6 +14,7 @@ class CategoryModel {
   final double? budgetAmount;
   final TransactionType type;
   final bool isSynced;
+  final int index;
 
   CategoryModel({
     this.id = '',
@@ -24,6 +25,7 @@ class CategoryModel {
     this.budgetAmount,
     this.type = TransactionType.expense,
     this.isSynced = false,
+    this.index = 0,
   });
 
   Map<String, dynamic> toMap() {
@@ -38,6 +40,7 @@ class CategoryModel {
       'budgetAmount': budgetAmount,
       'type': type.name,
       'isSynced': isSynced,
+      'index': index,
     };
   }
 
@@ -57,6 +60,7 @@ class CategoryModel {
           ? TransactionType.values.firstWhere((e) => e.name == map['type'])
           : TransactionType.expense,
       isSynced: map['isSynced'] as bool,
+      index: map['index'] as int? ?? 0,
     );
   }
 
@@ -69,6 +73,7 @@ class CategoryModel {
     double? budgetAmount,
     TransactionType? type,
     bool? isSynced,
+    int? index,
   }) {
     return CategoryModel(
       id: id ?? this.id,
@@ -79,6 +84,7 @@ class CategoryModel {
       budgetAmount: budgetAmount ?? this.budgetAmount,
       type: type ?? this.type,
       isSynced: isSynced ?? this.isSynced,
+      index: index ?? this.index,
     );
   }
 

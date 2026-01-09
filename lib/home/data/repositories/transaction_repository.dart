@@ -107,4 +107,10 @@ class TransactionRepository {
     }
     return [];
   }
+
+  Future<void> deleteTransaction(String transactionId) async {
+    final CollectionReference<TransactionModel> collection =
+        getTransactionsCollection();
+    await collection.doc(transactionId).delete();
+  }
 }

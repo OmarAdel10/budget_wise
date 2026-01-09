@@ -1,4 +1,10 @@
+import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/home/view_model/category_state.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/home/view_model/transaction_event.dart';
+import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
@@ -10,7 +16,9 @@ import '../../../shared/widgets/custom_button.dart';
 class AddExpenseScreen extends StatefulWidget {
   static const String routeName = '/add-expense';
 
-  const AddExpenseScreen({super.key});
+  final TransactionModel? transactionToEdit;
+
+  const AddExpenseScreen({super.key, this.transactionToEdit});
 
   @override
   State<AddExpenseScreen> createState() => _AddExpenseScreenState();
@@ -19,19 +27,24 @@ class AddExpenseScreen extends StatefulWidget {
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  String? _selectedCategory;
+  late DateTime _selectedDate;
+  String? _selectedCategoryId;
 
-  // Dummy categories
-  final List<String> _categories = [
-    'Food',
-    'Transport',
-    'Shopping',
-    'Entertainment',
-    'Bills',
-    'Health',
-    'Other'
-  ];
+  bool get _isEditMode => widget.transactionToEdit != null;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isEditMode) {
+      final trans = widget.transactionToEdit!;
+      _amountController.text = trans.transactionAmount.toStringAsFixed(2);
+      _notesController.text = trans.transactionNotes ?? '';
+      _selectedDate = trans.transactionDate;
+      _selectedCategoryId = trans.categoryId;
+    } else {
+      _selectedDate = DateTime.now();
+    }
+  }
 
   @override
   void dispose() {
@@ -68,126 +81,170 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   }
 
   void _onSave() {
-    // TODO: Implement save expense logic
+    final amountText = _amountController.text.trim();
+    final amount = double.tryParse(amountText);
+
+    if (amount == null || amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid amount')),
+      );
+      return;
+    }
+
+    if (_selectedCategoryId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a category')),
+      );
+      return;
+    }
+
+    if (_isEditMode) {
+      final updatedTransaction = widget.transactionToEdit!.copyWith(
+        transactionAmount: amount,
+        categoryId: _selectedCategoryId,
+        transactionDate: _selectedDate,
+        transactionNotes: _notesController.text.trim(),
+        isSynced: false,
+      );
+      context.read<TransactionBloc>().add(TransactionEventUpdateTransaction(updatedTransaction));
+    } else {
+      final newTransaction = TransactionModel(
+        type: TransactionType.expense,
+        transactionTitle: 'Expense',
+        transactionAmount: amount,
+        categoryId: _selectedCategoryId!,
+        transactionDate: _selectedDate,
+        transactionNotes: _notesController.text.trim(),
+      );
+      context.read<TransactionBloc>().add(TransactionEventCreateTransaction(newTransaction));
+    }
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text(
-          "Add Expense",
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
+    return BlocBuilder<CategoryBloc, CategoryState>(
+      builder: (context, categoryState) {
+        final categories = categoryState.categoriesList
+            .where((c) => c.type == TransactionType.expense)
+            .toList();
+
+        return Scaffold(
+          backgroundColor: AppColors.primaryBackground,
+          appBar: AppBar(
+            backgroundColor: AppColors.primaryBackground,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: AppColors.textPrimary),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(
+              _isEditMode ? "Edit Transaction" : "Add Expense",
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: true,
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Amount Input
-              Text("Amount", style: AppTextStyles.bodyMedium),
-              const SizedBox(height: AppSpacing.sm),
-              CustomTextField(
-                hintText: "Enter amount",
-                controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                prefixIcon: Icon(PhosphorIcons.currencyDollar(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Category Dropdown
-              Text("Category", style: AppTextStyles.bodyMedium),
-              const SizedBox(height: AppSpacing.sm),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: AppColors.inputBackground,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  border: Border.all(color: AppColors.borderColor),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _selectedCategory,
-                    hint: Text("Select Category", style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
-                    isExpanded: true,
-                    dropdownColor: AppColors.cardBackground,
-                    icon: const Icon(Icons.arrow_drop_down, color: AppColors.textSecondary),
-                    items: _categories.map((String category) {
-                      return DropdownMenuItem<String>(
-                        value: category,
-                        child: Text(category, style: AppTextStyles.bodyLarge),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedCategory = newValue;
-                      });
-                    },
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Amount Input
+                  Text("Amount", style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: AppSpacing.sm),
+                  CustomTextField(
+                    hintText: "Enter amount",
+                    controller: _amountController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    prefixIcon: Icon(PhosphorIcons.currencyDollar(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
                   ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.lg),
 
-              // Date Picker
-              Text("Date", style: AppTextStyles.bodyMedium),
-              const SizedBox(height: AppSpacing.sm),
-              InkWell(
-                onTap: _pickDate,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: AppColors.inputBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    border: Border.all(color: AppColors.borderColor),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(PhosphorIcons.calendarBlank(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        DateFormat.yMMMd().format(_selectedDate),
-                        style: AppTextStyles.bodyLarge,
+                  // Category Dropdown
+                  Text("Category", style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: AppSpacing.sm),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.inputBackground,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      border: Border.all(color: AppColors.borderColor),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedCategoryId,
+                        hint: Text("Select Category", style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+                        isExpanded: true,
+                        dropdownColor: AppColors.cardBackground,
+                        icon: const Icon(Icons.arrow_drop_down, color: AppColors.textSecondary),
+                        items: categories.map((cat) {
+                          return DropdownMenuItem<String>(
+                            value: cat.id,
+                            child: Text(cat.categoryTitle, style: AppTextStyles.bodyLarge),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedCategoryId = newValue;
+                          });
+                        },
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.lg),
 
-              // Notes Input
-              Text("Notes", style: AppTextStyles.bodyMedium),
-              const SizedBox(height: AppSpacing.sm),
-              CustomTextField(
-                hintText: "Add notes (optional)",
-                controller: _notesController,
-                maxLines: 3,
-              ),
-              const SizedBox(height: AppSpacing.xl),
+                  // Date Picker
+                  Text("Date", style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: AppSpacing.sm),
+                  InkWell(
+                    onTap: _pickDate,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.inputBackground,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        border: Border.all(color: AppColors.borderColor),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(PhosphorIcons.calendarBlank(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            DateFormat.yMMMd().format(_selectedDate),
+                            style: AppTextStyles.bodyLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
 
-              // Save Button
-              CustomButton(
-                text: "Add Expense",
-                onPressed: _onSave,
+                  // Notes Input
+                  Text("Notes", style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: AppSpacing.sm),
+                  CustomTextField(
+                    hintText: "Add notes (optional)",
+                    controller: _notesController,
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Save Button
+                  CustomButton(
+                    text: _isEditMode ? "Save Changes" : "Add Expense",
+                    onPressed: _onSave,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

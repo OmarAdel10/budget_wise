@@ -14,6 +14,15 @@ class TransactionEventCreateTransaction extends TransactionEvent {
   List<Object?> get props => [transaction];
 }
 
+class TransactionEventUpdateTransaction extends TransactionEvent {
+  final TransactionModel transaction;
+
+  const TransactionEventUpdateTransaction(this.transaction);
+
+  @override
+  List<Object?> get props => [transaction];
+}
+
 class TransactionEventMarkSynced extends TransactionEvent {
   final String transactionId;
   const TransactionEventMarkSynced({required this.transactionId});
@@ -42,4 +51,13 @@ class TransactionEventFetchAll extends TransactionEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+class TransactionEventDeleteTransaction extends TransactionEvent {
+  final String transactionId;
+
+  const TransactionEventDeleteTransaction({required this.transactionId});
+
+  @override
+  List<Object?> get props => [transactionId];
 }

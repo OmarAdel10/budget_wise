@@ -1,151 +1,258 @@
+import 'dart:async';
+import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/home/view/screens/add_category_screen.dart';
+import 'package:budget_wise/home/view/widgets/transaction_list_item.dart';
+import 'package:budget_wise/home/view_model/home_state.dart';
+import 'package:budget_wise/home/view_model/home_view_model.dart';
+import 'package:budget_wise/home/view_model/category_event.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
-import 'transaction_detail_screen.dart';
 
 class CategoryDetailScreen extends StatelessWidget {
   static const String routeName = '/category-detail';
 
-  final Map<String, dynamic> category;
-
-  const CategoryDetailScreen({super.key, required this.category});
+  const CategoryDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Dummy expenses data
-    final List<Map<String, dynamic>> expenses = [
-      {'title': 'Grocery Run', 'date': 'Today', 'amount': 45.0},
-      {'title': 'Dinner Out', 'date': 'Yesterday', 'amount': 60.0},
-      {'title': 'Coffee', 'date': '2 days ago', 'amount': 15.0},
-    ];
+    final l10n = AppLocalizations.of(context)!;
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        final args =
+            ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+        final categoryId = args['categoryId'];
 
-    return Scaffold(
-      backgroundColor: AppColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          category['name'],
-          style: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header Card
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Total Spent",
-                          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
-                        ),
-                        Icon(category['icon'], color: category['color'], size: 28),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "\$${category['amount'].toInt()}",
-                          style: AppTextStyles.heading2,
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          "/ \$${category['budget'].toInt()}",
-                          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    // Progress Bar
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: category['amount'] / category['budget'],
-                        backgroundColor: AppColors.primaryBackground,
-                        valueColor: AlwaysStoppedAnimation<Color>(category['color']),
-                        minHeight: 8,
-                      ),
-                    ),
-                  ],
-                ),
+        final categoryIndex = state.model.categories.indexWhere(
+          (cat) => cat.category.id == categoryId,
+        );
+
+        if (categoryIndex == -1) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          });
+          return const Scaffold(body: SizedBox.shrink());
+        }
+
+        final category = state.model.categories[categoryIndex];
+        final expensesList = state.model.transactions
+            .where(
+              (expense) =>
+                  expense.categoryId == categoryId &&
+                  expense.type == TransactionType.expense,
+            )
+            .toList();
+
+        final budget = category.category.budgetAmount ?? 0;
+        final spending = category.totalSpending;
+
+        double? progress;
+        if (category.category.hasBudgetAmount && budget > 0) {
+          progress = spending / budget;
+        }
+        return Scaffold(
+          backgroundColor: AppColors.primaryBackground,
+          appBar: AppBar(
+            backgroundColor: AppColors.primaryBackground,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: AppColors.textPrimary),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(
+              category.category.categoryTitle,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: AppSpacing.xl),
-
-              // Expenses List Header
-              Text("Recent Expenses", style: AppTextStyles.heading3),
-              const SizedBox(height: AppSpacing.md),
-
-              // Expenses List
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: expenses.length,
-                itemBuilder: (context, index) {
-                  final expense = expenses[index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            ),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit, color: AppColors.textPrimary),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AddCategoryScreen(categoryToEdit: category.category),
                     ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-                      title: Text(expense['title'], style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
-                      subtitle: Text(expense['date'], style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "-\$${expense['amount'].toInt()}",
-                            style: AppTextStyles.bodyLarge.copyWith(
-                              color: AppColors.danger,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          const Icon(Icons.chevron_right, color: AppColors.textSecondary),
-                        ],
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  PhosphorIcons.trash(PhosphorIconsStyle.regular),
+                  color: AppColors.danger,
+                ),
+                onPressed: () {
+                  final scaffoldMessenger = ScaffoldMessenger.of(context);
+                  final categoryBloc = context.read<CategoryBloc>();
+
+                  // Capture localization strings before popping
+                  final categoryDeletedText = l10n.categoryDeleted;
+                  final undoText = l10n.undo;
+
+                  // Pop immediately
+                  Navigator.of(context).pop();
+
+                  Timer? timer;
+
+                  timer = Timer(const Duration(seconds: 3), () {
+                    categoryBloc.add(
+                      CategoryEventDeleteCategory(categoryId: categoryId),
+                    );
+                  });
+
+                  scaffoldMessenger.clearSnackBars();
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(
+                      dismissDirection: DismissDirection.horizontal,
+                      content: Text(categoryDeletedText),
+                      action: SnackBarAction(
+                        label: undoText,
+                        onPressed: () {
+                          timer?.cancel();
+                        },
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                          TransactionDetailScreen.routeName,
-                          arguments: {
-                            ...expense,
-                            'categoryName': category['name'],
-                          },
-                        );
-                      },
+                      duration: const Duration(seconds: 3),
                     ),
                   );
                 },
               ),
             ],
           ),
-        ),
-      ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header Card
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  l10n.totalSpent,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.sm),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "\$${category.totalSpending.toInt()}",
+                                      style: AppTextStyles.heading2,
+                                    ),
+                                    const SizedBox(width: AppSpacing.xs),
+                                    Text(
+                                      "/ \$${category.category.budgetAmount?.toInt() ?? 0}",
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Icon(category.category.categoryIcon, size: 40),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        // Progress Bar with percentage
+                        if (progress != null) ...[
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: LinearProgressIndicator(
+                                    value: progress.clamp(0.0, 1.0),
+                                    backgroundColor:
+                                        AppColors.primaryBackground,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      progress > 1.0
+                                          ? Colors.red
+                                          : AppColors.primaryAccent,
+                                    ),
+                                    minHeight: 8,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.sm),
+                              Text(
+                                '${(progress * 100).clamp(0, 999).toInt()}%',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: progress > 1.0
+                                      ? Colors.red
+                                      : AppColors.primaryAccent,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Expenses List Header
+                  Text(l10n.recentExpenses, style: AppTextStyles.heading3),
+                  const SizedBox(height: AppSpacing.md),
+
+                  // Expenses List
+                  expensesList.isNotEmpty
+                      ? Expanded(
+                          child: ListView.separated(
+                            itemCount: expensesList.length,
+                            itemBuilder: (context, index) {
+                              final expense = expensesList[index];
+                              return TransactionListItem(model: expense);
+                            },
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(height: AppSpacing.sm),
+                          ),
+                        )
+                      : Center(
+                          child: Column(
+                            children: [
+                              const SizedBox(height: AppSpacing.xxl),
+                              Lottie.asset(
+                                'assets/lottie/no_data.json',
+                                width: 250,
+                                height: 250,
+                                fit: BoxFit.contain,
+                              ),
+                            ],
+                          ),
+                        ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

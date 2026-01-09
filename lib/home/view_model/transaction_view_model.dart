@@ -59,6 +59,35 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       }
     });
 
+    on<TransactionEventUpdateTransaction>((event, emit) async {
+      try {
+        final updatedTransaction = event.transaction;
+        final updatedList = state.transactionsList.map((transaction) {
+          return transaction.id == updatedTransaction.id ? updatedTransaction : transaction;
+        }).toList();
+
+        emit(TransactionStateSuccess(transactionsList: updatedList));
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+          transactionRepository
+              .addTransaction(updatedTransaction)
+              .then((_) {
+            add(TransactionEventMarkSynced(transactionId: updatedTransaction.id));
+          }).catchError((e) {
+            emit(TransactionStateError(
+              message: 'Cloud sync failed: ${e.toString()}',
+              transactionsList: state.transactionsList,
+            ));
+          });
+        }
+      } catch (e) {
+        emit(TransactionStateError(
+          message: 'Local update failed: ${e.toString()}',
+          transactionsList: state.transactionsList,
+        ));
+      }
+    });
+
     on<TransactionEventMarkSynced>((event, emit) async {
       try {
         final updatedList = state.transactionsList.map((transaction) {
@@ -138,6 +167,36 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         emit(
           TransactionStateError(
             message: 'Failed to fetch transactions: ${e.toString()}',
+            transactionsList: state.transactionsList,
+          ),
+        );
+      }
+    });
+
+    on<TransactionEventDeleteTransaction>((event, emit) async {
+      try {
+        final updatedList = state.transactionsList
+            .where((transaction) => transaction.id != event.transactionId)
+            .toList();
+
+        emit(TransactionStateSuccess(transactionsList: updatedList));
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+          transactionRepository
+              .deleteTransaction(event.transactionId)
+              .catchError((e) {
+            emit(
+              TransactionStateError(
+                message: 'Cloud sync failed: ${e.toString()}',
+                transactionsList: state.transactionsList,
+              ),
+            );
+          });
+        }
+      } catch (e) {
+        emit(
+          TransactionStateError(
+            message: 'Delete failed: ${e.toString()}',
             transactionsList: state.transactionsList,
           ),
         );
