@@ -26,13 +26,16 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
     on<CategoryEventCreateCategory>((event, emit) {
       try {
         final userId = authRepository.currentUser?.uid ?? '';
-        final newCategory = event.category;
+        var newCategory = event.category;
         if (newCategory.id.isEmpty) {
-          newCategory.id = const Uuid().v4();
+          newCategory = newCategory.copyWith(id: const Uuid().v4());
         }
-        newCategory.userId = userId;
+        newCategory = newCategory.copyWith(
+          userId: userId,
+          index: state.categoriesList.length,
+        );
 
-        final updatedList = [newCategory, ...state.categoriesList];
+        final updatedList = [...state.categoriesList, newCategory];
         emit(CategoryStateSuccess(categoriesList: updatedList));
 
         if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
@@ -57,6 +60,72 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
             categoriesList: state.categoriesList,
           ),
         );
+      }
+    });
+
+    on<CategoryEventReorder>((event, emit) {
+      try {
+        final List<CategoryModel> updatedList = List.from(state.categoriesList);
+        int newIndex = event.newIndex;
+        if (event.oldIndex < event.newIndex) {
+          newIndex -= 1;
+        }
+        final item = updatedList.removeAt(event.oldIndex);
+        updatedList.insert(newIndex, item);
+
+        // Update indexes
+        final reindexedList = updatedList.asMap().entries.map((entry) {
+          return entry.value.copyWith(index: entry.key);
+        }).toList();
+
+        emit(CategoryStateSuccess(categoriesList: reindexedList));
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+          categoryRepository.updateCategoryIndexes(reindexedList).catchError((e) {
+            emit(
+              CategoryStateError(
+                message: 'Index update failed: ${e.toString()}',
+                categoriesList: state.categoriesList,
+              ),
+            );
+          });
+        }
+      } catch (e) {
+        emit(
+          CategoryStateError(
+            message: 'Reorder failed: ${e.toString()}',
+            categoriesList: state.categoriesList,
+          ),
+        );
+      }
+    });
+
+    on<CategoryEventUpdateCategory>((event, emit) {
+      try {
+        final updatedCategory = event.category;
+        final updatedList = state.categoriesList.map((category) {
+          return category.id == updatedCategory.id ? updatedCategory : category;
+        }).toList();
+
+        emit(CategoryStateSuccess(categoriesList: updatedList));
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+          categoryRepository
+              .addCategory(updatedCategory)
+              .then((_) {
+            add(CategoryEventMarkSynced(categoryId: updatedCategory.id));
+          }).catchError((e) {
+            emit(CategoryStateError(
+              message: 'Cloud sync failed: ${e.toString()}',
+              categoriesList: state.categoriesList,
+            ));
+          });
+        }
+      } catch (e) {
+        emit(CategoryStateError(
+          message: 'Local update failed: ${e.toString()}',
+          categoriesList: state.categoriesList,
+        ));
       }
     });
 
@@ -140,6 +209,34 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
         emit(
           CategoryStateError(
             message: 'Failed to fetch categories: ${e.toString()}',
+            categoriesList: state.categoriesList,
+          ),
+        );
+      }
+    });
+
+    on<CategoryEventDeleteCategory>((event, emit) async {
+      try {
+        final updatedList = state.categoriesList
+            .where((category) => category.id != event.categoryId)
+            .toList();
+
+        emit(CategoryStateSuccess(categoriesList: updatedList));
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+          categoryRepository.deleteCategory(event.categoryId).catchError((e) {
+            emit(
+              CategoryStateError(
+                message: 'Cloud sync failed: ${e.toString()}',
+                categoriesList: state.categoriesList,
+              ),
+            );
+          });
+        }
+      } catch (e) {
+        emit(
+          CategoryStateError(
+            message: 'Delete failed: ${e.toString()}',
             categoriesList: state.categoriesList,
           ),
         );

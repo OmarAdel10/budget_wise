@@ -14,6 +14,15 @@ class CategoryEventCreateCategory extends CategoryEvent {
   List<Object?> get props => [category];
 }
 
+class CategoryEventUpdateCategory extends CategoryEvent {
+  final CategoryModel category;
+
+  const CategoryEventUpdateCategory(this.category);
+
+  @override
+  List<Object?> get props => [category];
+}
+
 class CategoryEventMarkSynced extends CategoryEvent {
   final String categoryId;
 
@@ -49,4 +58,23 @@ class CategoryEventFetchAll extends CategoryEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+class CategoryEventDeleteCategory extends CategoryEvent {
+  final String categoryId;
+
+  const CategoryEventDeleteCategory({required this.categoryId});
+
+  @override
+  List<Object?> get props => [categoryId];
+}
+
+class CategoryEventReorder extends CategoryEvent {
+  final int oldIndex;
+  final int newIndex;
+
+  const CategoryEventReorder({required this.oldIndex, required this.newIndex});
+
+  @override
+  List<Object?> get props => [oldIndex, newIndex];
 }
