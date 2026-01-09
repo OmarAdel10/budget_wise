@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
 import 'package:budget_wise/home/view/widgets/transaction_list_item.dart';
 import 'package:budget_wise/home/view_model/home_event.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +19,10 @@ import '../../../shared/widgets/summary_card.dart';
 import '../../../shared/widgets/category_list_item.dart';
 import 'add_category_screen.dart';
 import 'category_detail_screen.dart';
-import 'add_expense_screen.dart';
+import 'add_transaction_screen.dart';
+import 'package:budget_wise/home/view_model/category_event.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'all_transactions_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,6 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final recentTransactions = state.model.transactions.take(5).toList();
+        final categoryData = state.model.categories
+            .where((cat) => cat.category.type == TransactionType.expense)
+            .toList();
         return Scaffold(
           backgroundColor: AppColors.primaryBackground,
           appBar: AppBar(
@@ -71,6 +81,40 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           body: Column(
             children: [
+              //! Warning bar
+              if (state.model.totalExpenses > state.model.totalIncome) ...[
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        PhosphorIcons.warning(PhosphorIconsStyle.regular),
+                        color: AppColors.danger,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        l10n.yourExpensesExceedYourIncome,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          fontSize:
+                              context
+                                      .read<SettingsBloc>()
+                                      .state
+                                      .model
+                                      .language ==
+                                  'en'
+                              ? 13
+                              : 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               //! Month Picker
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -104,156 +148,146 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SliverToBoxAdapter(
                       child: SizedBox(height: AppSpacing.md),
                     ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                      ),
-                      sliver: SliverAppBar(
-                        pinned: true,
-                        // floating: true,
-                        expandedHeight:
-                            MediaQuery.sizeOf(context).height * 0.17,
-                        backgroundColor: AppColors.primaryBackground,
-                        flexibleSpace: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final double percentage =
-                                (constraints.biggest.height - kToolbarHeight) /
-                                ((MediaQuery.sizeOf(context).height * 0.17) -
-                                    kToolbarHeight);
-                            // percentage goes from 1.0 (expanded) to 0.0 (collapsed)
-                            // We want opacity to be 1.0 when collapsed (percentage -> 0)
-                            // and 0.0 when expanded (percentage -> 1)
-                            final double opacity = (1.0 - percentage).clamp(
-                              0.0,
-                              1.0,
-                            );
-                            return FlexibleSpaceBar(
-                              centerTitle: true,
-                              titlePadding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.lg,
-                                vertical: 16,
-                              ),
-                              expandedTitleScale: 1.0,
-                              background: Column(
-                                children: [
-                                  //* Summary Cards
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                              TransactionTypeDetailScreen.routeName,
-                                              arguments: {
-                                                'type': 'income',
-                                              },
-                                            );
-                                          },
-                                          child: SummaryCard(
-                                            title: l10n.income,
-                                            amount:
-                                                "\$${state.model.totalIncome.toStringAsFixed(0)}",
-                                            amountColor:
-                                                AppColors.primaryAccent,
+                    SliverAppBar(
+                      pinned: true,
+                      expandedHeight: MediaQuery.sizeOf(context).height * 0.17,
+                      backgroundColor: AppColors.primaryBackground,
+                      flexibleSpace: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double percentage =
+                              (constraints.biggest.height - kToolbarHeight) /
+                              ((MediaQuery.sizeOf(context).height * 0.17) -
+                                  kToolbarHeight);
+                          // percentage goes from 1.0 (expanded) to 0.0 (collapsed)
+                          // We want opacity to be 1.0 when collapsed (percentage -> 0)
+                          // and 0.0 when expanded (percentage -> 1)
+                          final double opacity = (1.0 - percentage).clamp(
+                            0.0,
+                            1.0,
+                          );
+                          final double backgroundOpacity = percentage.clamp(
+                            0.0,
+                            1.0,
+                          );
+                          return FlexibleSpaceBar(
+                            centerTitle: true,
+                            titlePadding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.lg,
+                              vertical: 14,
+                            ),
+                            expandedTitleScale: 1.0,
+                            background: AnimatedOpacity(
+                              duration: const Duration(milliseconds: 150),
+                              opacity: backgroundOpacity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.lg,
+                                ),
+                                child: Column(
+                                  children: [
+                                    //* Summary Cards
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                TransactionTypeDetailScreen
+                                                    .routeName,
+                                                arguments: {'type': 'income'},
+                                              );
+                                            },
+                                            child: SummaryCard(
+                                              title: l10n.income,
+                                              amount:
+                                                  "\$${state.model.totalIncome.toStringAsFixed(0)}",
+                                              amountColor:
+                                                  AppColors.primaryAccent,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(width: AppSpacing.md),
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                              TransactionTypeDetailScreen.routeName,
-                                              arguments: {
-                                                'type': 'outcome',
-                                              },
-                                            );
-                                          },
-                                          child: SummaryCard(
-                                            title: l10n.expenses,
-                                            amount:
-                                                "\$${state.model.totalExpenses.toStringAsFixed(0)}",
-                                            amountColor: AppColors.danger,
+                                        const SizedBox(width: AppSpacing.md),
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                TransactionTypeDetailScreen
+                                                    .routeName,
+                                                arguments: {'type': 'outcome'},
+                                              );
+                                            },
+                                            child: SummaryCard(
+                                              title: l10n.expenses,
+                                              amount:
+                                                  "\$${state.model.totalExpenses.toStringAsFixed(0)}",
+                                              amountColor: AppColors.danger,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              title: AnimatedOpacity(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeInOut,
-                                opacity: opacity,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    _scrollController.animateTo(
-                                      0,
-                                      duration: const Duration(
-                                        milliseconds: 500,
-                                      ),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            '${l10n.income}: ',
-                                            style: AppTextStyles.bodyMedium
-                                                .copyWith(
-                                                  color: AppColors.textPrimary,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                          ),
-                                          Text(
-                                            '\$${state.model.totalIncome.toStringAsFixed(0)}',
-                                            style: AppTextStyles.bodyLarge
-                                                .copyWith(
-                                                  color:
-                                                      AppColors.primaryAccent,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        '|',
-                                        style: AppTextStyles.bodyLarge.copyWith(
-                                          color: AppColors.textSecondary,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            '${l10n.expenses}: ',
-                                            style: AppTextStyles.bodyMedium
-                                                .copyWith(
-                                                  color: AppColors.textPrimary,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                          ),
-                                          Text(
-                                            '\$${state.model.totalExpenses.toStringAsFixed(0)}',
-                                            style: AppTextStyles.bodyLarge
-                                                .copyWith(
-                                                  color: AppColors.danger,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                            title: AnimatedOpacity(
+                              duration: const Duration(milliseconds: 150),
+                              curve: Curves.easeInOut,
+                              opacity: opacity,
+                              child: GestureDetector(
+                                onTap: () {
+                                  _scrollController.animateTo(
+                                    0,
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${l10n.income}: ',
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        color: AppColors.textPrimary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Text(
+                                      '\$${state.model.totalIncome.toStringAsFixed(0)}',
+                                      style: AppTextStyles.bodyLarge.copyWith(
+                                        color: AppColors.primaryAccent,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppSpacing.md),
+                                    Text(
+                                      '|',
+                                      style: AppTextStyles.bodyLarge.copyWith(
+                                        color: AppColors.textSecondary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppSpacing.md),
+                                    Text(
+                                      '${l10n.expenses}: ',
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        color: AppColors.textPrimary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Text(
+                                      '\$${state.model.totalExpenses.toStringAsFixed(0)}',
+                                      style: AppTextStyles.bodyLarge.copyWith(
+                                        color: AppColors.danger,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                     if (state.model.transactions.isNotEmpty) ...[
@@ -270,7 +304,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style: AppTextStyles.heading3,
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(
+                                    context,
+                                  ).pushNamed(AllTransactionsScreen.routeName);
+                                },
                                 child: Text(
                                   l10n.seeAll,
                                   style: AppTextStyles.link,
@@ -340,46 +378,93 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
+                        horizontal: AppSpacing.md,
                       ),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final categoryData = state.model.categories[index];
+                      sliver: SliverReorderableList(
+                        itemBuilder: (context, index) {
+                          final categoryitem = categoryData[index];
                           final hasBudget =
-                              categoryData.category.hasBudgetAmount;
+                              categoryitem.category.hasBudgetAmount;
                           final budget =
-                              categoryData.category.budgetAmount ?? 0;
-                          final spending = categoryData.totalSpending;
+                              categoryitem.category.budgetAmount ?? 0;
+                          final spending = categoryitem.totalSpending;
 
                           double? progress;
                           if (hasBudget && budget > 0) {
                             progress = spending / budget;
                           }
 
-                          final isLast =
-                              index == state.model.categories.length - 1;
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: isLast ? 0 : AppSpacing.sm,
-                            ),
-                            child: CategoryListItem(
-                              name: categoryData.category.categoryTitle,
-                              amount: spending.toStringAsFixed(0),
-                              totalBudget: budget.toStringAsFixed(0),
-                              hasBudgetAmount: hasBudget,
-                              icon: categoryData.category.categoryIcon,
-                              progress: progress,
-                              onTap: () => Navigator.of(context).pushNamed(
-                                CategoryDetailScreen.routeName,
-                                arguments: categoryData,
-                              ),
+                          return CategoryListItem(
+                            key: ValueKey(categoryitem.category.id),
+                            name: categoryitem.category.categoryTitle,
+                            amount: spending.toStringAsFixed(0),
+                            totalBudget: budget.toStringAsFixed(0),
+                            hasBudgetAmount: hasBudget,
+                            icon: categoryitem.category.categoryIcon,
+                            progress: progress,
+                            index: index,
+                            onDelete: () {
+                              final scaffoldMessenger = ScaffoldMessenger.of(
+                                context,
+                              );
+                              final categoryBloc = context.read<CategoryBloc>();
+                              final navigator = Navigator.of(context);
+
+                              // Capture l10n strings before popping
+                              final deletedMsg = l10n.transactionDeleted;
+                              final undoLabel = l10n.undo;
+
+                              // Pop immediately
+                              if (navigator.canPop()) {
+                                navigator.pop();
+                              }
+
+                              Timer? timer;
+                              timer = Timer(const Duration(seconds: 3), () {
+                                categoryBloc.add(
+                                  CategoryEventDeleteCategory(
+                                    categoryId: categoryitem.category.id,
+                                  ),
+                                );
+                              });
+
+                              scaffoldMessenger.clearSnackBars();
+                              scaffoldMessenger.showSnackBar(
+                                SnackBar(
+                                  dismissDirection: DismissDirection.horizontal,
+                                  content: Text(deletedMsg),
+                                  action: SnackBarAction(
+                                    label: undoLabel,
+                                    onPressed: () {
+                                      timer?.cancel();
+                                    },
+                                  ),
+                                  duration: const Duration(seconds: 3),
+                                ),
+                              );
+                            },
+                            onTap: () => Navigator.of(context).pushNamed(
+                              CategoryDetailScreen.routeName,
+                              arguments: {
+                                'categoryId': categoryitem.category.id,
+                                'progress': progress,
+                              },
                             ),
                           );
-                        }, childCount: state.model.categories.length),
+                        },
+                        itemCount: categoryData.length,
+                        onReorder: (oldIndex, newIndex) {
+                          context.read<CategoryBloc>().add(
+                            CategoryEventReorder(
+                              oldIndex: oldIndex,
+                              newIndex: newIndex,
+                            ),
+                          );
+                        },
                       ),
                     ),
                     const SliverToBoxAdapter(
-                      child: SizedBox(height: AppSpacing.md),
+                      child: SizedBox(height: AppSpacing.xxl * 2),
                     ),
                   ],
                 ),
@@ -387,10 +472,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           floatingActionButton: FloatingActionButton(
-            tooltip: 'Add Expense',
+            tooltip: 'Add Transaction',
             onPressed: () =>
-                Navigator.of(context).pushNamed(AddExpenseScreen.routeName),
-            backgroundColor: const Color(0xFFE57373),
+                Navigator.of(context).pushNamed(AddTransactionScreen.routeName),
+            backgroundColor: AppColors.primaryAccent,
             child: Icon(
               PhosphorIcons.plus(PhosphorIconsStyle.bold),
               color: Colors.white,

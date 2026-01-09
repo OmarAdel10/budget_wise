@@ -24,11 +24,12 @@ import 'package:budget_wise/shared/app_theme.dart';
 import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
 import 'package:budget_wise/home/view/screens/add_category_screen.dart';
 import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
-import 'package:budget_wise/home/view/screens/add_expense_screen.dart';
+import 'package:budget_wise/home/view/screens/add_transaction_screen.dart';
 import 'package:budget_wise/savings/view/screens/add_saving_goal_screen.dart';
 import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
 import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
 import 'package:budget_wise/home/view/screens/transaction_detail_screen.dart';
+import 'package:budget_wise/home/view/screens/all_transactions_screen.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -169,7 +170,6 @@ class MyApp extends StatelessWidget {
                   child: const AddCategoryScreen(),
                 );
               case CategoryDetailScreen.routeName:
-                final args = settings.arguments as Map<String, dynamic>;
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
                   reverseType: PageTransitionType.leftToRight,
@@ -178,9 +178,9 @@ class MyApp extends StatelessWidget {
                   reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
-                  child: CategoryDetailScreen(category: args),
+                  child: CategoryDetailScreen(),
                 );
-              case AddExpenseScreen.routeName:
+              case AddTransactionScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.bottomToTop,
                   reverseType: PageTransitionType.topToBottom,
@@ -189,7 +189,7 @@ class MyApp extends StatelessWidget {
                   reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
-                  child: const AddExpenseScreen(),
+                  child: const AddTransactionScreen(),
                 );
               case AddSavingGoalScreen.routeName:
                 return PageTransition(
@@ -236,6 +236,17 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: TransactionDetailScreen(transModel: args),
+                );
+              case AllTransactionsScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: const Duration(milliseconds: 500),
+                  reverseDuration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: const AllTransactionsScreen(),
                 );
               case LocalAuthScreen.routeName:
                 return PageTransition(
