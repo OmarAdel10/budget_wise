@@ -10,6 +10,8 @@ import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/statistics/view_model/statistics_event.dart';
+import 'package:budget_wise/statistics/view_model/statistics_view_model.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
@@ -73,6 +75,12 @@ void main() async {
             categoryRepository: categoryRepo,
             transactionRepository: transactionRepo,
           ),
+        ),
+        BlocProvider(
+          create: (context) => StatisticsBloc(
+            transactionBloc: context.read<TransactionBloc>(),
+            categoryBloc: context.read<CategoryBloc>(),
+          )..add(StatisticsEventLoadRequested(DateTime.now())),
         ),
       ],
       child: MyApp(authRepo: authRepo),
