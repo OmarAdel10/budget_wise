@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Financial Accounts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#007a60",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#191d24",
+                        "silver-metal": "#E0E6EE",
+                        "card-dark": "#272B31",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .silver-gradient {
+            background: linear-gradient(135deg, rgba(224, 230, 238, 0.1) 0%, rgba(224, 230, 238, 0.02) 100%);
+        }
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex justify-center">
+<!-- Mobile Container -->
+<div class="w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen flex flex-col relative shadow-2xl overflow-hidden border-x border-slate-200 dark:border-slate-800">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 ios-blur px-6 pt-12 pb-4">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs font-semibold uppercase tracking-widest text-primary mb-1">Portfolio</span>
+<h2 class="text-2xl font-800 leading-tight tracking-tight">Accounts</h2>
+</div>
+<button class="size-10 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[24px]">add</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-6 pb-32 overflow-y-auto hide-scrollbar">
+<!-- Stats / Total Portfolio -->
+<div class="mt-4 mb-8">
+<div class="relative overflow-hidden rounded-xl bg-slate-100 dark:bg-card-dark p-6 border border-slate-200 dark:border-silver-metal/10 silver-gradient">
+<div class="flex justify-between items-start mb-4">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Net Worth</p>
+<div class="bg-primary/10 text-primary px-2 py-1 rounded text-[10px] font-bold tracking-wider uppercase italic">
+                            +2.4% Today
+                        </div>
+</div>
+<p class="text-4xl font-800 tracking-tighter text-slate-900 dark:text-white">$42,950.80</p>
+<div class="mt-6 flex gap-2">
+<div class="h-1 flex-1 bg-primary rounded-full"></div>
+<div class="h-1 flex-1 bg-primary/30 rounded-full"></div>
+<div class="h-1 flex-1 bg-primary/10 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Incremental Savings Feature -->
+<div class="mb-8">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400">Daily Ritual</h3>
+<span class="text-primary text-xs font-bold">Details</span>
+</div>
+<div class="rounded-xl border-2 border-dashed border-primary/30 p-4 flex items-center gap-4 bg-primary/5">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">trending_up</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-slate-900 dark:text-white">Daily Incremental</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Next auto-save: $15.00</p>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-primary">85%</p>
+</div>
+</div>
+</div>
+<!-- Accounts Section -->
+<div class="space-y-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 px-1">Your Assets</h3>
+<!-- Account Item: Cash -->
+<div class="group flex items-center gap-4 bg-white dark:bg-card-dark p-4 rounded-xl border border-slate-200 dark:border-silver-metal/5 silver-gradient shadow-sm hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0 size-12 border border-emerald-500/20">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex flex-col flex-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-none mb-1">Physical Cash</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">On-hand currency</p>
+</div>
+<div class="text-right">
+<p class="text-slate-900 dark:text-white text-lg font-bold tracking-tight">$840.00</p>
+</div>
+</div>
+<!-- Account Item: Visa -->
+<div class="group flex items-center gap-4 bg-white dark:bg-card-dark p-4 rounded-xl border border-slate-200 dark:border-silver-metal/5 silver-gradient shadow-sm hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-blue-500/10 text-blue-500 shrink-0 size-12 border border-blue-500/20">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<div class="flex flex-col flex-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-none mb-1">Visa Infinite</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">•••• 4242</p>
+</div>
+<div class="text-right">
+<p class="text-slate-900 dark:text-white text-lg font-bold tracking-tight">$12,450.50</p>
+</div>
+</div>
+<!-- Account Item: Mastercard -->
+<div class="group flex items-center gap-4 bg-white dark:bg-card-dark p-4 rounded-xl border border-slate-200 dark:border-silver-metal/5 silver-gradient shadow-sm hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-orange-500/10 text-orange-500 shrink-0 size-12 border border-orange-500/20">
+<span class="material-symbols-outlined">style</span>
+</div>
+<div class="flex flex-col flex-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-none mb-1">Mastercard Platinum</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">•••• 8812</p>
+</div>
+<div class="text-right">
+<p class="text-slate-900 dark:text-white text-lg font-bold tracking-tight">$4,100.00</p>
+</div>
+</div>
+<!-- Account Item: Bank -->
+<div class="group flex items-center gap-4 bg-white dark:bg-card-dark p-4 rounded-xl border border-slate-200 dark:border-silver-metal/5 silver-gradient shadow-sm hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 size-12 border border-primary/20">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div class="flex flex-col flex-1">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-none mb-1">Main Checking</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Chase Bank • 9011</p>
+</div>
+<div class="text-right">
+<p class="text-slate-900 dark:text-white text-lg font-bold tracking-tight">$25,560.30</p>
+</div>
+</div>
+</div>
+<!-- Empty State / Add New Hint -->
+<div class="mt-8 flex flex-col items-center justify-center py-8 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 text-4xl mb-2">add_circle</span>
+<p class="text-slate-400 text-sm font-medium">Link more accounts</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="absolute bottom-0 left-0 right-0 h-24 bg-background-light/90 dark:bg-background-dark/90 ios-blur border-t border-slate-200 dark:border-slate-800 px-8 flex justify-between items-start pt-4 z-40">
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">grid_view</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-primary transition-colors">Home</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer text-primary">
+<span class="material-symbols-outlined fill-1">account_balance_wallet</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Accounts</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">analytics</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-primary transition-colors">Stats</span>
+</div>
+<div class="flex flex-col items-center gap-1 group cursor-pointer">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">settings</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-primary transition-colors">Settings</span>
+</div>
+</nav>
+<!-- iOS Bottom Indicator -->
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-900 dark:bg-white/20 rounded-full z-50"></div>
+</div>
+</body></html>
