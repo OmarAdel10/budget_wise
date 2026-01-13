@@ -127,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Text(
-                    DateFormat("MMM yyyy").format(selectedMonth),
+                    DateFormat.yMMMd(Localizations.localeOf(context).languageCode).format(selectedMonth),
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
