@@ -57,7 +57,7 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
               ),
             ),
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+              icon: const Icon(Icons.close, color: AppColors.textPrimary),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
