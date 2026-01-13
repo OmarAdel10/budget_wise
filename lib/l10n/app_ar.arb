@@ -112,5 +112,14 @@
   "undo": "تراجع",
   "transactionDeleted": "تم حذف العملية",
   "categoryDeleted": "تم حذف التصنيف",
-  "yourExpensesExceedYourIncome": "مصروفاتك تتجاوز دخلك"
+  "yourExpensesExceedYourIncome": "مصروفاتك تتجاوز دخلك",
+  "earningsByCategory": "الأرباح حسب التصنيف",
+  "noEarningsThisMonth": "لا توجد أرباح لهذا الشهر",
+  "noExpensesThisMonth": "لا توجد مصروفات لهذا الشهر",
+  "dailyTrend": "الاتجاه اليومي",
+  "categoryChart": "مخطط التصنيفات",
+  "sortHighest": "الأعلى قيمة",
+  "sortLowest": "الأقل قيمة",
+  "sortAZ": "أ-ي",
+  "noDataThisMonth": "لا توجد بيانات لهذا الشهر"
 }

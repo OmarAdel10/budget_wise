@@ -115,5 +115,14 @@
   "undo": "Undo",
   "transactionDeleted": "Transaction Deleted",
   "categoryDeleted": "Category Deleted",
-  "yourExpensesExceedYourIncome": "Your expenses exceed your income"
+  "yourExpensesExceedYourIncome": "Your expenses exceed your income",
+  "earningsByCategory": "Earnings by Category",
+  "noEarningsThisMonth": "No earnings for this month",
+  "noExpensesThisMonth": "No expenses for this month",
+  "dailyTrend": "Daily Trend",
+  "categoryChart": "Category Chart",
+  "sortHighest": "Highest Amount",
+  "sortLowest": "Lowest Amount",
+  "sortAZ": "A-Z",
+  "noDataThisMonth": "There is no data this month"
 }

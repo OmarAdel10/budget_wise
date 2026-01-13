@@ -775,6 +775,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your expenses exceed your income'**
   String get yourExpensesExceedYourIncome;
+
+  /// No description provided for @earningsByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Earnings by Category'**
+  String get earningsByCategory;
+
+  /// No description provided for @noEarningsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No earnings for this month'**
+  String get noEarningsThisMonth;
+
+  /// No description provided for @noExpensesThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses for this month'**
+  String get noExpensesThisMonth;
+
+  /// No description provided for @dailyTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Trend'**
+  String get dailyTrend;
+
+  /// No description provided for @categoryChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Chart'**
+  String get categoryChart;
+
+  /// No description provided for @sortHighest.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest Amount'**
+  String get sortHighest;
+
+  /// No description provided for @sortLowest.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowest Amount'**
+  String get sortLowest;
+
+  /// No description provided for @sortAZ.
+  ///
+  /// In en, this message translates to:
+  /// **'A-Z'**
+  String get sortAZ;
+
+  /// No description provided for @noDataThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no data this month'**
+  String get noDataThisMonth;
 }
 
 class _AppLocalizationsDelegate

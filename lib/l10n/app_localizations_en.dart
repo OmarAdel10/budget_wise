@@ -350,4 +350,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yourExpensesExceedYourIncome => 'Your expenses exceed your income';
+
+  @override
+  String get earningsByCategory => 'Earnings by Category';
+
+  @override
+  String get noEarningsThisMonth => 'No earnings for this month';
+
+  @override
+  String get noExpensesThisMonth => 'No expenses for this month';
+
+  @override
+  String get dailyTrend => 'Daily Trend';
+
+  @override
+  String get categoryChart => 'Category Chart';
+
+  @override
+  String get sortHighest => 'Highest Amount';
+
+  @override
+  String get sortLowest => 'Lowest Amount';
+
+  @override
+  String get sortAZ => 'A-Z';
+
+  @override
+  String get noDataThisMonth => 'There is no data this month';
 }

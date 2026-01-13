@@ -349,4 +349,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get yourExpensesExceedYourIncome => 'مصروفاتك تتجاوز دخلك';
+
+  @override
+  String get earningsByCategory => 'الأرباح حسب التصنيف';
+
+  @override
+  String get noEarningsThisMonth => 'لا توجد أرباح لهذا الشهر';
+
+  @override
+  String get noExpensesThisMonth => 'لا توجد مصروفات لهذا الشهر';
+
+  @override
+  String get dailyTrend => 'الاتجاه اليومي';
+
+  @override
+  String get categoryChart => 'مخطط التصنيفات';
+
+  @override
+  String get sortHighest => 'الأعلى قيمة';
+
+  @override
+  String get sortLowest => 'الأقل قيمة';
+
+  @override
+  String get sortAZ => 'أ-ي';
+
+  @override
+  String get noDataThisMonth => 'لا توجد بيانات لهذا الشهر';
 }
