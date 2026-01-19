@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
@@ -10,9 +12,12 @@ import 'package:uuid/uuid.dart';
 
 class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
   final SettingsBloc settingsBloc;
+  final AccountBloc accountBloc;
   final TransactionRepository transactionRepository;
+
   TransactionBloc({
     required this.settingsBloc,
+    required this.accountBloc,
     required this.transactionRepository,
   }) : super(const TransactionStateInitial(transactionsList: [])) {
     final authRepository = transactionRepository.authRepository;
@@ -30,6 +35,17 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         final updatedList = [newTransaction, ...state.transactionsList];
 
         emit(TransactionStateSuccess(transactionsList: updatedList));
+
+        // Update Account Balance
+        final amountDelta = newTransaction.type == TransactionType.income
+            ? newTransaction.transactionAmount
+            : -newTransaction.transactionAmount;
+        accountBloc.add(
+          AccountEventUpdateBalance(
+            accountId: newTransaction.accountId,
+            amountDelta: amountDelta,
+          ),
+        );
         if (settingsBloc.state.model.isSyncToCloudEnabled) {
           transactionRepository
               .addTransaction(newTransaction)
@@ -60,6 +76,10 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     on<TransactionEventUpdateTransaction>((event, emit) async {
       try {
         final updatedTransaction = event.transaction;
+        final oldTransaction = state.transactionsList.firstWhere(
+          (t) => t.id == updatedTransaction.id,
+        );
+
         final updatedList = state.transactionsList.map((transaction) {
           return transaction.id == updatedTransaction.id
               ? updatedTransaction
@@ -67,6 +87,48 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         }).toList();
 
         emit(TransactionStateSuccess(transactionsList: updatedList));
+
+        // Update Account Balance
+        if (oldTransaction.accountId == updatedTransaction.accountId) {
+          // Same account, update with diff
+          final oldAmountDelta = oldTransaction.type == TransactionType.income
+              ? oldTransaction.transactionAmount
+              : -oldTransaction.transactionAmount;
+          final newAmountDelta = updatedTransaction.type == TransactionType.income
+              ? updatedTransaction.transactionAmount
+              : -updatedTransaction.transactionAmount;
+          final diff = newAmountDelta - oldAmountDelta;
+
+          if (diff != 0) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: updatedTransaction.accountId,
+                amountDelta: diff,
+              ),
+            );
+          }
+        } else {
+          // Different account: reverse old, apply new
+          final oldAmountReversal = oldTransaction.type == TransactionType.income
+              ? -oldTransaction.transactionAmount
+              : oldTransaction.transactionAmount;
+          final newAmountDelta = updatedTransaction.type == TransactionType.income
+              ? updatedTransaction.transactionAmount
+              : -updatedTransaction.transactionAmount;
+
+          accountBloc.add(
+            AccountEventUpdateBalance(
+              accountId: oldTransaction.accountId,
+              amountDelta: oldAmountReversal,
+            ),
+          );
+          accountBloc.add(
+            AccountEventUpdateBalance(
+              accountId: updatedTransaction.accountId,
+              amountDelta: newAmountDelta,
+            ),
+          );
+        }
 
         if (settingsBloc.state.model.isSyncToCloudEnabled) {
           transactionRepository
@@ -189,7 +251,23 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             .where((transaction) => transaction.id != event.transactionId)
             .toList();
 
+        final transactionToDelete = state.transactionsList.firstWhere(
+          (t) => t.id == event.transactionId,
+        );
+
         emit(TransactionStateSuccess(transactionsList: updatedList));
+
+        // Reverse Account Balance
+        final reversalDelta = transactionToDelete.type == TransactionType.income
+            ? -transactionToDelete.transactionAmount
+            : transactionToDelete.transactionAmount;
+
+        accountBloc.add(
+          AccountEventUpdateBalance(
+            accountId: transactionToDelete.accountId,
+            amountDelta: reversalDelta,
+          ),
+        );
 
         if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
           transactionRepository

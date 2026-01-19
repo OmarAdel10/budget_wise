@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:budget_wise/accounts/view_model/account_state.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view/screens/add_transaction_screen.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
@@ -118,6 +120,26 @@ class TransactionDetailScreen extends StatelessWidget {
                               )
                               .category
                               .categoryTitle,
+                        );
+                      },
+                    ),
+                    const Divider(
+                      color: AppColors.borderColor,
+                      height: AppSpacing.xl,
+                    ),
+                    BlocBuilder<AccountBloc, AccountState>(
+                      builder: (context, state) {
+                        String accountTitle = l10n.noAccount;
+                        if (state.accountsList.isNotEmpty && transModel.accountId.isNotEmpty) {
+                          final account = state.accountsList.firstWhere(
+                            (a) => a.id == transModel.accountId,
+                          );
+                          accountTitle = account.title;
+                        }
+                        return _buildDetailItem(
+                          icon: PhosphorIcons.bank(),
+                          label: "Account",
+                          value: accountTitle,
                         );
                       },
                     ),

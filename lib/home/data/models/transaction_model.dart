@@ -12,6 +12,7 @@ class TransactionModel {
   final String transactionTitle;
   final double transactionAmount;
   final String categoryId;
+  final String accountId;
   final DateTime transactionDate;
   final String? transactionNotes;
   final bool isSynced;
@@ -23,6 +24,7 @@ class TransactionModel {
     required this.transactionTitle,
     required this.transactionAmount,
     required this.categoryId,
+    required this.accountId,
     required this.transactionDate,
     this.transactionNotes = '',
     this.isSynced = false,
@@ -36,6 +38,7 @@ class TransactionModel {
       'transactionTitle': transactionTitle,
       'transactionAmount': transactionAmount,
       'categoryId': categoryId,
+      'accountId': accountId,
       'transactionDate': Timestamp.fromDate(transactionDate),
       'transactionNotes': transactionNotes,
       'isSynced': isSynced,
@@ -50,6 +53,7 @@ class TransactionModel {
       'transactionTitle': transactionTitle,
       'transactionAmount': transactionAmount,
       'categoryId': categoryId,
+      'accountId': accountId,
       'transactionDate': transactionDate.toIso8601String(),
       'transactionNotes': transactionNotes,
       'isSynced': isSynced,
@@ -66,6 +70,7 @@ class TransactionModel {
       transactionTitle: map['transactionTitle'] as String,
       transactionAmount: map['transactionAmount'] as double,
       categoryId: map['categoryId'] as String,
+      accountId: map['accountId'] as String,
       transactionDate: map['transactionDate'] is Timestamp
           ? (map['transactionDate'] as Timestamp).toDate()
           : DateTime.parse(map['transactionDate'] as String),
@@ -88,6 +93,7 @@ class TransactionModel {
     String? transactionTitle,
     double? transactionAmount,
     String? categoryId,
+    String? accountId,
     DateTime? transactionDate,
     String? transactionNotes,
     bool? isSynced,
@@ -99,6 +105,7 @@ class TransactionModel {
       transactionTitle: transactionTitle ?? this.transactionTitle,
       transactionAmount: transactionAmount ?? this.transactionAmount,
       categoryId: categoryId ?? this.categoryId,
+      accountId: accountId ?? this.accountId,
       transactionDate: transactionDate ?? this.transactionDate,
       transactionNotes: transactionNotes ?? this.transactionNotes,
       isSynced: isSynced ?? this.isSynced,
