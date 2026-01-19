@@ -116,6 +116,12 @@ abstract class AppLocalizations {
   /// **'Savings'**
   String get navSavings;
 
+  /// No description provided for @navAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts'**
+  String get navAccounts;
+
   /// No description provided for @navStatistics.
   ///
   /// In en, this message translates to:
@@ -829,6 +835,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'There is no data this month'**
   String get noDataThisMonth;
+
+  /// No description provided for @addAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Account'**
+  String get addAccountTitle;
+
+  /// No description provided for @addAccountIdentityHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Identity'**
+  String get addAccountIdentityHeader;
+
+  /// No description provided for @addAccountSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup your source'**
+  String get addAccountSetupTitle;
+
+  /// No description provided for @addAccountSetupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your account details to start tracking your daily incremental savings.'**
+  String get addAccountSetupSubtitle;
+
+  /// No description provided for @addAccountAccountNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Name'**
+  String get addAccountAccountNameLabel;
+
+  /// No description provided for @addAccountAccountNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Main Checking'**
+  String get addAccountAccountNamePlaceholder;
+
+  /// No description provided for @addAccountTypeHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Type'**
+  String get addAccountTypeHeader;
+
+  /// No description provided for @addAccountTypeCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get addAccountTypeCash;
+
+  /// No description provided for @addAccountTypeCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get addAccountTypeCard;
+
+  /// No description provided for @addAccountInitialBalanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial Balance'**
+  String get addAccountInitialBalanceLabel;
+
+  /// No description provided for @addAccountInitialBalancePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'0.00'**
+  String get addAccountInitialBalancePlaceholder;
+
+  /// No description provided for @addAccountButtonAddAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Account'**
+  String get addAccountButtonAddAccount;
+
+  /// No description provided for @addAccountCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Card Details'**
+  String get addAccountCardTitle;
+
+  /// No description provided for @addAccountCardNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Number'**
+  String get addAccountCardNumberLabel;
+
+  /// No description provided for @addAccountBankNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Name'**
+  String get addAccountBankNameLabel;
+
+  /// No description provided for @addAccountBankNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Bank Misr'**
+  String get addAccountBankNamePlaceholder;
+
+  /// No description provided for @addAccountCardExpiryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry Date'**
+  String get addAccountCardExpiryLabel;
+
+  /// No description provided for @addAccountCardExpiryPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'MM/YY'**
+  String get addAccountCardExpiryPlaceholder;
+
+  /// No description provided for @addAccountCardCvvLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'CVV'**
+  String get addAccountCardCvvLabel;
+
+  /// No description provided for @addAccountButtonSaveCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Card'**
+  String get addAccountButtonSaveCard;
+
+  /// No description provided for @addAccountCardSecureNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your card information is encrypted and secure'**
+  String get addAccountCardSecureNote;
+
+  /// No description provided for @addAccountAccountNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Account name is required'**
+  String get addAccountAccountNameRequired;
+
+  /// No description provided for @addAccountAccountAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Account added'**
+  String get addAccountAccountAdded;
+
+  /// No description provided for @addAccountCardSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Card saved'**
+  String get addAccountCardSaved;
+
+  /// No description provided for @netWorth.
+  ///
+  /// In en, this message translates to:
+  /// **'Net Worth'**
+  String get netWorth;
+
+  /// No description provided for @yourAssets.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Assets'**
+  String get yourAssets;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @linkMoreAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Link More Accounts'**
+  String get linkMoreAccounts;
+
+  /// No description provided for @continueWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueWord;
+
+  /// No description provided for @accountNameCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Name Can\'t Left Empty'**
+  String get accountNameCantLeftEmpty;
+
+  /// No description provided for @youShouldEnterMoreThan3Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'You Should Enter More Than 3 Characters'**
+  String get youShouldEnterMoreThan3Characters;
+
+  /// No description provided for @initialBalanceCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial Balance Can\'t Left Empty'**
+  String get initialBalanceCantLeftEmpty;
+
+  /// No description provided for @youShouldEnterAValidBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'You Should Enter A Valid Balance'**
+  String get youShouldEnterAValidBalance;
+
+  /// No description provided for @bankNameCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Name Can\'t Left Empty'**
+  String get bankNameCantLeftEmpty;
+
+  /// No description provided for @youShouldEnterAValidBankName.
+  ///
+  /// In en, this message translates to:
+  /// **'You Should Enter A Valid Bank Name'**
+  String get youShouldEnterAValidBankName;
+
+  /// No description provided for @didYouMean.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you mean:'**
+  String get didYouMean;
+
+  /// No description provided for @questionMark.
+  ///
+  /// In en, this message translates to:
+  /// **'?'**
+  String get questionMark;
+
+  /// No description provided for @cardNumberCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Number Can\'t Left Empty'**
+  String get cardNumberCantLeftEmpty;
+
+  /// No description provided for @youShouldEnterAValidCardNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'You Should Enter A Valid Card Number'**
+  String get youShouldEnterAValidCardNumber;
+
+  /// No description provided for @expiryDateCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiry Date Can\'t Left Empty'**
+  String get expiryDateCantLeftEmpty;
+
+  /// No description provided for @youShouldEnterAValidExpiryDate.
+  ///
+  /// In en, this message translates to:
+  /// **'You Should Enter A Valid Expiry Date'**
+  String get youShouldEnterAValidExpiryDate;
+
+  /// No description provided for @disclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Disclaimer: This card can not be used with any means cause the cvv is not provided so your card info is fully safe!'**
+  String get disclaimer;
 }
 
 class _AppLocalizationsDelegate

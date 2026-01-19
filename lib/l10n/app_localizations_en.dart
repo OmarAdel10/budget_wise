@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navSavings => 'Savings';
 
   @override
+  String get navAccounts => 'Accounts';
+
+  @override
   String get navStatistics => 'Statistics';
 
   @override
@@ -377,4 +380,137 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noDataThisMonth => 'There is no data this month';
+
+  @override
+  String get addAccountTitle => 'Add New Account';
+
+  @override
+  String get addAccountIdentityHeader => 'Account Identity';
+
+  @override
+  String get addAccountSetupTitle => 'Setup your source';
+
+  @override
+  String get addAccountSetupSubtitle =>
+      'Enter your account details to start tracking your daily incremental savings.';
+
+  @override
+  String get addAccountAccountNameLabel => 'Account Name';
+
+  @override
+  String get addAccountAccountNamePlaceholder => 'e.g. Main Checking';
+
+  @override
+  String get addAccountTypeHeader => 'Account Type';
+
+  @override
+  String get addAccountTypeCash => 'Cash';
+
+  @override
+  String get addAccountTypeCard => 'Card';
+
+  @override
+  String get addAccountInitialBalanceLabel => 'Initial Balance';
+
+  @override
+  String get addAccountInitialBalancePlaceholder => '0.00';
+
+  @override
+  String get addAccountButtonAddAccount => 'Add Account';
+
+  @override
+  String get addAccountCardTitle => 'Enter Card Details';
+
+  @override
+  String get addAccountCardNumberLabel => 'Card Number';
+
+  @override
+  String get addAccountBankNameLabel => 'Bank Name';
+
+  @override
+  String get addAccountBankNamePlaceholder => 'e.g. Bank Misr';
+
+  @override
+  String get addAccountCardExpiryLabel => 'Expiry Date';
+
+  @override
+  String get addAccountCardExpiryPlaceholder => 'MM/YY';
+
+  @override
+  String get addAccountCardCvvLabel => 'CVV';
+
+  @override
+  String get addAccountButtonSaveCard => 'Save Card';
+
+  @override
+  String get addAccountCardSecureNote =>
+      'Your card information is encrypted and secure';
+
+  @override
+  String get addAccountAccountNameRequired => 'Account name is required';
+
+  @override
+  String get addAccountAccountAdded => 'Account added';
+
+  @override
+  String get addAccountCardSaved => 'Card saved';
+
+  @override
+  String get netWorth => 'Net Worth';
+
+  @override
+  String get yourAssets => 'Your Assets';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get linkMoreAccounts => 'Link More Accounts';
+
+  @override
+  String get continueWord => 'Continue';
+
+  @override
+  String get accountNameCantLeftEmpty => 'Account Name Can\'t Left Empty';
+
+  @override
+  String get youShouldEnterMoreThan3Characters =>
+      'You Should Enter More Than 3 Characters';
+
+  @override
+  String get initialBalanceCantLeftEmpty => 'Initial Balance Can\'t Left Empty';
+
+  @override
+  String get youShouldEnterAValidBalance => 'You Should Enter A Valid Balance';
+
+  @override
+  String get bankNameCantLeftEmpty => 'Bank Name Can\'t Left Empty';
+
+  @override
+  String get youShouldEnterAValidBankName =>
+      'You Should Enter A Valid Bank Name';
+
+  @override
+  String get didYouMean => 'Did you mean:';
+
+  @override
+  String get questionMark => '?';
+
+  @override
+  String get cardNumberCantLeftEmpty => 'Card Number Can\'t Left Empty';
+
+  @override
+  String get youShouldEnterAValidCardNumber =>
+      'You Should Enter A Valid Card Number';
+
+  @override
+  String get expiryDateCantLeftEmpty => 'Expiry Date Can\'t Left Empty';
+
+  @override
+  String get youShouldEnterAValidExpiryDate =>
+      'You Should Enter A Valid Expiry Date';
+
+  @override
+  String get disclaimer =>
+      'Disclaimer: This card can not be used with any means cause the cvv is not provided so your card info is fully safe!';
 }
