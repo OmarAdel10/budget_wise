@@ -1,4 +1,5 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
+import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
 import 'package:budget_wise/accounts/view/widgets/asset_item.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
@@ -137,14 +138,22 @@ class AccountsScreen extends StatelessWidget {
                     final accountItem = state.accountsList[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: AssetItem(
-                        icon: accountItem.accountIcon,
-                        title: accountItem.title,
-                        subtitle: accountItem.accountType != AccountType.cash
-                            ? '${accountItem.cardBankName} • ${accountItem.cardNumber!.substring(accountItem.cardNumber!.length - 4)}'
-                            : '${accountItem.accountType.name.toUpperCase()} ${l10n.account.toUpperCase()}',
-                        amount:
-                            '${NumberFormat.simpleCurrency(name: accountItem.currency).currencyName} ${accountItem.balance}',
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            AccountDetailScreen.routeName,
+                            arguments: accountItem,
+                          );
+                        },
+                        child: AssetItem(
+                          icon: accountItem.accountIcon,
+                          title: accountItem.title,
+                          subtitle: accountItem.accountType != AccountType.cash
+                              ? '${accountItem.cardBankName} • ${accountItem.cardNumber!.substring(accountItem.cardNumber!.length - 4)}'
+                              : '${accountItem.accountType.name.toUpperCase()} ${l10n.account.toUpperCase()}',
+                          amount:
+                              '${NumberFormat.simpleCurrency(name: accountItem.currency).currencyName} ${accountItem.balance}',
+                        ),
                       ),
                     );
                   }, childCount: state.accountsList.length),

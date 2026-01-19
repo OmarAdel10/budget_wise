@@ -169,6 +169,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           balance: double.tryParse(balanceController.text) ?? 0.0,
           currency: selectedCurrency,
           createdAt: DateTime.now(),
+          updatedAt: DateTime.now()
         );
         context.read<AccountBloc>().add(
           AccountEventCreateAccount(model: newAccount),
@@ -194,6 +195,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           balance: double.tryParse(balanceController.text.trim()) ?? 0.0,
           currency: selectedCurrency,
           createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
           cardBankName: bankNameController.text.toUpperCase().trim(),
           cardNumber: cardNumberController.text.trim(),
           cardExpiryDate: expiryController.text.trim(),
