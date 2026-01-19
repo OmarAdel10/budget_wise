@@ -20,6 +20,31 @@ class AccountRepository {
     await doc.set(model);
   }
 
+  Future<void> updateAccountUpdatedAt(String accountId, DateTime newDate) async {
+    final CollectionReference<AccountModel> collection = getAccountCollection();
+    final QuerySnapshot<AccountModel> querySnapshot =
+        await collection.where('id', isEqualTo: accountId).get();
+    for (final doc in querySnapshot.docs) {
+      await doc.reference.update({'updatedAt': newDate.toIso8601String()});
+    }
+  }
+
+  Future<void> updateAccountBalance(
+    String accountId,
+    double newBalance,
+    DateTime updatedAt,
+  ) async {
+    final CollectionReference<AccountModel> collection = getAccountCollection();
+    final QuerySnapshot<AccountModel> querySnapshot =
+        await collection.where('id', isEqualTo: accountId).get();
+    for (final doc in querySnapshot.docs) {
+      await doc.reference.update({
+        'balance': newBalance,
+        'updatedAt': updatedAt.toIso8601String(),
+      });
+    }
+  }
+
   Future<List<AccountModel>> fetchAllAccounts() async {
     final CollectionReference<AccountModel> collection = getAccountCollection();
     final user = authRepo.currentUser;

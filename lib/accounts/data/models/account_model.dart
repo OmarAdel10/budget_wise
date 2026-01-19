@@ -21,6 +21,7 @@ class AccountModel {
   final String? cardExpiryDate;
   final CardBrand? cardBrand;
   final DateTime createdAt;
+  final DateTime updatedAt;
   bool isSynced;
 
   AccountModel({
@@ -37,6 +38,7 @@ class AccountModel {
     this.cardExpiryDate = '',
     this.cardBrand = CardBrand.visa,
     required this.createdAt,
+    required this.updatedAt,
     this.isSynced = false,
   });
 
@@ -54,6 +56,7 @@ class AccountModel {
     String? cardExpiryDate,
     CardBrand? cardBrand,
     DateTime? createdAt,
+    DateTime? updatedAt,
     bool? isSynced,
   }) {
     return AccountModel(
@@ -70,6 +73,7 @@ class AccountModel {
       cardExpiryDate: cardExpiryDate ?? this.cardExpiryDate,
       cardBrand: cardBrand ?? this.cardBrand,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
     );
   }
@@ -91,6 +95,7 @@ class AccountModel {
       'cardExpiryDate': cardExpiryDate,
       'cardBrand': cardBrand?.name,
       'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       'isSynced': isSynced,
     };
   }
@@ -126,6 +131,9 @@ class AccountModel {
       createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt'] as String),
+      updatedAt: map['updatedAt'] is Timestamp
+          ? (map['updatedAt'] as Timestamp).toDate()
+          : DateTime.parse(map['updatedAt'] as String),
       isSynced: map['isSynced'] as bool,
     );
   }

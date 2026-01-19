@@ -125,6 +125,53 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
       }
     });
 
+    on<AccountEventUpdateUpdatedAtField>((event, emit) {
+      try {
+        final updatedAccountId = event.accountId;
+        final updatedList = state.accountsList
+            .map(
+              (account) => account.id == updatedAccountId
+                  ? account.copyWith(updatedAt: event.updateDate)
+                  : account,
+            )
+            .toList();
+        emit(
+          AccountStateSuccess(
+            accountsList: updatedList,
+            netWorth: state.netWorth,
+          ),
+        );
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+          accountRepo
+              .updateAccountUpdatedAt(updatedAccountId, event.updateDate)
+              .then(
+                (_) =>
+                    add(AccountEventMarkSynced(accountId: updatedAccountId)),
+              )
+              .catchError((e) {
+                log('Cloud sync failed(update method): ${e.toString()}');
+                emit(
+                  AccountStateError(
+                    message: 'Cloud sync failed: ${e.toString()}',
+                    accountsList: state.accountsList,
+                    netWorth: state.netWorth,
+                  ),
+                );
+              });
+        }
+      } catch (e) {
+        log('Failed to update account: ${e.toString()}');
+        emit(
+          AccountStateError(
+            message: 'Failed to update account: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
+
     on<AccountEventDeleteAccount>((event, emit) {
       try {
         final updatedList = state.accountsList
@@ -222,6 +269,60 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         emit(
           AccountStateError(
             message: 'Failed to sync the unsynced account: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
+
+    on<AccountEventUpdateBalance>((event, emit) {
+      try {
+        final updatedList = state.accountsList.map((account) {
+          if (account.id == event.accountId) {
+            return account.copyWith(
+              balance: account.balance + event.amountDelta,
+              updatedAt: DateTime.now(),
+            );
+          }
+          return account;
+        }).toList();
+
+        final updatedAccount = updatedList.firstWhere(
+          (account) => account.id == event.accountId,
+        );
+
+        emit(
+          AccountStateSuccess(
+            accountsList: updatedList,
+            netWorth: state.netWorth + event.amountDelta,
+          ),
+        );
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+          accountRepo
+              .updateAccountBalance(
+                updatedAccount.id,
+                updatedAccount.balance,
+                updatedAccount.updatedAt,
+              )
+              .then((_) => add(AccountEventMarkSynced(accountId: updatedAccount.id)))
+              .catchError((e) {
+                log('Cloud sync failed(update balance method): ${e.toString()}');
+                emit(
+                  AccountStateError(
+                    message: 'Cloud sync failed: ${e.toString()}',
+                    accountsList: state.accountsList,
+                    netWorth: state.netWorth,
+                  ),
+                );
+              });
+        }
+      } catch (e) {
+        log('Failed to update account balance: ${e.toString()}');
+        emit(
+          AccountStateError(
+            message: 'Failed to update account balance: ${e.toString()}',
             accountsList: state.accountsList,
             netWorth: state.netWorth,
           ),
