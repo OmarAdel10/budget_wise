@@ -1,3 +1,5 @@
+import 'package:budget_wise/accounts/view_model/account_state.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view_model/category_state.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
@@ -30,6 +32,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final TextEditingController _notesController = TextEditingController();
   late DateTime _selectedDate;
   String? _selectedCategoryId;
+  String? _selectedAccountId;
   late TransactionType _selectedType;
 
   bool get _isEditMode => widget.transactionToEdit != null;
@@ -44,6 +47,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _notesController.text = trans.transactionNotes ?? '';
       _selectedDate = trans.transactionDate;
       _selectedCategoryId = trans.categoryId;
+      _selectedAccountId = trans.accountId;
       _selectedType = trans.type;
     } else {
       _selectedDate = DateTime.now();
@@ -112,12 +116,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       return;
     }
 
+    if (_selectedAccountId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select an account')),
+      );
+      return;
+    }
+
     if (_isEditMode) {
       final updatedTransaction = widget.transactionToEdit!.copyWith(
         type: _selectedType,
         transactionTitle: title,
         transactionAmount: amount,
         categoryId: _selectedCategoryId,
+        accountId: _selectedAccountId,
         transactionDate: _selectedDate,
         transactionNotes: _notesController.text.trim(),
         isSynced: false,
@@ -129,6 +141,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         transactionTitle: title,
         transactionAmount: amount,
         categoryId: _selectedCategoryId!,
+        accountId: _selectedAccountId!,
         transactionDate: _selectedDate,
         transactionNotes: _notesController.text.trim(),
       );
@@ -234,6 +247,74 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         },
                       ),
                     ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Account Dropdown
+                  BlocBuilder<AccountBloc, AccountState>(
+                    builder: (context, accountState) {
+                      // Filter out accounts with empty ids and remove duplicates by id
+                      final rawAccounts = accountState.accountsList;
+                      final seenIds = <String>{};
+                      final accounts = rawAccounts.where((a) {
+                        if (a.id.isEmpty) return false;
+                        if (seenIds.contains(a.id)) return false;
+                        seenIds.add(a.id);
+                        return true;
+                      }).toList();
+
+                      // If selected account no longer exists, reset it
+                      if (_selectedAccountId != null && !accounts.any((a) => a.id == _selectedAccountId)) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setState(() {
+                            _selectedAccountId = null;
+                          });
+                        });
+                      }
+
+                      return Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: AppColors.inputBackground,
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.radiusMd),
+                          border: Border.all(color: AppColors.borderColor),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: _selectedAccountId,
+                            hint: Text(
+                              "Select Account",
+                              style: AppTextStyles.bodyMedium
+                                  .copyWith(color: AppColors.textSecondary),
+                            ),
+                            isExpanded: true,
+                            dropdownColor: AppColors.cardBackground,
+                            icon: Icon(
+                              PhosphorIcons.caretDown(
+                                PhosphorIconsStyle.regular,
+                              ),
+                              color: AppColors.textSecondary,
+                            ),
+                            items: accounts.map((account) {
+                              return DropdownMenuItem<String>(
+                                value: account.id,
+                                child: Text(
+                                  account.title,
+                                  style: AppTextStyles.bodyLarge,
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedAccountId = newValue;
+                              });
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: AppSpacing.lg),
 
