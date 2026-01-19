@@ -1,3 +1,7 @@
+import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
+import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view/screens/local_auth_screen.dart';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
@@ -48,6 +52,7 @@ void main() async {
   final AuthRepository authRepo = AuthRepository();
   final TransactionRepository transactionRepo = TransactionRepository();
   final CategoryRepository categoryRepo = CategoryRepository();
+  final AccountRepository accountRepo = AccountRepository();
   runApp(
     MultiBlocProvider(
       providers: [
@@ -56,7 +61,6 @@ void main() async {
         BlocProvider(
           create: (context) => TransactionBloc(
             settingsBloc: context.read<SettingsBloc>(),
-            authRepository: authRepo,
             transactionRepository: transactionRepo,
           ),
         ),
@@ -81,6 +85,12 @@ void main() async {
             transactionBloc: context.read<TransactionBloc>(),
             categoryBloc: context.read<CategoryBloc>(),
           )..add(StatisticsEventLoadRequested(DateTime.now())),
+        ),
+        BlocProvider(
+          create: (context) => AccountBloc(
+            settingsBloc: context.read<SettingsBloc>(),
+            accountRepo: accountRepo,
+          )..add(AccountEventFetchAll()),
         ),
       ],
       child: MyApp(authRepo: authRepo),
@@ -275,6 +285,17 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: const EditProfileScreen(),
+                );
+              case AddAccountScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  reverseType: PageTransitionType.topToBottom,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: const AddAccountScreen(),
                 );
               default:
                 return null;

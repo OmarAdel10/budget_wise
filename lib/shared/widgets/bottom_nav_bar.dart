@@ -45,15 +45,19 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             label: l10n.navHome,
           ),
           BottomNavigationBarItem(
-            icon: Icon(widget.currentIndex == 1 ? PhosphorIcons.piggyBank(PhosphorIconsStyle.fill) : PhosphorIcons.piggyBank()),
+            icon: Icon(widget.currentIndex == 1 ? PhosphorIcons.wallet(PhosphorIconsStyle.fill) : PhosphorIcons.wallet()),
+            label: l10n.navAccounts,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(widget.currentIndex == 2 ? PhosphorIcons.piggyBank(PhosphorIconsStyle.fill) : PhosphorIcons.piggyBank()),
             label: l10n.navSavings,
           ),
           BottomNavigationBarItem(
-            icon: Icon(widget.currentIndex == 2 ? PhosphorIcons.chartLine(PhosphorIconsStyle.fill) : PhosphorIcons.chartLine()),
+            icon: Icon(widget.currentIndex == 3 ? PhosphorIcons.chartLine(PhosphorIconsStyle.fill) : PhosphorIcons.chartLine()),
             label: l10n.navStatistics,
           ),
           BottomNavigationBarItem(
-            icon: Icon(widget.currentIndex == 3 ? PhosphorIcons.gear(PhosphorIconsStyle.fill) : PhosphorIcons.gear()),
+            icon: Icon(widget.currentIndex == 4 ? PhosphorIcons.gear(PhosphorIconsStyle.fill) : PhosphorIcons.gear()),
             label: l10n.navSettings,
           ),
         ],
