@@ -472,6 +472,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           floatingActionButton: FloatingActionButton(
+            heroTag: "home_fab",
             tooltip: 'Add Transaction',
             onPressed: () =>
                 Navigator.of(context).pushNamed(AddTransactionScreen.routeName),

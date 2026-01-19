@@ -127,6 +127,7 @@ class SavingsScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: "savings_fab",
         onPressed: () {
           Navigator.of(context).pushNamed(AddSavingGoalScreen.routeName);
         },

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
@@ -11,13 +10,12 @@ import 'package:uuid/uuid.dart';
 
 class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
   final SettingsBloc settingsBloc;
-  final AuthRepository authRepository;
   final TransactionRepository transactionRepository;
   TransactionBloc({
     required this.settingsBloc,
-    required this.authRepository,
     required this.transactionRepository,
   }) : super(const TransactionStateInitial(transactionsList: [])) {
+    final authRepository = transactionRepository.authRepository;
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.isSyncToCloudEnabled) {
         add(const TransactionEventFetchAll());
@@ -32,7 +30,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         final updatedList = [newTransaction, ...state.transactionsList];
 
         emit(TransactionStateSuccess(transactionsList: updatedList));
-        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+        if (settingsBloc.state.model.isSyncToCloudEnabled) {
           transactionRepository
               .addTransaction(newTransaction)
               .then((_) {
@@ -63,28 +61,39 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       try {
         final updatedTransaction = event.transaction;
         final updatedList = state.transactionsList.map((transaction) {
-          return transaction.id == updatedTransaction.id ? updatedTransaction : transaction;
+          return transaction.id == updatedTransaction.id
+              ? updatedTransaction
+              : transaction;
         }).toList();
 
         emit(TransactionStateSuccess(transactionsList: updatedList));
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+        if (settingsBloc.state.model.isSyncToCloudEnabled) {
           transactionRepository
               .addTransaction(updatedTransaction)
               .then((_) {
-            add(TransactionEventMarkSynced(transactionId: updatedTransaction.id));
-          }).catchError((e) {
-            emit(TransactionStateError(
-              message: 'Cloud sync failed: ${e.toString()}',
-              transactionsList: state.transactionsList,
-            ));
-          });
+                add(
+                  TransactionEventMarkSynced(
+                    transactionId: updatedTransaction.id,
+                  ),
+                );
+              })
+              .catchError((e) {
+                emit(
+                  TransactionStateError(
+                    message: 'Cloud sync failed: ${e.toString()}',
+                    transactionsList: state.transactionsList,
+                  ),
+                );
+              });
         }
       } catch (e) {
-        emit(TransactionStateError(
-          message: 'Local update failed: ${e.toString()}',
-          transactionsList: state.transactionsList,
-        ));
+        emit(
+          TransactionStateError(
+            message: 'Local update failed: ${e.toString()}',
+            transactionsList: state.transactionsList,
+          ),
+        );
       }
     });
 
@@ -106,6 +115,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         );
       }
     });
+
     on<TransactionEventSyncUnsynced>((event, emit) async {
       try {
         final unSynced = state.transactionsList
@@ -185,13 +195,13 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           transactionRepository
               .deleteTransaction(event.transactionId)
               .catchError((e) {
-            emit(
-              TransactionStateError(
-                message: 'Cloud sync failed: ${e.toString()}',
-                transactionsList: state.transactionsList,
-              ),
-            );
-          });
+                emit(
+                  TransactionStateError(
+                    message: 'Cloud sync failed: ${e.toString()}',
+                    transactionsList: state.transactionsList,
+                  ),
+                );
+              });
         }
       } catch (e) {
         emit(
@@ -203,12 +213,6 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       }
     });
   }
-
-  // @override
-  // Future<void> close() {
-  //   _authSubscription.cancel();
-  //   return super.close();
-  // }
 
   @override
   TransactionState? fromJson(Map<String, dynamic> json) {
