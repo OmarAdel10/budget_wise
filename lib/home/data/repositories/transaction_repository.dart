@@ -3,7 +3,7 @@ import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TransactionRepository {
-  final AuthRepository _authRepository = AuthRepository();
+  final AuthRepository authRepository = AuthRepository();
 
   CollectionReference<TransactionModel> getTransactionsCollection() =>
       FirebaseFirestore.instance
@@ -29,10 +29,10 @@ class TransactionRepository {
         getTransactionsCollection();
     final QuerySnapshot<TransactionModel> querySnapshot = await collection
         .get();
-    if (_authRepository.currentUser != null) {
+    if (authRepository.currentUser != null) {
       for (final doc in querySnapshot.docs) {
         await doc.reference.update({
-          'userId': _authRepository.currentUser!.uid,
+          'userId': authRepository.currentUser!.uid,
         });
       }
     }
@@ -41,7 +41,7 @@ class TransactionRepository {
   Future<List<TransactionModel>> getAllTransactionsByType(String type) async {
     final CollectionReference<TransactionModel> collection =
         getTransactionsCollection();
-    final user = _authRepository.currentUser;
+    final user = authRepository.currentUser;
     if (user != null) {
       final querySnapShot = await collection
           .where('userId', isEqualTo: user.uid)
@@ -57,7 +57,7 @@ class TransactionRepository {
   ) async {
     final CollectionReference<TransactionModel> collection =
         getTransactionsCollection();
-    final user = _authRepository.currentUser;
+    final user = authRepository.currentUser;
     if (user != null) {
       final querySnapShot = await collection
           .where('userId', isEqualTo: user.uid)
@@ -72,7 +72,7 @@ class TransactionRepository {
   Future<List<TransactionModel>> getTransactionsByMonth(DateTime date) async {
     final CollectionReference<TransactionModel> collection =
         getTransactionsCollection();
-    final user = _authRepository.currentUser;
+    final user = authRepository.currentUser;
     final startOfMonth = DateTime(date.year, date.month, 1);
     final endOfMonth = DateTime(date.year, date.month + 1, 0, 23, 59, 59);
 
@@ -93,10 +93,11 @@ class TransactionRepository {
     }
     return [];
   }
+  
   Future<List<TransactionModel>> fetchAllTransactions() async {
     final CollectionReference<TransactionModel> collection =
         getTransactionsCollection();
-    final user = _authRepository.currentUser;
+    final user = authRepository.currentUser;
 
     if (user != null) {
       final querySnapShot = await collection
