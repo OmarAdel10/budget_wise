@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add New Account</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#047195",
+                        "background-light": "#f5f7fa",
+                        "background-dark": "#0e1216",
+                        "surface-dark": "#17212F",
+                        "border-dark": "#2d3748"
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-gray-100 min-h-screen">
+<div class="max-w-[430px] mx-auto min-h-screen flex flex-col relative shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- TopAppBar -->
+<div class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center p-4 justify-between">
+<div class="flex size-10 items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-gray-600 dark:text-gray-300">chevron_left</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">Add New Account</h2>
+</div>
+</div>
+<main class="flex-1 overflow-y-auto pb-32">
+<!-- Header Section -->
+<div class="px-5 pt-6 pb-2">
+<p class="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">Account Identity</p>
+<h1 class="text-2xl font-bold mt-1">Setup your source</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm mt-2">Enter your account details to start tracking your daily incremental savings.</p>
+</div>
+<!-- TextField: Account Name -->
+<div class="px-4 py-3">
+<div class="flex flex-col gap-2 p-4 rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark shadow-sm">
+<label class="flex flex-col w-full">
+<p class="text-sm font-semibold text-gray-600 dark:text-gray-400 pb-2">Account Name</p>
+<input class="form-input w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1b2427] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary h-12 placeholder:text-gray-400 dark:placeholder:text-[#5a6e75] px-4 font-medium" placeholder="e.g. Main Checking" type="text" value=""/>
+</label>
+</div>
+</div>
+<!-- SectionHeader: Account Type -->
+<div class="px-5 pt-4 pb-2">
+<h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Account Type</h3>
+</div>
+<!-- TextGrid: Type Selection -->
+<div class="grid grid-cols-2 gap-3 px-4">
+<div class="flex flex-col gap-3 rounded-xl border-2 border-primary bg-primary/10 p-4 items-start cursor-pointer transition-all">
+<span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+<h2 class="text-sm font-bold">Cash</h2>
+</div>
+<div class="flex flex-col gap-3 rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark p-4 items-start cursor-pointer hover:border-gray-400 transition-all">
+<span class="material-symbols-outlined text-gray-500">credit_card</span>
+<h2 class="text-sm font-bold">Visa</h2>
+</div>
+<div class="flex flex-col gap-3 rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark p-4 items-start cursor-pointer hover:border-gray-400 transition-all">
+<span class="material-symbols-outlined text-gray-500">payments</span>
+<h2 class="text-sm font-bold">MasterCard</h2>
+</div>
+<div class="flex flex-col gap-3 rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark p-4 items-start cursor-pointer hover:border-gray-400 transition-all">
+<span class="material-symbols-outlined text-gray-500">account_balance</span>
+<h2 class="text-sm font-bold">Bank</h2>
+</div>
+</div>
+<!-- Initial Balance Input -->
+<div class="px-4 py-6">
+<div class="flex flex-col gap-2 p-4 rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark shadow-sm">
+<label class="flex flex-col w-full">
+<p class="text-sm font-semibold text-gray-600 dark:text-gray-400 pb-2">Initial Balance</p>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-gray-400">$</span>
+<input class="form-input w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1b2427] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary h-14 pl-10 pr-4 text-2xl font-bold" placeholder="0.00" step="0.01" type="number"/>
+</div>
+</label>
+</div>
+</div>
+<!-- Integration Block -->
+<div class="px-4 pb-10">
+<div class="p-6 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-background-dark/50 flex flex-col items-center text-center">
+<div class="size-14 bg-white dark:bg-surface-dark rounded-xl shadow-sm flex items-center justify-center mb-4 border border-gray-100 dark:border-gray-700">
+<span class="material-symbols-outlined text-primary text-3xl">sync_alt</span>
+</div>
+<h4 class="font-bold text-lg">Connect Banking Service</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-[280px]">Securely link your bank account to automatically sync your daily transactions.</p>
+<button class="mt-4 px-6 py-2 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/10 transition-colors">
+                        Link Account
+                    </button>
+<p class="text-[10px] text-gray-400 mt-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">lock</span> 
+                        Bank-level 256-bit encryption
+                    </p>
+</div>
+</div>
+</main>
+<!-- Primary CTA: Fixed at Bottom -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background-light dark:from-background-dark via-background-light dark:via-background-dark to-transparent pt-10">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span>Add Account</span>
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+</button>
+</div>
+</div>
+</body></html>

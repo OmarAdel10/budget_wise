@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Visa Account Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#047195",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0f1e23",
+                        "card-dark": "#1b2427",
+                        "border-dark": "#3a4e55",
+                        "success": "#2C8F3C",
+                        "danger": "#E52E2E"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>body {
+    font-family: "Space Grotesk", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    min-height: max(884px, 100dvh)
+    }
+.ios-shadow {
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2)
+    }
+.custom-select {
+    appearance: none;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDd-Bc88KnyWzEclkJ2G2Ezt5dspkVpElNYB9QjMLQhPk4Mzd0-wQQOTNIO_a5wiSggR8f2_fv3KPOlNRc7DcmaZHcmAkm-IU17wTwxsdCXiwtXv5LNs4rTsIgUnKN9J9U2McpN-r469KJ-NHrupyS8gpQmQP_GUzF6_6DNDZD-C7uNy-QmlSvYklkmxWKxwpSw3Q3ad5uBDP8wURyIMxkJ6RZCWgaQe2-Eu_daDQ6ejZRpjBDFfcUpfwE7rt6NvX_qlpi-XSQRSQ_U);
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.5em
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-border-dark/20">
+<div class="flex items-center p-4 justify-between max-w-md mx-auto w-full">
+<button class="text-primary flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h2 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">Edit Account</h2>
+</div>
+</header>
+<main class="flex-1 max-w-md mx-auto w-full px-4 pt-6 pb-32">
+<div class="space-y-6">
+<section class="space-y-4">
+<div class="flex flex-col gap-1">
+<label class="px-1 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Basic Information</label>
+<div class="bg-white dark:bg-card-dark rounded-xl p-4 ios-shadow border border-slate-200 dark:border-border-dark/50 space-y-4">
+<div class="flex flex-col gap-2">
+<p class="text-sm font-medium leading-normal">Account Name</p>
+<input class="form-input flex w-full rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-slate-800/50 h-14 placeholder:text-slate-400 p-[15px] text-base font-normal" placeholder="Enter account name" type="text" value="Premium Visa Card"/>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-sm font-medium leading-normal">Account Type</p>
+<select class="custom-select form-input flex w-full rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-slate-800/50 h-14 p-[15px] text-base font-normal">
+<option selected="" value="visa">Credit Card</option>
+<option value="mastercard">MasterCard</option>
+<option value="cash">Cash / Checking</option>
+<option value="savings">Savings Account</option>
+<option value="investment">Investment</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-sm font-medium leading-normal">Card Number</p>
+<input class="form-input flex w-full rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-slate-800/50 h-14 placeholder:text-slate-400 p-[15px] text-base font-normal" placeholder="**** **** **** ****" type="text" value="**** **** **** 4532"/>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-sm font-medium leading-normal">Expiry Date</p>
+<input class="form-input flex w-full rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-slate-800/50 h-14 placeholder:text-slate-400 p-[15px] text-base font-normal" placeholder="MM/YY" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<section class="space-y-4">
+<div class="flex flex-col gap-1">
+<label class="px-1 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Financials</label>
+<div class="bg-white dark:bg-card-dark rounded-xl p-4 ios-shadow border border-slate-200 dark:border-border-dark/50 space-y-4">
+<div class="flex flex-col gap-2">
+<p class="text-sm font-medium leading-normal">Credit Limit</p>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">$</span>
+<input class="form-input flex w-full rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-slate-800/50 h-14 placeholder:text-slate-400 pl-8 pr-4 text-base font-bold" type="number" value="15000.00"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-sm font-medium leading-normal">Available Credit</p>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">$</span>
+<input class="form-input flex w-full rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-slate-800/50 h-14 placeholder:text-slate-400 pl-8 pr-4 text-base font-bold" type="number" value="2550.00"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="space-y-4">
+<div class="flex flex-col gap-1">
+<label class="px-1 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Connection Status</label>
+<div class="bg-white dark:bg-card-dark rounded-xl p-4 ios-shadow border border-slate-200 dark:border-border-dark/50">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-success/10 flex items-center justify-center text-success">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">check_circle</span>
+</div>
+<div>
+<p class="font-bold text-base">Linked to Chase Bank</p>
+<p class="text-xs text-slate-500">Last updated: 2 mins ago</p>
+</div>
+</div>
+<button class="flex items-center gap-1 text-primary text-sm font-semibold hover:bg-primary/5 px-3 py-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-sm">refresh</span>
+                                Refresh
+                            </button>
+</div>
+<div class="border-t border-slate-100 dark:border-border-dark pt-4">
+<button class="w-full flex items-center justify-center gap-2 text-danger text-sm font-bold py-2 hover:bg-danger/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-base">link_off</span>
+                                Unlink Account
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<section class="space-y-4">
+<div class="flex flex-col gap-1">
+<label class="px-1 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Settings</label>
+<div class="bg-white dark:bg-card-dark rounded-xl ios-shadow border border-slate-200 dark:border-border-dark/50 overflow-hidden">
+<div class="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">notifications</span>
+<span class="text-sm font-medium">Payment due reminders</span>
+</div>
+<div class="w-10 h-6 bg-primary rounded-full relative">
+<div class="absolute right-1 top-1 size-4 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="border-t border-slate-100 dark:border-border-dark flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-400">trending_up</span>
+<span class="text-sm font-medium">Daily incremental savings</span>
+</div>
+<div class="w-10 h-6 bg-slate-300 dark:bg-slate-700 rounded-full relative">
+<div class="absolute left-1 top-1 size-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-background-light via-background-light dark:from-background-dark dark:via-background-dark to-transparent">
+<div class="max-w-md mx-auto">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined">save</span>
+                Save Changes
+            </button>
+</div>
+</footer>
+
+</body></html>
