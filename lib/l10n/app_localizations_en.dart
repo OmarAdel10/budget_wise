@@ -513,4 +513,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get disclaimer =>
       'Disclaimer: This card can not be used with any means cause the cvv is not provided so your card info is fully safe!';
+
+  @override
+  String accountDetailUpdatedAgo(Object time) {
+    return 'Updated $time ago';
+  }
+
+  @override
+  String get editAccount => 'Edit Account';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get noAccount => 'No Account';
 }

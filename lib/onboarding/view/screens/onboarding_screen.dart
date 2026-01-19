@@ -71,6 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           transactionTitle: 'Income${date.format(DateTime.now())}',
           transactionDate: DateTime.now(),
           categoryId: _incomeCategoryId!,
+          accountId: '',
         );
         context.read<TransactionBloc>().add(
           TransactionEventCreateTransaction(transaction),

@@ -1087,6 +1087,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disclaimer: This card can not be used with any means cause the cvv is not provided so your card info is fully safe!'**
   String get disclaimer;
+
+  /// No description provided for @accountDetailUpdatedAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {time} ago'**
+  String accountDetailUpdatedAgo(Object time);
+
+  /// No description provided for @editAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Account'**
+  String get editAccount;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @noAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'No Account'**
+  String get noAccount;
 }
 
 class _AppLocalizationsDelegate

@@ -167,5 +167,11 @@
   "youShouldEnterAValidCardNumber": "You Should Enter A Valid Card Number",
   "expiryDateCantLeftEmpty": "Expiry Date Can't Left Empty",
   "youShouldEnterAValidExpiryDate": "You Should Enter A Valid Expiry Date",
-  "disclaimer": "Disclaimer: This card can not be used with any means cause the cvv is not provided so your card info is fully safe!"
+  "disclaimer": "Disclaimer: This card can not be used with any means cause the cvv is not provided so your card info is fully safe!",
+  "accountDetailUpdatedAgo": "Updated {time} ago",
+  "editAccount": "Edit Account",
+  "viewAll": "View All",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "noAccount": "No Account"
 }

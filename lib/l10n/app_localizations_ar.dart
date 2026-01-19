@@ -454,61 +454,78 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addAccountCardSaved => 'تم حفظ البطاقة';
 
   @override
-  String get netWorth => 'Net Worth';
+  String get netWorth => 'صافي الثروة';
 
   @override
-  String get yourAssets => 'Your Assets';
+  String get yourAssets => 'أصولك';
 
   @override
-  String get account => 'Account';
+  String get account => 'الحساب';
 
   @override
-  String get linkMoreAccounts => 'Link More Accounts';
+  String get linkMoreAccounts => 'ربط المزيد من الحسابات';
 
   @override
-  String get continueWord => 'Continue';
+  String get continueWord => 'متابعة';
 
   @override
-  String get accountNameCantLeftEmpty => 'Account Name Can\'t Left Empty';
+  String get accountNameCantLeftEmpty => 'لا يمكن ترك اسم الحساب فارغاً';
 
   @override
-  String get youShouldEnterMoreThan3Characters =>
-      'You Should Enter More Than 3 Characters';
+  String get youShouldEnterMoreThan3Characters => 'يجب إدخال أكثر من 3 أحرف';
 
   @override
-  String get initialBalanceCantLeftEmpty => 'Initial Balance Can\'t Left Empty';
+  String get initialBalanceCantLeftEmpty =>
+      'لا يمكن ترك الرصيد الابتدائي فارغاً';
 
   @override
-  String get youShouldEnterAValidBalance => 'You Should Enter A Valid Balance';
+  String get youShouldEnterAValidBalance => 'يجب إدخال رصيد صالح';
 
   @override
-  String get bankNameCantLeftEmpty => 'Bank Name Can\'t Left Empty';
+  String get bankNameCantLeftEmpty => 'لا يمكن ترك اسم البنك فارغاً';
 
   @override
-  String get youShouldEnterAValidBankName =>
-      'You Should Enter A Valid Bank Name';
+  String get youShouldEnterAValidBankName => 'يجب إدخال اسم بنك صالح';
 
   @override
-  String get didYouMean => 'Did you mean:';
+  String get didYouMean => 'هل تقصد';
 
   @override
-  String get questionMark => '?';
+  String get questionMark => '؟';
 
   @override
-  String get cardNumberCantLeftEmpty => 'Card Number Can\'t Left Empty';
+  String get cardNumberCantLeftEmpty => 'لا يمكن ترك رقم البطاقة فارغاً';
 
   @override
-  String get youShouldEnterAValidCardNumber =>
-      'You Should Enter A Valid Card Number';
+  String get youShouldEnterAValidCardNumber => 'يجب إدخال رقم بطاقة صالح';
 
   @override
-  String get expiryDateCantLeftEmpty => 'Expiry Date Can\'t Left Empty';
+  String get expiryDateCantLeftEmpty => 'لا يمكن ترك تاريخ الانتهاء فارغاً';
 
   @override
-  String get youShouldEnterAValidExpiryDate =>
-      'You Should Enter A Valid Expiry Date';
+  String get youShouldEnterAValidExpiryDate => 'يجب إدخال تاريخ انتهاء صالح';
 
   @override
   String get disclaimer =>
-      'Disclaimer: This card can not be used with any means cause the cvv is not provided so your card info is fully safe!';
+      'إخلاء مسؤولية: لا يمكن استخدام هذه البطاقة بأي وسيلة لعدم توفر رمز التحقق (CVV)، لذا فإن معلومات بطاقتك آمنة تماماً!';
+
+  @override
+  String accountDetailUpdatedAgo(Object time) {
+    return 'تم التحديث منذ $time';
+  }
+
+  @override
+  String get editAccount => 'تعديل الحساب';
+
+  @override
+  String get viewAll => 'عرض الكل';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get yesterday => 'أمس';
+
+  @override
+  String get noAccount => 'لا يوجد حساب';
 }

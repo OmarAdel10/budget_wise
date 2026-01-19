@@ -1,4 +1,5 @@
 import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
+import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
@@ -58,9 +59,15 @@ void main() async {
       providers: [
         BlocProvider(create: (context) => AuthBloc()),
         BlocProvider(create: (context) => SettingsBloc()),
+        BlocProvider(create: (context) => AccountBloc(
+            settingsBloc: context.read<SettingsBloc>(),
+            accountRepo: accountRepo,
+          )..add(AccountEventFetchAll()),
+        ),
         BlocProvider(
           create: (context) => TransactionBloc(
             settingsBloc: context.read<SettingsBloc>(),
+            accountBloc: context.read<AccountBloc>(),
             transactionRepository: transactionRepo,
           ),
         ),
@@ -85,12 +92,6 @@ void main() async {
             transactionBloc: context.read<TransactionBloc>(),
             categoryBloc: context.read<CategoryBloc>(),
           )..add(StatisticsEventLoadRequested(DateTime.now())),
-        ),
-        BlocProvider(
-          create: (context) => AccountBloc(
-            settingsBloc: context.read<SettingsBloc>(),
-            accountRepo: accountRepo,
-          )..add(AccountEventFetchAll()),
         ),
       ],
       child: MyApp(authRepo: authRepo),
@@ -296,6 +297,17 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: const AddAccountScreen(),
+                );
+              case AccountDetailScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: const AccountDetailScreen(),
                 );
               default:
                 return null;
