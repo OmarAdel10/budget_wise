@@ -30,6 +30,10 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
         if (newCategory.id.isEmpty) {
           newCategory = newCategory.copyWith(id: const Uuid().v4());
         }
+        // Prevent duplicate categories with same title and type
+        final alreadyExists = state.categoriesList.any((c) =>
+            c.categoryTitle == newCategory.categoryTitle && c.type == newCategory.type);
+        if (alreadyExists) return;
         newCategory = newCategory.copyWith(
           userId: userId,
           index: state.categoriesList.length,
