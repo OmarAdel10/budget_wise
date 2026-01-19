@@ -1,0 +1,264 @@
+import 'dart:developer';
+
+import 'package:budget_wise/accounts/data/models/account_model.dart';
+import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_state.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:uuid/uuid.dart';
+
+class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
+  final SettingsBloc settingsBloc;
+  final AccountRepository accountRepo;
+  AccountBloc({required this.settingsBloc, required this.accountRepo})
+    : super(AccountStateInitial(accountsList: [], netWorth: 0)) {
+    on<AccountEventFetchAll>((event, emit) async {
+      if (settingsBloc.state.model.isSyncToCloudEnabled) {
+        try {
+          final accounts = await accountRepo.fetchAllAccounts();
+          emit(
+            AccountStateSuccess(
+              accountsList: accounts,
+              netWorth: state.netWorth,
+            ),
+          );
+        } catch (e) {
+          log('Failed to fetch accounts: ${e.toString()}');
+          emit(
+            AccountStateError(
+              message: 'Failed to fetch accounts: ${e.toString()}',
+              accountsList: state.accountsList,
+              netWorth: state.netWorth,
+            ),
+          );
+        }
+      }
+    });
+
+    on<AccountEventCreateAccount>((event, emit) {
+      final user = accountRepo.authRepo.currentUser;
+      try {
+        final newAccount = event.model
+          ..id = const Uuid().v4()
+          ..userId = user != null ? user.uid : ''
+          ..isSynced = false;
+        final updatedList = [newAccount, ...state.accountsList];
+        emit(
+          AccountStateSuccess(
+            accountsList: updatedList,
+            netWorth: state.netWorth + newAccount.initialBalance,
+          ),
+        );
+        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+          accountRepo
+              .addAccount(newAccount)
+              .then(
+                (_) => add(AccountEventMarkSynced(accountId: newAccount.id)),
+              )
+              .catchError((e) {
+                log('Cloud sync failed(create method): ${e.toString()}');
+                emit(
+                  AccountStateError(
+                    message: 'Cloud sync failed: ${e.toString()}',
+                    accountsList: state.accountsList,
+                    netWorth: state.netWorth,
+                  ),
+                );
+              });
+        }
+      } catch (e) {
+        log('Failed to create new account: ${e.toString()}');
+        emit(
+          AccountStateError(
+            message: 'Failed to create new account: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
+
+    on<AccountEventEditAccount>((event, emit) {
+      try {
+        final updatedAccount = event.model;
+        final updatedList = state.accountsList
+            .map(
+              (account) =>
+                  account.id == updatedAccount.id ? updatedAccount : account,
+            )
+            .toList();
+        emit(
+          AccountStateSuccess(
+            accountsList: updatedList,
+            netWorth: state.netWorth,
+          ),
+        );
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+          accountRepo
+              .addAccount(updatedAccount)
+              .then(
+                (_) =>
+                    add(AccountEventMarkSynced(accountId: updatedAccount.id)),
+              )
+              .catchError((e) {
+                log('Cloud sync failed(update method): ${e.toString()}');
+                emit(
+                  AccountStateError(
+                    message: 'Cloud sync failed: ${e.toString()}',
+                    accountsList: state.accountsList,
+                    netWorth: state.netWorth,
+                  ),
+                );
+              });
+        }
+      } catch (e) {
+        log('Failed to update account: ${e.toString()}');
+        emit(
+          AccountStateError(
+            message: 'Failed to update account: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
+
+    on<AccountEventDeleteAccount>((event, emit) {
+      try {
+        final updatedList = state.accountsList
+            .where((account) => account.id != event.accountId)
+            .toList();
+        emit(
+          AccountStateSuccess(
+            accountsList: updatedList,
+            netWorth: state.netWorth,
+          ),
+        );
+
+        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+          accountRepo.deleteAccount(event.accountId).catchError((e) {
+            log('Cloud sync failed(delete method): ${e.toString()}');
+            emit(
+              AccountStateError(
+                message: 'Cloud sync failed: ${e.toString()}',
+                accountsList: state.accountsList,
+                netWorth: state.netWorth,
+              ),
+            );
+          });
+        }
+      } catch (e) {
+        log('Failed to delete account: ${e.toString()}');
+        emit(
+          AccountStateError(
+            message: 'Failed to delete account: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
+
+    on<AccountEventMarkSynced>((event, emit) {
+      try {
+        final updatedList = state.accountsList
+            .map(
+              (account) => account.id == event.accountId
+                  ? account.copyWith(isSynced: true)
+                  : account,
+            )
+            .toList();
+        emit(
+          AccountStateSuccess(
+            accountsList: updatedList,
+            netWorth: state.netWorth,
+          ),
+        );
+      } catch (e) {
+        log('Failed to mark account synced: ${e.toString()}');
+        emit(
+          AccountStateError(
+            message: 'Failed to mark account synced: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
+
+    on<AccountEventSyncUnsynced>((event, emit) async {
+      try {
+        final unSynced = state.accountsList
+            .where((account) => account.isSynced == false)
+            .toList();
+        if (unSynced.isEmpty) return;
+
+        final synced = unSynced
+            .map(
+              (unSyncedAccount) => accountRepo
+                  .addAccount(unSyncedAccount)
+                  .then(
+                    (e) => add(
+                      AccountEventMarkSynced(accountId: unSyncedAccount.id),
+                    ),
+                  )
+                  .catchError((e) {
+                    log('Cloud sync failed(delete method): ${e.toString()}');
+                    emit(
+                      AccountStateError(
+                        message: 'Cloud sync failed: ${e.toString()}',
+                        accountsList: state.accountsList,
+                        netWorth: state.netWorth,
+                      ),
+                    );
+                  }),
+            )
+            .toList();
+        await Future.wait(synced);
+      } catch (e) {
+        log('Failed to sync the unsynced account: ${e.toString()}');
+        emit(
+          AccountStateError(
+            message: 'Failed to sync the unsynced account: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  AccountState? fromJson(Map<String, dynamic> json) {
+    try {
+      final List<dynamic>? list = json['accountsList'];
+      final netWorth = json['netWorth'];
+
+      if (list == null || netWorth == null) {
+        return const AccountStateSuccess(accountsList: [], netWorth: 0);
+      }
+      final List<AccountModel> accountsList = list
+          .map((e) => AccountModel.fromMap(e))
+          .toList();
+      return AccountStateSuccess(
+        accountsList: accountsList,
+        netWorth: netWorth,
+      );
+    } catch (e) {
+      log('Error During Serialization: $e');
+      return null;
+    }
+  }
+
+  @override
+  Map<String, dynamic>? toJson(AccountState state) {
+    return {
+      'accountsList': state.accountsList
+          .map((account) => account.toMap())
+          .toList(),
+      'netWorth': state.netWorth,
+    };
+  }
+}
