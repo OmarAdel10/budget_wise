@@ -17,14 +17,13 @@ import '../../../shared/constants/text_styles.dart';
 import '../../../auth/view/screens/login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({super.key, });
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final AuthRepository _authRepository = AuthRepository();
 
   void _handleLogout() {
     context.read<AuthBloc>().add(AuthEventSignOut());
@@ -37,7 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final linkedInUri = Uri.parse('https://www.linkedin.com/in/omaradel10');
     final emailUri = Uri(scheme: 'mailto', path: 'omaradel1.dev@gmail.com');
-    final AuthRepository authRepository = AuthRepository();
+    final AuthRepository authRepository = context.read<AuthRepository>();
     final user = authRepository.currentUser;
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
@@ -116,7 +115,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
-              _authRepository.isEmailPasswordProvider
+              authRepository.isEmailPasswordProvider
                   ? Column(
                       children: [
                         const SizedBox(height: AppSpacing.sm),

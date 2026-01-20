@@ -28,7 +28,6 @@ class AddAccountScreen extends StatefulWidget {
 }
 
 class _AddAccountScreenState extends State<AddAccountScreen> {
-  final AuthRepository _authRepo = AuthRepository();
   final TextEditingController accountNameController = TextEditingController();
   final TextEditingController balanceController = TextEditingController();
   final TextEditingController bankNameController = TextEditingController();
@@ -169,7 +168,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           balance: double.tryParse(balanceController.text) ?? 0.0,
           currency: selectedCurrency,
           createdAt: DateTime.now(),
-          updatedAt: DateTime.now()
+          updatedAt: DateTime.now(),
         );
         context.read<AccountBloc>().add(
           AccountEventCreateAccount(model: newAccount),
@@ -290,7 +289,9 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                   Expanded(
                     flex: 2,
                     child: ElevatedButton(
-                      onPressed: _showCardEntry ? _onSaveCard : _onAddAccountTap,
+                      onPressed: _showCardEntry
+                          ? _onSaveCard
+                          : _onAddAccountTap,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryAccent,
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -574,6 +575,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
   }
 
   Widget _buildPart2(AppLocalizations l10n) {
+    final authRepo = context.read<AuthRepository>();
     return Form(
       key: _formKeyScreen2,
       child: Column(
@@ -603,7 +605,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           CreditCardPreview(
             bankName: bankNameController.text.trim().toUpperCase(),
             cardNumber: cardNumberController.text,
-            cardHolderName: _authRepo.currentUser?.displayName ?? '',
+            cardHolderName: authRepo.currentUser?.displayName ?? '',
             expiryDate: expiryController.text,
             cardType: selectedCardBrand,
           ),
@@ -893,7 +895,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.danger,
                   ),
-                  textAlign: TextAlign.center
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),

@@ -50,58 +50,72 @@ void main() async {
       (await getApplicationDocumentsDirectory()).path,
     ),
   );
-  final AuthRepository authRepo = AuthRepository();
-  final TransactionRepository transactionRepo = TransactionRepository();
-  final CategoryRepository categoryRepo = CategoryRepository();
-  final AccountRepository accountRepo = AccountRepository();
+
   runApp(
-    MultiBlocProvider(
+    MultiRepositoryProvider(
       providers: [
-        BlocProvider(create: (context) => AuthBloc()),
-        BlocProvider(create: (context) => SettingsBloc()),
-        BlocProvider(create: (context) => AccountBloc(
-            settingsBloc: context.read<SettingsBloc>(),
-            accountRepo: accountRepo,
-          )..add(AccountEventFetchAll()),
-        ),
-        BlocProvider(
-          create: (context) => TransactionBloc(
-            settingsBloc: context.read<SettingsBloc>(),
-            accountBloc: context.read<AccountBloc>(),
-            transactionRepository: transactionRepo,
-          ),
-        ),
-        BlocProvider(
-          create: (context) => CategoryBloc(
-            authRepository: authRepo,
-            categoryRepository: categoryRepo,
-            settingsBloc: context.read<SettingsBloc>(),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => HomeBloc(
-            categoryBloc: context.read<CategoryBloc>(),
-            settingsBloc: context.read<SettingsBloc>(),
-            transactionBloc: context.read<TransactionBloc>(),
-            categoryRepository: categoryRepo,
-            transactionRepository: transactionRepo,
-          ),
-        ),
-        BlocProvider(
-          create: (context) => StatisticsBloc(
-            transactionBloc: context.read<TransactionBloc>(),
-            categoryBloc: context.read<CategoryBloc>(),
-          )..add(StatisticsEventLoadRequested(DateTime.now())),
-        ),
+        RepositoryProvider(create: (context) => AuthRepository()),
+        RepositoryProvider(create: (context) => TransactionRepository(
+          authRepository: context.read<AuthRepository>(),
+        )),
+        RepositoryProvider(create: (context) => CategoryRepository(
+          authRepository: context.read<AuthRepository>(),
+        )),
+        RepositoryProvider(create: (context) => AccountRepository(
+          authRepo: context.read<AuthRepository>(),
+        )),
       ],
-      child: MyApp(authRepo: authRepo),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => AuthBloc(
+            authRepository: context.read<AuthRepository>(),
+          )),
+          BlocProvider(create: (context) => SettingsBloc()),
+          BlocProvider(
+            create: (context) => AccountBloc(
+              settingsBloc: context.read<SettingsBloc>(),
+              accountRepo: context.read<AccountRepository>(),
+            )..add(AccountEventFetchAll()),
+          ),
+          BlocProvider(
+            create: (context) => TransactionBloc(
+              settingsBloc: context.read<SettingsBloc>(),
+              accountBloc: context.read<AccountBloc>(),
+              transactionRepository: context.read<TransactionRepository>(),
+              authRepository: context.read<AuthRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => CategoryBloc(
+              authRepository: context.read<AuthRepository>(),
+              categoryRepository: context.read<CategoryRepository>(),
+              settingsBloc: context.read<SettingsBloc>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => HomeBloc(
+              categoryBloc: context.read<CategoryBloc>(),
+              settingsBloc: context.read<SettingsBloc>(),
+              transactionBloc: context.read<TransactionBloc>(),
+              categoryRepository: context.read<CategoryRepository>(),
+              transactionRepository: context.read<TransactionRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => StatisticsBloc(
+              transactionBloc: context.read<TransactionBloc>(),
+              categoryBloc: context.read<CategoryBloc>(),
+            )..add(StatisticsEventLoadRequested(DateTime.now())),
+          ),
+        ],
+        child: MyApp(),
+      ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final AuthRepository authRepo;
-  const MyApp({super.key, required this.authRepo});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -285,7 +299,9 @@ class MyApp extends StatelessWidget {
                   reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
-                  child: const EditProfileScreen(),
+                  child: EditProfileScreen(
+                    authRepository: context.read<AuthRepository>(),
+                  ),
                 );
               case AddAccountScreen.routeName:
                 return PageTransition(
@@ -315,7 +331,7 @@ class MyApp extends StatelessWidget {
           },
           initialRoute:
               context.read<SettingsBloc>().state.model.isOnboardingCompleted
-              ? authRepo.currentUser != null
+              ? context.read<AuthRepository>().currentUser != null
                     ? context.read<SettingsBloc>().state.model.localAuthEnabled
                           ? LocalAuthScreen.routeName
                           : MainScreen.routeName

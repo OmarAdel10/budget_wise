@@ -41,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    final AuthRepository authRepository = AuthRepository();
+    final AuthRepository authRepository = context.read<AuthRepository>();
     if (context.read<SettingsBloc>().state.model.isDataSyncedAfterFirstLogin ==
             false &&
         authRepository.currentUser != null) {

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
@@ -14,13 +15,14 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
   final SettingsBloc settingsBloc;
   final AccountBloc accountBloc;
   final TransactionRepository transactionRepository;
+  final AuthRepository authRepository;
 
   TransactionBloc({
     required this.settingsBloc,
     required this.accountBloc,
     required this.transactionRepository,
+    required this.authRepository,
   }) : super(const TransactionStateInitial(transactionsList: [])) {
-    final authRepository = transactionRepository.authRepository;
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.isSyncToCloudEnabled) {
         add(const TransactionEventFetchAll());
@@ -40,12 +42,14 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         final amountDelta = newTransaction.type == TransactionType.income
             ? newTransaction.transactionAmount
             : -newTransaction.transactionAmount;
-        accountBloc.add(
-          AccountEventUpdateBalance(
-            accountId: newTransaction.accountId,
-            amountDelta: amountDelta,
-          ),
-        );
+        if (newTransaction.accountId.isNotEmpty) {
+          accountBloc.add(
+            AccountEventUpdateBalance(
+              accountId: newTransaction.accountId,
+              amountDelta: amountDelta,
+            ),
+          );
+        }
         if (settingsBloc.state.model.isSyncToCloudEnabled) {
           transactionRepository
               .addTransaction(newTransaction)
@@ -94,12 +98,13 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           final oldAmountDelta = oldTransaction.type == TransactionType.income
               ? oldTransaction.transactionAmount
               : -oldTransaction.transactionAmount;
-          final newAmountDelta = updatedTransaction.type == TransactionType.income
+          final newAmountDelta =
+              updatedTransaction.type == TransactionType.income
               ? updatedTransaction.transactionAmount
               : -updatedTransaction.transactionAmount;
           final diff = newAmountDelta - oldAmountDelta;
 
-          if (diff != 0) {
+          if (diff != 0 && updatedTransaction.accountId.isNotEmpty) {
             accountBloc.add(
               AccountEventUpdateBalance(
                 accountId: updatedTransaction.accountId,
@@ -109,25 +114,30 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           }
         } else {
           // Different account: reverse old, apply new
-          final oldAmountReversal = oldTransaction.type == TransactionType.income
+          final oldAmountReversal =
+              oldTransaction.type == TransactionType.income
               ? -oldTransaction.transactionAmount
               : oldTransaction.transactionAmount;
-          final newAmountDelta = updatedTransaction.type == TransactionType.income
+          final newAmountDelta =
+              updatedTransaction.type == TransactionType.income
               ? updatedTransaction.transactionAmount
               : -updatedTransaction.transactionAmount;
 
-          accountBloc.add(
-            AccountEventUpdateBalance(
-              accountId: oldTransaction.accountId,
-              amountDelta: oldAmountReversal,
-            ),
-          );
-          accountBloc.add(
-            AccountEventUpdateBalance(
-              accountId: updatedTransaction.accountId,
-              amountDelta: newAmountDelta,
-            ),
-          );
+          if (oldTransaction.accountId.isNotEmpty &&
+              updatedTransaction.accountId.isNotEmpty) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: oldTransaction.accountId,
+                amountDelta: oldAmountReversal,
+              ),
+            );
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: updatedTransaction.accountId,
+                amountDelta: newAmountDelta,
+              ),
+            );
+          }
         }
 
         if (settingsBloc.state.model.isSyncToCloudEnabled) {

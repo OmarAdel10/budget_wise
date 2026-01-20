@@ -27,7 +27,7 @@ class AccountDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final account = ModalRoute.of(context)!.settings.arguments as AccountModel;
-    final authRepo = AuthRepository();
+    final authRepo = context.read<AuthRepository>();
     final userName = authRepo.currentUser?.displayName ?? '';
     final categoryState = context.watch<CategoryBloc>().state;
 

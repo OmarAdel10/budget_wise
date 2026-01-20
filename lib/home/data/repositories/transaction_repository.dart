@@ -3,7 +3,8 @@ import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TransactionRepository {
-  final AuthRepository authRepository = AuthRepository();
+  final AuthRepository authRepository;
+  const TransactionRepository({required this.authRepository});
 
   CollectionReference<TransactionModel> getTransactionsCollection() =>
       FirebaseFirestore.instance

@@ -3,7 +3,8 @@ import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CategoryRepository {
-  final AuthRepository _authRepository = AuthRepository();
+  final AuthRepository authRepository;
+  const CategoryRepository({required this.authRepository});
 
   CollectionReference<CategoryModel> getCategoriesCollection() =>
       FirebaseFirestore.instance
@@ -27,10 +28,10 @@ class CategoryRepository {
     final CollectionReference<CategoryModel> collection =
         getCategoriesCollection();
     final QuerySnapshot<CategoryModel> querySnapshot = await collection.get();
-    if (_authRepository.currentUser != null) {
+    if (authRepository.currentUser != null) {
       for (final doc in querySnapshot.docs) {
         await doc.reference.update({
-          'userId': _authRepository.currentUser!.uid,
+          'userId': authRepository.currentUser!.uid,
         });
       }
     }
@@ -39,7 +40,7 @@ class CategoryRepository {
   Future<List<CategoryModel>> getAllCategories() async {
     final CollectionReference<CategoryModel> collection =
         getCategoriesCollection();
-    final user = _authRepository.currentUser;
+    final user = authRepository.currentUser;
     if (user != null) {
       final querySnapShot = await collection
           .where('userId', isEqualTo: user.uid)
@@ -54,7 +55,7 @@ class CategoryRepository {
   Future<List<CategoryModel>> fetchAllCategories() async {
     final CollectionReference<CategoryModel> collection =
         getCategoriesCollection();
-    final user = _authRepository.currentUser;
+    final user = authRepository.currentUser;
     if (user != null) {
       final querySnapShot =
           await collection.where('userId', isEqualTo: user.uid).orderBy('index').get();

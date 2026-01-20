@@ -14,16 +14,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class EditProfileScreen extends StatefulWidget {
+  final AuthRepository authRepository;
   static const String routeName = '/edit-profile';
 
-  const EditProfileScreen({super.key});
+  const EditProfileScreen({super.key, required this.authRepository});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final AuthRepository _authRepository = AuthRepository();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -44,7 +44,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final user = _authRepository.currentUser;
+    final user = widget.authRepository.currentUser;
 
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
@@ -63,7 +63,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              final AuthRepository authRepository = AuthRepository();
+              final AuthRepository authRepository = context.read<AuthRepository>();
               if (state is AuthStateLoading) {
                 showDialog(
                   context: context,

@@ -85,7 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              final AuthRepository authRepository = AuthRepository();
               if (state is AuthStateLoading) {
                 showDialog(
                   context: context,
@@ -115,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ).showSnackBar(SnackBar(content: Text(state.message)));
               }
               if (state is AuthStateSuccess) {
-                if (authRepository.currentUser != null) {
+                if (context.read<AuthRepository>().currentUser != null) {
                   context.read<TransactionBloc>().add(
                     const TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
                   );

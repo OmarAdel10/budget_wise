@@ -95,7 +95,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: IntrinsicHeight(
                     child: BlocListener<AuthBloc, AuthState>(
                       listener: (context, state) {
-                        final AuthRepository authRepository = AuthRepository();
                         if (state is AuthStateLoading) {
                           showDialog(
                             context: context,
@@ -131,7 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           );
                         }
                         if (state is AuthStateSuccess) {
-                          if (authRepository.currentUser != null) {
+                          if (context.read<AuthRepository>().currentUser != null) {
                             context.read<TransactionBloc>().add(
                               const TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
                             );

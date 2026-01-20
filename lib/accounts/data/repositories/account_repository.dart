@@ -3,7 +3,8 @@ import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AccountRepository {
-  final AuthRepository authRepo = AuthRepository();
+  final AuthRepository authRepo;
+  const AccountRepository({required this.authRepo});
 
   CollectionReference<AccountModel> getAccountCollection() => FirebaseFirestore
       .instance

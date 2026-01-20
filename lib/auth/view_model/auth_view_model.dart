@@ -7,7 +7,8 @@ import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthStateInitial()) {
+  final AuthRepository authRepository;
+  AuthBloc({required this.authRepository}) : super(AuthStateInitial()) {
     on<AuthEventSignUp>(_onAuthEventSignUp);
     on<AuthEventSignIn>(_onAuthEventSignIn);
     on<AuthEventSignOut>(_onAuthEventSignOut);
@@ -18,7 +19,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventEditProfileChangePassword>(_onAuthEventEditProfileChangePassword);
   }
 
-  final AuthRepository _authRepository = AuthRepository();
 
   Future<void> _onAuthEventSignUp(
     AuthEventSignUp event,
@@ -26,12 +26,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.signUp(
+      await authRepository.signUp(
         email: event.email,
         password: event.password,
       );
-      await _authRepository.currentUser!.updateDisplayName(event.name);
-      emit(AuthStateSuccess(user: _authRepository.currentUser));
+      await authRepository.currentUser!.updateDisplayName(event.name);
+      emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
       log(e.toString());
@@ -44,11 +44,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.signIn(
+      await authRepository.signIn(
         email: event.email,
         password: event.password,
       );
-      emit(AuthStateSuccess(user: _authRepository.currentUser));
+      emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
       log(e.toString());
@@ -61,7 +61,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.signOut();
+      await authRepository.signOut();
       emit(AuthStateSuccess());
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
@@ -75,7 +75,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.resetPassword(email: event.email);
+      await authRepository.resetPassword(email: event.email);
       emit(AuthStateSuccess());
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
@@ -89,8 +89,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.signInWithGoogle();
-      emit(AuthStateSuccess(user: _authRepository.currentUser));
+      await authRepository.signInWithGoogle();
+      emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
       log(e.toString());
@@ -103,8 +103,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.localAuth();
-      emit(AuthStateSuccess(user: _authRepository.currentUser));
+      await authRepository.localAuth();
+      emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
       log(e.toString());
@@ -114,8 +114,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onAuthEventEditProfileChangeName(AuthEventEditProfileChangeName event, Emitter<AuthState> emit) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.updateProfileUserName(name: event.name);
-      emit(AuthStateSuccess(user: _authRepository.currentUser));
+      await authRepository.updateProfileUserName(name: event.name);
+      emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
       log(e.toString());
@@ -125,8 +125,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onAuthEventEditProfileChangePassword(AuthEventEditProfileChangePassword event, Emitter<AuthState> emit) async {
     try {
       emit(AuthStateLoading());
-      await _authRepository.updateProfileUserPassword(password: event.password);
-      emit(AuthStateSuccess(user: _authRepository.currentUser));
+      await authRepository.updateProfileUserPassword(password: event.password);
+      emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
       log(e.toString());
