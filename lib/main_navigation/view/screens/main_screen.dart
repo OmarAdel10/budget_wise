@@ -41,23 +41,18 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    final AuthRepository authRepository = context.read<AuthRepository>();
-    if (context.read<SettingsBloc>().state.model.isDataSyncSuccess == false &&
-        authRepository.currentUser != null) {
+    if (context.read<SettingsBloc>().state.model.hasLoggedIn &&
+        context.read<AuthRepository>().currentUser != null) {
       context.read<TransactionBloc>().add(
-        TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly(),
+        TransactionEventCheckAndSyncPending(),
       );
-      context.read<CategoryBloc>().add(
-        CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
-      );
-      context.read<SettingsBloc>().add(SettingsEventSyncDataAfterFirstLogin());
+      context.read<CategoryBloc>().add(CategoryEventCheckAndSyncPending());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: _screens[_currentIndex],
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: _currentIndex,
