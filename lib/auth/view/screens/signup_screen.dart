@@ -133,10 +133,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           if (context.read<AuthRepository>().currentUser !=
                               null) {
                             context.read<TransactionBloc>().add(
-                              const TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly(),
+                              const TransactionEventSyncPendingOnLogin(),
                             );
                             context.read<CategoryBloc>().add(
-                              const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+                              const CategoryEventSyncPendingOnLogin(),
                             );
                             Navigator.of(
                               context,
