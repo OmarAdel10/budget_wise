@@ -1153,6 +1153,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Account'**
   String get noAccount;
+
+  /// No description provided for @cloudBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud Backup'**
+  String get cloudBackup;
+
+  /// No description provided for @cloudBackupDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync securely to the cloud & backup your data'**
+  String get cloudBackupDesc;
+
+  /// No description provided for @localOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Only'**
+  String get localOnly;
+
+  /// No description provided for @localOnlyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Work offline on this device only'**
+  String get localOnlyDesc;
+
+  /// No description provided for @authChoiceDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change this later in Settings. Local data won\'t sync if you choose local-only now.'**
+  String get authChoiceDisclaimer;
+
+  /// No description provided for @loginNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Now'**
+  String get loginNow;
+
+  /// No description provided for @enableCloudSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Cloud Sync'**
+  String get enableCloudSync;
+
+  /// No description provided for @syncStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Status'**
+  String get syncStatus;
+
+  /// No description provided for @lastSyncTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced: {time}'**
+  String lastSyncTime(Object time);
+
+  /// No description provided for @localOnlyStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Local only (no cloud sync)'**
+  String get localOnlyStatus;
+
+  /// No description provided for @offlineWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'You are working offline. Changes will be synced once you login.'**
+  String get offlineWarning;
+
+  /// No description provided for @syncInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing your data...'**
+  String get syncInProgress;
+
+  /// No description provided for @syncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed. Will retry later.'**
+  String get syncFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -550,4 +550,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noAccount => 'No Account';
+
+  @override
+  String get cloudBackup => 'Cloud Backup';
+
+  @override
+  String get cloudBackupDesc => 'Sync securely to the cloud & backup your data';
+
+  @override
+  String get localOnly => 'Local Only';
+
+  @override
+  String get localOnlyDesc => 'Work offline on this device only';
+
+  @override
+  String get authChoiceDisclaimer =>
+      'You can change this later in Settings. Local data won\'t sync if you choose local-only now.';
+
+  @override
+  String get loginNow => 'Login Now';
+
+  @override
+  String get enableCloudSync => 'Enable Cloud Sync';
+
+  @override
+  String get syncStatus => 'Sync Status';
+
+  @override
+  String lastSyncTime(Object time) {
+    return 'Last synced: $time';
+  }
+
+  @override
+  String get localOnlyStatus => 'Local only (no cloud sync)';
+
+  @override
+  String get offlineWarning =>
+      'You are working offline. Changes will be synced once you login.';
+
+  @override
+  String get syncInProgress => 'Syncing your data...';
+
+  @override
+  String get syncFailed => 'Sync failed. Will retry later.';
 }

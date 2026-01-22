@@ -3,6 +3,8 @@ import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
@@ -130,6 +132,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   );
                   context.read<CategoryBloc>().add(
                     const CategoryEventSyncPendingOnLogin(),
+                  );
+                  context.read<AccountBloc>().add(
+                    const AccountEventSyncPendingOnLogin(),
                   );
                   if (isFromOnboarding) {
                     Navigator.of(context).pop(true);

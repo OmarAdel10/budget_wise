@@ -178,5 +178,18 @@
   "viewAll": "View All",
   "today": "Today",
   "yesterday": "Yesterday",
-  "noAccount": "No Account"
+  "noAccount": "No Account",
+  "cloudBackup": "Cloud Backup",
+  "cloudBackupDesc": "Sync securely to the cloud & backup your data",
+  "localOnly": "Local Only",
+  "localOnlyDesc": "Work offline on this device only",
+  "authChoiceDisclaimer": "You can change this later in Settings. Local data won't sync if you choose local-only now.",
+  "loginNow": "Login Now",
+  "enableCloudSync": "Enable Cloud Sync",
+  "syncStatus": "Sync Status",
+  "lastSyncTime": "Last synced: {time}",
+  "localOnlyStatus": "Local only (no cloud sync)",
+  "offlineWarning": "You are working offline. Changes will be synced once you login.",
+  "syncInProgress": "Syncing your data...",
+  "syncFailed": "Sync failed. Will retry later."
 }

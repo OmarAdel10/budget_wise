@@ -545,4 +545,48 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noAccount => 'لا يوجد حساب';
+
+  @override
+  String get cloudBackup => 'النسخ الاحتياطي السحابي';
+
+  @override
+  String get cloudBackupDesc =>
+      'قم بالمزامنة بأمان إلى السحابة والنسخ الاحتياطي لبيانات';
+
+  @override
+  String get localOnly => 'محلي فقط';
+
+  @override
+  String get localOnlyDesc => 'العمل بلا اتصال على هذا الجهاز فقط';
+
+  @override
+  String get authChoiceDisclaimer =>
+      'يمكنك تغيير هذا لاحقاً في الإعدادات. لن تتم مزامنة البيانات المحلية إذا اخترت الوضع المحلي الآن.';
+
+  @override
+  String get loginNow => 'تسجيل الدخول الآن';
+
+  @override
+  String get enableCloudSync => 'تفعيل المزامنة السحابية';
+
+  @override
+  String get syncStatus => 'حالة المزامنة';
+
+  @override
+  String lastSyncTime(Object time) {
+    return 'تمت المزامنة آخر مرة: $time';
+  }
+
+  @override
+  String get localOnlyStatus => 'محلي فقط (بدون مزامنة سحابية)';
+
+  @override
+  String get offlineWarning =>
+      'أنت تعمل بدون اتصال. سيتم مزامنة التغييرات بمجرد تسجيل الدخول.';
+
+  @override
+  String get syncInProgress => 'جاري مزامنة البيانات...';
+
+  @override
+  String get syncFailed => 'فشلت المزامنة. سيتم إعادة المحاولة لاحقاً.';
 }

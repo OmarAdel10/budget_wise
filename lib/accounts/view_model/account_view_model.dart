@@ -333,6 +333,69 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         );
       }
     });
+
+    on<AccountEventSyncPendingOnLogin>((event, emit) async {
+      try {
+        final pendingAccounts = state.accountsList
+            .where(
+              (account) =>
+                  account.isSynced == false &&
+                  accountRepo.authRepo.currentUser != null,
+            )
+            .toList();
+        if (pendingAccounts.isEmpty) return;
+        for (var account in pendingAccounts) {
+          final accountWithUserId = account.copyWith(
+            userId: accountRepo.authRepo.currentUser!.uid,
+          );
+          await accountRepo
+              .addAccount(accountWithUserId)
+              .then(
+                (_) => add(
+                  AccountEventMarkSynced(accountId: accountWithUserId.id),
+                ),
+              )
+              .catchError((e) {
+                log('Failed to sync account ${account.id} on login: $e');
+              });
+        }
+      } catch (e) {
+        emit(
+          AccountStateError(
+            message: 'Sync on login failed: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
+
+    on<AccountEventCheckAndSyncPending>((event, emit) async {
+      try {
+        if (accountRepo.authRepo.currentUser == null) return;
+
+        final pendingAccounts = state.accountsList
+            .where((a) => a.isSynced == false)
+            .toList();
+        if (pendingAccounts.isEmpty) return;
+        for (var account in pendingAccounts) {
+          await accountRepo
+              .addAccount(account)
+              .then((_) => add(AccountEventMarkSynced(accountId: account.id)))
+              .catchError((e) {
+                log('Failed to sync account ${account.id}: $e');
+              });
+        }
+      } catch (e) {
+        emit(
+          AccountStateError(
+            message: 'Check and sync failed: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
+      }
+    });
   }
 
   @override
