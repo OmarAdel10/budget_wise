@@ -34,7 +34,10 @@ class AccountEventEditAccount extends AccountEvent {
 class AccountEventUpdateUpdatedAtField extends AccountEvent {
   final String accountId;
   final DateTime updateDate;
-  const AccountEventUpdateUpdatedAtField({required this.accountId, required this.updateDate});
+  const AccountEventUpdateUpdatedAtField({
+    required this.accountId,
+    required this.updateDate,
+  });
 
   @override
   List<Object> get props => [accountId, updateDate];
@@ -67,8 +70,25 @@ class AccountEventSyncUnsynced extends AccountEvent {
 class AccountEventUpdateBalance extends AccountEvent {
   final String accountId;
   final double amountDelta;
-  const AccountEventUpdateBalance({required this.accountId, required this.amountDelta});
+  const AccountEventUpdateBalance({
+    required this.accountId,
+    required this.amountDelta,
+  });
 
   @override
   List<Object> get props => [accountId, amountDelta];
+}
+
+class AccountEventSyncPendingOnLogin extends AccountEvent {
+  const AccountEventSyncPendingOnLogin();
+
+  @override
+  List<Object> get props => [];
+}
+
+class AccountEventCheckAndSyncPending extends AccountEvent {
+  const AccountEventCheckAndSyncPending();
+
+  @override
+  List<Object> get props => [];
 }

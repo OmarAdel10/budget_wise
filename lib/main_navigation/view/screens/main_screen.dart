@@ -1,4 +1,6 @@
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
@@ -44,9 +46,12 @@ class _MainScreenState extends State<MainScreen> {
     if (context.read<SettingsBloc>().state.model.hasLoggedIn &&
         context.read<AuthRepository>().currentUser != null) {
       context.read<TransactionBloc>().add(
-        TransactionEventCheckAndSyncPending(),
+        const TransactionEventCheckAndSyncPending(),
       );
-      context.read<CategoryBloc>().add(CategoryEventCheckAndSyncPending());
+      context.read<CategoryBloc>().add(
+        const CategoryEventCheckAndSyncPending(),
+      );
+      context.read<AccountBloc>().add(const AccountEventCheckAndSyncPending());
     }
   }
 
