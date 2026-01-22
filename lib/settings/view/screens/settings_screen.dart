@@ -1,3 +1,4 @@
+import 'package:budget_wise/auth/data/models/user_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
@@ -62,98 +63,128 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // Profile Section
               Text(l10n.profile, style: AppTextStyles.heading3),
               const SizedBox(height: AppSpacing.md),
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: AppColors.primaryAccent,
-                      backgroundImage: user?.photoURL != null
-                          ? NetworkImage(user!.photoURL!)
-                          : null,
-                      child: user?.photoURL == null
-                          ? Text(
-                              (user?.displayName ?? "U")
-                                  .substring(0, 1)
-                                  .toUpperCase(),
-                              style: AppTextStyles.heading2.copyWith(
-                                color: AppColors.textInverse,
-                              ),
-                            )
-                          : null,
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          BlocBuilder<AuthBloc, AuthState>(
-                            builder: (context, state) {
-                              return Text(
-                                user?.displayName ?? '',
-                                style: AppTextStyles.heading3,
-                                overflow: TextOverflow.ellipsis,
-                              );
-                            },
-                          ),
-                          Text(
-                            user?.email ?? '',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textSecondary,
+              if (user != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: AppColors.primaryAccent,
+                        backgroundImage: user.photoURL != null
+                            ? NetworkImage(user.photoURL!)
+                            : null,
+                        child: user.photoURL == null
+                            ? Text(
+                                (user.displayName ?? "U")
+                                    .substring(0, 1)
+                                    .toUpperCase(),
+                                style: AppTextStyles.heading2.copyWith(
+                                  color: AppColors.textInverse,
+                                ),
+                              )
+                            : null,
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            BlocBuilder<AuthBloc, AuthState>(
+                              builder: (context, state) {
+                                return Text(
+                                  user.displayName ?? '',
+                                  style: AppTextStyles.heading3,
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              },
                             ),
-                            overflow: TextOverflow.ellipsis,
+                            Text(
+                              user.email ?? '',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                authRepository.isEmailPasswordProvider
+                    ? Column(
+                        children: [
+                          const SizedBox(height: AppSpacing.sm),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(
+                                context,
+                              ).pushNamed(EditProfileScreen.routeName);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              decoration: BoxDecoration(
+                                color: AppColors.cardBackground,
+                                borderRadius: BorderRadius.circular(
+                                  AppSpacing.radiusMd,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    PhosphorIcons.pencil(
+                                      PhosphorIconsStyle.regular,
+                                    ),
+                                    color: AppColors.textPrimary,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: AppSpacing.sm),
+                                  Text(
+                                    l10n.editProfile,
+                                    style: AppTextStyles.bodyLarge,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
+                      )
+                    : const SizedBox.shrink(),
+              ] else ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pushNamed(
+                      LoginScreen.routeName,
+                      arguments: {'loginRouting': LoginRouting.fromSettings},
+                    ),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
+                      side: const BorderSide(color: AppColors.danger),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusMd,
+                        ),
                       ),
                     ),
-                  ],
+                    child: Text(
+                      l10n.login,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: AppColors.danger,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              authRepository.isEmailPasswordProvider
-                  ? Column(
-                      children: [
-                        const SizedBox(height: AppSpacing.sm),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pushNamed(EditProfileScreen.routeName);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(AppSpacing.md),
-                            decoration: BoxDecoration(
-                              color: AppColors.cardBackground,
-                              borderRadius: BorderRadius.circular(
-                                AppSpacing.radiusMd,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  PhosphorIcons.pencil(
-                                    PhosphorIconsStyle.regular,
-                                  ),
-                                  color: AppColors.textPrimary,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: AppSpacing.sm),
-                                Text(
-                                  l10n.editProfile,
-                                  style: AppTextStyles.bodyLarge,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink(),
+              ],
               const SizedBox(height: AppSpacing.xl),
 
               // App Settings Section
@@ -203,39 +234,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               onChanged: (value) {
                                 context.read<SettingsBloc>().add(
                                   const SettingsEventLocalAuth(),
-                                );
-                              },
-                              activeThumbColor: AppColors.primaryAccent,
-                              activeTrackColor: AppColors.primaryAccent
-                                  .withValues(alpha: 0.3),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    const Divider(color: AppColors.borderColor),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              PhosphorIcons.cloudArrowUp(
-                                PhosphorIconsStyle.regular,
-                              ),
-                              color: AppColors.textPrimary,
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Text(l10n.syncToCloud),
-                          ],
-                        ),
-                        BlocBuilder<SettingsBloc, SettingsState>(
-                          builder: (context, state) {
-                            return Switch(
-                              value: state.model.hasLoggedIn,
-                              onChanged: (value) {
-                                context.read<SettingsBloc>().add(
-                                  SettingsEventLoggedIn(),
                                 );
                               },
                               activeThumbColor: AppColors.primaryAccent,
@@ -370,29 +368,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: AppSpacing.xxl),
 
-              // Logout Button
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  onPressed: _handleLogout,
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
+              if (user != null) ...[
+                // Logout Button
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: _handleLogout,
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
+                      side: const BorderSide(color: AppColors.danger),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusMd,
+                        ),
+                      ),
                     ),
-                    side: const BorderSide(color: AppColors.danger),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                  ),
-                  child: Text(
-                    l10n.logout,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.danger,
-                      fontWeight: FontWeight.bold,
+                    child: Text(
+                      l10n.logout,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: AppColors.danger,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
