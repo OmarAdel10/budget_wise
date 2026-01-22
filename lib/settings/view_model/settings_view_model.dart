@@ -7,6 +7,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
   SettingsBloc() : super(SettingsInitial(SettingsModel())) {
+    
     on<SettingsEventLocalAuth>((event, emit) {
       emit(
         SettingsStateSuccess(
@@ -14,22 +15,23 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
         ),
       );
     });
+
     on<SettingsEventLanguageChange>((event, emit) {
       emit(
         SettingsStateSuccess(state.model.copyWith(language: event.language)),
       );
     });
+
     on<SettingsEventOnBoardingChange>((event, emit) {
       emit(
         SettingsStateSuccess(state.model.copyWith(isOnboardingCompleted: true)),
       );
     });
-    on<SettingsEventSyncDataAfterFirstLogin>((event, emit) {
-      emit(SettingsStateSuccess(state.model.copyWith(isDataSyncSuccess: true)));
-    });
+
     on<SettingsEventLoggedIn>((event, emit) {
       emit(SettingsStateSuccess(state.model.copyWith(hasLoggedIn: true)));
     });
+
   }
 
   @override

@@ -7,14 +7,12 @@ class SettingsModel extends Equatable {
   final bool localAuthEnabled;
   final String language;
   final bool isOnboardingCompleted;
-  final bool isDataSyncSuccess;
   final bool hasLoggedIn;
 
   const SettingsModel({
     this.localAuthEnabled = false,
     this.language = 'en',
     this.isOnboardingCompleted = false,
-    this.isDataSyncSuccess = false,
     this.hasLoggedIn = false,
   });
 
@@ -30,7 +28,6 @@ class SettingsModel extends Equatable {
       language: language ?? this.language,
       isOnboardingCompleted:
           isOnboardingCompleted ?? this.isOnboardingCompleted,
-      isDataSyncSuccess: isDataSyncSuccess ?? this.isDataSyncSuccess,
       hasLoggedIn: hasLoggedIn ?? this.hasLoggedIn,
     );
   }
@@ -40,7 +37,6 @@ class SettingsModel extends Equatable {
       'localAuthEnabled': localAuthEnabled,
       'language': language,
       'isOnboardingCompleted': isOnboardingCompleted,
-      'isDataSyncSuccess': isDataSyncSuccess,
       'hasLoggedIn': hasLoggedIn,
     };
   }
@@ -50,7 +46,6 @@ class SettingsModel extends Equatable {
       localAuthEnabled: map['localAuthEnabled'] as bool,
       language: map['language'] as String,
       isOnboardingCompleted: map['isOnboardingCompleted'] as bool,
-      isDataSyncSuccess: map['isDataSyncSuccess'] as bool,
       hasLoggedIn: map['hasLoggedIn'] as bool,
     );
   }
@@ -65,7 +60,6 @@ class SettingsModel extends Equatable {
     localAuthEnabled,
     language,
     isOnboardingCompleted,
-    isDataSyncSuccess,
     hasLoggedIn,
   ];
 }

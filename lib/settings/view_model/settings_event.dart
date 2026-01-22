@@ -15,10 +15,6 @@ class SettingsEventOnBoardingChange extends SettingsEvent {
   const SettingsEventOnBoardingChange();
 }
 
-class SettingsEventSyncDataAfterFirstLogin extends SettingsEvent {
-  const SettingsEventSyncDataAfterFirstLogin();
-}
-
 class SettingsEventLoggedIn extends SettingsEvent {
   const SettingsEventLoggedIn();
 }
