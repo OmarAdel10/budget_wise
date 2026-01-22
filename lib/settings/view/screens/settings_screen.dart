@@ -17,14 +17,13 @@ import '../../../shared/constants/text_styles.dart';
 import '../../../auth/view/screens/login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key, });
+  const SettingsScreen({super.key});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
   void _handleLogout() {
     context.read<AuthBloc>().add(AuthEventSignOut());
     Navigator.of(
@@ -221,7 +220,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Row(
                           children: [
                             Icon(
-                              PhosphorIcons.cloudArrowUp(PhosphorIconsStyle.regular),
+                              PhosphorIcons.cloudArrowUp(
+                                PhosphorIconsStyle.regular,
+                              ),
                               color: AppColors.textPrimary,
                             ),
                             const SizedBox(width: AppSpacing.md),
@@ -231,10 +232,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         BlocBuilder<SettingsBloc, SettingsState>(
                           builder: (context, state) {
                             return Switch(
-                              value: state.model.isSyncToCloudEnabled,
+                              value: state.model.hasLoggedIn,
                               onChanged: (value) {
                                 context.read<SettingsBloc>().add(
-                                  SettingsEventSyncToCloud(),
+                                  SettingsEventLoggedIn(),
                                 );
                               },
                               activeThumbColor: AppColors.primaryAccent,

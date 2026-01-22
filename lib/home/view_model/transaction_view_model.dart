@@ -24,7 +24,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     required this.authRepository,
   }) : super(const TransactionStateInitial(transactionsList: [])) {
     authRepository.authStateChanges.listen((user) {
-      if (user != null && settingsBloc.state.model.isSyncToCloudEnabled) {
+      if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const TransactionEventFetchAll());
       }
     });
@@ -50,7 +50,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             ),
           );
         }
-        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+        if (settingsBloc.state.model.hasLoggedIn) {
           transactionRepository
               .addTransaction(newTransaction)
               .then((_) {
@@ -140,7 +140,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           }
         }
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+        if (settingsBloc.state.model.hasLoggedIn) {
           transactionRepository
               .addTransaction(updatedTransaction)
               .then((_) {
@@ -224,7 +224,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             return transaction;
           }).toList();
 
-          if (settingsBloc.state.model.isSyncToCloudEnabled) {
+          if (settingsBloc.state.model.hasLoggedIn) {
             transactionRepository
                 .updateUserIdInAllTransactionsAfterFirstTimeLoginOnly();
           }
@@ -279,7 +279,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           ),
         );
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+        if (settingsBloc.state.model.hasLoggedIn == true) {
           transactionRepository
               .deleteTransaction(event.transactionId)
               .catchError((e) {

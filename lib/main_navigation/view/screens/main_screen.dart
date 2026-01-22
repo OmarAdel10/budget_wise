@@ -42,8 +42,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     final AuthRepository authRepository = context.read<AuthRepository>();
-    if (context.read<SettingsBloc>().state.model.isDataSyncedAfterFirstLogin ==
-            false &&
+    if (context.read<SettingsBloc>().state.model.isDataSyncSuccess == false &&
         authRepository.currentUser != null) {
       context.read<TransactionBloc>().add(
         TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),

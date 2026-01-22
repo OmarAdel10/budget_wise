@@ -34,7 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
            ),
          ),
        ) {
-    if (settingsBloc.state.model.isSyncToCloudEnabled) {
+    if (settingsBloc.state.model.hasLoggedIn) {
       transactionBloc.add(const TransactionEventSyncUnsynced());
       categoryBloc.add(const CategoryEventSyncUnsynced());
     }

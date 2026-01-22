@@ -7,24 +7,31 @@ class SettingsModel extends Equatable {
   final bool localAuthEnabled;
   final String language;
   final bool isOnboardingCompleted;
-  final bool isDataSyncedAfterFirstLogin;
-  final bool isSyncToCloudEnabled;
+  final bool isDataSyncSuccess;
+  final bool hasLoggedIn;
 
   const SettingsModel({
     this.localAuthEnabled = false,
     this.language = 'en',
     this.isOnboardingCompleted = false,
-    this.isDataSyncedAfterFirstLogin = false,
-    this.isSyncToCloudEnabled = false,
+    this.isDataSyncSuccess = false,
+    this.hasLoggedIn = false,
   });
 
-  SettingsModel copyWith({bool? localAuthEnabled, String? language, bool? isOnboardingCompleted, bool? isDataSyncedAfterFirstLogin, bool? isSyncToCloudEnabled}) {
+  SettingsModel copyWith({
+    bool? localAuthEnabled,
+    String? language,
+    bool? isOnboardingCompleted,
+    bool? isDataSyncSuccess,
+    bool? hasLoggedIn,
+  }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
       language: language ?? this.language,
-      isOnboardingCompleted: isOnboardingCompleted ?? this.isOnboardingCompleted,
-      isDataSyncedAfterFirstLogin: isDataSyncedAfterFirstLogin ?? this.isDataSyncedAfterFirstLogin,
-      isSyncToCloudEnabled: isSyncToCloudEnabled ?? this.isSyncToCloudEnabled,
+      isOnboardingCompleted:
+          isOnboardingCompleted ?? this.isOnboardingCompleted,
+      isDataSyncSuccess: isDataSyncSuccess ?? this.isDataSyncSuccess,
+      hasLoggedIn: hasLoggedIn ?? this.hasLoggedIn,
     );
   }
 
@@ -33,8 +40,8 @@ class SettingsModel extends Equatable {
       'localAuthEnabled': localAuthEnabled,
       'language': language,
       'isOnboardingCompleted': isOnboardingCompleted,
-      'isDataSyncedAfterFirstLogin' : isDataSyncedAfterFirstLogin,
-      'isSyncToCloudEnabled' : isSyncToCloudEnabled,
+      'isDataSyncSuccess': isDataSyncSuccess,
+      'hasLoggedIn': hasLoggedIn,
     };
   }
 
@@ -43,8 +50,8 @@ class SettingsModel extends Equatable {
       localAuthEnabled: map['localAuthEnabled'] as bool,
       language: map['language'] as String,
       isOnboardingCompleted: map['isOnboardingCompleted'] as bool,
-      isDataSyncedAfterFirstLogin: map['isDataSyncedAfterFirstLogin'] as bool,
-      isSyncToCloudEnabled: map['isSyncToCloudEnabled'] as bool,
+      isDataSyncSuccess: map['isDataSyncSuccess'] as bool,
+      hasLoggedIn: map['hasLoggedIn'] as bool,
     );
   }
 
@@ -54,5 +61,11 @@ class SettingsModel extends Equatable {
       SettingsModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  List<Object?> get props => [localAuthEnabled, language, isOnboardingCompleted, isDataSyncedAfterFirstLogin, isSyncToCloudEnabled];
+  List<Object?> get props => [
+    localAuthEnabled,
+    language,
+    isOnboardingCompleted,
+    isDataSyncSuccess,
+    hasLoggedIn,
+  ];
 }

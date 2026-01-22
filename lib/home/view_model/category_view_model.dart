@@ -19,7 +19,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
     required this.categoryRepository,
   }) : super(const CategoryStateInitial(categoriesList: [])) {
     authRepository.authStateChanges.listen((user) {
-      if (user != null && settingsBloc.state.model.isSyncToCloudEnabled) {
+      if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const CategoryEventFetchAll());
       }
     });
@@ -31,8 +31,11 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           newCategory = newCategory.copyWith(id: const Uuid().v4());
         }
         // Prevent duplicate categories with same title and type
-        final alreadyExists = state.categoriesList.any((c) =>
-            c.categoryTitle == newCategory.categoryTitle && c.type == newCategory.type);
+        final alreadyExists = state.categoriesList.any(
+          (c) =>
+              c.categoryTitle == newCategory.categoryTitle &&
+              c.type == newCategory.type,
+        );
         if (alreadyExists) return;
         newCategory = newCategory.copyWith(
           userId: userId,
@@ -42,7 +45,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
         final updatedList = [...state.categoriesList, newCategory];
         emit(CategoryStateSuccess(categoriesList: updatedList));
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+        if (settingsBloc.state.model.hasLoggedIn == true) {
           categoryRepository
               .addCategory(newCategory)
               .then((_) {
@@ -84,8 +87,10 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
 
         emit(CategoryStateSuccess(categoriesList: reindexedList));
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled) {
-          categoryRepository.updateCategoryIndexes(reindexedList).catchError((e) {
+        if (settingsBloc.state.model.hasLoggedIn) {
+          categoryRepository.updateCategoryIndexes(reindexedList).catchError((
+            e,
+          ) {
             emit(
               CategoryStateError(
                 message: 'Index update failed: ${e.toString()}',
@@ -113,23 +118,28 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
 
         emit(CategoryStateSuccess(categoriesList: updatedList));
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+        if (settingsBloc.state.model.hasLoggedIn == true) {
           categoryRepository
               .addCategory(updatedCategory)
               .then((_) {
-            add(CategoryEventMarkSynced(categoryId: updatedCategory.id));
-          }).catchError((e) {
-            emit(CategoryStateError(
-              message: 'Cloud sync failed: ${e.toString()}',
-              categoriesList: state.categoriesList,
-            ));
-          });
+                add(CategoryEventMarkSynced(categoryId: updatedCategory.id));
+              })
+              .catchError((e) {
+                emit(
+                  CategoryStateError(
+                    message: 'Cloud sync failed: ${e.toString()}',
+                    categoriesList: state.categoriesList,
+                  ),
+                );
+              });
         }
       } catch (e) {
-        emit(CategoryStateError(
-          message: 'Local update failed: ${e.toString()}',
-          categoriesList: state.categoriesList,
-        ));
+        emit(
+          CategoryStateError(
+            message: 'Local update failed: ${e.toString()}',
+            categoriesList: state.categoriesList,
+          ),
+        );
       }
     });
 
@@ -188,7 +198,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
             return category;
           }).toList();
 
-          if (settingsBloc.state.model.isSyncToCloudEnabled) {
+          if (settingsBloc.state.model.hasLoggedIn) {
             categoryRepository
                 .updateUserIdInAllCategoriesAfterFirstTimeLoginOnly();
           }
@@ -227,7 +237,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
 
         emit(CategoryStateSuccess(categoriesList: updatedList));
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled == true) {
+        if (settingsBloc.state.model.hasLoggedIn == true) {
           categoryRepository.deleteCategory(event.categoryId).catchError((e) {
             emit(
               CategoryStateError(

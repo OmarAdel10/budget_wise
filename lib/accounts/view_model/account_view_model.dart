@@ -14,7 +14,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
   AccountBloc({required this.settingsBloc, required this.accountRepo})
     : super(AccountStateInitial(accountsList: [], netWorth: 0)) {
     on<AccountEventFetchAll>((event, emit) async {
-      if (settingsBloc.state.model.isSyncToCloudEnabled) {
+      if (settingsBloc.state.model.hasLoggedIn) {
         try {
           final accounts = await accountRepo.fetchAllAccounts();
           emit(
@@ -50,7 +50,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
             netWorth: state.netWorth + newAccount.initialBalance,
           ),
         );
-        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+        if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo
               .addAccount(newAccount)
               .then(
@@ -95,7 +95,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
           ),
         );
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+        if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo
               .addAccount(updatedAccount)
               .then(
@@ -142,12 +142,11 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
           ),
         );
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+        if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo
               .updateAccountUpdatedAt(updatedAccountId, event.updateDate)
               .then(
-                (_) =>
-                    add(AccountEventMarkSynced(accountId: updatedAccountId)),
+                (_) => add(AccountEventMarkSynced(accountId: updatedAccountId)),
               )
               .catchError((e) {
                 log('Cloud sync failed(update method): ${e.toString()}');
@@ -184,7 +183,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
           ),
         );
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+        if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo.deleteAccount(event.accountId).catchError((e) {
             log('Cloud sync failed(delete method): ${e.toString()}');
             emit(
@@ -299,16 +298,21 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
           ),
         );
 
-        if (settingsBloc.state.model.isSyncToCloudEnabled) {
+        if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo
               .updateAccountBalance(
                 updatedAccount.id,
                 updatedAccount.balance,
                 updatedAccount.updatedAt,
               )
-              .then((_) => add(AccountEventMarkSynced(accountId: updatedAccount.id)))
+              .then(
+                (_) =>
+                    add(AccountEventMarkSynced(accountId: updatedAccount.id)),
+              )
               .catchError((e) {
-                log('Cloud sync failed(update balance method): ${e.toString()}');
+                log(
+                  'Cloud sync failed(update balance method): ${e.toString()}',
+                );
                 emit(
                   AccountStateError(
                     message: 'Cloud sync failed: ${e.toString()}',

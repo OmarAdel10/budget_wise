@@ -16,44 +16,28 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     });
     on<SettingsEventLanguageChange>((event, emit) {
       emit(
-        SettingsStateSuccess(
-          state.model.copyWith(language: event.language),
-        ),
+        SettingsStateSuccess(state.model.copyWith(language: event.language)),
       );
     });
     on<SettingsEventOnBoardingChange>((event, emit) {
       emit(
-        SettingsStateSuccess(
-          state.model.copyWith(
-            isOnboardingCompleted: event.isOnboardingCompleted,
-          ),
-        ),
+        SettingsStateSuccess(state.model.copyWith(isOnboardingCompleted: true)),
       );
     });
     on<SettingsEventSyncDataAfterFirstLogin>((event, emit) {
-      emit(
-        SettingsStateSuccess(
-          state.model.copyWith(
-            isDataSyncedAfterFirstLogin: event.isDataSyncedAfterFirstLogin,
-          ),
-        ),
-      );
+      emit(SettingsStateSuccess(state.model.copyWith(isDataSyncSuccess: true)));
     });
-    on<SettingsEventSyncToCloud>((event, emit) {
-      emit(
-        SettingsStateSuccess(
-          state.model.copyWith(
-            isSyncToCloudEnabled: !state.model.isSyncToCloudEnabled,
-          ),
-        ),
-      );
+    on<SettingsEventLoggedIn>((event, emit) {
+      emit(SettingsStateSuccess(state.model.copyWith(hasLoggedIn: true)));
     });
   }
 
   @override
   SettingsState? fromJson(Map<String, dynamic> json) {
     try {
-      final model = SettingsModel.fromMap(json['settingsModel'] as Map<String, dynamic>);
+      final model = SettingsModel.fromMap(
+        json['settingsModel'] as Map<String, dynamic>,
+      );
       return SettingsStateSuccess(model);
     } catch (e) {
       log('Error During Serialization: $e');
