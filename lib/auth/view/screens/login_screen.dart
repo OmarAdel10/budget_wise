@@ -1,3 +1,4 @@
+import 'package:budget_wise/auth/data/models/user_model.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
@@ -65,6 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final bool isFromOnboarding =
+        args['fromOnboarding'] == LoginRouting.fromOnboarding;
 
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
@@ -72,6 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: AppColors.primaryBackground,
         elevation: 0,
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.close, color: AppColors.textPrimary),
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
         title: const Text(
           "BudgetWise",
           style: TextStyle(
@@ -112,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text(state.message)));
+                Navigator.of(context).pop(false);
               }
               if (state is AuthStateSuccess) {
                 if (context.read<AuthRepository>().currentUser != null) {
@@ -121,9 +131,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   context.read<CategoryBloc>().add(
                     const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
                   );
-                  Navigator.of(
-                    context,
-                  ).pushReplacementNamed(MainScreen.routeName);
+                  if (isFromOnboarding) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Navigator.of(
+                      context,
+                    ).pushReplacementNamed(MainScreen.routeName);
+                  }
                 }
               }
             },

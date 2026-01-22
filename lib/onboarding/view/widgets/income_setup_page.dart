@@ -1,3 +1,7 @@
+import 'package:budget_wise/accounts/data/models/account_model.dart';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import '../../../shared/constants/colors.dart';
@@ -21,7 +25,8 @@ class IncomeSetupPage extends StatefulWidget {
   State<IncomeSetupPage> createState() => _IncomeSetupPageState();
 }
 
-class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAliveClientMixin {
+class _IncomeSetupPageState extends State<IncomeSetupPage>
+    with AutomaticKeepAliveClientMixin {
   final TextEditingController _amountController = TextEditingController();
   List<CategoryModel> _incomeCategories = [];
   String? _selectedCategoryId;
@@ -29,6 +34,17 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAli
   @override
   void initState() {
     super.initState();
+    final accountModel = AccountModel(
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      accountType: AccountType.cash,
+      title: 'Main Account',
+      accountIcon: PhosphorIconsRegular.wallet,
+      initialBalance: 0.0,
+      balance: 00,
+      currency: 'EGP',
+    );
+    context.read<AccountBloc>().add(AccountEventCreateAccount(model: accountModel));
     _amountController.addListener(_updateData);
     _initializeIncomeCategories();
   }
@@ -44,14 +60,13 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAli
 
     _incomeCategories = List.generate(categoryNames.length, (index) {
       return CategoryModel(
-        id: const Uuid().v4(),
         categoryTitle: categoryNames[index],
         categoryIcon: categoryIcons[index],
         budgetAmount: 0.0,
         type: TransactionType.income,
       );
     });
-    
+
     // Save categories immediately
     for (final category in _incomeCategories) {
       context.read<CategoryBloc>().add(CategoryEventCreateCategory(category));
@@ -78,11 +93,16 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAli
   String _getLocalizedSource(BuildContext context, String sourceKey) {
     final l10n = AppLocalizations.of(context)!;
     switch (sourceKey) {
-      case 'Work': return l10n.sourceWork;
-      case 'Personal': return l10n.sourcePersonal;
-      case 'Freelance': return l10n.sourceFreelance;
-      case 'Other': return l10n.sourceOther;
-      default: return sourceKey;
+      case 'Work':
+        return l10n.sourceWork;
+      case 'Personal':
+        return l10n.sourcePersonal;
+      case 'Freelance':
+        return l10n.sourceFreelance;
+      case 'Other':
+        return l10n.sourceOther;
+      default:
+        return sourceKey;
     }
   }
 
@@ -97,7 +117,8 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAli
         crossAxisAlignment: CrossAxisAlignment.start, // Align to start
         children: [
           const SizedBox(height: AppSpacing.xl),
-          Center( // Center Title
+          Center(
+            // Center Title
             child: Text(
               l10n.incomeSetupTitle,
               style: AppTextStyles.heading1,
@@ -106,28 +127,43 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAli
           ),
           const SizedBox(height: AppSpacing.md),
           Center(
-              child: Text(
-            l10n.incomeSetupDesc,
-            style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
+            child: Text(
+              l10n.incomeSetupDesc,
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: AppSpacing.xl * 2),
-      
+
           // Amount Input
-          Text(l10n.incomeAmountLabel, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            l10n.incomeAmountLabel,
+            style: AppTextStyles.bodyLarge.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: AppSpacing.sm),
           CustomTextField(
             hintText: "0.00",
             controller: _amountController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            suffixIcon: const Icon(Icons.attach_money, color: AppColors.textSecondary),
+            suffixIcon: const Icon(
+              Icons.attach_money,
+              color: AppColors.textSecondary,
+            ),
           ),
-          
+
           const SizedBox(height: AppSpacing.lg),
 
           // Source Selection
-          Text(l10n.incomeSourceLabel, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            l10n.incomeSourceLabel,
+            style: AppTextStyles.bodyLarge.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: AppSpacing.sm),
           Wrap(
             spacing: AppSpacing.sm,
@@ -138,8 +174,12 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAli
                 label: Text(
                   _getLocalizedSource(context, category.categoryTitle),
                   style: TextStyle(
-                    color: isSelected ? AppColors.textInverse : AppColors.textPrimary,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: isSelected
+                        ? AppColors.textInverse
+                        : AppColors.textPrimary,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
                 selected: isSelected,
@@ -154,7 +194,9 @@ class _IncomeSetupPageState extends State<IncomeSetupPage> with AutomaticKeepAli
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                   side: BorderSide(
-                    color: isSelected ? AppColors.primaryAccent : AppColors.borderColor,
+                    color: isSelected
+                        ? AppColors.primaryAccent
+                        : AppColors.borderColor,
                   ),
                 ),
                 checkmarkColor: AppColors.textInverse,

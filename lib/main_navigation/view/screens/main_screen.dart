@@ -51,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
         CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
       );
       context.read<SettingsBloc>().add(
-        SettingsEventSyncDataAfterFirstLogin(true),
+        SettingsEventSyncDataAfterFirstLogin(),
       );
     }
   }

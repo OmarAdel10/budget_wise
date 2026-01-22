@@ -162,12 +162,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingTitle2 => 'Manage Your Income & Budget';
 
   @override
+  String get onboardingTitle3 => 'Secure Your Future.';
+
+  @override
   String get onboardingDesc1 =>
       'Take control of your finances with BudgetWise. Track your income, expenses, and savings effortlessly.';
 
   @override
   String get onboardingDesc2 =>
       'Add your monthly income and define custom categories to split your budget.';
+
+  @override
+  String get onboardingDesc3 =>
+      'Create an account to sync your savings across devices and never lose progress.';
+
+  @override
+  String get onboardingDisclaimer =>
+      'If you proceed without an account, your data will be stored locally only. This means your information will be permanently lost if the app is deleted or your device is lost.';
+
+  @override
+  String get onboardingLoginSignUp => 'Login/SignUp';
+
+  @override
+  String get onboardingSkipForNow => 'Skip for Now';
 
   @override
   String get getStarted => 'Get Started';

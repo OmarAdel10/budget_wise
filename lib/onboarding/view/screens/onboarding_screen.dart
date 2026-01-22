@@ -1,4 +1,7 @@
 import 'dart:developer';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/auth/data/models/user_model.dart';
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
@@ -6,8 +9,10 @@ import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,11 +49,52 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  void _onLoginSignUpPressed() {
+    Navigator.of(context)
+        .pushNamed(
+          LoginScreen.routeName,
+          arguments: {'loginRouting': LoginRouting.fromOnboarding},
+        )
+        .then((result) {
+          if (!mounted) return;
+          if (result == true) {
+            log("Returned from Login Screen after successful login.");
+            _pageController.nextPage(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Login successful! You can continue the onboarding process.',
+                ),
+              ),
+            );
+          } else {
+            log("Returned from Login Screen without successful login.");
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Login failed or cancelled. Please try again or continue locally.',
+                ),
+              ),
+            );
+          }
+        });
+  }
+
+  void _onSkipForNowPressed() {
+    _pageController.nextPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   void _nextPage() {
-    if (_currentPage < 3) {
-      // Validation check before moving from Income Page (Page 2)
-      if (_currentPage == 2) {
-        if (_incomeAmount <= 0 && _incomeAmount < 100) {
+    if (_currentPage < 4) {
+      // Validation check before moving from Income Page (Page 3)
+      if (_currentPage == 3) {
+        if (_incomeAmount < 1) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -71,7 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           transactionTitle: 'Income${date.format(DateTime.now())}',
           transactionDate: DateTime.now(),
           categoryId: _incomeCategoryId!,
-          accountId: '',
+          accountId: context.read<AccountBloc>().state.accountsList.first.id,
         );
         context.read<TransactionBloc>().add(
           TransactionEventCreateTransaction(transaction),
@@ -83,8 +129,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      // Final Validation (Category Selection - Page 3)
-      if (_selectedCategories.length < 3) {
+      // Final Validation (Category Selection - Page 4)
+      if (_selectedCategories.length < 4) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.errorSelectCategories),
@@ -109,8 +155,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     log(
       "Categories: ${_selectedCategories.map((e) => e.categoryTitle).toList()}",
     );
-    context.read<SettingsBloc>().add(SettingsEventOnBoardingChange(true));
-    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+    context.read<SettingsBloc>().add(SettingsEventOnBoardingChange());
+    if (context.read<AuthRepository>().currentUser != null) {
+      context.read<SettingsBloc>().add(SettingsEventLoggedIn());
+    }
+    Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
   }
 
   void _previousPage() {
@@ -161,14 +210,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     title: l10n.onboardingTitle1,
                     description: l10n.onboardingDesc1,
                     placeholderIcon: PhosphorIcons.chartBar(
-                      PhosphorIconsStyle.duotone,
+                      PhosphorIconsStyle.fill,
                     ),
                   ),
                   OnboardingPageWidget(
                     title: l10n.onboardingTitle2,
                     description: l10n.onboardingDesc2,
                     placeholderIcon: PhosphorIcons.piggyBank(
-                      PhosphorIconsStyle.duotone,
+                      PhosphorIconsStyle.fill,
+                    ),
+                  ),
+                  OnboardingPageWidget(
+                    title: l10n.onboardingTitle3,
+                    description: l10n.onboardingDesc3,
+                    placeholderIcon: PhosphorIcons.cloudArrowUp(
+                      PhosphorIconsStyle.fill,
                     ),
                   ),
                   IncomeSetupPage(
@@ -189,40 +245,111 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: Column(
-                children: [
-                  PageIndicatorWidget(count: 4, currentPage: _currentPage),
-                  const SizedBox(height: AppSpacing.xl),
-                  // Button Logic
-                  if (_currentPage == 0)
-                    CustomButton(text: l10n.next, onPressed: _nextPage)
-                  else
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomButton(
-                            text: l10n.back,
-                            type: CustomButtonType.secondary,
-                            onPressed: _previousPage,
-                          ),
+            if (_currentPage == 2) ...[
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground.withValues(alpha: .6),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Disclaimer:',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.danger,
                         ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: CustomButton(
-                            text: _currentPage == 3
-                                ? l10n.getStarted
-                                : l10n.next,
-                            onPressed: _nextPage,
-                          ),
+                      ),
+                      Text(
+                        l10n.onboardingDisclaimer,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary.withValues(alpha: .7),
                         ),
-                      ],
-                    ),
-                  const SizedBox(height: AppSpacing.xl),
-                ],
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: Column(
+                  children: [
+                    PageIndicatorWidget(count: 5, currentPage: _currentPage),
+                    const SizedBox(height: AppSpacing.xl),
+                    // Button Logic
+                    if (_currentPage == 0)
+                      CustomButton(text: l10n.next, onPressed: _nextPage)
+                    else
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CustomButton(
+                                  text: l10n.back,
+                                  type: CustomButtonType.secondary,
+                                  onPressed: _previousPage,
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.md),
+                              Expanded(
+                                child: CustomButton(
+                                  text: l10n.onboardingSkipForNow,
+                                  onPressed: _onSkipForNowPressed,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          CustomButton(
+                            text: l10n.onboardingLoginSignUp,
+                            onPressed: _onLoginSignUpPressed,
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: AppSpacing.sm),
+                  ],
+                ),
+              ),
+            ] else ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: Column(
+                  children: [
+                    PageIndicatorWidget(count: 5, currentPage: _currentPage),
+                    const SizedBox(height: AppSpacing.xl),
+                    // Button Logic
+                    if (_currentPage == 0)
+                      CustomButton(text: l10n.next, onPressed: _nextPage)
+                    else
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomButton(
+                              text: l10n.back,
+                              type: CustomButtonType.secondary,
+                              onPressed: _previousPage,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: CustomButton(
+                              text: _currentPage == 4
+                                  ? l10n.getStarted
+                                  : l10n.next,
+                              onPressed: _nextPage,
+                            ),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: AppSpacing.xl),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),

@@ -162,12 +162,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingTitle2 => 'إدارة دخلك وميزانيتك';
 
   @override
+  String get onboardingTitle3 => 'تأمين مستقبلك.';
+
+  @override
   String get onboardingDesc1 =>
       'تحكم في أموالك مع BudgetWise. تتبع دخلك ونفقاتك ومدخراتك بسهولة.';
 
   @override
   String get onboardingDesc2 =>
       'أدخل دخلك الشهري وحدد تصنيفات مخصصة لتقسيم ميزانيتك.';
+
+  @override
+  String get onboardingDesc3 =>
+      'أنشئ حسابًا لمزامنة مدخراتك عبر الأجهزة وعدم فقدان التقدم أبدًا.';
+
+  @override
+  String get onboardingDisclaimer =>
+      'إذا تابعت بدون حساب، فسيتم تخزين بياناتك محليًا فقط. هذا يعني أن معلوماتك ستفقد بشكل دائم إذا تم حذف التطبيق أو فقد جهازك.';
+
+  @override
+  String get onboardingLoginSignUp => 'تسجيل الدخول/إنشاء حساب';
+
+  @override
+  String get onboardingSkipForNow => 'تخطي الآن';
 
   @override
   String get getStarted => 'ابدأ الآن';

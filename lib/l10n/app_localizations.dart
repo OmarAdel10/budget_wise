@@ -404,6 +404,12 @@ abstract class AppLocalizations {
   /// **'Manage Your Income & Budget'**
   String get onboardingTitle2;
 
+  /// No description provided for @onboardingTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure Your Future.'**
+  String get onboardingTitle3;
+
   /// No description provided for @onboardingDesc1.
   ///
   /// In en, this message translates to:
@@ -415,6 +421,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add your monthly income and define custom categories to split your budget.'**
   String get onboardingDesc2;
+
+  /// No description provided for @onboardingDesc3.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account to sync your savings across devices and never lose progress.'**
+  String get onboardingDesc3;
+
+  /// No description provided for @onboardingDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'If you proceed without an account, your data will be stored locally only. This means your information will be permanently lost if the app is deleted or your device is lost.'**
+  String get onboardingDisclaimer;
+
+  /// No description provided for @onboardingLoginSignUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Login/SignUp'**
+  String get onboardingLoginSignUp;
+
+  /// No description provided for @onboardingSkipForNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for Now'**
+  String get onboardingSkipForNow;
 
   /// No description provided for @getStarted.
   ///
