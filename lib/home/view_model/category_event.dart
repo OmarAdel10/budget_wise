@@ -39,19 +39,12 @@ class CategoryEventSyncUnsynced extends CategoryEvent {
   List<Object?> get props => [];
 }
 
-// class CategoryEventLoadCategories extends CategoryEvent {
-//   const CategoryEventLoadCategories();
+// class CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly extends CategoryEvent {
+//   const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly();
 
 //   @override
 //   List<Object?> get props => [];
 // }
-
-class CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly extends CategoryEvent {
-  const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly();
-
-  @override
-  List<Object?> get props => [];
-}
 
 class CategoryEventFetchAll extends CategoryEvent {
   const CategoryEventFetchAll();
@@ -77,4 +70,18 @@ class CategoryEventReorder extends CategoryEvent {
 
   @override
   List<Object?> get props => [oldIndex, newIndex];
+}
+
+class CategoryEventSyncPendingOnLogin extends CategoryEvent {
+  const CategoryEventSyncPendingOnLogin();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class CategoryEventCheckAndSyncPending extends CategoryEvent {
+  const CategoryEventCheckAndSyncPending();
+
+  @override
+  List<Object?> get props => [];
 }

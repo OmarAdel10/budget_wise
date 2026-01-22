@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
@@ -24,7 +23,9 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     required this.authRepository,
   }) : super(const TransactionStateInitial(transactionsList: [])) {
     authRepository.authStateChanges.listen((user) {
-      if (user != null && settingsBloc.state.model.hasLoggedIn) {
+      if (user != null &&
+          settingsBloc.state.model.hasLoggedIn &&
+          state.transactionsList.isEmpty) {
         add(const TransactionEventFetchAll());
       }
     });
@@ -33,7 +34,8 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         final userId = authRepository.currentUser?.uid ?? '';
         final newTransaction = event.transaction
           ..id = const Uuid().v4()
-          ..userId = userId;
+          ..userId = userId
+          ..isSynced = false;
         final updatedList = [newTransaction, ...state.transactionsList];
 
         emit(TransactionStateSuccess(transactionsList: updatedList));
@@ -50,7 +52,8 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             ),
           );
         }
-        if (settingsBloc.state.model.hasLoggedIn) {
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
           transactionRepository
               .addTransaction(newTransaction)
               .then((_) {
@@ -79,7 +82,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
 
     on<TransactionEventUpdateTransaction>((event, emit) async {
       try {
-        final updatedTransaction = event.transaction;
+        final updatedTransaction = event.transaction.copyWith(isSynced: false);
         final oldTransaction = state.transactionsList.firstWhere(
           (t) => t.id == updatedTransaction.id,
         );
@@ -140,7 +143,8 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           }
         }
 
-        if (settingsBloc.state.model.hasLoggedIn) {
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
           transactionRepository
               .addTransaction(updatedTransaction)
               .then((_) {
@@ -188,58 +192,58 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       }
     });
 
-    on<TransactionEventSyncUnsynced>((event, emit) async {
-      try {
-        final unSynced = state.transactionsList
-            .where((transaction) => transaction.isSynced == false)
-            .toList();
-        if (unSynced.isEmpty) return;
-        final synced = unSynced.map((transaction) {
-          return transactionRepository.addTransaction(transaction).then((_) {
-            add(TransactionEventMarkSynced(transactionId: transaction.id));
-          });
-        }).toList();
-        await Future.wait(synced);
-      } catch (e) {
-        emit(
-          TransactionStateError(
-            message: 'Marking as unsynced failed: ${e.toString()}',
-            transactionsList: state.transactionsList,
-          ),
-        );
-      }
-    });
+    // on<TransactionEventSyncUnsynced>((event, emit) async {
+    //   try {
+    //     final unSynced = state.transactionsList
+    //         .where((transaction) => transaction.isSynced == false)
+    //         .toList();
+    //     if (unSynced.isEmpty) return;
+    //     final synced = unSynced.map((transaction) {
+    //       return transactionRepository.addTransaction(transaction).then((_) {
+    //         add(TransactionEventMarkSynced(transactionId: transaction.id));
+    //       });
+    //     }).toList();
+    //     await Future.wait(synced);
+    //   } catch (e) {
+    //     emit(
+    //       TransactionStateError(
+    //         message: 'Marking as unsynced failed: ${e.toString()}',
+    //         transactionsList: state.transactionsList,
+    //       ),
+    //     );
+    //   }
+    // });
 
-    on<TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly>((
-      event,
-      emit,
-    ) {
-      try {
-        final userId = authRepository.currentUser?.uid;
-        if (userId != null) {
-          final updatedList = state.transactionsList.map((transaction) {
-            if (transaction.userId.isEmpty) {
-              return transaction.copyWith(userId: userId);
-            }
-            return transaction;
-          }).toList();
+    // on<TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly>((
+    //   event,
+    //   emit,
+    // ) {
+    //   try {
+    //     final userId = authRepository.currentUser?.uid;
+    //     if (userId != null) {
+    //       final updatedList = state.transactionsList.map((transaction) {
+    //         if (transaction.userId.isEmpty) {
+    //           return transaction.copyWith(userId: userId);
+    //         }
+    //         return transaction;
+    //       }).toList();
 
-          if (settingsBloc.state.model.hasLoggedIn) {
-            transactionRepository
-                .updateUserIdInAllTransactionsAfterFirstTimeLoginOnly();
-          }
+    //       if (settingsBloc.state.model.hasLoggedIn) {
+    //         transactionRepository
+    //             .updateUserIdInAllTransactionsAfterFirstTimeLoginOnly();
+    //       }
 
-          emit(TransactionStateSuccess(transactionsList: updatedList));
-        }
-      } catch (e) {
-        emit(
-          TransactionStateError(
-            message: e.toString(),
-            transactionsList: state.transactionsList,
-          ),
-        );
-      }
-    });
+    //       emit(TransactionStateSuccess(transactionsList: updatedList));
+    //     }
+    //   } catch (e) {
+    //     emit(
+    //       TransactionStateError(
+    //         message: e.toString(),
+    //         transactionsList: state.transactionsList,
+    //       ),
+    //     );
+    //   }
+    // });
 
     on<TransactionEventFetchAll>((event, emit) async {
       try {
@@ -257,13 +261,13 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
 
     on<TransactionEventDeleteTransaction>((event, emit) async {
       try {
-        final updatedList = state.transactionsList
-            .where((transaction) => transaction.id != event.transactionId)
-            .toList();
-
         final transactionToDelete = state.transactionsList.firstWhere(
           (t) => t.id == event.transactionId,
         );
+
+        final updatedList = state.transactionsList
+            .where((transaction) => transaction.id != event.transactionId)
+            .toList();
 
         emit(TransactionStateSuccess(transactionsList: updatedList));
 
@@ -279,22 +283,98 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           ),
         );
 
-        if (settingsBloc.state.model.hasLoggedIn == true) {
-          transactionRepository
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
+          await transactionRepository
               .deleteTransaction(event.transactionId)
               .catchError((e) {
+                // Restore transaction to list and mark as unsynced for retry
+                final restoredList = [
+                  transactionToDelete,
+                  ...state.transactionsList,
+                ];
                 emit(
                   TransactionStateError(
-                    message: 'Cloud sync failed: ${e.toString()}',
-                    transactionsList: state.transactionsList,
+                    message: 'Cloud delete failed. Will retry on next sync.',
+                    transactionsList: restoredList,
                   ),
                 );
+                log('Failed to delete transaction ${event.transactionId}: $e');
               });
         }
       } catch (e) {
         emit(
           TransactionStateError(
             message: 'Delete failed: ${e.toString()}',
+            transactionsList: state.transactionsList,
+          ),
+        );
+      }
+    });
+
+    on<TransactionEventSyncPendingOnLogin>((event, emit) async {
+      try {
+        final pendingTransactions = state.transactionsList
+            .where(
+              (transaction) =>
+                  transaction.isSynced == false &&
+                  authRepository.currentUser != null,
+            )
+            .toList();
+        if (pendingTransactions.isEmpty) return;
+        for (final transaction in pendingTransactions) {
+          final transactionWithUserId = transaction.copyWith(
+            userId: authRepository.currentUser!.uid,
+          );
+          await transactionRepository
+              .addTransaction(transactionWithUserId)
+              .then(
+                (_) => add(
+                  TransactionEventMarkSynced(
+                    transactionId: transactionWithUserId.id,
+                  ),
+                ),
+              )
+              .catchError((e) {
+                log(
+                  'Failed to sync transaction ${transaction.id} on login: $e',
+                );
+              });
+        }
+      } catch (e) {
+        emit(
+          TransactionStateError(
+            message: 'Sync on login failed: ${e.toString()}',
+            transactionsList: state.transactionsList,
+          ),
+        );
+      }
+    });
+
+    on<TransactionEventCheckAndSyncPending>((event, emit) async {
+      try {
+        if (authRepository.currentUser == null) return;
+
+        final pendingTransactions = state.transactionsList
+            .where((t) => t.isSynced == false)
+            .toList();
+        if (pendingTransactions.isEmpty) return;
+        for (var transaction in pendingTransactions) {
+          await transactionRepository
+              .addTransaction(transaction)
+              .then(
+                (_) => add(
+                  TransactionEventMarkSynced(transactionId: transaction.id),
+                ),
+              )
+              .catchError((e) {
+                log('Failed to sync transaction ${transaction.id}: $e');
+              });
+        }
+      } catch (e) {
+        emit(
+          TransactionStateError(
+            message: 'Check and sync failed: ${e.toString()}',
             transactionsList: state.transactionsList,
           ),
         );

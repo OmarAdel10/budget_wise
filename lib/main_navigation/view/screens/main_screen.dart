@@ -45,14 +45,12 @@ class _MainScreenState extends State<MainScreen> {
     if (context.read<SettingsBloc>().state.model.isDataSyncSuccess == false &&
         authRepository.currentUser != null) {
       context.read<TransactionBloc>().add(
-        TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+        TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly(),
       );
       context.read<CategoryBloc>().add(
         CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
       );
-      context.read<SettingsBloc>().add(
-        SettingsEventSyncDataAfterFirstLogin(),
-      );
+      context.read<SettingsBloc>().add(SettingsEventSyncDataAfterFirstLogin());
     }
   }
 

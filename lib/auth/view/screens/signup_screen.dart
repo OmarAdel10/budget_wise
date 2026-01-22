@@ -130,9 +130,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           );
                         }
                         if (state is AuthStateSuccess) {
-                          if (context.read<AuthRepository>().currentUser != null) {
+                          if (context.read<AuthRepository>().currentUser !=
+                              null) {
                             context.read<TransactionBloc>().add(
-                              const TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+                              const TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly(),
                             );
                             context.read<CategoryBloc>().add(
                               const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),

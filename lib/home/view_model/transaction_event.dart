@@ -38,13 +38,13 @@ class TransactionEventSyncUnsynced extends TransactionEvent {
   List<Object?> get props => [];
 }
 
-class TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly
-    extends TransactionEvent {
-  const TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly();
+// class TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly
+//     extends TransactionEvent {
+//   const TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly();
 
-  @override
-  List<Object?> get props => [];
-}
+//   @override
+//   List<Object?> get props => [];
+// }
 
 class TransactionEventFetchAll extends TransactionEvent {
   const TransactionEventFetchAll();
@@ -60,4 +60,18 @@ class TransactionEventDeleteTransaction extends TransactionEvent {
 
   @override
   List<Object?> get props => [transactionId];
+}
+
+class TransactionEventSyncPendingOnLogin extends TransactionEvent {
+  const TransactionEventSyncPendingOnLogin();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class TransactionEventCheckAndSyncPending extends TransactionEvent {
+  const TransactionEventCheckAndSyncPending();
+
+  @override
+  List<Object?> get props => [];
 }

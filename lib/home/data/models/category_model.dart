@@ -13,7 +13,7 @@ class CategoryModel {
   final bool hasBudgetAmount;
   final double? budgetAmount;
   final TransactionType type;
-  final bool isSynced;
+  bool isSynced;
   int index;
 
   CategoryModel({

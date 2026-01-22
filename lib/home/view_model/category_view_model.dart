@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:budget_wise/home/data/repositories/category_repository.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
@@ -19,7 +18,9 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
     required this.categoryRepository,
   }) : super(const CategoryStateInitial(categoriesList: [])) {
     authRepository.authStateChanges.listen((user) {
-      if (user != null && settingsBloc.state.model.hasLoggedIn) {
+      if (user != null &&
+          settingsBloc.state.model.hasLoggedIn &&
+          state.categoriesList.isEmpty) {
         add(const CategoryEventFetchAll());
       }
     });
@@ -27,9 +28,10 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
       try {
         final userId = authRepository.currentUser?.uid ?? '';
         final newCategory = event.category
-        ..id = const Uuid().v4()
-        ..userId = userId
-        ..index = state.categoriesList.length;
+          ..id = const Uuid().v4()
+          ..userId = userId
+          ..isSynced = false
+          ..index = state.categoriesList.length;
 
         // Prevent duplicate categories with same title and type
         final alreadyExists = state.categoriesList.any(
@@ -42,7 +44,8 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
         final updatedList = [...state.categoriesList, newCategory];
         emit(CategoryStateSuccess(categoriesList: updatedList));
 
-        if (settingsBloc.state.model.hasLoggedIn == true) {
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
           categoryRepository
               .addCategory(newCategory)
               .then((_) {
@@ -108,14 +111,15 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
 
     on<CategoryEventUpdateCategory>((event, emit) {
       try {
-        final updatedCategory = event.category;
+        final updatedCategory = event.category.copyWith(isSynced: false);
         final updatedList = state.categoriesList.map((category) {
           return category.id == updatedCategory.id ? updatedCategory : category;
         }).toList();
 
         emit(CategoryStateSuccess(categoriesList: updatedList));
 
-        if (settingsBloc.state.model.hasLoggedIn == true) {
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
           categoryRepository
               .addCategory(updatedCategory)
               .then((_) {
@@ -159,59 +163,6 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
       }
     });
 
-    on<CategoryEventSyncUnsynced>((event, emit) async {
-      try {
-        final unSynced = state.categoriesList
-            .where((category) => category.isSynced == false)
-            .toList();
-        if (unSynced.isEmpty) return;
-        final synced = unSynced.map((category) {
-          return categoryRepository.addCategory(category).then((_) {
-            add(CategoryEventMarkSynced(categoryId: category.id));
-          });
-        }).toList();
-        await Future.wait(synced);
-      } catch (e) {
-        emit(
-          CategoryStateError(
-            message: 'Marking as unsynced failed: ${e.toString()}',
-            categoriesList: state.categoriesList,
-          ),
-        );
-      }
-    });
-
-    on<CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly>((
-      event,
-      emit,
-    ) {
-      try {
-        final userId = authRepository.currentUser?.uid;
-        if (userId != null) {
-          final updatedList = state.categoriesList.map((category) {
-            if (category.userId.isEmpty) {
-              return category.copyWith(userId: userId);
-            }
-            return category;
-          }).toList();
-
-          if (settingsBloc.state.model.hasLoggedIn) {
-            categoryRepository
-                .updateUserIdInAllCategoriesAfterFirstTimeLoginOnly();
-          }
-
-          emit(CategoryStateSuccess(categoriesList: updatedList));
-        }
-      } catch (e) {
-        emit(
-          CategoryStateError(
-            message: e.toString(),
-            categoriesList: state.categoriesList,
-          ),
-        );
-      }
-    });
-
     on<CategoryEventFetchAll>((event, emit) async {
       try {
         final categories = await categoryRepository.fetchAllCategories();
@@ -228,18 +179,23 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
 
     on<CategoryEventDeleteCategory>((event, emit) async {
       try {
+        final categoryToDelete = state.categoriesList.firstWhere(
+          (category) => category.id == event.categoryId,
+        );
         final updatedList = state.categoriesList
             .where((category) => category.id != event.categoryId)
             .toList();
 
         emit(CategoryStateSuccess(categoriesList: updatedList));
 
-        if (settingsBloc.state.model.hasLoggedIn == true) {
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
           categoryRepository.deleteCategory(event.categoryId).catchError((e) {
+            final restoredList = [categoryToDelete, ...state.categoriesList];
             emit(
               CategoryStateError(
                 message: 'Cloud sync failed: ${e.toString()}',
-                categoriesList: state.categoriesList,
+                categoriesList: restoredList,
               ),
             );
           });
@@ -248,6 +204,68 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
         emit(
           CategoryStateError(
             message: 'Delete failed: ${e.toString()}',
+            categoriesList: state.categoriesList,
+          ),
+        );
+      }
+    });
+
+    on<CategoryEventSyncPendingOnLogin>((event, emit) async {
+      try {
+        final pendingCategories = state.categoriesList
+            .where(
+              (category) =>
+                  category.isSynced == false &&
+                  authRepository.currentUser != null,
+            )
+            .toList();
+
+        for (final category in pendingCategories) {
+          final categoryWithUserId = category.copyWith(
+            userId: authRepository.currentUser!.uid,
+          );
+          await categoryRepository
+              .addCategory(categoryWithUserId)
+              .then(
+                (_) => add(
+                  CategoryEventMarkSynced(categoryId: categoryWithUserId.id),
+                ),
+              )
+              .catchError((e) {
+                log('Failed to sync category ${category.id} on login: $e');
+              });
+        }
+      } catch (e) {
+        emit(
+          CategoryStateError(
+            message: 'Sync on login failed: ${e.toString()}',
+            categoriesList: state.categoriesList,
+          ),
+        );
+      }
+    });
+
+    on<CategoryEventCheckAndSyncPending>((event, emit) async {
+      try {
+        if (authRepository.currentUser == null) return;
+        final pendingCategories = state.categoriesList
+            .where((category) => category.isSynced == false)
+            .toList();
+
+        for (final category in pendingCategories) {
+          await categoryRepository
+              .addCategory(category)
+              .then(
+                (_) => add(CategoryEventMarkSynced(categoryId: category.id)),
+              )
+              .catchError((e) {
+                log('Failed to sync category ${category.id}: $e');
+              });
+        }
+      } catch (e) {
+        emit(
+          CategoryStateError(
+            message: 'Check and sync failed: ${e.toString()}',
             categoriesList: state.categoriesList,
           ),
         );

@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (state is AuthStateSuccess) {
                 if (context.read<AuthRepository>().currentUser != null) {
                   context.read<TransactionBloc>().add(
-                    const TransactionEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),
+                    const TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly(),
                   );
                   context.read<CategoryBloc>().add(
                     const CategoryEventUpdateUserIdInAllCategoriesAfterFirstTimeLoginOnly(),

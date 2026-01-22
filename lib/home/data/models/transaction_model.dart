@@ -15,7 +15,7 @@ class TransactionModel {
   final String accountId;
   final DateTime transactionDate;
   final String? transactionNotes;
-  final bool isSynced;
+  bool isSynced;
 
   TransactionModel({
     this.id = '',
