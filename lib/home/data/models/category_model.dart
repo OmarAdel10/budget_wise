@@ -14,7 +14,7 @@ class CategoryModel {
   final double? budgetAmount;
   final TransactionType type;
   final bool isSynced;
-  final int index;
+  int index;
 
   CategoryModel({
     this.id = '',

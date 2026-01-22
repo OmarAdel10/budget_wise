@@ -26,10 +26,11 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
     on<CategoryEventCreateCategory>((event, emit) {
       try {
         final userId = authRepository.currentUser?.uid ?? '';
-        var newCategory = event.category;
-        if (newCategory.id.isEmpty) {
-          newCategory = newCategory.copyWith(id: const Uuid().v4());
-        }
+        final newCategory = event.category
+        ..id = const Uuid().v4()
+        ..userId = userId
+        ..index = state.categoriesList.length;
+
         // Prevent duplicate categories with same title and type
         final alreadyExists = state.categoriesList.any(
           (c) =>
@@ -37,10 +38,6 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
               c.type == newCategory.type,
         );
         if (alreadyExists) return;
-        newCategory = newCategory.copyWith(
-          userId: userId,
-          index: state.categoriesList.length,
-        );
 
         final updatedList = [...state.categoriesList, newCategory];
         emit(CategoryStateSuccess(categoriesList: updatedList));
