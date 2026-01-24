@@ -43,6 +43,14 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
           ..id = const Uuid().v4()
           ..userId = user != null ? user.uid : ''
           ..isSynced = false;
+
+        final isDuplicate = state.accountsList.any(
+          (account) =>
+              account.title.toLowerCase() == newAccount.title.toLowerCase() &&
+              account.accountType == newAccount.accountType,
+        );
+
+        if (isDuplicate) return;
         final updatedList = [newAccount, ...state.accountsList];
         emit(
           AccountStateSuccess(
