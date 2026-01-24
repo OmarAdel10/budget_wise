@@ -49,3 +49,5 @@ app.*.map.json
 android/app/build/
 /project_UI/
 
+# Gemini related
+GEMINI.md
