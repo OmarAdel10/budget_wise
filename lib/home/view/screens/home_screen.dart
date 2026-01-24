@@ -445,6 +445,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           final budget =
                               categoryitem.category.budgetAmount ?? 0;
                           final spending = categoryitem.totalSpending;
+                          final isIncome = categoryitem.category.type == TransactionType.income;
 
                           double? progress;
                           if (hasBudget && budget > 0) {
@@ -457,6 +458,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             amount: spending.toStringAsFixed(0),
                             totalBudget: budget.toStringAsFixed(0),
                             hasBudgetAmount: hasBudget,
+                            isIncome: isIncome,
                             icon: categoryitem.category.categoryIcon,
                             progress: progress,
                             index: index,

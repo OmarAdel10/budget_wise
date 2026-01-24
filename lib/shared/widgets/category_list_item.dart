@@ -15,6 +15,7 @@ class CategoryListItem extends StatelessWidget {
   final VoidCallback? onDelete;
   final int? index;
   final bool hasBudgetAmount;
+  final bool isIncome;
 
   const CategoryListItem({
     super.key,
@@ -27,6 +28,7 @@ class CategoryListItem extends StatelessWidget {
     this.index,
     this.progress,
     this.hasBudgetAmount = false,
+    this.isIncome = false,
   });
 
   final double? progress;
@@ -81,19 +83,26 @@ class CategoryListItem extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  hasBudgetAmount
+                  isIncome
                       ? Text(
-                          '\$$amount / \$$totalBudget',
+                          '\$$amount',
                           style: AppTextStyles.bodySmall.copyWith(
                             color: AppColors.textSecondary,
                           ),
                         )
-                      : Text(
-                          l10n.hasNoBudget,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
+                      : hasBudgetAmount
+                          ? Text(
+                              '\$$amount / \$$totalBudget',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            )
+                          : Text(
+                              l10n.hasNoBudget,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
                 ],
               ),
             ),
