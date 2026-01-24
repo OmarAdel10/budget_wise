@@ -1,20 +1,19 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import '../../../shared/utils/thousands_formatter.dart';
 import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:uuid/uuid.dart';
 
 class IncomeSetupPage extends StatefulWidget {
   final Function(double amount, String categoryId) onDataChanged;
@@ -80,7 +79,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
   }
 
   void _updateData() {
-    final amount = double.tryParse(_amountController.text) ?? 0.0;
+    final amount = double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0.0;
     if (_selectedCategoryId != null) {
       widget.onDataChanged(amount, _selectedCategoryId!);
     }
@@ -149,6 +148,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
             hintText: "0.00",
             controller: _amountController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [ThousandsSeparatorInputFormatter()],
             suffixIcon: const Icon(
               Icons.attach_money,
               color: AppColors.textSecondary,
