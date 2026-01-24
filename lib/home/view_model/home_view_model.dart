@@ -64,6 +64,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         for (var transaction in monthTransaction) {
           if (transaction.type == TransactionType.income) {
             income += transaction.transactionAmount;
+            if (spendingMap.containsKey(transaction.categoryId)) {
+              spendingMap[transaction.categoryId] +=
+                  transaction.transactionAmount;
+            } else {
+              spendingMap[transaction.categoryId] =
+                  transaction.transactionAmount;
+            }
           } else {
             expenses += transaction.transactionAmount;
             if (spendingMap.containsKey(transaction.categoryId)) {

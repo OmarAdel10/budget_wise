@@ -34,6 +34,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   DateTime selectedMonth = DateTime.now();
   final ScrollController _scrollController = ScrollController();
+  bool _showIncome = false;
 
   @override
   void initState() {
@@ -61,9 +62,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final recentTransactions = state.model.transactions.take(5).toList();
-        final categoryData = state.model.categories
-            .where((cat) => cat.category.type == TransactionType.expense)
-            .toList();
+        final categoryData = state.model.categories.where((cat) {
+          if (_showIncome) {
+            return cat.category.type == TransactionType.income;
+          } else {
+            return cat.category.type == TransactionType.expense;
+          }
+        }).toList();
+
         return Scaffold(
           backgroundColor: AppColors.primaryBackground,
           appBar: AppBar(
@@ -127,7 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Text(
-                    DateFormat.yMMMd(Localizations.localeOf(context).languageCode).format(selectedMonth),
+                    DateFormat.yMMMd(
+                      Localizations.localeOf(context).languageCode,
+                    ).format(selectedMonth),
                     style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -355,6 +363,55 @@ class _HomeScreenState extends State<HomeScreen> {
                             Text(
                               l10n.categories,
                               style: AppTextStyles.heading3,
+                            ),
+                            Spacer(),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _showIncome = !_showIncome;
+                                });
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: AppColors.cardBackground,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.sm,
+                                  vertical: AppSpacing.xs,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    AppSpacing.radiusSm,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    _showIncome
+                                        ? '${l10n.income} '
+                                        : '${l10n.expenses} ',
+                                    style: TextStyle(
+                                      color: _showIncome
+                                          ? AppColors.income
+                                          : AppColors.expense,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Icon(
+                                    _showIncome
+                                        ? PhosphorIcons.arrowFatLinesUp(
+                                            PhosphorIconsStyle.fill,
+                                          )
+                                        : PhosphorIcons.arrowFatLinesDown(
+                                            PhosphorIconsStyle.fill,
+                                          ),
+                                    size: 16,
+                                    color: _showIncome
+                                        ? AppColors.income
+                                        : AppColors.expense,
+                                  ),
+                                ],
+                              ),
                             ),
                             IconButton(
                               tooltip: 'Add Category',
