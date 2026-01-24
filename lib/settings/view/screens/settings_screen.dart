@@ -1,8 +1,11 @@
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/models/user_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
+import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
@@ -27,6 +30,9 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   void _handleLogout() {
     context.read<AuthBloc>().add(AuthEventSignOut());
+    context.read<TransactionBloc>().clear();
+    context.read<CategoryBloc>().clear();
+    context.read<AccountBloc>().clear();
     Navigator.of(
       context,
     ).pushNamedAndRemoveUntil(LoginScreen.routeName, (route) => false);
