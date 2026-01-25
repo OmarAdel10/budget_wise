@@ -6,6 +6,7 @@ import 'package:budget_wise/home/view/screens/add_transaction_screen.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart' show HomeBloc;
 import 'package:budget_wise/home/view_model/transaction_event.dart';
+import 'package:budget_wise/home/view_model/transaction_state.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -26,233 +27,251 @@ class TransactionDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: AppColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          transModel.type == TransactionType.income
-              ? l10n.incomeDetails
-              : l10n.expenseDetails,
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
+    return BlocBuilder<TransactionBloc, TransactionState>(
+      builder: (context, state) {
+        final transaction = state.transactionsList
+                .where((t) => t.id == transModel.id)
+                .firstOrNull ??
+            transModel;
+
+        return Scaffold(
+          backgroundColor: AppColors.primaryBackground,
+          appBar: AppBar(
+            backgroundColor: AppColors.primaryBackground,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: AppColors.textPrimary),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: Text(
+              transaction.type == TransactionType.income
+                  ? l10n.incomeDetails
+                  : l10n.expenseDetails,
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: true,
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Amount Header
-              Center(
-                child: Column(
-                  children: [
-                    Text(
-                      transModel.type == TransactionType.income
-                          ? l10n.amountReceived
-                          : l10n.amountSpent,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      "\$${transModel.transactionAmount}",
-                      style: AppTextStyles.heading1.copyWith(
-                        color: transModel.type == TransactionType.income
-                            ? AppColors.primaryAccent
-                            : AppColors.danger,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxl),
-
-              // Detail Info Card
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                ),
-                child: Column(
-                  children: [
-                    _buildDetailItem(
-                      icon: PhosphorIcons.tag(),
-                      label: l10n.title,
-                      value: transModel.transactionTitle,
-                    ),
-                    const Divider(
-                      color: AppColors.borderColor,
-                      height: AppSpacing.xl,
-                    ),
-                    _buildDetailItem(
-                      icon: PhosphorIcons.calendar(),
-                      label: l10n.date,
-                      value: DateFormat(
-                        "dd/MM/yyyy | hh:mm",
-                      ).format(transModel.transactionDate),
-                    ),
-                    const Divider(
-                      color: AppColors.borderColor,
-                      height: AppSpacing.xl,
-                    ),
-                    BlocBuilder<HomeBloc, HomeState>(
-                      builder: (context, state) {
-                        return _buildDetailItem(
-                          icon: PhosphorIcons.listBullets(),
-                          label: l10n.category,
-                          value: state.model.categories
-                              .firstWhere(
-                                (category) =>
-                                    category.category.id ==
-                                    transModel.categoryId,
-                              )
-                              .category
-                              .categoryTitle,
-                        );
-                      },
-                    ),
-                    const Divider(
-                      color: AppColors.borderColor,
-                      height: AppSpacing.xl,
-                    ),
-                    BlocBuilder<AccountBloc, AccountState>(
-                      builder: (context, state) {
-                        String accountTitle = l10n.noAccount;
-                        if (state.accountsList.isNotEmpty && transModel.accountId.isNotEmpty) {
-                          final account = state.accountsList.firstWhere(
-                            (a) => a.id == transModel.accountId,
-                          );
-                          accountTitle = account.title;
-                        }
-                        return _buildDetailItem(
-                          icon: PhosphorIcons.bank(),
-                          label: "Account",
-                          value: accountTitle,
-                        );
-                      },
-                    ),
-                    if (transModel.transactionNotes != null &&
-                        transModel.transactionNotes!.isNotEmpty) ...[
-                      const Divider(
-                        color: AppColors.borderColor,
-                        height: AppSpacing.xl,
-                      ),
-                      _buildDetailItem(
-                        icon: PhosphorIcons.note(),
-                        label: l10n.notes,
-                        value: transModel.transactionNotes!,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxl),
-
-              // Action Buttons
-              Row(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AddTransactionScreen(
-                              transactionToEdit: transModel,
-                            ),
-                          ),
-                        );
-                      },
-                      icon: Icon(PhosphorIcons.pencilSimple(), size: 20),
-                      label: Text(l10n.edit),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.md,
-                        ),
-                        side: const BorderSide(color: AppColors.textSecondary),
-                        foregroundColor: AppColors.textSecondary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radiusMd,
+                  // Amount Header
+                  Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          transaction.type == TransactionType.income
+                              ? l10n.amountReceived
+                              : l10n.amountSpent,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
                           ),
                         ),
-                      ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          "\$${transaction.transactionAmount}",
+                          style: AppTextStyles.heading1.copyWith(
+                            color: transaction.type == TransactionType.income
+                                ? AppColors.primaryAccent
+                                : AppColors.danger,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        final scaffoldMessenger = ScaffoldMessenger.of(context);
-                        final transactionBloc = context.read<TransactionBloc>();
-                        final navigator = Navigator.of(context);
+                  const SizedBox(height: AppSpacing.xxl),
 
-                        // Capture l10n strings before popping
-                        final deletedMsg = l10n.transactionDeleted;
-                        final undoLabel = l10n.undo;
-
-                        // Pop immediately
-                        if (navigator.canPop()) {
-                          navigator.pop();
-                        }
-
-                        Timer? timer;
-                        timer = Timer(const Duration(seconds: 3), () {
-                          transactionBloc.add(
-                            TransactionEventDeleteTransaction(
-                              transactionId: transModel.id,
-                            ),
-                          );
-                        });
-
-                        scaffoldMessenger.clearSnackBars();
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            dismissDirection: DismissDirection.horizontal,
-                            content: Text(deletedMsg),
-                            action: SnackBarAction(
-                              label: undoLabel,
-                              onPressed: () {
-                                timer?.cancel();
-                              },
-                            ),
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
-                      },
-                      icon: Icon(PhosphorIcons.trash(), size: 20),
-                      label: Text(l10n.delete),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.md,
+                  // Detail Info Card
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildDetailItem(
+                          icon: PhosphorIcons.tag(),
+                          label: l10n.title,
+                          value: transaction.transactionTitle,
                         ),
-                        backgroundColor: AppColors.danger,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radiusMd,
+                        const Divider(
+                          color: AppColors.borderColor,
+                          height: AppSpacing.xl,
+                        ),
+                        _buildDetailItem(
+                          icon: PhosphorIcons.calendar(),
+                          label: l10n.date,
+                          value: DateFormat(
+                            "dd/MM/yyyy | hh:mm",
+                          ).format(transaction.transactionDate),
+                        ),
+                        const Divider(
+                          color: AppColors.borderColor,
+                          height: AppSpacing.xl,
+                        ),
+                        BlocBuilder<HomeBloc, HomeState>(
+                          builder: (context, state) {
+                            final category = state.model.categories
+                                .where(
+                                  (c) =>
+                                      c.category.id == transaction.categoryId,
+                                )
+                                .firstOrNull;
+
+                            return _buildDetailItem(
+                              icon: PhosphorIcons.listBullets(),
+                              label: l10n.category,
+                              value: category?.category.categoryTitle ??
+                                  'No Category',
+                            );
+                          },
+                        ),
+                        const Divider(
+                          color: AppColors.borderColor,
+                          height: AppSpacing.xl,
+                        ),
+                        BlocBuilder<AccountBloc, AccountState>(
+                          builder: (context, state) {
+                            String accountTitle = l10n.noAccount;
+                            if (state.accountsList.isNotEmpty &&
+                                transaction.accountId.isNotEmpty) {
+                              final account = state.accountsList
+                                  .where((a) => a.id == transaction.accountId)
+                                  .firstOrNull;
+                              if (account != null) {
+                                accountTitle = account.title;
+                              }
+                            }
+                            return _buildDetailItem(
+                              icon: PhosphorIcons.bank(),
+                              label: "Account",
+                              value: accountTitle,
+                            );
+                          },
+                        ),
+                        if (transaction.transactionNotes != null &&
+                            transaction.transactionNotes!.isNotEmpty) ...[
+                          const Divider(
+                            color: AppColors.borderColor,
+                            height: AppSpacing.xl,
+                          ),
+                          _buildDetailItem(
+                            icon: PhosphorIcons.note(),
+                            label: l10n.notes,
+                            value: transaction.transactionNotes!,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xxl),
+
+                  // Action Buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AddTransactionScreen(
+                                  transactionToEdit: transaction,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: Icon(PhosphorIcons.pencilSimple(), size: 20),
+                          label: Text(l10n.edit),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
+                            side: const BorderSide(
+                              color: AppColors.textSecondary,
+                            ),
+                            foregroundColor: AppColors.textSecondary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusMd,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            final scaffoldMessenger = ScaffoldMessenger.of(
+                              context,
+                            );
+                            final transactionBloc =
+                                context.read<TransactionBloc>();
+                            final navigator = Navigator.of(context);
+
+                            // Capture l10n strings before popping
+                            final deletedMsg = l10n.transactionDeleted;
+                            final undoLabel = l10n.undo;
+
+                            // Pop immediately
+                            if (navigator.canPop()) {
+                              navigator.pop();
+                            }
+
+                            Timer? timer;
+                            timer = Timer(const Duration(seconds: 3), () {
+                              transactionBloc.add(
+                                TransactionEventDeleteTransaction(
+                                  transactionId: transaction.id,
+                                ),
+                              );
+                            });
+
+                            scaffoldMessenger.clearSnackBars();
+                            scaffoldMessenger.showSnackBar(
+                              SnackBar(
+                                dismissDirection: DismissDirection.horizontal,
+                                content: Text(deletedMsg),
+                                action: SnackBarAction(
+                                  label: undoLabel,
+                                  onPressed: () {
+                                    timer?.cancel();
+                                  },
+                                ),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          },
+                          icon: Icon(PhosphorIcons.trash(), size: 20),
+                          label: Text(l10n.delete),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
+                            backgroundColor: AppColors.danger,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusMd,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
