@@ -57,128 +57,126 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
     }
   }
 
-  void _onSave() {
-    final name = _nameController.text.trim();
-    final amount = double.tryParse(_amountController.text.replaceAll(',', ''));
-
-    if (name.isNotEmpty && amount != null && amount > 0) {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text(
-          "New Saving Goal",
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          backgroundColor: AppColors.primaryBackground,
+          appBar: AppBar(
+            backgroundColor: AppColors.primaryBackground,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: AppColors.textPrimary),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: const Text(
+              "New Saving Goal",
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: true,
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Goal Name Input
-              Text("Goal Name", style: AppTextStyles.bodyMedium),
-              const SizedBox(height: AppSpacing.sm),
-              CustomTextField(
-                hintText: "e.g., New Car",
-                controller: _nameController,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Target Amount Input
-              Text("Target Amount", style: AppTextStyles.bodyMedium),
-              const SizedBox(height: AppSpacing.sm),
-              CustomTextField(
-                hintText: "Enter amount",
-                controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
-                  ThousandsSeparatorInputFormatter(),
-                ],
-                prefixIcon: Icon(
-                  PhosphorIcons.currencyDollar(PhosphorIconsStyle.regular),
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-
-              // Target Date Picker
-              Text("Target Date", style: AppTextStyles.bodyMedium),
-              const SizedBox(height: AppSpacing.sm),
-              InkWell(
-                onTap: _pickDate,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Goal Name Input
+                  Text("Goal Name", style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: AppSpacing.sm),
+                  CustomTextField(
+                    hintText: "e.g., New Car",
+                    controller: _nameController,
                   ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        PhosphorIcons.calendarBlank(PhosphorIconsStyle.regular),
-                        color: AppColors.textSecondary,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        DateFormat.yMMMd().format(_targetDate),
-                        style: AppTextStyles.bodyLarge,
-                      ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Target Amount Input
+                  Text("Target Amount", style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: AppSpacing.sm),
+                  CustomTextField(
+                    hintText: "Enter amount",
+                    controller: _amountController,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                      ThousandsSeparatorInputFormatter(),
                     ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-
-              // Info Text
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: AppColors.secondaryBackground,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  border: Border.all(color: AppColors.borderColor),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      PhosphorIcons.info(PhosphorIconsStyle.regular),
+                    prefixIcon: Icon(
+                      PhosphorIcons.currencyDollar(PhosphorIconsStyle.regular),
                       color: AppColors.textSecondary,
                     ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        "Saving regularly helps you reach your goals faster.",
-                        style: AppTextStyles.bodySmall,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Target Date Picker
+                  Text("Target Date", style: AppTextStyles.bodyMedium),
+                  const SizedBox(height: AppSpacing.sm),
+                  InkWell(
+                    onTap: _pickDate,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.cardBackground,
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusMd,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            PhosphorIcons.calendarBlank(
+                              PhosphorIconsStyle.regular,
+                            ),
+                            color: AppColors.textSecondary,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            DateFormat.yMMMd().format(_targetDate),
+                            style: AppTextStyles.bodyLarge,
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
 
-              // Save Button
-              CustomButton(text: "Create Goal", onPressed: _onSave),
-            ],
+                  // Info Text
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.secondaryBackground,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      border: Border.all(color: AppColors.borderColor),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          PhosphorIcons.info(PhosphorIconsStyle.regular),
+                          color: AppColors.textSecondary,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            "Saving regularly helps you reach your goals faster.",
+                            style: AppTextStyles.bodySmall,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Save Button
+                  CustomButton(text: "Create Goal", onPressed: (){},),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        );
+      }
   }
-}

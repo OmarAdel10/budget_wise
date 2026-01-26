@@ -6,6 +6,7 @@ import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/home/view/screens/all_transactions_screen.dart';
 import 'package:budget_wise/home/view_model/category_state.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_state.dart';
@@ -159,7 +160,9 @@ class AccountDetailScreen extends StatelessWidget {
                   Text(l10n.recentTransactions, style: AppTextStyles.heading3),
                   GestureDetector(
                     onTap: () {
-                      // TODO: Navigate to all transactions for this account
+                      Navigator.of(
+                        context,
+                      ).pushNamed(AllTransactionsScreen.routeName);
                     },
                     child: Text(
                       l10n.viewAll,
@@ -177,7 +180,10 @@ class AccountDetailScreen extends StatelessWidget {
           //* Recent Transactions List
           BlocBuilder<TransactionBloc, TransactionState>(
             builder: (context, state) {
-              final transactions = state.transactionsList.take(10).toList();
+              final transactions = state.transactionsList
+                  .where((t) => t.accountId == account.id)
+                  .take(10)
+                  .toList();
 
               if (transactions.isEmpty) {
                 return SliverToBoxAdapter(
@@ -315,17 +321,17 @@ class AccountDetailScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: isIncome
                   ? AppColors.primaryAccent.withValues(alpha: 0.1)
-                  : AppColors.cardBackground,
+                  : AppColors.expense.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               border: Border.all(
                 color: isIncome
                     ? AppColors.primaryAccent.withValues(alpha: 0.2)
-                    : AppColors.borderColor.withValues(alpha: 0.5),
+                    : AppColors.expense.withValues(alpha: 0.2),
               ),
             ),
             child: Icon(
               category.categoryIcon,
-              color: AppColors.primaryAccent,
+              color: isIncome ? AppColors.primaryAccent : AppColors.expense,
               size: 24,
             ),
           ),
@@ -359,7 +365,7 @@ class AccountDetailScreen extends StatelessWidget {
           Text(
             '${isIncome ? '+' : '-'}\$${transaction.transactionAmount.toStringAsFixed(2)}',
             style: AppTextStyles.bodyLarge.copyWith(
-              color: isIncome ? AppColors.primaryAccent : AppColors.textPrimary,
+              color: isIncome ? AppColors.primaryAccent : AppColors.expense,
               fontWeight: FontWeight.w800,
             ),
           ),
