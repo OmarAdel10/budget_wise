@@ -295,7 +295,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   )
                                 : const SizedBox.shrink(),
                           ),
-                          const SizedBox(height: AppSpacing.xl),
+                          _isTrendExpanded ? const SizedBox(height: AppSpacing.xl) : const SizedBox.shrink(),
 
                           if (!hasData)
                             Padding(
@@ -376,7 +376,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                               const SizedBox(height: AppSpacing.md),
                               // Category Chart
                               Container(
-                                height: MediaQuery.sizeOf(context).height * 0.2,
+                                height: 250,
                                 decoration: BoxDecoration(
                                   color: AppColors.cardBackground,
                                   borderRadius: BorderRadius.circular(
@@ -384,9 +384,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   ),
                                 ),
                                 child: SfCircularChart(
-                                  palette: const [
-                                    Color(0xFF65B583),
-                                    Color(0xFFE57373),
+                                  palette: [
+                                    _showIncome
+                                        ? Color(0xFF65B583)
+                                        : Color(0xFFE57373),
+                                    !_showIncome
+                                        ? Color(0xFFE57373)
+                                        : Color(0xFF65B583),
                                     Color(0xFF81D4FA),
                                     Color(0xFFF48FB1),
                                     Color(0xFF80CBC4),
@@ -456,7 +460,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   ),
                                   series: <CircularSeries>[
                                     PieSeries<CategoriesWithSpending, String>(
-                                      radius: '70%',
+                                      radius: '60%',
                                       dataSource: breakdown,
                                       xValueMapper: (data, _) =>
                                           data.category.categoryTitle,
@@ -473,7 +477,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                             ChartDataLabelPosition.outside,
                                         showZeroValue: false,
                                         labelIntersectAction:
-                                            LabelIntersectAction.none,
+                                            LabelIntersectAction.shift,
                                         connectorLineSettings:
                                             const ConnectorLineSettings(
                                               length: '20%',
