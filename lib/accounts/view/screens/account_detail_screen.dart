@@ -1,5 +1,6 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/models/card_brand.dart';
+import 'package:budget_wise/accounts/view/screens/edit_account_screen.dart';
 import 'package:budget_wise/accounts/view/widgets/credit_card_preview.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
@@ -111,7 +112,9 @@ class AccountDetailScreen extends StatelessWidget {
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  // TODO: Navigate to edit account
+                  Navigator.of(
+                    context,
+                  ).pushNamed(EditAccountScreen.routeName, arguments: account);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryAccent,

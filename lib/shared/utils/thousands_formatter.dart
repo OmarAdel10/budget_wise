@@ -6,7 +6,9 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     if (newValue.text.isEmpty) {
       return newValue.copyWith(text: '');
     }
@@ -40,7 +42,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
         // Use #,##0 to ensure at least one digit is shown (e.g., for "0")
         final formatter = NumberFormat('#,##0', 'en_US');
         formattedInteger = formatter.format(doubleValue);
-        
+
         // If the user typed leading zeros, double.parse strips them.
         // But for things like "0.05", we want to keep the "0".
         // NumberFormat('#,##0') handles "0" correctly.
@@ -49,7 +51,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
         return oldValue;
       }
     } else if (cleanedText.startsWith('.')) {
-      // Allow ".5" -> it will be treated as "0.5" by many parsers, 
+      // Allow ".5" -> it will be treated as "0.5" by many parsers,
       // but here we just keep it as is or prepend a 0.
       formattedInteger = '0';
     }

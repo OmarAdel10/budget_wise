@@ -56,7 +56,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
       decoration: InputDecoration(
         hintText: widget.hintText,
-        hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+        hintStyle: AppTextStyles.bodyMedium.copyWith(
+          color: AppColors.textSecondary,
+        ),
         prefixIcon: widget.prefixIcon,
         suffixIcon: widget.isPassword
             ? IconButton(

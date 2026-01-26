@@ -42,19 +42,19 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           Text("Select Currency", style: AppTextStyles.heading3),
           const SizedBox(height: AppSpacing.md),
-          
+
           Flexible(
             child: ListView.separated(
               shrinkWrap: true,
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
               itemCount: AccountConstants.supportedCurrencies.length,
-              separatorBuilder: (context, index) => const Divider(
-                color: AppColors.borderColor,
-                height: 1,
-              ),
+              separatorBuilder: (context, index) =>
+                  const Divider(color: AppColors.borderColor, height: 1),
               itemBuilder: (context, index) {
-                final code = AccountConstants.supportedCurrencies.keys.elementAt(index);
-                final name = AccountConstants.supportedCurrencies.values.elementAt(index);
+                final code = AccountConstants.supportedCurrencies.keys
+                    .elementAt(index);
+                final name = AccountConstants.supportedCurrencies.values
+                    .elementAt(index);
                 final isSelected = code == selectedCurrency;
 
                 return InkWell(
@@ -75,19 +75,23 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                           height: 48,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: isSelected 
-                              ? AppColors.primaryAccent.withOpacity(0.1) 
-                              : AppColors.inputBackground,
-                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                            border: isSelected 
-                              ? Border.all(color: AppColors.primaryAccent) 
-                              : null,
+                            color: isSelected
+                                ? AppColors.primaryAccent.withValues(alpha: 0.1)
+                                : AppColors.inputBackground,
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusMd,
+                            ),
+                            border: isSelected
+                                ? Border.all(color: AppColors.primaryAccent)
+                                : null,
                           ),
                           child: Text(
                             code,
                             style: AppTextStyles.bodyMedium.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: isSelected ? AppColors.primaryAccent : AppColors.textPrimary,
+                              color: isSelected
+                                  ? AppColors.primaryAccent
+                                  : AppColors.textPrimary,
                             ),
                           ),
                         ),
@@ -96,8 +100,12 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                           child: Text(
                             name,
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: isSelected ? AppColors.primaryAccent : AppColors.textPrimary,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              color: isSelected
+                                  ? AppColors.primaryAccent
+                                  : AppColors.textPrimary,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                           ),
                         ),

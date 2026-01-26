@@ -1,6 +1,8 @@
+import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
+import 'package:budget_wise/accounts/view/screens/edit_account_screen.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
@@ -55,21 +57,27 @@ void main() async {
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => AuthRepository()),
-        RepositoryProvider(create: (context) => TransactionRepository(
-          authRepository: context.read<AuthRepository>(),
-        )),
-        RepositoryProvider(create: (context) => CategoryRepository(
-          authRepository: context.read<AuthRepository>(),
-        )),
-        RepositoryProvider(create: (context) => AccountRepository(
-          authRepo: context.read<AuthRepository>(),
-        )),
+        RepositoryProvider(
+          create: (context) => TransactionRepository(
+            authRepository: context.read<AuthRepository>(),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) => CategoryRepository(
+            authRepository: context.read<AuthRepository>(),
+          ),
+        ),
+        RepositoryProvider(
+          create: (context) =>
+              AccountRepository(authRepo: context.read<AuthRepository>()),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => AuthBloc(
-            authRepository: context.read<AuthRepository>(),
-          )),
+          BlocProvider(
+            create: (context) =>
+                AuthBloc(authRepository: context.read<AuthRepository>()),
+          ),
           BlocProvider(create: (context) => SettingsBloc()),
           BlocProvider(
             create: (context) => AccountBloc(
@@ -324,6 +332,18 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: const AccountDetailScreen(),
+                );
+              case EditAccountScreen.routeName:
+                final account = settings.arguments as AccountModel;
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: EditAccountScreen(account: account),
                 );
               default:
                 return null;

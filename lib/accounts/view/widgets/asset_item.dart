@@ -8,7 +8,7 @@ class AssetItem extends StatelessWidget {
   final String title;
   final String subtitle;
   final String amount;
-  
+
   const AssetItem({
     super.key,
     required this.icon,

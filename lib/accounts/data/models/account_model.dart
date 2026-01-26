@@ -23,6 +23,7 @@ class AccountModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   bool isSynced;
+  final bool lowBalanceAlertEnabled;
 
   AccountModel({
     this.id = '',
@@ -40,6 +41,7 @@ class AccountModel {
     required this.createdAt,
     required this.updatedAt,
     this.isSynced = false,
+    this.lowBalanceAlertEnabled = false,
   });
 
   AccountModel copyWith({
@@ -58,6 +60,7 @@ class AccountModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isSynced,
+    bool? lowBalanceAlertEnabled,
   }) {
     return AccountModel(
       id: id ?? this.id,
@@ -75,6 +78,8 @@ class AccountModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
+      lowBalanceAlertEnabled:
+          lowBalanceAlertEnabled ?? this.lowBalanceAlertEnabled,
     );
   }
 
@@ -97,6 +102,7 @@ class AccountModel {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'isSynced': isSynced,
+      'lowBalanceAlertEnabled': lowBalanceAlertEnabled,
     };
   }
 
@@ -135,6 +141,7 @@ class AccountModel {
           ? (map['updatedAt'] as Timestamp).toDate()
           : DateTime.parse(map['updatedAt'] as String),
       isSynced: map['isSynced'] as bool,
+      lowBalanceAlertEnabled: map['lowBalanceAlertEnabled'] ?? false,
     );
   }
 

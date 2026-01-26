@@ -21,10 +21,14 @@ class AccountRepository {
     await doc.set(model);
   }
 
-  Future<void> updateAccountUpdatedAt(String accountId, DateTime newDate) async {
+  Future<void> updateAccountUpdatedAt(
+    String accountId,
+    DateTime newDate,
+  ) async {
     final CollectionReference<AccountModel> collection = getAccountCollection();
-    final QuerySnapshot<AccountModel> querySnapshot =
-        await collection.where('id', isEqualTo: accountId).get();
+    final QuerySnapshot<AccountModel> querySnapshot = await collection
+        .where('id', isEqualTo: accountId)
+        .get();
     for (final doc in querySnapshot.docs) {
       await doc.reference.update({'updatedAt': newDate.toIso8601String()});
     }
@@ -36,8 +40,9 @@ class AccountRepository {
     DateTime updatedAt,
   ) async {
     final CollectionReference<AccountModel> collection = getAccountCollection();
-    final QuerySnapshot<AccountModel> querySnapshot =
-        await collection.where('id', isEqualTo: accountId).get();
+    final QuerySnapshot<AccountModel> querySnapshot = await collection
+        .where('id', isEqualTo: accountId)
+        .get();
     for (final doc in querySnapshot.docs) {
       await doc.reference.update({
         'balance': newBalance,

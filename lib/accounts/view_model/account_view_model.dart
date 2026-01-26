@@ -90,6 +90,11 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
     on<AccountEventEditAccount>((event, emit) {
       try {
         final updatedAccount = event.model;
+        final oldAccount = state.accountsList.firstWhere(
+          (account) => account.id == updatedAccount.id,
+        );
+        final balanceDelta = updatedAccount.balance - oldAccount.balance;
+
         final updatedList = state.accountsList
             .map(
               (account) =>
@@ -99,7 +104,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         emit(
           AccountStateSuccess(
             accountsList: updatedList,
-            netWorth: state.netWorth,
+            netWorth: state.netWorth + balanceDelta,
           ),
         );
 
@@ -181,13 +186,16 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
 
     on<AccountEventDeleteAccount>((event, emit) {
       try {
+        final accountToDelete = state.accountsList.firstWhere(
+          (account) => account.id == event.accountId,
+        );
         final updatedList = state.accountsList
             .where((account) => account.id != event.accountId)
             .toList();
         emit(
           AccountStateSuccess(
             accountsList: updatedList,
-            netWorth: state.netWorth,
+            netWorth: state.netWorth - accountToDelete.balance,
           ),
         );
 
