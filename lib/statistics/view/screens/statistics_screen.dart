@@ -1,4 +1,6 @@
 import 'package:budget_wise/home/data/models/home_model.dart';
+import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
 import 'package:budget_wise/statistics/view_model/statistics_event.dart';
 import 'package:budget_wise/statistics/view_model/statistics_state.dart';
@@ -166,24 +168,43 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           // Trend Section
                           Row(
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _isTrendExpanded = !_isTrendExpanded;
-                                  });
-                                },
-                                icon: AnimatedRotation(
-                                  turns: _isTrendExpanded ? 0 : -0.25,
-                                  duration: const Duration(milliseconds: 300),
-                                  child: const Icon(
-                                    Icons.expand_more,
-                                    color: AppColors.textPrimary,
-                                  ),
-                                ),
-                              ),
                               Text(
                                 l10n.dailyTrend,
                                 style: AppTextStyles.heading3,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  left: AppSpacing.md,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.cardBackground,
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(
+                                    AppSpacing.radiusSm,
+                                  ),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _isTrendExpanded = !_isTrendExpanded;
+                                    });
+                                  },
+                                  style: IconButton.styleFrom(
+                                    padding: const EdgeInsets.all(4),
+                                    minimumSize: const Size(24, 24),
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    splashFactory: NoSplash.splashFactory,
+                                  ),
+                                  icon: AnimatedRotation(
+                                    turns: _isTrendExpanded ? 0 : -0.25,
+                                    duration: const Duration(milliseconds: 300),
+                                    child: const Icon(
+                                      Icons.expand_more,
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -193,17 +214,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             curve: Curves.easeInOut,
                             child: _isTrendExpanded
                                 ? Container(
-                                    height: 250,
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: AppSpacing.sm,
                                       vertical: AppSpacing.md,
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.cardBackground,
-                                      borderRadius: BorderRadius.circular(
-                                        AppSpacing.radiusMd,
-                                      ),
-                                    ),
+
                                     child: SfCartesianChart(
                                       plotAreaBorderWidth: 0,
                                       margin: EdgeInsets.zero,
@@ -295,7 +310,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   )
                                 : const SizedBox.shrink(),
                           ),
-                          _isTrendExpanded ? const SizedBox(height: AppSpacing.xl) : const SizedBox.shrink(),
+                          _isTrendExpanded
+                              ? const SizedBox(height: AppSpacing.xl)
+                              : const SizedBox.shrink(),
 
                           if (!hasData)
                             Padding(
@@ -373,16 +390,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: AppSpacing.md),
                               // Category Chart
-                              Container(
-                                height: 250,
-                                decoration: BoxDecoration(
-                                  color: AppColors.cardBackground,
-                                  borderRadius: BorderRadius.circular(
-                                    AppSpacing.radiusMd,
-                                  ),
-                                ),
+                              SizedBox.square(
                                 child: SfCircularChart(
                                   palette: [
                                     _showIncome
@@ -552,7 +561,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: AppSpacing.xl),
                             ],
 
                             // Header with Filter
@@ -663,73 +671,106 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             final percentage = total > 0
                                 ? (item.totalSpending / total) * 100
                                 : 0.0;
-                            return Container(
-                              margin: const EdgeInsets.only(
-                                bottom: AppSpacing.md,
-                              ),
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              decoration: BoxDecoration(
-                                color: AppColors.cardBackground,
-                                borderRadius: BorderRadius.circular(
-                                  AppSpacing.radiusMd,
+                            final isIncome =
+                                category.type == TransactionType.income;
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                  CategoryDetailScreen.routeName,
+                                  arguments: {'categoryId': category.id},
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(
+                                  bottom: AppSpacing.md,
                                 ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 3,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: color.withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            4.0,
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                decoration: BoxDecoration(
+                                  color: AppColors.cardBackground,
+                                  borderRadius: BorderRadius.circular(
+                                    AppSpacing.radiusMd,
+                                  ),
+                                ),
+                                child: Row(
+                                  // mainAxisAlignment:
+                                  // MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 3,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: color.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(
+                                              4.0,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "${percentage.toStringAsFixed(0)}%",
+                                            style: AppTextStyles.bodySmall
+                                                .copyWith(
+                                                  color: color,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 10,
+                                                ),
                                           ),
                                         ),
-                                        child: Text(
-                                          "${percentage.toStringAsFixed(0)}%",
-                                          style: AppTextStyles.bodySmall
+                                        const SizedBox(width: AppSpacing.sm),
+                                        Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: isIncome
+                                                ? AppColors.primaryAccent
+                                                      .withValues(alpha: 0.1)
+                                                : AppColors.expense.withValues(
+                                                    alpha: 0.1,
+                                                  ),
+                                            borderRadius: BorderRadius.circular(
+                                              AppSpacing.radiusMd,
+                                            ),
+                                            border: Border.all(
+                                              color: isIncome
+                                                  ? AppColors.primaryAccent
+                                                        .withValues(alpha: 0.2)
+                                                  : AppColors.expense
+                                                        .withValues(alpha: 0.2),
+                                            ),
+                                            shape: BoxShape.rectangle,
+                                          ),
+                                          child: Icon(
+                                            category.categoryIcon,
+                                            color: color,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        const SizedBox(width: AppSpacing.md),
+                                        Text(
+                                          category.categoryTitle,
+                                          style: AppTextStyles.bodyLarge
                                               .copyWith(
-                                                color: color,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 10,
                                               ),
                                         ),
-                                      ),
-                                      const SizedBox(width: AppSpacing.sm),
-                                      Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          color: color.withValues(alpha: 0.2),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(
-                                          category.categoryIcon,
-                                          color: color,
-                                          size: 20,
-                                        ),
-                                      ),
-                                      const SizedBox(width: AppSpacing.md),
-                                      Text(
-                                        category.categoryTitle,
-                                        style: AppTextStyles.bodyLarge.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    '${_showIncome ? "+" : "-"}\$${item.totalSpending.toInt()}',
-                                    style: AppTextStyles.bodyLarge.copyWith(
-                                      color: color,
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                    Spacer(),
+                                    Text(
+                                      '${_showIncome ? "+" : "-"}\$${item.totalSpending.toInt()}',
+                                      style: AppTextStyles.bodyLarge.copyWith(
+                                        color: color,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppSpacing.md),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      color: AppColors.textSecondary,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           }, childCount: breakdown.length),
