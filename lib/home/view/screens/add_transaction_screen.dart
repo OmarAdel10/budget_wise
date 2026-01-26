@@ -5,7 +5,9 @@ import 'package:budget_wise/home/view_model/category_state.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -92,7 +94,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   void _onSave() {
     final title = _titleController.text.trim();
-    final amountText = _amountController.text.trim();
+    final amountText = _amountController.text.replaceAll(',', '').trim();
     final amount = double.tryParse(amountText);
 
     if (title.isEmpty) {
@@ -218,6 +220,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                      ThousandsSeparatorInputFormatter(),
+                    ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
 

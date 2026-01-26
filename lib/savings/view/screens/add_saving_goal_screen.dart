@@ -1,4 +1,6 @@
+import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
@@ -56,9 +58,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   }
 
   void _onSave() {
-    // TODO: Implement save saving goal logic
-    Navigator.of(context).pop();
-  }
+    final name = _nameController.text.trim();
+    final amount = double.tryParse(_amountController.text.replaceAll(',', ''));
+
+    if (name.isNotEmpty && amount != null && amount > 0) {
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +107,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                  ThousandsSeparatorInputFormatter(),
+                ],
                 prefixIcon: Icon(
                   PhosphorIcons.currencyDollar(PhosphorIconsStyle.regular),
                   color: AppColors.textSecondary,

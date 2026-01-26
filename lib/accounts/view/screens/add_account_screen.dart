@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -164,8 +165,12 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           accountIcon: PhosphorIcons.currencyCircleDollar(
             PhosphorIconsStyle.regular,
           ),
-          initialBalance: double.tryParse(balanceController.text) ?? 0.0,
-          balance: double.tryParse(balanceController.text) ?? 0.0,
+          initialBalance:
+              double.tryParse(balanceController.text.replaceAll(',', '')) ??
+              0.0,
+          balance:
+              double.tryParse(balanceController.text.replaceAll(',', '')) ??
+              0.0,
           currency: selectedCurrency,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
@@ -190,8 +195,16 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           accountType: selectedAccount,
           title: accountNameController.text.trim(),
           accountIcon: PhosphorIcons.wallet(PhosphorIconsStyle.regular),
-          initialBalance: double.tryParse(balanceController.text.trim()) ?? 0.0,
-          balance: double.tryParse(balanceController.text.trim()) ?? 0.0,
+          initialBalance:
+              double.tryParse(
+                balanceController.text.replaceAll(',', '').trim(),
+              ) ??
+              0.0,
+          balance:
+              double.tryParse(
+                balanceController.text.replaceAll(',', '').trim(),
+              ) ??
+              0.0,
           currency: selectedCurrency,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
@@ -492,6 +505,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                   ),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                    ThousandsSeparatorInputFormatter(),
                   ],
                   decoration: InputDecoration(
                     prefixIcon: GestureDetector(
@@ -558,8 +572,9 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       return l10n.initialBalanceCantLeftEmpty;
                     }
 
-                    if (double.tryParse(value) == null ||
-                        double.tryParse(value)! < 0) {
+                    final cleanValue = value.replaceAll(',', '');
+                    if (double.tryParse(cleanValue) == null ||
+                        double.tryParse(cleanValue)! < 0) {
                       return l10n.youShouldEnterAValidBalance;
                     }
 

@@ -2,7 +2,9 @@ import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
@@ -58,7 +60,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
   void _onSave() {
     final name = _nameController.text.trim();
-    final budgetText = _budgetController.text.trim();
+    final budgetText = _budgetController.text.replaceAll(',', '').trim();
     final budget = _hasBudgetAmount ? double.tryParse(budgetText) : null;
 
     if (name.isEmpty) {
@@ -324,6 +326,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                     hintText: "Amount",
                     controller: _budgetController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      ThousandsSeparatorInputFormatter(),
+                    ],
                     prefixIcon: Icon(
                       PhosphorIcons.currencyDollar(PhosphorIconsStyle.regular),
                       color: AppColors.textSecondary,

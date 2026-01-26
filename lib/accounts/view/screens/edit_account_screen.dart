@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:string_similarity/string_similarity.dart';
@@ -176,7 +177,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     if (_formKey.currentState!.validate()) {
       final updatedAccount = widget.account.copyWith(
         title: accountNameController.text.trim(),
-        balance: double.tryParse(balanceController.text.trim()) ?? 0.0,
+        balance: double.tryParse(balanceController.text.replaceAll(',', '').trim()) ?? 0.0,
         currency: selectedCurrency,
         cardBankName: widget.account.accountType == AccountType.card
             ? bankNameController.text.toUpperCase().trim()
@@ -364,6 +365,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                         ),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                          ThousandsSeparatorInputFormatter(),
                         ],
                         style: AppTextStyles.bodyLarge.copyWith(
                           fontWeight: FontWeight.bold,
@@ -372,12 +374,16 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                           l10n.addAccountInitialBalancePlaceholder,
                           prefixIcon: _buildCurrencyPrefix(context),
                         ),
-                        validator: (value) =>
-                            (value == null ||
-                                value.isEmpty ||
-                                double.tryParse(value) == null)
-                            ? l10n.youShouldEnterAValidBalance
-                            : null,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return l10n.youShouldEnterAValidBalance;
+                          }
+                          final cleanValue = value.replaceAll(',', '');
+                          if (double.tryParse(cleanValue) == null) {
+                            return l10n.youShouldEnterAValidBalance;
+                          }
+                          return null;
+                        },
                       ),
                     ],
                   ),
