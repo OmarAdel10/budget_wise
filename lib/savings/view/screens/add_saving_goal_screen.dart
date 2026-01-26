@@ -180,4 +180,3 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         );
       }
   }
-  
