@@ -16,9 +16,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventSignInWithGoogle>(_onAuthEventSignInWithGoogle);
     on<AuthEventLocalAuth>(_onAuthEventLocalAuth);
     on<AuthEventEditProfileChangeName>(_onAuthEventEditProfileChangeName);
-    on<AuthEventEditProfileChangePassword>(_onAuthEventEditProfileChangePassword);
+    on<AuthEventEditProfileChangePassword>(
+      _onAuthEventEditProfileChangePassword,
+    );
   }
-
 
   Future<void> _onAuthEventSignUp(
     AuthEventSignUp event,
@@ -26,10 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await authRepository.signUp(
-        email: event.email,
-        password: event.password,
-      );
+      await authRepository.signUp(email: event.email, password: event.password);
       await authRepository.currentUser!.updateDisplayName(event.name);
       emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
@@ -44,10 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await authRepository.signIn(
-        email: event.email,
-        password: event.password,
-      );
+      await authRepository.signIn(email: event.email, password: event.password);
       emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));
@@ -111,7 +106,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onAuthEventEditProfileChangeName(AuthEventEditProfileChangeName event, Emitter<AuthState> emit) async {
+  Future<void> _onAuthEventEditProfileChangeName(
+    AuthEventEditProfileChangeName event,
+    Emitter<AuthState> emit,
+  ) async {
     try {
       emit(AuthStateLoading());
       await authRepository.updateProfileUserName(name: event.name);
@@ -122,7 +120,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onAuthEventEditProfileChangePassword(AuthEventEditProfileChangePassword event, Emitter<AuthState> emit) async {
+  Future<void> _onAuthEventEditProfileChangePassword(
+    AuthEventEditProfileChangePassword event,
+    Emitter<AuthState> emit,
+  ) async {
     try {
       emit(AuthStateLoading());
       await authRepository.updateProfileUserPassword(password: event.password);

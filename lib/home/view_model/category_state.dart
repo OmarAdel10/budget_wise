@@ -23,7 +23,10 @@ class CategoryStateSuccess extends CategoryState {
 class CategoryStateError extends CategoryState {
   final String message;
 
-  const CategoryStateError({required this.message, required super.categoriesList});
+  const CategoryStateError({
+    required this.message,
+    required super.categoriesList,
+  });
 
   @override
   List<Object?> get props => [message, categoriesList];

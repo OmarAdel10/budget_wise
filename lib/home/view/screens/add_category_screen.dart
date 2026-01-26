@@ -84,7 +84,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         type: _selectedType,
         isSynced: false,
       );
-      context.read<CategoryBloc>().add(CategoryEventUpdateCategory(updatedCategory));
+      context.read<CategoryBloc>().add(
+        CategoryEventUpdateCategory(updatedCategory),
+      );
     } else {
       final newCategory = CategoryModel(
         categoryTitle: name,
@@ -93,7 +95,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         hasBudgetAmount: _hasBudgetAmount,
         type: _selectedType,
       );
-      context.read<CategoryBloc>().add(CategoryEventCreateCategory(newCategory));
+      context.read<CategoryBloc>().add(
+        CategoryEventCreateCategory(newCategory),
+      );
     }
     Navigator.of(context).pop();
   }
@@ -166,7 +170,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
               Center(
                 child: Text(
                   "Tap to change icon",
-                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
@@ -189,12 +195,16 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           });
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                          ),
                           decoration: BoxDecoration(
                             color: _selectedType == TransactionType.income
                                 ? AppColors.primaryAccent
                                 : Colors.transparent,
-                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusMd,
+                            ),
                           ),
                           child: Center(
                             child: Text(
@@ -218,12 +228,16 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           });
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                          ),
                           decoration: BoxDecoration(
                             color: _selectedType == TransactionType.expense
                                 ? AppColors.primaryAccent
                                 : Colors.transparent,
-                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusMd,
+                            ),
                           ),
                           child: Center(
                             child: Text(
@@ -271,7 +285,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Set Budget Limit", style: AppTextStyles.bodyMedium),
+                            Text(
+                              "Set Budget Limit",
+                              style: AppTextStyles.bodyMedium,
+                            ),
                             Text(
                               "Track spending against a monthly budget",
                               style: AppTextStyles.bodySmall.copyWith(

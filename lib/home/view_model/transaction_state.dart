@@ -23,7 +23,10 @@ class TransactionStateSuccess extends TransactionState {
 class TransactionStateError extends TransactionState {
   final String message;
 
-  const TransactionStateError({required this.message, required super.transactionsList});
+  const TransactionStateError({
+    required this.message,
+    required super.transactionsList,
+  });
 
   @override
   List<Object?> get props => [message, transactionsList];

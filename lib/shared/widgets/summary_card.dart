@@ -20,7 +20,8 @@ class SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.transparent, // Or AppColors.cardBackground if design changes
+        color:
+            Colors.transparent, // Or AppColors.cardBackground if design changes
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         border: Border.all(color: AppColors.borderColor),
       ),

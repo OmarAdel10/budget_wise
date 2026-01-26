@@ -43,7 +43,9 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
       balance: 00,
       currency: 'EGP',
     );
-    context.read<AccountBloc>().add(AccountEventCreateAccount(model: accountModel));
+    context.read<AccountBloc>().add(
+      AccountEventCreateAccount(model: accountModel),
+    );
     _amountController.addListener(_updateData);
     _initializeIncomeCategories();
   }
@@ -79,7 +81,8 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
   }
 
   void _updateData() {
-    final amount = double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0.0;
+    final amount =
+        double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0.0;
     if (_selectedCategoryId != null) {
       widget.onDataChanged(amount, _selectedCategoryId!);
     }

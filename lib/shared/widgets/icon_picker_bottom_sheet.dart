@@ -38,7 +38,9 @@ class IconPickerBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: const BoxDecoration(
         color: AppColors.secondaryBackground,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.radiusLg),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -55,10 +57,7 @@ class IconPickerBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            "Select Icon",
-            style: AppTextStyles.heading3,
-          ),
+          Text("Select Icon", style: AppTextStyles.heading3),
           const SizedBox(height: AppSpacing.lg),
           Expanded(
             child: GridView.builder(

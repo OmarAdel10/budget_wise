@@ -2,11 +2,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:budget_wise/home/data/models/home_model.dart';
 
-enum StatisticsSorting {
-  highestAmount,
-  lowestAmount,
-  alphabetical,
-}
+enum StatisticsSorting { highestAmount, lowestAmount, alphabetical }
 
 class StatisticsModel extends Equatable {
   final double totalIncome;
@@ -33,16 +29,16 @@ class StatisticsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        totalIncome,
-        totalExpenses,
-        totalSavings,
-        incomeBreakdown,
-        expenseBreakdown,
-        dailyIncomeTrend,
-        dailyExpenseTrend,
-        sortingType,
-        selectedMonth,
-      ];
+    totalIncome,
+    totalExpenses,
+    totalSavings,
+    incomeBreakdown,
+    expenseBreakdown,
+    dailyIncomeTrend,
+    dailyExpenseTrend,
+    sortingType,
+    selectedMonth,
+  ];
 
   StatisticsModel copyWith({
     double? totalIncome,

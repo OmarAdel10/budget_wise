@@ -23,9 +23,9 @@ class LocalAuthScreen extends StatelessWidget {
           );
         }
         if (state is AuthStateError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: Scaffold(

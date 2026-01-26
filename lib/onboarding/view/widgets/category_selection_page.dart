@@ -42,7 +42,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
       } else {
         _selectedCategories.add(categoryKey);
       }
-      
+
       final selectedModels = _selectedCategories.map((key) {
         return CategoryModel(
           categoryTitle: key,
@@ -59,19 +59,32 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
   String _getLocalizedCategoryName(BuildContext context, String key) {
     final l10n = AppLocalizations.of(context)!;
     switch (key) {
-      case 'Smoking': return l10n.catSmoking;
-      case 'Eating': return l10n.catEating;
-      case 'Transport': return l10n.catTransport;
-      case 'Utils': return l10n.catUtils;
-      case 'Debts': return l10n.catDebts;
-      case 'Investments': return l10n.catInvestments;
-      case 'Mobile': return l10n.catMobile;
-      case 'Rent': return l10n.catRent;
-      case 'Health': return l10n.catHealth;
-      case 'Entertainment': return l10n.catEntertainment;
-      case 'Education': return l10n.catEducation;
-      case 'Groceries': return l10n.catGroceries;
-      default: return key;
+      case 'Smoking':
+        return l10n.catSmoking;
+      case 'Eating':
+        return l10n.catEating;
+      case 'Transport':
+        return l10n.catTransport;
+      case 'Utils':
+        return l10n.catUtils;
+      case 'Debts':
+        return l10n.catDebts;
+      case 'Investments':
+        return l10n.catInvestments;
+      case 'Mobile':
+        return l10n.catMobile;
+      case 'Rent':
+        return l10n.catRent;
+      case 'Health':
+        return l10n.catHealth;
+      case 'Entertainment':
+        return l10n.catEntertainment;
+      case 'Education':
+        return l10n.catEducation;
+      case 'Groceries':
+        return l10n.catGroceries;
+      default:
+        return key;
     }
   }
 
@@ -92,7 +105,9 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
           const SizedBox(height: AppSpacing.md),
           Text(
             l10n.categorySelectionDesc,
-            style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: AppColors.textSecondary,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -115,10 +130,14 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primaryAccent.withValues(alpha: 0.2) : AppColors.cardBackground,
+                      color: isSelected
+                          ? AppColors.primaryAccent.withValues(alpha: 0.2)
+                          : AppColors.cardBackground,
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       border: Border.all(
-                        color: isSelected ? AppColors.primaryAccent : AppColors.borderColor,
+                        color: isSelected
+                            ? AppColors.primaryAccent
+                            : AppColors.borderColor,
                         width: isSelected ? 2 : 1,
                       ),
                     ),
@@ -128,7 +147,9 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
                         Icon(
                           icon,
                           size: 32,
-                          color: isSelected ? AppColors.primaryAccent : AppColors.textSecondary,
+                          color: isSelected
+                              ? AppColors.primaryAccent
+                              : AppColors.textSecondary,
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         Padding(
@@ -137,8 +158,12 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
                             _getLocalizedCategoryName(context, categoryKey),
                             textAlign: TextAlign.center,
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              color: isSelected
+                                  ? AppColors.textPrimary
+                                  : AppColors.textSecondary,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                               fontSize: 12,
                             ),
                           ),

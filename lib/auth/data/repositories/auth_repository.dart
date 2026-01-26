@@ -8,8 +8,12 @@ class AuthRepository {
   final LocalAuthentication _localAuth = LocalAuthentication();
   User? get currentUser => _firebaseAuth.currentUser;
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
-  bool get isEmailPasswordProvider => _firebaseAuth.currentUser?.providerData.any((provider) => provider.providerId == 'password') ?? false;
-  
+  bool get isEmailPasswordProvider =>
+      _firebaseAuth.currentUser?.providerData.any(
+        (provider) => provider.providerId == 'password',
+      ) ??
+      false;
+
   Future<UserCredential> signUp({
     required String email,
     required String password,
@@ -178,6 +182,4 @@ class AuthRepository {
   //     throw Exception('Exception Update Profile User Photo: ${e.toString()}');
   //   }
   // }
-
-  
 }

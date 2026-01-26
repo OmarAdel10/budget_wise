@@ -540,6 +540,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editAccount => 'Edit Account';
 
   @override
+  String get basicInformation => 'Basic Information';
+
+  @override
+  String get financials => 'Financials';
+
+  @override
+  String get currentBalance => 'Current Balance';
+
+  @override
+  String get connectionStatus => 'Connection Status';
+
+  @override
+  String get synced => 'Synced';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get alertOnLowBalance => 'Alert on low balance';
+
+  @override
+  String get deleteAccountConfirmation =>
+      'Are you sure you want to delete this account? This action cannot be undone and will remove all associated data.';
+
+  @override
   String get viewAll => 'View All';
 
   @override

@@ -36,8 +36,9 @@ class CategoryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final progressPercent =
-        progress != null ? (progress! * 100).clamp(0, 999).toInt() : 0;
+    final progressPercent = progress != null
+        ? (progress! * 100).clamp(0, 999).toInt()
+        : 0;
 
     Widget content = GestureDetector(
       onTap: onTap,
@@ -91,18 +92,18 @@ class CategoryListItem extends StatelessWidget {
                           ),
                         )
                       : hasBudgetAmount
-                          ? Text(
-                              '\$$amount / \$$totalBudget',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            )
-                          : Text(
-                              l10n.hasNoBudget,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
+                      ? Text(
+                          '\$$amount / \$$totalBudget',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        )
+                      : Text(
+                          l10n.hasNoBudget,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
                 ],
               ),
             ),
@@ -141,11 +142,7 @@ class CategoryListItem extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.xs),
             ],
-            Icon(
-              Icons.chevron_right,
-              color: AppColors.textSecondary,
-              size: 20,
-            ),
+            Icon(Icons.chevron_right, color: AppColors.textSecondary, size: 20),
           ],
         ),
       ),

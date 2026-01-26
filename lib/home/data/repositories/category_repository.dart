@@ -30,9 +30,7 @@ class CategoryRepository {
     final QuerySnapshot<CategoryModel> querySnapshot = await collection.get();
     if (authRepository.currentUser != null) {
       for (final doc in querySnapshot.docs) {
-        await doc.reference.update({
-          'userId': authRepository.currentUser!.uid,
-        });
+        await doc.reference.update({'userId': authRepository.currentUser!.uid});
       }
     }
   }
@@ -57,8 +55,10 @@ class CategoryRepository {
         getCategoriesCollection();
     final user = authRepository.currentUser;
     if (user != null) {
-      final querySnapShot =
-          await collection.where('userId', isEqualTo: user.uid).orderBy('index').get();
+      final querySnapShot = await collection
+          .where('userId', isEqualTo: user.uid)
+          .orderBy('index')
+          .get();
       return querySnapShot.docs.map((doc) => doc.data()).toList();
     }
     return [];

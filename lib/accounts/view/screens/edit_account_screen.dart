@@ -417,7 +417,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
                 const SizedBox(height: AppSpacing.lg),
 
-                //* Unlink/Delete Action
+                //* Delete Action
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                   decoration: BoxDecoration(

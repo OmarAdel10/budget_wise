@@ -32,9 +32,7 @@ class TransactionRepository {
         .get();
     if (authRepository.currentUser != null) {
       for (final doc in querySnapshot.docs) {
-        await doc.reference.update({
-          'userId': authRepository.currentUser!.uid,
-        });
+        await doc.reference.update({'userId': authRepository.currentUser!.uid});
       }
     }
   }
@@ -94,7 +92,7 @@ class TransactionRepository {
     }
     return [];
   }
-  
+
   Future<List<TransactionModel>> fetchAllTransactions() async {
     final CollectionReference<TransactionModel> collection =
         getTransactionsCollection();

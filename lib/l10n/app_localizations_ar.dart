@@ -535,6 +535,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editAccount => 'تعديل الحساب';
 
   @override
+  String get basicInformation => 'المعلومات الأساسية';
+
+  @override
+  String get financials => 'البيانات المالية';
+
+  @override
+  String get currentBalance => 'الرصيد الحالي';
+
+  @override
+  String get connectionStatus => 'حالة الاتصال';
+
+  @override
+  String get synced => 'تمت المزامنة';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get alertOnLowBalance => 'تنبيه عند انخفاض الرصيد';
+
+  @override
+  String get deleteAccountConfirmation =>
+      'هل أنت متأكد من حذف هذا الحساب؟ لا يمكن التراجع عن هذا الإجراء وسيتم إزالة جميع البيانات المرتبطة به.';
+
+  @override
   String get viewAll => 'عرض الكل';
 
   @override

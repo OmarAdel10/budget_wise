@@ -63,7 +63,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              final AuthRepository authRepository = context.read<AuthRepository>();
+              final AuthRepository authRepository = context
+                  .read<AuthRepository>();
               if (state is AuthStateLoading) {
                 showDialog(
                   context: context,
@@ -86,9 +87,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                 );
-                Future.delayed(Duration(milliseconds: 1200)).then((_) {
+                final navigator = Navigator.of(context);
+                Future.delayed(const Duration(milliseconds: 1200)).then((_) {
                   if (mounted) {
-                    Navigator.of(context).pop();
+                    navigator.pop();
                   }
                 });
               }

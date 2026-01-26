@@ -52,11 +52,11 @@ class CustomButton extends StatelessWidget {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (icon != null) ...[
-                    icon!,
-                    const SizedBox(width: 8),
-                  ],
-                  Text(text, style: AppTextStyles.button.copyWith(color: textColor)),
+                  if (icon != null) ...[icon!, const SizedBox(width: 8)],
+                  Text(
+                    text,
+                    style: AppTextStyles.button.copyWith(color: textColor),
+                  ),
                 ],
               ),
       ),

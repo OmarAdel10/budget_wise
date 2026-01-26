@@ -25,9 +25,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.secondaryBackground,
-        border: Border(
-          top: BorderSide(color: AppColors.borderColor, width: 1),
-        ),
+        border: Border(top: BorderSide(color: AppColors.borderColor, width: 1)),
       ),
       child: BottomNavigationBar(
         currentIndex: widget.currentIndex,
@@ -37,27 +35,50 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.textPrimary,
         unselectedItemColor: AppColors.textSecondary,
-        selectedLabelStyle: AppTextStyles.bodyMedium.copyWith(fontSize: 12, fontWeight: FontWeight.bold),
+        selectedLabelStyle: AppTextStyles.bodyMedium.copyWith(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
         unselectedLabelStyle: AppTextStyles.bodyMedium.copyWith(fontSize: 12),
         items: [
           BottomNavigationBarItem(
-            icon: Icon(widget.currentIndex == 0 ? PhosphorIcons.house(PhosphorIconsStyle.fill) : PhosphorIcons.house()),
+            icon: Icon(
+              widget.currentIndex == 0
+                  ? PhosphorIcons.house(PhosphorIconsStyle.fill)
+                  : PhosphorIcons.house(),
+            ),
             label: l10n.navHome,
           ),
           BottomNavigationBarItem(
-            icon: Icon(widget.currentIndex == 1 ? PhosphorIcons.wallet(PhosphorIconsStyle.fill) : PhosphorIcons.wallet()),
+            icon: Icon(
+              widget.currentIndex == 1
+                  ? PhosphorIcons.wallet(PhosphorIconsStyle.fill)
+                  : PhosphorIcons.wallet(),
+            ),
             label: l10n.navAccounts,
           ),
           BottomNavigationBarItem(
-            icon: Icon(widget.currentIndex == 2 ? PhosphorIcons.piggyBank(PhosphorIconsStyle.fill) : PhosphorIcons.piggyBank()),
+            icon: Icon(
+              widget.currentIndex == 2
+                  ? PhosphorIcons.piggyBank(PhosphorIconsStyle.fill)
+                  : PhosphorIcons.piggyBank(),
+            ),
             label: l10n.navSavings,
           ),
           BottomNavigationBarItem(
-            icon: Icon(widget.currentIndex == 3 ? PhosphorIcons.chartLine(PhosphorIconsStyle.fill) : PhosphorIcons.chartLine()),
+            icon: Icon(
+              widget.currentIndex == 3
+                  ? PhosphorIcons.chartLine(PhosphorIconsStyle.fill)
+                  : PhosphorIcons.chartLine(),
+            ),
             label: l10n.navStatistics,
           ),
           BottomNavigationBarItem(
-            icon: Icon(widget.currentIndex == 4 ? PhosphorIcons.gear(PhosphorIconsStyle.fill) : PhosphorIcons.gear()),
+            icon: Icon(
+              widget.currentIndex == 4
+                  ? PhosphorIcons.gear(PhosphorIconsStyle.fill)
+                  : PhosphorIcons.gear(),
+            ),
             label: l10n.navSettings,
           ),
         ],

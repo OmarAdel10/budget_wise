@@ -96,9 +96,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final amount = double.tryParse(amountText);
 
     if (title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a title')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter a title')));
       return;
     }
 
@@ -110,16 +110,16 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     }
 
     if (_selectedCategoryId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a category')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select a category')));
       return;
     }
 
     if (_selectedAccountId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select an account')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select an account')));
       return;
     }
 
@@ -134,7 +134,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         transactionNotes: _notesController.text.trim(),
         isSynced: false,
       );
-      context.read<TransactionBloc>().add(TransactionEventUpdateTransaction(updatedTransaction));
+      context.read<TransactionBloc>().add(
+        TransactionEventUpdateTransaction(updatedTransaction),
+      );
     } else {
       final newTransaction = TransactionModel(
         type: _selectedType,
@@ -145,7 +147,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         transactionDate: _selectedDate,
         transactionNotes: _notesController.text.trim(),
       );
-      context.read<TransactionBloc>().add(TransactionEventCreateTransaction(newTransaction));
+      context.read<TransactionBloc>().add(
+        TransactionEventCreateTransaction(newTransaction),
+      );
     }
     Navigator.of(context).pop();
   }
@@ -168,7 +172,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           });
         }
 
-        final typeLabel = _selectedType == TransactionType.income ? 'Income' : 'Expense';
+        final typeLabel = _selectedType == TransactionType.income
+            ? 'Income'
+            : 'Expense';
 
         return Scaffold(
           backgroundColor: AppColors.primaryBackground,
@@ -209,13 +215,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   CustomTextField(
                     hintText: "Amount",
                     controller: _amountController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
 
                   // Category Dropdown
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.inputBackground,
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -226,7 +236,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         value: _selectedCategoryId,
                         hint: Text(
                           "Category",
-                          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                         isExpanded: true,
                         dropdownColor: AppColors.cardBackground,
@@ -237,7 +249,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         items: categories.map((cat) {
                           return DropdownMenuItem<String>(
                             value: cat.id,
-                            child: Text(cat.categoryTitle, style: AppTextStyles.bodyLarge),
+                            child: Text(
+                              cat.categoryTitle,
+                              style: AppTextStyles.bodyLarge,
+                            ),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
@@ -264,7 +279,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       }).toList();
 
                       // If selected account no longer exists, reset it
-                      if (_selectedAccountId != null && !accounts.any((a) => a.id == _selectedAccountId)) {
+                      if (_selectedAccountId != null &&
+                          !accounts.any((a) => a.id == _selectedAccountId)) {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           setState(() {
                             _selectedAccountId = null;
@@ -273,12 +289,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       }
 
                       return Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.inputBackground,
-                          borderRadius:
-                              BorderRadius.circular(AppSpacing.radiusMd),
+                          borderRadius: BorderRadius.circular(
+                            AppSpacing.radiusMd,
+                          ),
                           border: Border.all(color: AppColors.borderColor),
                         ),
                         child: DropdownButtonHideUnderline(
@@ -286,8 +304,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             value: _selectedAccountId,
                             hint: Text(
                               "Select Account",
-                              style: AppTextStyles.bodyMedium
-                                  .copyWith(color: AppColors.textSecondary),
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                             isExpanded: true,
                             dropdownColor: AppColors.cardBackground,
@@ -326,7 +345,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         color: AppColors.inputBackground,
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusMd,
+                        ),
                         border: Border.all(color: AppColors.borderColor),
                       ),
                       child: Row(
@@ -338,7 +359,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             ),
                           ),
                           Icon(
-                            PhosphorIcons.calendarBlank(PhosphorIconsStyle.regular),
+                            PhosphorIcons.calendarBlank(
+                              PhosphorIconsStyle.regular,
+                            ),
                             color: AppColors.textSecondary,
                           ),
                         ],
@@ -387,7 +410,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 if (_selectedType != TransactionType.income) {
                   setState(() {
                     _selectedType = TransactionType.income;
-                    _selectedCategoryId = null; // Reset category when type changes
+                    _selectedCategoryId =
+                        null; // Reset category when type changes
                   });
                 }
               },
@@ -401,7 +425,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 if (_selectedType != TransactionType.expense) {
                   setState(() {
                     _selectedType = TransactionType.expense;
-                    _selectedCategoryId = null; // Reset category when type changes
+                    _selectedCategoryId =
+                        null; // Reset category when type changes
                   });
                 }
               },
@@ -430,7 +455,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           child: Text(
             label,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: isSelected ? AppColors.textInverse : AppColors.textSecondary,
+              color: isSelected
+                  ? AppColors.textInverse
+                  : AppColors.textSecondary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),

@@ -29,7 +29,8 @@ class TransactionDetailScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
-        final transaction = state.transactionsList
+        final transaction =
+            state.transactionsList
                 .where((t) => t.id == transModel.id)
                 .firstOrNull ??
             transModel;
@@ -127,7 +128,8 @@ class TransactionDetailScreen extends StatelessWidget {
                             return _buildDetailItem(
                               icon: PhosphorIcons.listBullets(),
                               label: l10n.category,
-                              value: category?.category.categoryTitle ??
+                              value:
+                                  category?.category.categoryTitle ??
                                   'No Category',
                             );
                           },
@@ -211,8 +213,8 @@ class TransactionDetailScreen extends StatelessWidget {
                             final scaffoldMessenger = ScaffoldMessenger.of(
                               context,
                             );
-                            final transactionBloc =
-                                context.read<TransactionBloc>();
+                            final transactionBloc = context
+                                .read<TransactionBloc>();
                             final navigator = Navigator.of(context);
 
                             // Capture l10n strings before popping

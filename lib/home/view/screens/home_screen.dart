@@ -445,7 +445,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           final budget =
                               categoryitem.category.budgetAmount ?? 0;
                           final spending = categoryitem.totalSpending;
-                          final isIncome = categoryitem.category.type == TransactionType.income;
+                          final isIncome =
+                              categoryitem.category.type ==
+                              TransactionType.income;
 
                           double? progress;
                           if (hasBudget && budget > 0) {

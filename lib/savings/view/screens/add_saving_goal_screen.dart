@@ -101,8 +101,13 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
               CustomTextField(
                 hintText: "Enter amount",
                 controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                prefixIcon: Icon(PhosphorIcons.currencyDollar(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                prefixIcon: Icon(
+                  PhosphorIcons.currencyDollar(PhosphorIconsStyle.regular),
+                  color: AppColors.textSecondary,
+                ),
               ),
               const SizedBox(height: AppSpacing.lg),
 
@@ -120,7 +125,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                   ),
                   child: Row(
                     children: [
-                      Icon(PhosphorIcons.calendarBlank(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
+                      Icon(
+                        PhosphorIcons.calendarBlank(PhosphorIconsStyle.regular),
+                        color: AppColors.textSecondary,
+                      ),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
                         DateFormat.yMMMd().format(_targetDate),
@@ -142,7 +150,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(PhosphorIcons.info(PhosphorIconsStyle.regular), color: AppColors.textSecondary),
+                    Icon(
+                      PhosphorIcons.info(PhosphorIconsStyle.regular),
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
@@ -156,10 +167,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
               const SizedBox(height: AppSpacing.xl),
 
               // Save Button
-              CustomButton(
-                text: "Create Goal",
-                onPressed: _onSave,
-              ),
+              CustomButton(text: "Create Goal", onPressed: _onSave),
             ],
           ),
         ),

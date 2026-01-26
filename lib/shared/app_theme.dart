@@ -10,7 +10,7 @@ class AppTheme {
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.primaryBackground,
       primaryColor: AppColors.primaryAccent,
-      
+
       // Text Theme
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
         bodyColor: AppColors.textPrimary,

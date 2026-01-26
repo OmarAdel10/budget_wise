@@ -63,11 +63,15 @@ class SavingGoalDetailScreen extends StatelessWidget {
                       children: [
                         Text(
                           "Progress",
-                          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                         Text(
                           "$percentage%",
-                          style: AppTextStyles.heading3.copyWith(color: AppColors.primaryAccent),
+                          style: AppTextStyles.heading3.copyWith(
+                            color: AppColors.primaryAccent,
+                          ),
                         ),
                       ],
                     ),
@@ -82,7 +86,9 @@ class SavingGoalDetailScreen extends StatelessWidget {
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           "/ \$${goal['targetAmount'].toInt()}",
-                          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -93,7 +99,9 @@ class SavingGoalDetailScreen extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progress,
                         backgroundColor: AppColors.primaryBackground,
-                        valueColor: AlwaysStoppedAnimation<Color>(goal['color'] ?? AppColors.primaryAccent),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          goal['color'] ?? AppColors.primaryAccent,
+                        ),
                         minHeight: 12,
                       ),
                     ),
@@ -107,7 +115,9 @@ class SavingGoalDetailScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 "Save small amounts daily to reach your goal.",
-                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
               const SizedBox(height: AppSpacing.lg),
 
@@ -127,7 +137,11 @@ class SavingGoalDetailScreen extends StatelessWidget {
                       color: AppColors.cardBackground,
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       border: isCompleted
-                          ? Border.all(color: AppColors.primaryAccent.withOpacity(0.5))
+                          ? Border.all(
+                              color: AppColors.primaryAccent.withValues(
+                                alpha: 0.5,
+                              ),
+                            )
                           : null,
                     ),
                     child: Row(
@@ -145,7 +159,9 @@ class SavingGoalDetailScreen extends StatelessWidget {
                               ),
                               child: Text(
                                 "${saving['day']}",
-                                style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                                style: AppTextStyles.bodyLarge.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             const SizedBox(width: AppSpacing.md),
@@ -159,14 +175,22 @@ class SavingGoalDetailScreen extends StatelessWidget {
                           children: [
                             Text(
                               "\$${saving['amount'].toInt()}",
-                              style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                              style: AppTextStyles.bodyLarge.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(width: AppSpacing.md),
                             Icon(
                               isCompleted
-                                  ? PhosphorIcons.checkCircle(PhosphorIconsStyle.fill)
-                                  : PhosphorIcons.circle(PhosphorIconsStyle.regular),
-                              color: isCompleted ? AppColors.primaryAccent : AppColors.textSecondary,
+                                  ? PhosphorIcons.checkCircle(
+                                      PhosphorIconsStyle.fill,
+                                    )
+                                  : PhosphorIcons.circle(
+                                      PhosphorIconsStyle.regular,
+                                    ),
+                              color: isCompleted
+                                  ? AppColors.primaryAccent
+                                  : AppColors.textSecondary,
                               size: 24,
                             ),
                           ],

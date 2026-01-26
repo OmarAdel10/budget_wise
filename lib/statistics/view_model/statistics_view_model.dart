@@ -11,24 +11,22 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   final TransactionBloc transactionBloc;
   final CategoryBloc categoryBloc;
 
-  StatisticsBloc({
-    required this.transactionBloc,
-    required this.categoryBloc,
-  }) : super(
-          StatisticsStateInitial(
-            StatisticsModel(
-              totalIncome: 0,
-              totalExpenses: 0,
-              totalSavings: 0,
-              incomeBreakdown: const [],
-              expenseBreakdown: const [],
-              dailyIncomeTrend: const [],
-              dailyExpenseTrend: const [],
-              sortingType: StatisticsSorting.highestAmount,
-              selectedMonth: DateTime.now(),
-            ),
+  StatisticsBloc({required this.transactionBloc, required this.categoryBloc})
+    : super(
+        StatisticsStateInitial(
+          StatisticsModel(
+            totalIncome: 0,
+            totalExpenses: 0,
+            totalSavings: 0,
+            incomeBreakdown: const [],
+            expenseBreakdown: const [],
+            dailyIncomeTrend: const [],
+            dailyExpenseTrend: const [],
+            sortingType: StatisticsSorting.highestAmount,
+            selectedMonth: DateTime.now(),
           ),
-        ) {
+        ),
+      ) {
     // Listen to changes in transactions and categories to update statistics
     transactionBloc.stream.listen((_) {
       add(StatisticsEventLoadRequested(state.model.selectedMonth));
@@ -55,9 +53,11 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         }).toList();
 
         // Calculate daily trends
-        final daysInMonth =
-            DateTime(event.selectedMonth.year, event.selectedMonth.month + 1, 0)
-                .day;
+        final daysInMonth = DateTime(
+          event.selectedMonth.year,
+          event.selectedMonth.month + 1,
+          0,
+        ).day;
         final List<double> dailyIncomeTrend = List.filled(daysInMonth, 0.0);
         final List<double> dailyExpenseTrend = List.filled(daysInMonth, 0.0);
 
@@ -67,13 +67,13 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
             income += transaction.transactionAmount;
             incomeMap[transaction.categoryId] =
                 (incomeMap[transaction.categoryId] ?? 0.0) +
-                    transaction.transactionAmount;
+                transaction.transactionAmount;
             dailyIncomeTrend[day] += transaction.transactionAmount;
           } else {
             expenses += transaction.transactionAmount;
             expenseMap[transaction.categoryId] =
                 (expenseMap[transaction.categoryId] ?? 0.0) +
-                    transaction.transactionAmount;
+                transaction.transactionAmount;
             dailyExpenseTrend[day] += transaction.transactionAmount;
           }
         }
@@ -82,15 +82,19 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         final incomeBreakdown = allCategories
             .where((cat) => cat.type == TransactionType.income)
             .map((cat) {
-          return CategoriesWithSpending(cat, incomeMap[cat.id] ?? 0.0);
-        }).where((element) => element.totalSpending > 0).toList();
+              return CategoriesWithSpending(cat, incomeMap[cat.id] ?? 0.0);
+            })
+            .where((element) => element.totalSpending > 0)
+            .toList();
 
         // Map expense categories with their spending
         final expenseBreakdown = allCategories
             .where((cat) => cat.type == TransactionType.expense)
             .map((cat) {
-          return CategoriesWithSpending(cat, expenseMap[cat.id] ?? 0.0);
-        }).where((element) => element.totalSpending > 0).toList();
+              return CategoriesWithSpending(cat, expenseMap[cat.id] ?? 0.0);
+            })
+            .where((element) => element.totalSpending > 0)
+            .toList();
 
         // Sort based on current sorting type
         _applySorting(incomeBreakdown, state.model.sortingType);
@@ -114,9 +118,13 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     });
 
     on<StatisticsEventSortChanged>((event, emit) {
-      final incomeBreakdown = List<CategoriesWithSpending>.from(state.model.incomeBreakdown);
-      final expenseBreakdown = List<CategoriesWithSpending>.from(state.model.expenseBreakdown);
-      
+      final incomeBreakdown = List<CategoriesWithSpending>.from(
+        state.model.incomeBreakdown,
+      );
+      final expenseBreakdown = List<CategoriesWithSpending>.from(
+        state.model.expenseBreakdown,
+      );
+
       _applySorting(incomeBreakdown, event.sortingType);
       _applySorting(expenseBreakdown, event.sortingType);
 
@@ -130,7 +138,10 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     });
   }
 
-  void _applySorting(List<CategoriesWithSpending> breakdown, StatisticsSorting type) {
+  void _applySorting(
+    List<CategoriesWithSpending> breakdown,
+    StatisticsSorting type,
+  ) {
     switch (type) {
       case StatisticsSorting.highestAmount:
         breakdown.sort((a, b) => b.totalSpending.compareTo(a.totalSpending));
@@ -139,7 +150,10 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         breakdown.sort((a, b) => a.totalSpending.compareTo(b.totalSpending));
         break;
       case StatisticsSorting.alphabetical:
-        breakdown.sort((a, b) => a.category.categoryTitle.compareTo(b.category.categoryTitle));
+        breakdown.sort(
+          (a, b) =>
+              a.category.categoryTitle.compareTo(b.category.categoryTitle),
+        );
         break;
     }
   }

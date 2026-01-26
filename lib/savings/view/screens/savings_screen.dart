@@ -57,7 +57,8 @@ class SavingsScreen extends StatelessWidget {
                 itemCount: savingGoals.length,
                 itemBuilder: (context, index) {
                   final goal = savingGoals[index];
-                  final double progress = goal['currentAmount'] / goal['targetAmount'];
+                  final double progress =
+                      goal['currentAmount'] / goal['targetAmount'];
                   final int percentage = (progress * 100).toInt();
 
                   return GestureDetector(
@@ -72,7 +73,9 @@ class SavingsScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         color: AppColors.cardBackground,
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusMd,
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,10 +83,7 @@ class SavingsScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                goal['name'],
-                                style: AppTextStyles.heading3,
-                              ),
+                              Text(goal['name'], style: AppTextStyles.heading3),
                               Text(
                                 "$percentage%",
                                 style: AppTextStyles.bodyMedium.copyWith(
@@ -98,11 +98,15 @@ class SavingsScreen extends StatelessWidget {
                             children: [
                               Text(
                                 "\$${goal['currentAmount'].toInt()}",
-                                style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                                style: AppTextStyles.bodyLarge.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               Text(
                                 " / \$${goal['targetAmount'].toInt()}",
-                                style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
                             ],
                           ),
@@ -112,7 +116,9 @@ class SavingsScreen extends StatelessWidget {
                             child: LinearProgressIndicator(
                               value: progress,
                               backgroundColor: AppColors.primaryBackground,
-                              valueColor: AlwaysStoppedAnimation<Color>(goal['color']),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                goal['color'],
+                              ),
                               minHeight: 8,
                             ),
                           ),

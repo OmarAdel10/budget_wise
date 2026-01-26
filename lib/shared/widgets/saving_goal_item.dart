@@ -29,7 +29,10 @@ class SavingGoalItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         color: Colors.transparent,
         child: Row(
           children: [
@@ -47,7 +50,11 @@ class SavingGoalItem extends StatelessWidget {
                     : null,
               ),
               child: imageUrl == null || imageUrl!.isEmpty
-                  ? Icon(PhosphorIcons.piggyBank(), color: AppColors.textSecondary, size: 24)
+                  ? Icon(
+                      PhosphorIcons.piggyBank(),
+                      color: AppColors.textSecondary,
+                      size: 24,
+                    )
                   : null,
             ),
             const SizedBox(width: AppSpacing.md),
@@ -57,7 +64,9 @@ class SavingGoalItem extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w500),
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -80,7 +89,9 @@ class SavingGoalItem extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: percentage,
                       backgroundColor: AppColors.borderColor,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryAccent),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColors.primaryAccent,
+                      ),
                     ),
                   ),
                 ),

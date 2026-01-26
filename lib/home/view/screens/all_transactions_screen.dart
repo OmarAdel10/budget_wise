@@ -149,10 +149,14 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
                         ),
                       )
                     : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.lg,
+                        ),
                         itemCount: transactions.length,
                         itemBuilder: (context, index) {
-                          return TransactionListItem(model: transactions[index]);
+                          return TransactionListItem(
+                            model: transactions[index],
+                          );
                         },
                       ),
               ),

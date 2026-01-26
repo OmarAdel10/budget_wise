@@ -1130,6 +1130,54 @@ abstract class AppLocalizations {
   /// **'Edit Account'**
   String get editAccount;
 
+  /// No description provided for @basicInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Information'**
+  String get basicInformation;
+
+  /// No description provided for @financials.
+  ///
+  /// In en, this message translates to:
+  /// **'Financials'**
+  String get financials;
+
+  /// No description provided for @currentBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Balance'**
+  String get currentBalance;
+
+  /// No description provided for @connectionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection Status'**
+  String get connectionStatus;
+
+  /// No description provided for @synced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get synced;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// No description provided for @alertOnLowBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert on low balance'**
+  String get alertOnLowBalance;
+
+  /// No description provided for @deleteAccountConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this account? This action cannot be undone and will remove all associated data.'**
+  String get deleteAccountConfirmation;
+
   /// No description provided for @viewAll.
   ///
   /// In en, this message translates to:

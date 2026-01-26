@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-sealed class HomeEvent extends Equatable{
+sealed class HomeEvent extends Equatable {
   const HomeEvent();
 }
 
-class HomeEventLoadAllData extends HomeEvent{
+class HomeEventLoadAllData extends HomeEvent {
   final DateTime monthDate;
   const HomeEventLoadAllData(this.monthDate);
 
@@ -13,7 +13,8 @@ class HomeEventLoadAllData extends HomeEvent{
 }
 
 class HomeEventUpdateCategory extends HomeEvent {
-  final dynamic category; // Using dynamic for now to match CategoryModel or Category entity, will refine if needed
+  final dynamic
+  category; // Using dynamic for now to match CategoryModel or Category entity, will refine if needed
   const HomeEventUpdateCategory(this.category);
 
   @override

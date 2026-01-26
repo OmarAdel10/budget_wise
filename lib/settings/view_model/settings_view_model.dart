@@ -7,7 +7,6 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
   SettingsBloc() : super(SettingsInitial(SettingsModel())) {
-    
     on<SettingsEventLocalAuth>((event, emit) {
       emit(
         SettingsStateSuccess(
@@ -31,7 +30,6 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     on<SettingsEventLoggedIn>((event, emit) {
       emit(SettingsStateSuccess(state.model.copyWith(hasLoggedIn: true)));
     });
-
   }
 
   @override

@@ -8,14 +8,14 @@ class UserModel {
   final String userName;
   final String email;
 
-  const UserModel({required this.id, required this.userName, required this.email});
+  const UserModel({
+    required this.id,
+    required this.userName,
+    required this.email,
+  });
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'userName': userName,
-      'email': email,
-    };
+    return <String, dynamic>{'id': id, 'userName': userName, 'email': email};
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -28,5 +28,6 @@ class UserModel {
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
