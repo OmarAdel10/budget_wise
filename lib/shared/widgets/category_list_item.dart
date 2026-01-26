@@ -67,10 +67,21 @@ class CategoryListItem extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                color: isIncome
+                    ? AppColors.primaryAccent.withValues(alpha: 0.1)
+                    : AppColors.expense.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                border: Border.all(
+                  color: isIncome
+                      ? AppColors.primaryAccent.withValues(alpha: 0.2)
+                      : AppColors.expense.withValues(alpha: 0.2),
+                ),
               ),
-              child: Icon(icon, color: AppColors.textPrimary, size: 22),
+              child: Icon(
+                icon,
+                color: isIncome ? AppColors.primaryAccent : AppColors.expense,
+                size: 22,
+              ),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(

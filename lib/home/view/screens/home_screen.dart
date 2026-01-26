@@ -392,7 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         : '${l10n.expenses} ',
                                     style: TextStyle(
                                       color: _showIncome
-                                          ? AppColors.income
+                                          ? AppColors.primaryAccent
                                           : AppColors.expense,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -407,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                     size: 16,
                                     color: _showIncome
-                                        ? AppColors.income
+                                        ? AppColors.primaryAccent
                                         : AppColors.expense,
                                   ),
                                 ],
