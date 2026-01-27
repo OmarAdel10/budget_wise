@@ -156,9 +156,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "Categories: ${_selectedCategories.map((e) => e.categoryTitle).toList()}",
     );
     context.read<SettingsBloc>().add(SettingsEventOnBoardingChange());
-    if (context.read<AuthRepository>().currentUser != null) {
-      context.read<SettingsBloc>().add(SettingsEventLoggedIn());
-    }
     Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
   }
 
