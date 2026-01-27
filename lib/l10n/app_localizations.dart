@@ -1279,6 +1279,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync failed. Will retry later.'**
   String get syncFailed;
+
+  /// No description provided for @ofWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Of'**
+  String get ofWord;
 }
 
 class _AppLocalizationsDelegate

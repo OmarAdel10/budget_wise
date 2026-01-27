@@ -51,7 +51,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         );
 
         if (isDuplicate) return;
-        final updatedList = [newAccount, ...state.accountsList];
+        final updatedList = [...state.accountsList, newAccount];
         emit(
           AccountStateSuccess(
             accountsList: updatedList,

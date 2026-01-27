@@ -199,5 +199,6 @@
   "localOnlyStatus": "Local only (no cloud sync)",
   "offlineWarning": "You are working offline. Changes will be synced once you login.",
   "syncInProgress": "Syncing your data...",
-  "syncFailed": "Sync failed. Will retry later."
+  "syncFailed": "Sync failed. Will retry later.",
+  "ofWord": "Of"
 }

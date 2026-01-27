@@ -614,4 +614,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get syncFailed => 'فشلت المزامنة. سيتم إعادة المحاولة لاحقاً.';
+
+  @override
+  String get ofWord => 'من';
 }

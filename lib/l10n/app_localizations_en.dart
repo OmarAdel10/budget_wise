@@ -618,4 +618,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncFailed => 'Sync failed. Will retry later.';
+
+  @override
+  String get ofWord => 'Of';
 }

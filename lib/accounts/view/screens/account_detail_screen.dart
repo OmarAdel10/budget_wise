@@ -7,6 +7,7 @@ import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view/screens/all_transactions_screen.dart';
+import 'package:budget_wise/home/view/screens/transaction_detail_screen.dart';
 import 'package:budget_wise/home/view_model/category_state.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_state.dart';
@@ -32,6 +33,7 @@ class AccountDetailScreen extends StatelessWidget {
     final authRepo = context.read<AuthRepository>();
     final userName = authRepo.currentUser?.displayName ?? '';
     final categoryState = context.watch<CategoryBloc>().state;
+    final navigator = Navigator.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -160,9 +162,13 @@ class AccountDetailScreen extends StatelessWidget {
                   Text(l10n.recentTransactions, style: AppTextStyles.heading3),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(
-                        context,
-                      ).pushNamed(AllTransactionsScreen.routeName);
+                      Navigator.of(context).pushNamed(
+                        AllTransactionsScreen.routeName,
+                        arguments: {
+                          'isNavFromAccount': true,
+                          'accountModel': account,
+                        },
+                      );
                     },
                     child: Text(
                       l10n.viewAll,
@@ -211,6 +217,7 @@ class AccountDetailScreen extends StatelessWidget {
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final entry = groupedTransactions.entries.toList()[index];
                   return _buildTransactionGroup(
+                    context,
                     entry.key,
                     entry.value,
                     categoryState,
@@ -260,6 +267,7 @@ class AccountDetailScreen extends StatelessWidget {
   }
 
   Widget _buildTransactionGroup(
+    BuildContext context,
     String dateLabel,
     List<TransactionModel> transactions,
     CategoryState categoryState,
@@ -287,89 +295,99 @@ class AccountDetailScreen extends StatelessWidget {
 
         //* Transaction Items
         ...transactions.map(
-          (transaction) => _buildTransactionItem(transaction, categoryState),
+          (transaction) =>
+              _buildTransactionItem(context, transaction, categoryState),
         ),
       ],
     );
   }
 
   Widget _buildTransactionItem(
-    TransactionModel transaction,
+    BuildContext contxt,
+    TransactionModel transactionModel,
     CategoryState categoryState,
   ) {
-    final isIncome = transaction.type == TransactionType.income;
+    final isIncome = transactionModel.type == TransactionType.income;
 
     // Find category info
     final category = categoryState.categoriesList.firstWhere(
-      (c) => c.id == transaction.categoryId,
+      (c) => c.id == transactionModel.categoryId,
       orElse: () => categoryState.categoriesList.isNotEmpty
           ? categoryState.categoriesList.first
           : throw Exception('No categories available'),
     );
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.md,
-      ),
-      child: Row(
-        children: [
-          //* Category Icon
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: isIncome
-                  ? AppColors.primaryAccent.withValues(alpha: 0.1)
-                  : AppColors.expense.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(contxt).pushNamed(
+          TransactionDetailScreen.routeName,
+          arguments: transactionModel,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
+        ),
+        child: Row(
+          children: [
+            //* Category Icon
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
                 color: isIncome
-                    ? AppColors.primaryAccent.withValues(alpha: 0.2)
-                    : AppColors.expense.withValues(alpha: 0.2),
+                    ? AppColors.primaryAccent.withValues(alpha: 0.1)
+                    : AppColors.expense.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                border: Border.all(
+                  color: isIncome
+                      ? AppColors.primaryAccent.withValues(alpha: 0.2)
+                      : AppColors.expense.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Icon(
+                category.categoryIcon,
+                color: isIncome ? AppColors.primaryAccent : AppColors.expense,
+                size: 24,
               ),
             ),
-            child: Icon(
-              category.categoryIcon,
-              color: isIncome ? AppColors.primaryAccent : AppColors.expense,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
 
-          //* Transaction Details
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  transaction.transactionTitle,
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: FontWeight.bold,
+            //* Transaction Details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    transactionModel.transactionTitle,
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '${category.categoryTitle} • ${DateFormat('h:mm a').format(transaction.transactionDate)}',
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                  const SizedBox(height: 2),
+                  Text(
+                    '${category.categoryTitle} • ${DateFormat('h:mm a').format(transactionModel.transactionDate)}',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          //* Amount
-          Text(
-            '${isIncome ? '+' : '-'}\$${transaction.transactionAmount.toStringAsFixed(2)}',
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: isIncome ? AppColors.primaryAccent : AppColors.expense,
-              fontWeight: FontWeight.w800,
+            //* Amount
+            Text(
+              '${isIncome ? '+' : '-'}\$${transactionModel.transactionAmount.toStringAsFixed(2)}',
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: isIncome ? AppColors.primaryAccent : AppColors.expense,
+                fontWeight: FontWeight.w800,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

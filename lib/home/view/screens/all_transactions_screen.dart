@@ -1,3 +1,5 @@
+import 'package:budget_wise/accounts/data/models/account_model.dart';
+import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view_model/home_event.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
@@ -38,11 +40,26 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    final isNavFromAccount = args?['isNavFromAccount'] as bool? ?? false;
+    final accountModel = args?['accountModel'] as AccountModel?;
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final transactions = state.model.transactions;
-
+        final transactions = isNavFromAccount
+            ? state.model.transactions
+                  .where((t) => t.accountId == accountModel?.id)
+                  .toList()
+            : state.model.transactions;
+        double income = transactions
+            .where((t) => t.type == TransactionType.income)
+            .map((t) => t.transactionAmount)
+            .fold(0, (sum, amount) => sum + amount);
+        double expenses = transactions
+            .where((t) => t.type == TransactionType.expense)
+            .map((t) => t.transactionAmount)
+            .fold(0, (sum, amount) => sum + amount);
         return Scaffold(
           backgroundColor: AppColors.primaryBackground,
           appBar: AppBar(
@@ -50,7 +67,9 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
             elevation: 0,
             centerTitle: true,
             title: Text(
-              l10n.transactionHistory,
+              isNavFromAccount
+                  ? '${l10n.transactionHistory} ${l10n.ofWord} ${accountModel?.title}'
+                  : l10n.transactionHistory,
               style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
@@ -104,7 +123,8 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
                       ),
                     ),
                     Text(
-                      '\$${state.model.totalIncome.toStringAsFixed(0)}',
+                      // '\$${state.model.totalIncome.toStringAsFixed(0)}',
+                      '\$${income}',
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: AppColors.primaryAccent,
                         fontWeight: FontWeight.bold,
@@ -127,7 +147,8 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
                       ),
                     ),
                     Text(
-                      '\$${state.model.totalExpenses.toStringAsFixed(0)}',
+                      // '\$${state.model.totalExpenses.toStringAsFixed(0)}',
+                      '\$${expenses}',
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: AppColors.danger,
                         fontWeight: FontWeight.bold,
