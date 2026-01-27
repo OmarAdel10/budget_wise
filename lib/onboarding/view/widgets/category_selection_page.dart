@@ -49,6 +49,8 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
           categoryIcon: _categoryIcons[key]!,
           budgetAmount: 0.0,
           type: TransactionType.expense,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
       }).toList();
 

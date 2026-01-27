@@ -124,7 +124,7 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
                     ),
                     Text(
                       // '\$${state.model.totalIncome.toStringAsFixed(0)}',
-                      '\$${income}',
+                      '\$$income',
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: AppColors.primaryAccent,
                         fontWeight: FontWeight.bold,
@@ -148,7 +148,7 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
                     ),
                     Text(
                       // '\$${state.model.totalExpenses.toStringAsFixed(0)}',
-                      '\$${expenses}',
+                      '\$$expenses',
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: AppColors.danger,
                         fontWeight: FontWeight.bold,

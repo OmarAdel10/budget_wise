@@ -33,7 +33,6 @@ class AccountDetailScreen extends StatelessWidget {
     final authRepo = context.read<AuthRepository>();
     final userName = authRepo.currentUser?.displayName ?? '';
     final categoryState = context.watch<CategoryBloc>().state;
-    final navigator = Navigator.of(context);
 
     return Scaffold(
       appBar: AppBar(

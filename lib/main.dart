@@ -3,7 +3,6 @@ import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
 import 'package:budget_wise/accounts/view/screens/edit_account_screen.dart';
-import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view/screens/local_auth_screen.dart';
@@ -83,7 +82,8 @@ void main() async {
             create: (context) => AccountBloc(
               settingsBloc: context.read<SettingsBloc>(),
               accountRepo: context.read<AccountRepository>(),
-            )..add(AccountEventFetchAll()),
+              authRepository: context.read<AuthRepository>(),
+            ),
           ),
           BlocProvider(
             create: (context) => TransactionBloc(

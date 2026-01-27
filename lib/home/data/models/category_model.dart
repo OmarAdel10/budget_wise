@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:budget_wise/home/data/models/transaction_model.dart';
@@ -15,6 +16,8 @@ class CategoryModel {
   final TransactionType type;
   bool isSynced;
   int index;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   CategoryModel({
     this.id = '',
@@ -26,6 +29,8 @@ class CategoryModel {
     this.type = TransactionType.expense,
     this.isSynced = false,
     this.index = 0,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -41,6 +46,8 @@ class CategoryModel {
       'type': type.name,
       'isSynced': isSynced,
       'index': index,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
@@ -61,6 +68,12 @@ class CategoryModel {
           : TransactionType.expense,
       isSynced: map['isSynced'] as bool,
       index: map['index'] as int? ?? 0,
+      createdAt: map['createdAt'] is Timestamp
+          ? (map['createdAt'] as Timestamp).toDate()
+          : DateTime.parse(map['createdAt'] as String),
+      updatedAt: map['updatedAt'] is Timestamp
+          ? (map['updatedAt'] as Timestamp).toDate()
+          : DateTime.parse(map['updatedAt'] as String),
     );
   }
 
@@ -74,6 +87,8 @@ class CategoryModel {
     TransactionType? type,
     bool? isSynced,
     int? index,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return CategoryModel(
       id: id ?? this.id,
@@ -85,6 +100,8 @@ class CategoryModel {
       type: type ?? this.type,
       isSynced: isSynced ?? this.isSynced,
       index: index ?? this.index,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 

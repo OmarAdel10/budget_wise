@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/models/user_model.dart';
-import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
@@ -118,6 +117,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           transactionDate: DateTime.now(),
           categoryId: _incomeCategoryId!,
           accountId: context.read<AccountBloc>().state.accountsList.first.id,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
         context.read<TransactionBloc>().add(
           TransactionEventCreateTransaction(transaction),

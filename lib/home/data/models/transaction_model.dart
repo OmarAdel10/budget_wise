@@ -16,6 +16,8 @@ class TransactionModel {
   final DateTime transactionDate;
   final String? transactionNotes;
   bool isSynced;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   TransactionModel({
     this.id = '',
@@ -28,6 +30,8 @@ class TransactionModel {
     required this.transactionDate,
     this.transactionNotes = '',
     this.isSynced = false,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -39,24 +43,11 @@ class TransactionModel {
       'transactionAmount': transactionAmount,
       'categoryId': categoryId,
       'accountId': accountId,
-      'transactionDate': Timestamp.fromDate(transactionDate),
-      'transactionNotes': transactionNotes,
-      'isSynced': isSynced,
-    };
-  }
-
-  Map<String, dynamic> toSerializableMap() {
-    return <String, dynamic>{
-      'id': id,
-      'userId': userId,
-      'type': type.name,
-      'transactionTitle': transactionTitle,
-      'transactionAmount': transactionAmount,
-      'categoryId': categoryId,
-      'accountId': accountId,
       'transactionDate': transactionDate.toIso8601String(),
       'transactionNotes': transactionNotes,
       'isSynced': isSynced,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
@@ -78,10 +69,16 @@ class TransactionModel {
           ? map['transactionNotes'] as String
           : '',
       isSynced: map['isSynced'] as bool,
+      createdAt: map['createdAt'] is Timestamp
+          ? (map['createdAt'] as Timestamp).toDate()
+          : DateTime.parse(map['createdAt'] as String),
+      updatedAt: map['updatedAt'] is Timestamp
+          ? (map['updatedAt'] as Timestamp).toDate()
+          : DateTime.parse(map['updatedAt'] as String),
     );
   }
 
-  String toJson() => json.encode(toSerializableMap());
+  String toJson() => json.encode(toMap());
 
   factory TransactionModel.fromJson(String source) =>
       TransactionModel.fromMap(json.decode(source) as Map<String, dynamic>);
@@ -97,6 +94,8 @@ class TransactionModel {
     DateTime? transactionDate,
     String? transactionNotes,
     bool? isSynced,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return TransactionModel(
       id: id ?? this.id,
@@ -109,6 +108,8 @@ class TransactionModel {
       transactionDate: transactionDate ?? this.transactionDate,
       transactionNotes: transactionNotes ?? this.transactionNotes,
       isSynced: isSynced ?? this.isSynced,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

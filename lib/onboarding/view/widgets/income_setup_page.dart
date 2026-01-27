@@ -65,6 +65,8 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
         categoryIcon: categoryIcons[index],
         budgetAmount: 0.0,
         type: TransactionType.income,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
     });
 

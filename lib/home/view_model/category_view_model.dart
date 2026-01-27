@@ -18,9 +18,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
     required this.categoryRepository,
   }) : super(const CategoryStateInitial(categoriesList: [])) {
     authRepository.authStateChanges.listen((user) {
-      if (user != null &&
-          settingsBloc.state.model.hasLoggedIn &&
-          state.categoriesList.isEmpty) {
+      if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const CategoryEventFetchAll());
       }
     });
@@ -165,8 +163,29 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
 
     on<CategoryEventFetchAll>((event, emit) async {
       try {
-        final categories = await categoryRepository.fetchAllCategories();
-        emit(CategoryStateSuccess(categoriesList: categories));
+        final remoteCategories = await categoryRepository.fetchAllCategories();
+        final localCategoriesMap = {
+          for (final cat in state.categoriesList) cat.id: cat,
+        };
+        final updatedList = <CategoryModel>[];
+
+        for (final remoteItem in remoteCategories) {
+          final localItem = localCategoriesMap[remoteItem.id];
+
+          if (localItem == null) {
+            updatedList.add(remoteItem);
+          } else {
+            if (remoteItem.updatedAt.isAfter(localItem.updatedAt)) {
+              updatedList.add(remoteItem);
+            } else {
+              updatedList.add(localItem);
+            }
+            localCategoriesMap.remove(remoteItem.id);
+          }
+        }
+
+        updatedList.addAll(localCategoriesMap.values);
+        emit(CategoryStateSuccess(categoriesList: updatedList));
       } catch (e) {
         emit(
           CategoryStateError(

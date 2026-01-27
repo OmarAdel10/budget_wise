@@ -4,6 +4,7 @@ import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -11,28 +12,57 @@ import 'package:uuid/uuid.dart';
 class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
   final SettingsBloc settingsBloc;
   final AccountRepository accountRepo;
-  AccountBloc({required this.settingsBloc, required this.accountRepo})
-    : super(AccountStateInitial(accountsList: [], netWorth: 0)) {
+  final AuthRepository authRepository;
+  AccountBloc({
+    required this.settingsBloc,
+    required this.accountRepo,
+    required this.authRepository,
+  }) : super(AccountStateInitial(accountsList: [], netWorth: 0)) {
+    authRepository.authStateChanges.listen((user) {
+      if (user != null && settingsBloc.state.model.hasLoggedIn) {
+        add(const AccountEventFetchAll());
+      }
+    });
+
     on<AccountEventFetchAll>((event, emit) async {
-      if (settingsBloc.state.model.hasLoggedIn) {
-        try {
-          final accounts = await accountRepo.fetchAllAccounts();
-          emit(
-            AccountStateSuccess(
-              accountsList: accounts,
-              netWorth: state.netWorth,
-            ),
-          );
-        } catch (e) {
-          log('Failed to fetch accounts: ${e.toString()}');
-          emit(
-            AccountStateError(
-              message: 'Failed to fetch accounts: ${e.toString()}',
-              accountsList: state.accountsList,
-              netWorth: state.netWorth,
-            ),
-          );
+      try {
+        final remoteAccounts = await accountRepo.fetchAllAccounts();
+        final localAccountsMap = {
+          for (final acc in state.accountsList) acc.id: acc,
+        };
+        final updatedList = <AccountModel>[];
+
+        for (final remoteItem in remoteAccounts) {
+          final localItem = localAccountsMap[remoteItem.id];
+
+          if (localItem == null) {
+            updatedList.add(remoteItem);
+          } else {
+            if (remoteItem.updatedAt.isAfter(localItem.updatedAt)) {
+              updatedList.add(remoteItem);
+            } else {
+              updatedList.add(localItem);
+            }
+          }
+          localAccountsMap.remove(remoteItem.id);
         }
+        updatedList.addAll(localAccountsMap.values);
+        final double netWorth = updatedList.fold<double>(
+          0.0,
+          (previousValue, element) => previousValue + element.balance,
+        );
+        emit(
+          AccountStateSuccess(accountsList: updatedList, netWorth: netWorth),
+        );
+      } catch (e) {
+        log('Failed to fetch accounts: ${e.toString()}');
+        emit(
+          AccountStateError(
+            message: 'Failed to fetch accounts: ${e.toString()}',
+            accountsList: state.accountsList,
+            netWorth: state.netWorth,
+          ),
+        );
       }
     });
 

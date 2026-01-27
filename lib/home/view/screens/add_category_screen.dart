@@ -85,6 +85,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         hasBudgetAmount: _hasBudgetAmount,
         type: _selectedType,
         isSynced: false,
+        updatedAt: DateTime.now(),
       );
       context.read<CategoryBloc>().add(
         CategoryEventUpdateCategory(updatedCategory),
@@ -96,6 +97,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         budgetAmount: budget,
         hasBudgetAmount: _hasBudgetAmount,
         type: _selectedType,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
       context.read<CategoryBloc>().add(
         CategoryEventCreateCategory(newCategory),

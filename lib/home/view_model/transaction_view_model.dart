@@ -23,9 +23,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     required this.authRepository,
   }) : super(const TransactionStateInitial(transactionsList: [])) {
     authRepository.authStateChanges.listen((user) {
-      if (user != null &&
-          settingsBloc.state.model.hasLoggedIn &&
-          state.transactionsList.isEmpty) {
+      if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const TransactionEventFetchAll());
       }
     });
@@ -192,63 +190,38 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       }
     });
 
-    // on<TransactionEventSyncUnsynced>((event, emit) async {
-    //   try {
-    //     final unSynced = state.transactionsList
-    //         .where((transaction) => transaction.isSynced == false)
-    //         .toList();
-    //     if (unSynced.isEmpty) return;
-    //     final synced = unSynced.map((transaction) {
-    //       return transactionRepository.addTransaction(transaction).then((_) {
-    //         add(TransactionEventMarkSynced(transactionId: transaction.id));
-    //       });
-    //     }).toList();
-    //     await Future.wait(synced);
-    //   } catch (e) {
-    //     emit(
-    //       TransactionStateError(
-    //         message: 'Marking as unsynced failed: ${e.toString()}',
-    //         transactionsList: state.transactionsList,
-    //       ),
-    //     );
-    //   }
-    // });
-
-    // on<TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly>((
-    //   event,
-    //   emit,
-    // ) {
-    //   try {
-    //     final userId = authRepository.currentUser?.uid;
-    //     if (userId != null) {
-    //       final updatedList = state.transactionsList.map((transaction) {
-    //         if (transaction.userId.isEmpty) {
-    //           return transaction.copyWith(userId: userId);
-    //         }
-    //         return transaction;
-    //       }).toList();
-
-    //       if (settingsBloc.state.model.hasLoggedIn) {
-    //         transactionRepository
-    //             .updateUserIdInAllTransactionsAfterFirstTimeLoginOnly();
-    //       }
-
-    //       emit(TransactionStateSuccess(transactionsList: updatedList));
-    //     }
-    //   } catch (e) {
-    //     emit(
-    //       TransactionStateError(
-    //         message: e.toString(),
-    //         transactionsList: state.transactionsList,
-    //       ),
-    //     );
-    //   }
-    // });
-
     on<TransactionEventFetchAll>((event, emit) async {
       try {
-        final transactions = await transactionRepository.fetchAllTransactions();
-        emit(TransactionStateSuccess(transactionsList: transactions));
+        final remoteTransactions = await transactionRepository
+            .fetchAllTransactions();
+
+        final localTransactionsMap = {
+          for (final t in state.transactionsList) t.id: t,
+        };
+
+        final updatedList = <TransactionModel>[];
+
+        for (final remoteItem in remoteTransactions) {
+          final localItem = localTransactionsMap[remoteItem.id];
+
+          if (localItem == null) {
+            updatedList.add(remoteItem);
+          } else {
+            if (remoteItem.updatedAt.isAfter(localItem.updatedAt)) {
+              updatedList.add(remoteItem);
+            } else {
+              updatedList.add(localItem);
+            }
+            localTransactionsMap.remove(remoteItem.id);
+          }
+        }
+        updatedList.addAll(localTransactionsMap.values);
+
+        updatedList.sort(
+          (a, b) => b.transactionDate.compareTo(a.transactionDate),
+        );
+
+        emit(TransactionStateSuccess(transactionsList: updatedList));
       } catch (e) {
         emit(
           TransactionStateError(
@@ -403,7 +376,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
   Map<String, dynamic>? toJson(TransactionState state) {
     return {
       'transactionsList': state.transactionsList
-          .map((transaction) => transaction.toSerializableMap())
+          .map((transaction) => transaction.toMap())
           .toList(),
     };
   }

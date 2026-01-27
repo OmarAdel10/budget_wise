@@ -135,6 +135,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         transactionDate: _selectedDate,
         transactionNotes: _notesController.text.trim(),
         isSynced: false,
+        updatedAt: DateTime.now(),
       );
       context.read<TransactionBloc>().add(
         TransactionEventUpdateTransaction(updatedTransaction),
@@ -148,6 +149,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         accountId: _selectedAccountId!,
         transactionDate: _selectedDate,
         transactionNotes: _notesController.text.trim(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
       context.read<TransactionBloc>().add(
         TransactionEventCreateTransaction(newTransaction),
