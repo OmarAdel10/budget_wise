@@ -18,3 +18,7 @@ class SettingsEventOnBoardingFinished extends SettingsEvent {
 class SettingsEventLoggedIn extends SettingsEvent {
   const SettingsEventLoggedIn();
 }
+
+class SettingsEventLoggedOut extends SettingsEvent {
+  const SettingsEventLoggedOut();
+}

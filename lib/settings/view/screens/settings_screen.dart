@@ -30,6 +30,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   void _handleLogout() {
     context.read<AuthBloc>().add(AuthEventSignOut());
+    context.read<SettingsBloc>().add(SettingsEventLoggedOut());
     context.read<TransactionBloc>().clear();
     context.read<CategoryBloc>().clear();
     context.read<AccountBloc>().clear();

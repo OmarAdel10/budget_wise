@@ -30,6 +30,10 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     on<SettingsEventLoggedIn>((event, emit) {
       emit(SettingsStateSuccess(state.model.copyWith(hasLoggedIn: true)));
     });
+
+    on<SettingsEventLoggedOut>((event, emit) {
+      emit(SettingsStateSuccess(state.model.copyWith(hasLoggedIn: false)));
+    });
   }
 
   @override
