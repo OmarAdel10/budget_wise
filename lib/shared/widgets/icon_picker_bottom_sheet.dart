@@ -1,3 +1,4 @@
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../constants/colors.dart';
@@ -57,7 +58,10 @@ class IconPickerBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          Text("Select Icon", style: AppTextStyles.heading3),
+          Text(
+            AppLocalizations.of(context)!.selectIcon,
+            style: AppTextStyles.heading3,
+          ),
           const SizedBox(height: AppSpacing.lg),
           Expanded(
             child: GridView.builder(

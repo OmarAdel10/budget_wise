@@ -1285,6 +1285,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Of'**
   String get ofWord;
+
+  /// No description provided for @selectCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Currency'**
+  String get selectCurrency;
+
+  /// No description provided for @cardHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'CARDHOLDER'**
+  String get cardHolder;
+
+  /// No description provided for @biometricReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Please authenticate to access the app'**
+  String get biometricReason;
+
+  /// No description provided for @biometricNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics not available'**
+  String get biometricNotAvailable;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters long'**
+  String get passwordTooShort;
+
+  /// No description provided for @enterCategoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a category name'**
+  String get enterCategoryName;
+
+  /// No description provided for @enterValidBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid budget amount'**
+  String get enterValidBudget;
+
+  /// No description provided for @tapToChangeIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change icon'**
+  String get tapToChangeIcon;
+
+  /// No description provided for @categoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Name'**
+  String get categoryName;
+
+  /// No description provided for @shoppingExample.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Shopping'**
+  String get shoppingExample;
+
+  /// No description provided for @setBudgetLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Budget Limit'**
+  String get setBudgetLimit;
+
+  /// No description provided for @trackBudgetDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Track spending against a monthly budget'**
+  String get trackBudgetDesc;
+
+  /// No description provided for @monthlyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Budget'**
+  String get monthlyBudget;
+
+  /// No description provided for @enterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a title'**
+  String get enterTitle;
+
+  /// No description provided for @enterValidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get enterValidAmount;
+
+  /// No description provided for @selectCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a category'**
+  String get selectCategory;
+
+  /// No description provided for @selectAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an account'**
+  String get selectAccount;
+
+  /// No description provided for @editTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Transaction'**
+  String get editTransaction;
+
+  /// No description provided for @editCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Category'**
+  String get editCategory;
+
+  /// No description provided for @addTransactionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Transaction'**
+  String get addTransactionTitle;
+
+  /// No description provided for @selectAccountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Account'**
+  String get selectAccountLabel;
+
+  /// No description provided for @addIncomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Income'**
+  String get addIncomeTitle;
+
+  /// No description provided for @addExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense'**
+  String get addExpenseTitle;
+
+  /// No description provided for @noTransactionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions found'**
+  String get noTransactionsFound;
+
+  /// No description provided for @noCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No Category'**
+  String get noCategory;
+
+  /// No description provided for @loginSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Login successful!'**
+  String get loginSuccessful;
+
+  /// No description provided for @continueOnboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'You can continue the onboarding process.'**
+  String get continueOnboarding;
+
+  /// No description provided for @loginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed or cancelled.'**
+  String get loginFailed;
+
+  /// No description provided for @tryAgainLocally.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again or continue locally.'**
+  String get tryAgainLocally;
+
+  /// No description provided for @enterValidIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid income amount.'**
+  String get enterValidIncome;
+
+  /// No description provided for @amountGreaterThan100.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount should be greater than 100.'**
+  String get amountGreaterThan100;
+
+  /// No description provided for @selectIncomeSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an income source'**
+  String get selectIncomeSource;
+
+  /// No description provided for @disclaimerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Disclaimer:'**
+  String get disclaimerLabel;
+
+  /// No description provided for @newSavingGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'New Saving Goal'**
+  String get newSavingGoal;
+
+  /// No description provided for @enterGoalName.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., New Car'**
+  String get enterGoalName;
+
+  /// No description provided for @enterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount'**
+  String get enterAmount;
+
+  /// No description provided for @savingRegularlyInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving regularly helps you reach your goals faster.'**
+  String get savingRegularlyInfo;
+
+  /// No description provided for @saveSmallAmountsInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Save small amounts daily to reach your goal.'**
+  String get saveSmallAmountsInfo;
+
+  /// No description provided for @day.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get day;
+
+  /// No description provided for @selectIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Icon'**
+  String get selectIcon;
+
+  /// No description provided for @createCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Category'**
+  String get createCategory;
 }
 
 class _AppLocalizationsDelegate

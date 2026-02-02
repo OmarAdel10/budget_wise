@@ -1,4 +1,5 @@
 import 'package:budget_wise/accounts/data/data_source/account_constants.dart';
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -40,7 +41,10 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text("Select Currency", style: AppTextStyles.heading3),
+          Text(
+            AppLocalizations.of(context)!.selectCurrency,
+            style: AppTextStyles.heading3,
+          ),
           const SizedBox(height: AppSpacing.md),
 
           Flexible(

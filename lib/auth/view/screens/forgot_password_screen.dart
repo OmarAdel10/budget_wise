@@ -4,6 +4,7 @@ import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toastification/toastification.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -98,18 +99,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     child: CircularProgressIndicator(),
                                   ),
                                   const SizedBox(height: AppSpacing.md),
-                                  const Center(child: Text('Loading...')),
+                                  Center(child: Text(l10n.loading)),
                                 ],
                               ),
                             ),
                           );
                         }
                         if (state is AuthStateError) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.message)),
+                          Navigator.of(context).pop();
+                          toastification.show(
+                            context: context,
+                            type: ToastificationType.error,
+                            style: ToastificationStyle.flatColored,
+                            title: Text(state.message),
                           );
                         }
                         if (state is AuthStateSuccess) {
+                          Navigator.of(context).pop();
                           Navigator.of(context).pop();
                         }
                       },

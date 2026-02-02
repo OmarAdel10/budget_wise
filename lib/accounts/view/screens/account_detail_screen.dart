@@ -251,9 +251,9 @@ class AccountDetailScreen extends StatelessWidget {
 
       String dateKey;
       if (txDate == today) {
-        dateKey = 'TODAY';
+        dateKey = l10n.today.toUpperCase();
       } else if (txDate == yesterday) {
-        dateKey = 'YESTERDAY';
+        dateKey = l10n.yesterday.toUpperCase();
       } else {
         dateKey = DateFormat('MMM d, yyyy').format(transaction.transactionDate);
       }

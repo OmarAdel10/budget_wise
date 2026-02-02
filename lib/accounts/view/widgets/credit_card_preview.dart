@@ -1,4 +1,5 @@
 import 'package:budget_wise/accounts/data/models/card_brand.dart';
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 
@@ -25,7 +26,9 @@ class CreditCardPreview extends StatelessWidget {
       child: CreditCardWidget(
         cardNumber: cardNumber.isEmpty ? '0000 0000 0000 0000' : cardNumber,
         expiryDate: expiryDate.isEmpty ? 'MM/YY' : expiryDate,
-        cardHolderName: cardHolderName.isEmpty ? 'CARDHOLDER' : cardHolderName,
+        cardHolderName: cardHolderName.isEmpty
+            ? AppLocalizations.of(context)!.cardHolder
+            : cardHolderName,
         cardType: _getCardType(cardType),
         customCardTypeIcons: <CustomCardTypeIcon>[
           CustomCardTypeIcon(

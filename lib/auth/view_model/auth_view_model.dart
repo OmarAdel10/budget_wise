@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
+
   AuthBloc({required this.authRepository}) : super(AuthStateInitial()) {
     on<AuthEventSignUp>(_onAuthEventSignUp);
     on<AuthEventSignIn>(_onAuthEventSignIn);
@@ -98,7 +98,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthStateLoading());
-      await authRepository.localAuth();
+      await authRepository.localAuth(
+        localizedReason: event.localizedReason,
+        biometricNotAvailableErrorMessage:
+            event.biometricNotAvailableErrorMessage,
+      );
       emit(AuthStateSuccess(user: authRepository.currentUser));
     } on Exception catch (e) {
       emit(AuthStateError(message: e.toString()));

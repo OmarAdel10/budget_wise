@@ -2,11 +2,13 @@ import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:toastification/toastification.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -62,17 +64,24 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     final name = _nameController.text.trim();
     final budgetText = _budgetController.text.replaceAll(',', '').trim();
     final budget = _hasBudgetAmount ? double.tryParse(budgetText) : null;
+    final l10n = AppLocalizations.of(context)!;
 
     if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a category name')),
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        title: Text(l10n.enterCategoryName),
       );
       return;
     }
 
     if (_hasBudgetAmount && (budget == null || budget <= 0)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid budget amount')),
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        title: Text(l10n.enterValidBudget),
       );
       return;
     }
@@ -127,6 +136,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
@@ -137,7 +147,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          _isEditMode ? "Edit Category" : "Add Category",
+          _isEditMode ? l10n.editCategory : l10n.addCategory,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
@@ -174,7 +184,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
               const SizedBox(height: AppSpacing.sm),
               Center(
                 child: Text(
-                  "Tap to change icon",
+                  l10n.tapToChangeIcon,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -213,7 +223,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Income',
+                              l10n.income,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: _selectedType == TransactionType.income
                                     ? Colors.black
@@ -246,7 +256,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'Expense',
+                              l10n.expenses,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: _selectedType == TransactionType.expense
                                     ? Colors.black
@@ -264,10 +274,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
               const SizedBox(height: AppSpacing.lg),
 
               // Name Input
-              Text("Category Name", style: AppTextStyles.bodyMedium),
+              Text(l10n.categoryName, style: AppTextStyles.bodyMedium),
               const SizedBox(height: AppSpacing.sm),
               CustomTextField(
-                hintText: "e.g., Shopping",
+                hintText: l10n.shoppingExample,
                 controller: _nameController,
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -291,11 +301,11 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Set Budget Limit",
+                              l10n.setBudgetLimit,
                               style: AppTextStyles.bodyMedium,
                             ),
                             Text(
-                              "Track spending against a monthly budget",
+                              l10n.trackBudgetDesc,
                               style: AppTextStyles.bodySmall.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -323,10 +333,10 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
                 // Budget Input (only shown when toggle is on)
                 if (_hasBudgetAmount) ...[
-                  Text("Monthly Budget", style: AppTextStyles.bodyMedium),
+                  Text(l10n.monthlyBudget, style: AppTextStyles.bodyMedium),
                   const SizedBox(height: AppSpacing.sm),
                   CustomTextField(
-                    hintText: "Amount",
+                    hintText: l10n.amount,
                     controller: _budgetController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [
@@ -346,7 +356,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
               // Save Button
               CustomButton(
-                text: _isEditMode ? "Save Changes" : "Create Category",
+                text: _isEditMode ? l10n.saveChanges : l10n.createCategory,
                 onPressed: _onSave,
               ),
             ],

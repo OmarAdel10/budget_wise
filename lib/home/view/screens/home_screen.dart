@@ -76,9 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: AppColors.primaryBackground,
             elevation: 0,
             centerTitle: true,
-            title: const Text(
-              "BudgetWise",
-              style: TextStyle(
+            title: Text(
+              l10n.appTitle,
+              style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
@@ -414,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             IconButton(
-                              tooltip: 'Add Category',
+                              tooltip: l10n.addCategory,
                               onPressed: () {
                                 Navigator.of(
                                   context,
@@ -534,7 +534,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           floatingActionButton: FloatingActionButton(
             heroTag: "home_fab",
-            tooltip: 'Add Transaction',
+            tooltip: l10n.addTransactionTitle,
             onPressed: () =>
                 Navigator.of(context).pushNamed(AddTransactionScreen.routeName),
             backgroundColor: AppColors.primaryAccent,

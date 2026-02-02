@@ -11,8 +11,8 @@ class SettingsEventLanguageChange extends SettingsEvent {
   const SettingsEventLanguageChange(this.language);
 }
 
-class SettingsEventOnBoardingChange extends SettingsEvent {
-  const SettingsEventOnBoardingChange();
+class SettingsEventOnBoardingFinished extends SettingsEvent {
+  const SettingsEventOnBoardingFinished();
 }
 
 class SettingsEventLoggedIn extends SettingsEvent {

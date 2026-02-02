@@ -130,7 +130,7 @@ class TransactionDetailScreen extends StatelessWidget {
                               label: l10n.category,
                               value:
                                   category?.category.categoryTitle ??
-                                  'No Category',
+                                  l10n.noCategory,
                             );
                           },
                         ),
@@ -152,7 +152,7 @@ class TransactionDetailScreen extends StatelessWidget {
                             }
                             return _buildDetailItem(
                               icon: PhosphorIcons.bank(),
-                              label: "Account",
+                              label: l10n.account,
                               value: accountTitle,
                             );
                           },

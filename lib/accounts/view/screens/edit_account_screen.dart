@@ -177,7 +177,11 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     if (_formKey.currentState!.validate()) {
       final updatedAccount = widget.account.copyWith(
         title: accountNameController.text.trim(),
-        balance: double.tryParse(balanceController.text.replaceAll(',', '').trim()) ?? 0.0,
+        balance:
+            double.tryParse(
+              balanceController.text.replaceAll(',', '').trim(),
+            ) ??
+            0.0,
         currency: selectedCurrency,
         cardBankName: widget.account.accountType == AccountType.card
             ? bankNameController.text.toUpperCase().trim()

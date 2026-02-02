@@ -21,7 +21,7 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       );
     });
 
-    on<SettingsEventOnBoardingChange>((event, emit) {
+    on<SettingsEventOnBoardingFinished>((event, emit) {
       emit(
         SettingsStateSuccess(state.model.copyWith(isOnboardingCompleted: true)),
       );

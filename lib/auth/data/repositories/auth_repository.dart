@@ -100,21 +100,24 @@ class AuthRepository {
     }
   }
 
-  Future<bool> localAuth() async {
+  Future<bool> localAuth({
+    required String localizedReason,
+    required String biometricNotAvailableErrorMessage,
+  }) async {
     try {
       final bool canAuthenticateWithBiometrics =
           await _localAuth.canCheckBiometrics;
 
       if (canAuthenticateWithBiometrics) {
         final bool didAuthenticate = await _localAuth.authenticate(
-          localizedReason: 'Please authenticate to access the app',
+          localizedReason: localizedReason,
           biometricOnly: false,
           persistAcrossBackgrounding: true,
         );
 
         return didAuthenticate;
       } else {
-        throw Exception('Biometrics not available');
+        throw Exception(biometricNotAvailableErrorMessage);
       }
     } catch (e) {
       throw Exception('Exception Local Auth: ${e.toString()}');

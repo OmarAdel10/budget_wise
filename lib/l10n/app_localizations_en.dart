@@ -621,4 +621,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ofWord => 'Of';
+
+  @override
+  String get selectCurrency => 'Select Currency';
+
+  @override
+  String get cardHolder => 'CARDHOLDER';
+
+  @override
+  String get biometricReason => 'Please authenticate to access the app';
+
+  @override
+  String get biometricNotAvailable => 'Biometrics not available';
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 6 characters long';
+
+  @override
+  String get enterCategoryName => 'Please enter a category name';
+
+  @override
+  String get enterValidBudget => 'Please enter a valid budget amount';
+
+  @override
+  String get tapToChangeIcon => 'Tap to change icon';
+
+  @override
+  String get categoryName => 'Category Name';
+
+  @override
+  String get shoppingExample => 'e.g., Shopping';
+
+  @override
+  String get setBudgetLimit => 'Set Budget Limit';
+
+  @override
+  String get trackBudgetDesc => 'Track spending against a monthly budget';
+
+  @override
+  String get monthlyBudget => 'Monthly Budget';
+
+  @override
+  String get enterTitle => 'Please enter a title';
+
+  @override
+  String get enterValidAmount => 'Please enter a valid amount';
+
+  @override
+  String get selectCategory => 'Please select a category';
+
+  @override
+  String get selectAccount => 'Please select an account';
+
+  @override
+  String get editTransaction => 'Edit Transaction';
+
+  @override
+  String get editCategory => 'Edit Category';
+
+  @override
+  String get addTransactionTitle => 'Add Transaction';
+
+  @override
+  String get selectAccountLabel => 'Select Account';
+
+  @override
+  String get addIncomeTitle => 'Add Income';
+
+  @override
+  String get addExpenseTitle => 'Add Expense';
+
+  @override
+  String get noTransactionsFound => 'No transactions found';
+
+  @override
+  String get noCategory => 'No Category';
+
+  @override
+  String get loginSuccessful => 'Login successful!';
+
+  @override
+  String get continueOnboarding => 'You can continue the onboarding process.';
+
+  @override
+  String get loginFailed => 'Login failed or cancelled.';
+
+  @override
+  String get tryAgainLocally => 'Please try again or continue locally.';
+
+  @override
+  String get enterValidIncome => 'Please enter a valid income amount.';
+
+  @override
+  String get amountGreaterThan100 => 'Amount should be greater than 100.';
+
+  @override
+  String get selectIncomeSource => 'Please select an income source';
+
+  @override
+  String get disclaimerLabel => 'Disclaimer:';
+
+  @override
+  String get newSavingGoal => 'New Saving Goal';
+
+  @override
+  String get enterGoalName => 'e.g., New Car';
+
+  @override
+  String get enterAmount => 'Enter amount';
+
+  @override
+  String get savingRegularlyInfo =>
+      'Saving regularly helps you reach your goals faster.';
+
+  @override
+  String get saveSmallAmountsInfo =>
+      'Save small amounts daily to reach your goal.';
+
+  @override
+  String get day => 'Day';
+
+  @override
+  String get selectIcon => 'Select Icon';
+
+  @override
+  String get createCategory => 'Create Category';
 }
