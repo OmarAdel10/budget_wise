@@ -242,5 +242,6 @@
   "saveSmallAmountsInfo": "Save small amounts daily to reach your goal.",
   "day": "Day",
   "selectIcon": "Select Icon",
-  "createCategory": "Create Category"
+  "createCategory": "Create Category",
+  "accountDeleted": "Account Deleted"
 }

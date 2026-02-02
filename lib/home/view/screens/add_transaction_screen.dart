@@ -102,6 +102,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     if (title.isEmpty) {
       toastification.show(
+        autoCloseDuration: const Duration(seconds: 3),
         context: context,
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,
@@ -112,6 +113,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     if (amount == null || amount <= 0) {
       toastification.show(
+        autoCloseDuration: const Duration(seconds: 3),
         context: context,
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,
@@ -122,6 +124,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     if (_selectedCategoryId == null) {
       toastification.show(
+        autoCloseDuration: const Duration(seconds: 3),
         context: context,
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,
@@ -132,6 +135,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
     if (_selectedAccountId == null) {
       toastification.show(
+        autoCloseDuration: const Duration(seconds: 3),
         context: context,
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,

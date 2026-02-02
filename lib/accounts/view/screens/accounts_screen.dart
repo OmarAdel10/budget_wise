@@ -2,6 +2,7 @@ import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
 import 'package:budget_wise/accounts/view/widgets/asset_item.dart';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -10,9 +11,11 @@ import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:toastification/toastification.dart';
 
 class AccountsScreen extends StatelessWidget {
   const AccountsScreen({super.key});
@@ -115,6 +118,7 @@ class AccountsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
+                  //* Accounts List
                   Text(
                     l10n.yourAssets,
                     style: AppTextStyles.bodySmall.copyWith(
@@ -145,14 +149,68 @@ class AccountsScreen extends StatelessWidget {
                             arguments: accountItem,
                           );
                         },
-                        child: AssetItem(
-                          icon: accountItem.accountIcon,
-                          title: accountItem.title,
-                          subtitle: accountItem.accountType != AccountType.cash
-                              ? '${accountItem.cardBankName} • ${accountItem.cardNumber!.substring(accountItem.cardNumber!.length - 4)}'
-                              : '${accountItem.accountType.name.toUpperCase()} ${l10n.account.toUpperCase()}',
-                          amount:
-                              '${NumberFormat.simpleCurrency(name: accountItem.currency).currencyName} ${accountItem.balance}',
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                            motion: const StretchMotion(),
+                            extentRatio: 0.25,
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) {
+                                  final accountBloc = context
+                                      .read<AccountBloc>();
+
+                                  toastification.show(
+                                    context: context,
+                                    type: ToastificationType.warning,
+                                    style: ToastificationStyle.flatColored,
+                                    autoCloseDuration: const Duration(
+                                      seconds: 3,
+                                    ),
+                                    title: Text(l10n.accountDeleted),
+                                    closeButton: ToastCloseButton(
+                                      showType: CloseButtonShowType.always,
+                                      buttonBuilder: (context, onClose) {
+                                        return GestureDetector(
+                                          onTap: onClose,
+                                          child: Text(
+                                            l10n.undo,
+                                            style: AppTextStyles.button,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    callbacks: ToastificationCallbacks(
+                                      onAutoCompleteCompleted: (item) {
+                                        accountBloc.add(
+                                          AccountEventDeleteAccount(
+                                            accountId: accountItem.id,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                backgroundColor: AppColors.danger,
+                                foregroundColor: Colors.white,
+                                icon: PhosphorIcons.trash(
+                                  PhosphorIconsStyle.bold,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppSpacing.radiusSm,
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: AssetItem(
+                            icon: accountItem.accountIcon,
+                            title: accountItem.title,
+                            subtitle:
+                                accountItem.accountType != AccountType.cash
+                                ? '${accountItem.cardBankName} • ${accountItem.cardNumber != null && accountItem.cardNumber!.length >= 4 ? accountItem.cardNumber!.substring(accountItem.cardNumber!.length - 4) : '****'}'
+                                : '${accountItem.accountType.name.toUpperCase()} ${l10n.account.toUpperCase()}',
+                            amount:
+                                '${NumberFormat.simpleCurrency(name: accountItem.currency).currencyName} ${accountItem.balance}',
+                          ),
                         ),
                       ),
                     );

@@ -97,6 +97,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               }
               if (state is AuthStateError) {
                 toastification.show(
+                  autoCloseDuration: const Duration(seconds: 3),
                   context: context,
                   type: ToastificationType.error,
                   style: ToastificationStyle.flatColored,

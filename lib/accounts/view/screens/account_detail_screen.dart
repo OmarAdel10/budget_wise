@@ -324,7 +324,7 @@ class AccountDetailScreen extends StatelessWidget {
   }
 
   Widget _buildTransactionItem(
-    BuildContext contxt,
+    BuildContext context,
     TransactionModel transactionModel,
     CategoryState categoryState,
   ) {
@@ -340,9 +340,9 @@ class AccountDetailScreen extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(contxt).pushNamed(
+        Navigator.of(context).pushNamed(
           TransactionDetailScreen.routeName,
-          arguments: transactionModel,
+          arguments: {'transModel': transactionModel},
         );
       },
       child: Container(

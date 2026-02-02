@@ -1,6 +1,7 @@
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../constants/colors.dart';
 import '../constants/text_styles.dart';
@@ -163,14 +164,14 @@ class CategoryListItem extends StatelessWidget {
       return Slidable(
         key: ValueKey(name),
         endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          extentRatio: 0.2,
+          motion: const StretchMotion(),
+          extentRatio: 0.25,
           children: [
             SlidableAction(
               onPressed: (context) => onDelete?.call(),
               backgroundColor: AppColors.danger,
               foregroundColor: Colors.white,
-              icon: Icons.delete,
+              icon: PhosphorIcons.trash(PhosphorIconsStyle.bold),
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
           ],

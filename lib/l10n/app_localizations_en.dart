@@ -749,4 +749,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createCategory => 'Create Category';
+
+  @override
+  String get accountDeleted => 'Account Deleted';
 }

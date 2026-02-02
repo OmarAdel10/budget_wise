@@ -239,5 +239,6 @@
   "saveSmallAmountsInfo": "ادخر مبالغ صغيرة يومياً.",
   "day": "يوم",
   "selectIcon": "اختر أيقونة",
-  "createCategory": "إنشاء تصنيف"
+  "createCategory": "إنشاء تصنيف",
+  "accountDeleted": "تم حذف الحساب"
 }

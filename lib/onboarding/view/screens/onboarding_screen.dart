@@ -81,6 +81,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           curve: Curves.easeInOut,
         );
         toastification.show(
+          autoCloseDuration: const Duration(seconds: 3),
           context: context,
           type: ToastificationType.success,
           style: ToastificationStyle.flatColored,
@@ -90,6 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       } else {
         log("Returned from Auth Screen without successful login.");
         toastification.show(
+          autoCloseDuration: const Duration(seconds: 3),
           context: context,
           type: ToastificationType.error,
           style: ToastificationStyle.flatColored,
@@ -118,6 +120,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       if (_currentPage == 3) {
         if (_incomeAmount < 1) {
           toastification.show(
+            autoCloseDuration: const Duration(seconds: 3),
             context: context,
             type: ToastificationType.error,
             style: ToastificationStyle.flatColored,
@@ -128,6 +131,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         }
         if (_incomeCategoryTitle == null) {
           toastification.show(
+            autoCloseDuration: const Duration(seconds: 3),
             context: context,
             type: ToastificationType.error,
             style: ToastificationStyle.flatColored,
@@ -145,6 +149,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       // Final Validation (Category Selection - Page 4)
       if (_selectedCategories.length < 4) {
         toastification.show(
+          autoCloseDuration: const Duration(seconds: 3),
           context: context,
           type: ToastificationType.error,
           style: ToastificationStyle.flatColored,

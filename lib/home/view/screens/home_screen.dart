@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
 import 'package:budget_wise/home/view/widgets/transaction_list_item.dart';
@@ -12,6 +10,7 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:toastification/toastification.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -465,42 +464,34 @@ class _HomeScreenState extends State<HomeScreen> {
                             progress: progress,
                             index: index,
                             onDelete: () {
-                              final scaffoldMessenger = ScaffoldMessenger.of(
-                                context,
-                              );
-                              final categoryBloc = context.read<CategoryBloc>();
-                              final navigator = Navigator.of(context);
+                              final catBloc = context.read<CategoryBloc>();
 
-                              // Capture l10n strings before popping
-                              final deletedMsg = l10n.transactionDeleted;
-                              final undoLabel = l10n.undo;
-
-                              // Pop immediately
-                              if (navigator.canPop()) {
-                                navigator.pop();
-                              }
-
-                              Timer? timer;
-                              timer = Timer(const Duration(seconds: 3), () {
-                                categoryBloc.add(
-                                  CategoryEventDeleteCategory(
-                                    categoryId: categoryitem.category.id,
-                                  ),
-                                );
-                              });
-
-                              scaffoldMessenger.clearSnackBars();
-                              scaffoldMessenger.showSnackBar(
-                                SnackBar(
-                                  dismissDirection: DismissDirection.horizontal,
-                                  content: Text(deletedMsg),
-                                  action: SnackBarAction(
-                                    label: undoLabel,
-                                    onPressed: () {
-                                      timer?.cancel();
-                                    },
-                                  ),
-                                  duration: const Duration(seconds: 3),
+                              toastification.show(
+                                context: context,
+                                type: ToastificationType.warning,
+                                style: ToastificationStyle.flatColored,
+                                autoCloseDuration: const Duration(seconds: 3),
+                                title: Text(l10n.categoryDeleted),
+                                closeButton: ToastCloseButton(
+                                  showType: CloseButtonShowType.always,
+                                  buttonBuilder: (context, onClose) {
+                                    return GestureDetector(
+                                      onTap: onClose,
+                                      child: Text(
+                                        l10n.undo,
+                                        style: AppTextStyles.button,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                callbacks: ToastificationCallbacks(
+                                  onAutoCompleteCompleted: (item) {
+                                    catBloc.add(
+                                      CategoryEventDeleteCategory(
+                                        categoryId: categoryitem.category.id,
+                                      ),
+                                    );
+                                  },
                                 ),
                               );
                             },

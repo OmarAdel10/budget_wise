@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
@@ -13,19 +12,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:toastification/toastification.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 
 class TransactionDetailScreen extends StatelessWidget {
   static const String routeName = '/transaction-detail';
-
-  final TransactionModel transModel;
-
-  const TransactionDetailScreen({super.key, required this.transModel});
+  const TransactionDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final transModel = args?['transModel'] as TransactionModel;
     final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
@@ -210,43 +210,34 @@ class TransactionDetailScreen extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            final scaffoldMessenger = ScaffoldMessenger.of(
-                              context,
-                            );
-                            final transactionBloc = context
-                                .read<TransactionBloc>();
-                            final navigator = Navigator.of(context);
+                            final transBloc = context.read<TransactionBloc>();
 
-                            // Capture l10n strings before popping
-                            final deletedMsg = l10n.transactionDeleted;
-                            final undoLabel = l10n.undo;
-
-                            // Pop immediately
-                            if (navigator.canPop()) {
-                              navigator.pop();
-                            }
-
-                            Timer? timer;
-                            timer = Timer(const Duration(seconds: 3), () {
-                              transactionBloc.add(
-                                TransactionEventDeleteTransaction(
-                                  transactionId: transaction.id,
-                                ),
-                              );
-                            });
-
-                            scaffoldMessenger.clearSnackBars();
-                            scaffoldMessenger.showSnackBar(
-                              SnackBar(
-                                dismissDirection: DismissDirection.horizontal,
-                                content: Text(deletedMsg),
-                                action: SnackBarAction(
-                                  label: undoLabel,
-                                  onPressed: () {
-                                    timer?.cancel();
-                                  },
-                                ),
-                                duration: const Duration(seconds: 3),
+                            toastification.show(
+                              context: context,
+                              type: ToastificationType.warning,
+                              style: ToastificationStyle.flatColored,
+                              autoCloseDuration: const Duration(seconds: 3),
+                              title: Text(l10n.transactionDeleted),
+                              closeButton: ToastCloseButton(
+                                showType: CloseButtonShowType.always,
+                                buttonBuilder: (context, onClose) {
+                                  return GestureDetector(
+                                    onTap: onClose,
+                                    child: Text(
+                                      l10n.undo,
+                                      style: AppTextStyles.button,
+                                    ),
+                                  );
+                                },
+                              ),
+                              callbacks: ToastificationCallbacks(
+                                onAutoCompleteCompleted: (item) {
+                                  transBloc.add(
+                                    TransactionEventDeleteTransaction(
+                                      transactionId: transaction.id,
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },

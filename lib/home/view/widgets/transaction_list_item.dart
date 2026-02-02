@@ -69,9 +69,10 @@ class TransactionListItem extends StatelessWidget {
               ],
             ),
             onTap: () {
-              Navigator.of(
-                context,
-              ).pushNamed(TransactionDetailScreen.routeName, arguments: model);
+              Navigator.of(context).pushNamed(
+                TransactionDetailScreen.routeName,
+                arguments: {'transModel': model},
+              );
             },
           );
         },

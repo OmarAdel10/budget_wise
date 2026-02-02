@@ -10,7 +10,6 @@ import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/auth/view/screens/signup_screen.dart';
 import 'package:budget_wise/auth/view/screens/forgot_password_screen.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/data/repositories/category_repository.dart';
 import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
@@ -23,7 +22,6 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,7 +43,6 @@ import 'package:path_provider/path_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseFirestore.instance.settings = Settings(persistenceEnabled: true);
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: HydratedStorageDirectory(
       (await getApplicationDocumentsDirectory()).path,
@@ -267,7 +264,6 @@ class MyApp extends StatelessWidget {
                   child: TransactionTypeDetailScreen(),
                 );
               case TransactionDetailScreen.routeName:
-                final args = settings.arguments as TransactionModel;
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
                   reverseType: PageTransitionType.leftToRight,
@@ -276,7 +272,7 @@ class MyApp extends StatelessWidget {
                   reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
-                  child: TransactionDetailScreen(transModel: args),
+                  child: TransactionDetailScreen(),
                 );
               case AllTransactionsScreen.routeName:
                 return PageTransition(
@@ -351,11 +347,9 @@ class MyApp extends StatelessWidget {
           },
           initialRoute:
               context.read<SettingsBloc>().state.model.isOnboardingCompleted
-              ? context.read<AuthRepository>().currentUser != null
-                    ? context.read<SettingsBloc>().state.model.localAuthEnabled
-                          ? LocalAuthScreen.routeName
-                          : MainScreen.routeName
-                    : LoginScreen.routeName
+              ? context.read<SettingsBloc>().state.model.localAuthEnabled
+                    ? LocalAuthScreen.routeName
+                    : MainScreen.routeName
               : OnboardingScreen.routeName,
         );
       },

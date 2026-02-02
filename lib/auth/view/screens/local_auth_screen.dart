@@ -51,6 +51,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
             _hasAuthenticated = false;
           });
           toastification.show(
+            autoCloseDuration: const Duration(seconds: 3),
             context: context,
             type: ToastificationType.error,
             style: ToastificationStyle.flatColored,

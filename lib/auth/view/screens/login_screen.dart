@@ -120,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (state is AuthStateError) {
                 Navigator.of(context).pop();
                 toastification.show(
+                  autoCloseDuration: const Duration(seconds: 3),
                   context: context,
                   type: ToastificationType.error,
                   style: ToastificationStyle.flatColored,

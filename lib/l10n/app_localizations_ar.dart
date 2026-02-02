@@ -743,4 +743,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get createCategory => 'إنشاء تصنيف';
+
+  @override
+  String get accountDeleted => 'تم حذف الحساب';
 }

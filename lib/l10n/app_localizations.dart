@@ -1537,6 +1537,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create Category'**
   String get createCategory;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Deleted'**
+  String get accountDeleted;
 }
 
 class _AppLocalizationsDelegate
