@@ -121,7 +121,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             type: ToastificationType.error,
             style: ToastificationStyle.flatColored,
             title: Text(l10n.enterValidIncome),
-            description: Text(l10n.amountGreaterThan100),
+            description: Text(l10n.amountGreaterThan1),
           );
           return;
         }
