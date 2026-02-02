@@ -5,12 +5,14 @@ import 'package:budget_wise/home/view_model/category_state.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:toastification/toastification.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -96,32 +98,45 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final title = _titleController.text.trim();
     final amountText = _amountController.text.replaceAll(',', '').trim();
     final amount = double.tryParse(amountText);
+    final l10n = AppLocalizations.of(context)!;
 
     if (title.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please enter a title')));
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        title: Text(l10n.enterTitle),
+      );
       return;
     }
 
     if (amount == null || amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid amount')),
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        title: Text(l10n.enterValidAmount),
       );
       return;
     }
 
     if (_selectedCategoryId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a category')));
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        title: Text(l10n.selectCategory),
+      );
       return;
     }
 
     if (_selectedAccountId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please select an account')));
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        title: Text(l10n.selectAccount),
+      );
       return;
     }
 
@@ -161,6 +176,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, categoryState) {
         final categories = categoryState.categoriesList
@@ -178,8 +194,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         }
 
         final typeLabel = _selectedType == TransactionType.income
-            ? 'Income'
-            : 'Expense';
+            ? l10n.addIncomeTitle
+            : l10n.addExpenseTitle;
 
         return Scaffold(
           backgroundColor: AppColors.primaryBackground,
@@ -191,7 +207,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: Text(
-              _isEditMode ? "Edit Transaction" : "Add Transaction",
+              _isEditMode ? l10n.editTransaction : l10n.addTransactionTitle,
               style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
@@ -206,19 +222,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Income/Expense Toggle
-                  _buildTransactionTypeToggle(),
+                  _buildTransactionTypeToggle(l10n),
                   const SizedBox(height: AppSpacing.lg),
 
                   // Title Input
                   CustomTextField(
-                    hintText: "Title",
+                    hintText: l10n.title,
                     controller: _titleController,
                   ),
                   const SizedBox(height: AppSpacing.lg),
 
                   // Amount Input
                   CustomTextField(
-                    hintText: "Amount",
+                    hintText: l10n.amount,
                     controller: _amountController,
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
@@ -244,7 +260,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       child: DropdownButton<String>(
                         value: _selectedCategoryId,
                         hint: Text(
-                          "Category",
+                          l10n.category,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -312,7 +328,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           child: DropdownButton<String>(
                             value: _selectedAccountId,
                             hint: Text(
-                              "Select Account",
+                              l10n.selectAccountLabel,
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -381,7 +397,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
                   // Notes Input
                   CustomTextField(
-                    hintText: "Notes (optional)",
+                    hintText: l10n.notesOP,
                     controller: _notesController,
                     maxLines: 4,
                   ),
@@ -389,7 +405,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
                   // Save Button
                   CustomButton(
-                    text: _isEditMode ? "Save Changes" : "Add $typeLabel",
+                    text: _isEditMode ? l10n.saveChanges : typeLabel,
                     onPressed: _onSave,
                   ),
                 ],
@@ -401,7 +417,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     );
   }
 
-  Widget _buildTransactionTypeToggle() {
+  Widget _buildTransactionTypeToggle(AppLocalizations l10n) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.inputBackground,
@@ -413,7 +429,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         children: [
           Expanded(
             child: _buildToggleButton(
-              label: 'Income',
+              label: l10n.income,
               isSelected: _selectedType == TransactionType.income,
               onTap: () {
                 if (_selectedType != TransactionType.income) {
@@ -428,7 +444,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           ),
           Expanded(
             child: _buildToggleButton(
-              label: 'Expense',
+              label: l10n.expenses,
               isSelected: _selectedType == TransactionType.expense,
               onTap: () {
                 if (_selectedType != TransactionType.expense) {

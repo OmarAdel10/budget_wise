@@ -1,6 +1,3 @@
-import 'package:budget_wise/accounts/data/models/account_model.dart';
-import 'package:budget_wise/accounts/view_model/account_event.dart';
-import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import '../../../shared/constants/colors.dart';
@@ -10,13 +7,10 @@ import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/utils/thousands_formatter.dart';
 import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
-import 'package:budget_wise/home/view_model/category_event.dart';
-import 'package:budget_wise/home/view_model/category_view_model.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class IncomeSetupPage extends StatefulWidget {
-  final Function(double amount, String categoryId) onDataChanged;
+  final Function(double amount, String categoryTitle) onDataChanged;
 
   const IncomeSetupPage({super.key, required this.onDataChanged});
 
@@ -28,24 +22,11 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
     with AutomaticKeepAliveClientMixin {
   final TextEditingController _amountController = TextEditingController();
   List<CategoryModel> _incomeCategories = [];
-  String? _selectedCategoryId;
+  String? _selectedCategoryTitle;
 
   @override
   void initState() {
     super.initState();
-    final accountModel = AccountModel(
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      accountType: AccountType.cash,
-      title: 'Main Account',
-      accountIcon: PhosphorIconsRegular.wallet,
-      initialBalance: 0.0,
-      balance: 00,
-      currency: 'EGP',
-    );
-    context.read<AccountBloc>().add(
-      AccountEventCreateAccount(model: accountModel),
-    );
     _amountController.addListener(_updateData);
     _initializeIncomeCategories();
   }
@@ -69,11 +50,6 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
         updatedAt: DateTime.now(),
       );
     });
-
-    // Save categories immediately
-    for (final category in _incomeCategories) {
-      context.read<CategoryBloc>().add(CategoryEventCreateCategory(category));
-    }
   }
 
   @override
@@ -85,8 +61,8 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
   void _updateData() {
     final amount =
         double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0.0;
-    if (_selectedCategoryId != null) {
-      widget.onDataChanged(amount, _selectedCategoryId!);
+    if (_selectedCategoryTitle != null) {
+      widget.onDataChanged(amount, _selectedCategoryTitle!);
     }
   }
 
@@ -150,7 +126,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
           ),
           const SizedBox(height: AppSpacing.sm),
           CustomTextField(
-            hintText: "0.00",
+            hintText: l10n.addAccountInitialBalancePlaceholder,
             controller: _amountController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [ThousandsSeparatorInputFormatter()],
@@ -174,7 +150,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children: _incomeCategories.map((category) {
-              final isSelected = _selectedCategoryId == category.id;
+              final isSelected = _selectedCategoryTitle == category.categoryTitle;
               return ChoiceChip(
                 label: Text(
                   _getLocalizedSource(context, category.categoryTitle),
@@ -190,7 +166,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
                 selected: isSelected,
                 onSelected: (selected) {
                   setState(() {
-                    _selectedCategoryId = selected ? category.id : null;
+                    _selectedCategoryTitle = selected ? category.categoryTitle : null;
                     _updateData();
                   });
                 },

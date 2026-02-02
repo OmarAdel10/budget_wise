@@ -1,3 +1,4 @@
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -11,6 +12,7 @@ class SavingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     // Dummy Data
     final List<Map<String, dynamic>> savingGoals = [
       {
@@ -39,9 +41,9 @@ class SavingsScreen extends StatelessWidget {
         backgroundColor: AppColors.primaryBackground,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: const Text(
-          "Savings",
-          style: TextStyle(
+        title: Text(
+          l10n.navSavings,
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
           ),

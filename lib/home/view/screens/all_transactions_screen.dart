@@ -163,7 +163,7 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
                 child: transactions.isEmpty
                     ? Center(
                         child: Text(
-                          "No transactions found",
+                          l10n.noTransactionsFound,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: AppColors.textSecondary,
                           ),

@@ -1,3 +1,4 @@
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
@@ -13,6 +14,7 @@ class SavingGoalDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     // Dummy Daily Savings Data
     final List<Map<String, dynamic>> dailySavings = List.generate(10, (index) {
       return {
@@ -62,7 +64,7 @@ class SavingGoalDetailScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Progress",
+                          l10n.progress,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -111,10 +113,10 @@ class SavingGoalDetailScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.xl),
 
               // Daily Savings Section
-              Text("Daily Savings", style: AppTextStyles.heading3),
+              Text(l10n.dailySavings, style: AppTextStyles.heading3),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                "Save small amounts daily to reach your goal.",
+                l10n.saveSmallAmountsInfo,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -166,7 +168,7 @@ class SavingGoalDetailScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: AppSpacing.md),
                             Text(
-                              "Day ${saving['day']}",
+                              "${l10n.day} ${saving['day']}",
                               style: AppTextStyles.bodyLarge,
                             ),
                           ],

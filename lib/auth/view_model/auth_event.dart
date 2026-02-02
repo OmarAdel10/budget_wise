@@ -56,10 +56,18 @@ class AuthEventSignInWithGoogle extends AuthEvent {
 }
 
 class AuthEventLocalAuth extends AuthEvent {
-  const AuthEventLocalAuth();
+  final String localizedReason;
+  final String biometricNotAvailableErrorMessage;
+  const AuthEventLocalAuth({
+    required this.localizedReason,
+    required this.biometricNotAvailableErrorMessage,
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [
+    localizedReason,
+    biometricNotAvailableErrorMessage,
+  ];
 }
 
 class AuthEventEditProfileChangeName extends AuthEvent {

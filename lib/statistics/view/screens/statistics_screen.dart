@@ -257,7 +257,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                         enable: true,
                                         header: '',
                                         canShowMarker: true,
-                                        format: 'Day point.x: point.y',
+                                        format: '${l10n.day} point.x: point.y',
                                         duration: 1000,
                                         textStyle: AppTextStyles.bodyMedium,
                                         color: AppColors.cardBackground,

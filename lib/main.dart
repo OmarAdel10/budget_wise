@@ -130,7 +130,7 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {
         return MaterialApp(
-          title: 'BudgetWise',
+          onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.darkTheme,
           localizationsDelegates: const [

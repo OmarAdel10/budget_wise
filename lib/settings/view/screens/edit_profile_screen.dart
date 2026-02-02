@@ -12,6 +12,7 @@ import 'package:budget_wise/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final AuthRepository authRepository;
@@ -82,7 +83,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         const Center(child: CircularProgressIndicator()),
                         const SizedBox(height: AppSpacing.md),
-                        const Center(child: Text('Loading...')),
+                        Center(child: Text(l10n.loading)),
                       ],
                     ),
                   ),
@@ -95,11 +96,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 });
               }
               if (state is AuthStateError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    duration: Duration(seconds: 1),
-                  ),
+                toastification.show(
+                  context: context,
+                  type: ToastificationType.error,
+                  style: ToastificationStyle.flatColored,
+                  title: Text(state.message),
                 );
               }
               if (state is AuthStateSuccess) {

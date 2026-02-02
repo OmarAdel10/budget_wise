@@ -1,7 +1,10 @@
 import 'dart:developer';
+import 'package:budget_wise/accounts/data/models/account_model.dart';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/models/user_model.dart';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
+import 'package:budget_wise/auth/view/screens/signup_screen.dart';
 import 'package:budget_wise/home/data/models/category_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
@@ -17,6 +20,7 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:toastification/toastification.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/widgets/custom_button.dart';
@@ -39,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // State for new pages
   double _incomeAmount = 0.0;
-  String? _incomeCategoryId;
+  String? _incomeCategoryTitle;
   List<CategoryModel> _selectedCategories = [];
 
   @override
@@ -48,38 +52,55 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  void _openAuthFlow({bool startWithLogin = true}) {
+    final l10n = AppLocalizations.of(context)!;
+    Future<dynamic> navFuture;
+    if (startWithLogin) {
+      navFuture = Navigator.of(context).pushNamed(
+        LoginScreen.routeName,
+        arguments: {'loginRouting': LoginRouting.fromOnboarding},
+      );
+    } else {
+      navFuture = Navigator.of(
+        context,
+      ).pushNamed(SignUpScreen.routeName, arguments: true);
+    }
+
+    navFuture.then((result) {
+      if (!mounted) return;
+
+      if (result == 'switch_to_signup') {
+        _openAuthFlow(startWithLogin: false);
+      } else if (result == 'switch_to_login') {
+        _openAuthFlow(startWithLogin: true);
+      } else if (result == true) {
+        log("Returned from Auth Screen after successful login/signup.");
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+        toastification.show(
+          context: context,
+          type: ToastificationType.success,
+          style: ToastificationStyle.flatColored,
+          title: Text(l10n.loginSuccessful),
+          description: Text(l10n.continueOnboarding),
+        );
+      } else {
+        log("Returned from Auth Screen without successful login.");
+        toastification.show(
+          context: context,
+          type: ToastificationType.error,
+          style: ToastificationStyle.flatColored,
+          title: Text(l10n.loginFailed),
+          description: Text(l10n.tryAgainLocally),
+        );
+      }
+    });
+  }
+
   void _onLoginSignUpPressed() {
-    Navigator.of(context)
-        .pushNamed(
-          LoginScreen.routeName,
-          arguments: {'loginRouting': LoginRouting.fromOnboarding},
-        )
-        .then((result) {
-          if (!mounted) return;
-          if (result == true) {
-            log("Returned from Login Screen after successful login.");
-            _pageController.nextPage(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Login successful! You can continue the onboarding process.',
-                ),
-              ),
-            );
-          } else {
-            log("Returned from Login Screen without successful login.");
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Login failed or cancelled. Please try again or continue locally.',
-                ),
-              ),
-            );
-          }
-        });
+    _openAuthFlow(startWithLogin: true);
   }
 
   void _onSkipForNowPressed() {
@@ -90,39 +111,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _nextPage() {
+    final l10n = AppLocalizations.of(context)!;
     if (_currentPage < 4) {
       // Validation check before moving from Income Page (Page 3)
       if (_currentPage == 3) {
         if (_incomeAmount < 1) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Please enter a valid income amount.\nAmount should be greater than 100.',
-              ),
-            ),
+          toastification.show(
+            context: context,
+            type: ToastificationType.error,
+            style: ToastificationStyle.flatColored,
+            title: Text(l10n.enterValidIncome),
+            description: Text(l10n.amountGreaterThan100),
           );
           return;
         }
-        if (_incomeCategoryId == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please select an income source')),
+        if (_incomeCategoryTitle == null) {
+          toastification.show(
+            context: context,
+            type: ToastificationType.error,
+            style: ToastificationStyle.flatColored,
+            title: Text(l10n.selectIncomeSource),
           );
           return;
         }
-        final DateFormat date = DateFormat('dd/MM/yyyy');
-        final transaction = TransactionModel(
-          type: TransactionType.income,
-          transactionAmount: _incomeAmount,
-          transactionTitle: 'Income${date.format(DateTime.now())}',
-          transactionDate: DateTime.now(),
-          categoryId: _incomeCategoryId!,
-          accountId: context.read<AccountBloc>().state.accountsList.first.id,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
-        context.read<TransactionBloc>().add(
-          TransactionEventCreateTransaction(transaction),
-        );
       }
 
       _pageController.nextPage(
@@ -132,18 +143,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } else {
       // Final Validation (Category Selection - Page 4)
       if (_selectedCategories.length < 4) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorSelectCategories),
-          ),
+        toastification.show(
+          context: context,
+          type: ToastificationType.error,
+          style: ToastificationStyle.flatColored,
+          title: Text(l10n.errorSelectCategories),
         );
         return;
-      } else {
-        for (final category in _selectedCategories) {
-          context.read<CategoryBloc>().add(
-            CategoryEventCreateCategory(category),
-          );
-        }
       }
 
       _finishOnboarding();
@@ -151,13 +157,82 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _finishOnboarding() {
+    final l10n = AppLocalizations.of(context)!;
     log("Onboarding Completed!");
-    log("Income: $_incomeAmount, CategoryId: $_incomeCategoryId");
-    log(
-      "Categories: ${_selectedCategories.map((e) => e.categoryTitle).toList()}",
+
+    // 1. Create Main Account
+    final accountModel = AccountModel(
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      accountType: AccountType.cash,
+      title: 'Main Account',
+      accountIcon: PhosphorIconsRegular.wallet,
+      initialBalance: 0.0,
+      balance: 0.0,
+      currency: 'EGP',
     );
-    context.read<SettingsBloc>().add(SettingsEventOnBoardingChange());
-    Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
+    context.read<AccountBloc>().add(
+      AccountEventCreateAccount(model: accountModel),
+    );
+
+    // 2. Create Default Income Categories
+    final incomeCategoryNames = ['Work', 'Personal', 'Freelance', 'Other'];
+    final incomeCategoryIcons = [
+      PhosphorIconsRegular.briefcase,
+      PhosphorIconsRegular.user,
+      PhosphorIconsRegular.laptop,
+      PhosphorIconsRegular.dotsThree,
+    ];
+
+    for (int i = 0; i < incomeCategoryNames.length; i++) {
+      context.read<CategoryBloc>().add(
+        CategoryEventCreateCategory(
+          CategoryModel(
+            categoryTitle: incomeCategoryNames[i],
+            categoryIcon: incomeCategoryIcons[i],
+            budgetAmount: 0.0,
+            type: TransactionType.income,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ),
+        ),
+      );
+    }
+
+    // 3. Create User Selected Expense Categories
+    for (final category in _selectedCategories) {
+      context.read<CategoryBloc>().add(CategoryEventCreateCategory(category));
+    }
+
+    // 4. Create Initial Income Transaction
+    final DateFormat date = DateFormat('dd/MM/yyyy');
+    final transaction = TransactionModel(
+      type: TransactionType.income,
+      transactionAmount: _incomeAmount,
+      transactionTitle: '${l10n.income} ${date.format(DateTime.now())}',
+      transactionDate: DateTime.now(),
+      categoryId: context
+          .read<CategoryBloc>()
+          .state
+          .categoriesList
+          .firstWhere(
+            (cat) =>
+                cat.categoryTitle == _incomeCategoryTitle &&
+                cat.type == TransactionType.income,
+          )
+          .id,
+      accountId: accountModel.id, // Use the ID of the account we just created
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    context.read<TransactionBloc>().add(
+      TransactionEventCreateTransaction(transaction),
+    );
+
+    context.read<SettingsBloc>().add(SettingsEventOnBoardingFinished());
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(MainScreen.routeName, (route) => false);
   }
 
   void _previousPage() {
@@ -226,10 +301,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                   IncomeSetupPage(
-                    onDataChanged: (amount, categoryId) {
+                    onDataChanged: (amount, categoryTitle) {
                       setState(() {
                         _incomeAmount = amount;
-                        _incomeCategoryId = categoryId;
+                        _incomeCategoryTitle = categoryTitle;
                       });
                     },
                   ),
@@ -255,7 +330,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Column(
                     children: [
                       Text(
-                        'Disclaimer:',
+                        l10n.disclaimerLabel,
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.danger,
                         ),

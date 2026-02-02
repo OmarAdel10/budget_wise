@@ -617,4 +617,130 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ofWord => 'من';
+
+  @override
+  String get selectCurrency => 'اختر العملة';
+
+  @override
+  String get cardHolder => 'حامل البطاقة';
+
+  @override
+  String get biometricReason => 'يرجى المصادقة للوصول إلى التطبيق';
+
+  @override
+  String get biometricNotAvailable => 'البصمة غير متوفرة';
+
+  @override
+  String get loading => 'جاري التحميل...';
+
+  @override
+  String get passwordTooShort => 'يجب أن تكون كلمة المرور 6 أحرف على الأقل';
+
+  @override
+  String get enterCategoryName => 'يرجى إدخال اسم التصنيف';
+
+  @override
+  String get enterValidBudget => 'يرجى إدخال مبلغ ميزانية صالح';
+
+  @override
+  String get tapToChangeIcon => 'اضغط لتغيير الأيقونة';
+
+  @override
+  String get categoryName => 'اسم التصنيف';
+
+  @override
+  String get shoppingExample => 'مثال: تسوق';
+
+  @override
+  String get setBudgetLimit => 'تحديد ميزانية';
+
+  @override
+  String get trackBudgetDesc => 'تتبع الإنفاق مقابل ميزانية شهرية';
+
+  @override
+  String get monthlyBudget => 'الميزانية الشهرية';
+
+  @override
+  String get enterTitle => 'يرجى إدخال العنوان';
+
+  @override
+  String get enterValidAmount => 'يرجى إدخال مبلغ صالح';
+
+  @override
+  String get selectCategory => 'يرجى اختيار تصنيف';
+
+  @override
+  String get selectAccount => 'يرجى اختيار حساب';
+
+  @override
+  String get editTransaction => 'تعديل العملية';
+
+  @override
+  String get editCategory => 'تعديل التصنيف';
+
+  @override
+  String get addTransactionTitle => 'إضافة عملية';
+
+  @override
+  String get selectAccountLabel => 'اختر الحساب';
+
+  @override
+  String get addIncomeTitle => 'إضافة دخل';
+
+  @override
+  String get addExpenseTitle => 'إضافة مصروف';
+
+  @override
+  String get noTransactionsFound => 'لا توجد عمليات';
+
+  @override
+  String get noCategory => 'بدون تصنيف';
+
+  @override
+  String get loginSuccessful => 'تم تسجيل الدخول بنجاح!';
+
+  @override
+  String get continueOnboarding => 'يمكنك متابعة عملية الإعداد.';
+
+  @override
+  String get loginFailed => 'فشل تسجيل الدخول.';
+
+  @override
+  String get tryAgainLocally => 'حاول مرة أخرى أو تابع محلياً.';
+
+  @override
+  String get enterValidIncome => 'أدخل مبلغ دخل صالح.';
+
+  @override
+  String get amountGreaterThan1 => 'المبلغ يجب أن يكون أكبر من 1.';
+
+  @override
+  String get selectIncomeSource => 'اختر مصدر الدخل';
+
+  @override
+  String get disclaimerLabel => 'تنويه:';
+
+  @override
+  String get newSavingGoal => 'هدف ادخار جديد';
+
+  @override
+  String get enterGoalName => 'مثال: سيارة جديدة';
+
+  @override
+  String get enterAmount => 'أدخل المبلغ';
+
+  @override
+  String get savingRegularlyInfo => 'الادخار بانتظام يسرع تحقيق أهدافك.';
+
+  @override
+  String get saveSmallAmountsInfo => 'ادخر مبالغ صغيرة يومياً.';
+
+  @override
+  String get day => 'يوم';
+
+  @override
+  String get selectIcon => 'اختر أيقونة';
+
+  @override
+  String get createCategory => 'إنشاء تصنيف';
 }

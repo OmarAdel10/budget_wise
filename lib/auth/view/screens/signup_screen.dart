@@ -1,17 +1,19 @@
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/auth/view_model/auth_event.dart';
+import 'package:budget_wise/auth/view_model/auth_state.dart';
+import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/home/view_model/category_event.dart';
 import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
-import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/auth/view_model/auth_event.dart';
-import 'package:budget_wise/auth/view_model/auth_state.dart';
-import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:toastification/toastification.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -50,7 +52,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           password: _passwordController.text,
         ),
       );
-      context.read<SettingsBloc>().add(const SettingsEventLoggedIn());
     }
   }
 
@@ -58,13 +59,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     context.read<AuthBloc>().add(AuthEventSignInWithGoogle());
   }
 
-  void _onLogin() {
-    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isFromOnboarding =
+        ModalRoute.of(context)!.settings.arguments as bool? ?? false;
 
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
@@ -121,29 +120,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     child: CircularProgressIndicator(),
                                   ),
                                   const SizedBox(height: AppSpacing.md),
-                                  const Center(child: Text('Loading...')),
+                                  Center(child: Text(l10n.loading)),
                                 ],
                               ),
                             ),
                           );
                         }
                         if (state is AuthStateError) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.message)),
+                          Navigator.of(context).pop();
+                          toastification.show(
+                            context: context,
+                            type: ToastificationType.error,
+                            style: ToastificationStyle.flatColored,
+                            title: Text(state.message),
                           );
                         }
                         if (state is AuthStateSuccess) {
-                          if (context.read<AuthRepository>().currentUser !=
-                              null) {
-                            context.read<TransactionBloc>().add(
-                              const TransactionEventSyncPendingOnLogin(),
-                            );
-                            context.read<CategoryBloc>().add(
-                              const CategoryEventSyncPendingOnLogin(),
-                            );
+                          context.read<SettingsBloc>().add(
+                            const SettingsEventLoggedIn(),
+                          );
+
+                          context.read<TransactionBloc>().add(
+                            const TransactionEventSyncPendingOnLogin(),
+                          );
+
+                          context.read<CategoryBloc>().add(
+                            const CategoryEventSyncPendingOnLogin(),
+                          );
+
+                          context.read<AccountBloc>().add(
+                            const AccountEventSyncPendingOnLogin(),
+                          );
+
+                          if (isFromOnboarding) {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(true);
+                          } else {
+                            Navigator.of(context).pop();
                             Navigator.of(
                               context,
-                            ).pushReplacementNamed(MainScreen.routeName);
+                            ).pushNamedAndRemoveUntil(MainScreen.routeName, (route) => false,);
                           }
                         }
                       },
@@ -195,7 +211,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 }
 
                                 if (value.length < 6) {
-                                  return 'Password must be at least 6 characters long';
+                                  return l10n.passwordTooShort;
                                 }
                                 return null;
                               },
@@ -234,7 +250,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: _onLogin,
+                                  onPressed: () {
+                                    if (isFromOnboarding) {
+                                      Navigator.of(
+                                        context,
+                                      ).pop('switch_to_login');
+                                    } else {
+                                      Navigator.of(
+                                        context,
+                                      ).pushReplacementNamed(
+                                        LoginScreen.routeName,
+                                      );
+                                    }
+                                  },
                                   child: Text(
                                     l10n.login,
                                     style: AppTextStyles.bodyMedium.copyWith(
