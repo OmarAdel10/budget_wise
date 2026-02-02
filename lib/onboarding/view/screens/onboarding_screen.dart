@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:toastification/toastification.dart';
+import 'package:uuid/uuid.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/widgets/custom_button.dart';
@@ -160,8 +161,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final l10n = AppLocalizations.of(context)!;
     log("Onboarding Completed!");
 
+    // Generate IDs
+    final accountId = const Uuid().v4();
+
     // 1. Create Main Account
     final accountModel = AccountModel(
+      id: accountId,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       accountType: AccountType.cash,
@@ -184,10 +189,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       PhosphorIconsRegular.dotsThree,
     ];
 
+    String? incomeCategoryId;
+
     for (int i = 0; i < incomeCategoryNames.length; i++) {
+      final catId = const Uuid().v4();
+      if (incomeCategoryNames[i].toLowerCase() ==
+          _incomeCategoryTitle?.toLowerCase()) {
+        incomeCategoryId = catId;
+      }
+
       context.read<CategoryBloc>().add(
         CategoryEventCreateCategory(
           CategoryModel(
+            id: catId,
             categoryTitle: incomeCategoryNames[i],
             categoryIcon: incomeCategoryIcons[i],
             budgetAmount: 0.0,
@@ -205,29 +219,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
 
     // 4. Create Initial Income Transaction
-    final DateFormat date = DateFormat('dd/MM/yyyy');
-    final transaction = TransactionModel(
-      type: TransactionType.income,
-      transactionAmount: _incomeAmount,
-      transactionTitle: '${l10n.income} ${date.format(DateTime.now())}',
-      transactionDate: DateTime.now(),
-      categoryId: context
-          .read<CategoryBloc>()
-          .state
-          .categoriesList
-          .firstWhere(
-            (cat) =>
-                cat.categoryTitle == _incomeCategoryTitle &&
-                cat.type == TransactionType.income,
-          )
-          .id,
-      accountId: accountModel.id, // Use the ID of the account we just created
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-    context.read<TransactionBloc>().add(
-      TransactionEventCreateTransaction(transaction),
-    );
+    if (incomeCategoryId != null) {
+      final DateFormat date = DateFormat('dd/MM/yyyy');
+      final transaction = TransactionModel(
+        type: TransactionType.income,
+        transactionAmount: _incomeAmount,
+        transactionTitle: '${l10n.income} ${date.format(DateTime.now())}',
+        transactionDate: DateTime.now(),
+        categoryId: incomeCategoryId,
+        accountId: accountId,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      context.read<TransactionBloc>().add(
+        TransactionEventCreateTransaction(transaction),
+      );
+    }
 
     context.read<SettingsBloc>().add(SettingsEventOnBoardingFinished());
     Navigator.of(

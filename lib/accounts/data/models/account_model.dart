@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 enum AccountType { cash, card }
 
 class AccountModel {
-  String id;
-  String userId;
+  final String id;
+  final String userId;
   final AccountType accountType;
   final String title;
   final IconData accountIcon;
@@ -22,7 +22,7 @@ class AccountModel {
   final CardBrand? cardBrand;
   final DateTime createdAt;
   final DateTime updatedAt;
-  bool isSynced;
+  final bool isSynced;
   final bool lowBalanceAlertEnabled;
 
   AccountModel({

@@ -69,10 +69,11 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
     on<AccountEventCreateAccount>((event, emit) {
       final user = accountRepo.authRepo.currentUser;
       try {
-        final newAccount = event.model
-          ..id = const Uuid().v4()
-          ..userId = user != null ? user.uid : ''
-          ..isSynced = false;
+        final newAccount = event.model.copyWith(
+          id: event.model.id.isEmpty ? const Uuid().v4() : event.model.id,
+          userId: user != null ? user.uid : '',
+          isSynced: false,
+        );
 
         final isDuplicate = state.accountsList.any(
           (account) =>

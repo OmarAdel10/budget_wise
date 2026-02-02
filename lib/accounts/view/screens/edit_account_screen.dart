@@ -207,7 +207,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     }
   }
 
-  void _onUnlink() {
+  void _onDelete() {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
@@ -438,7 +438,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                     ),
                   ),
                   child: TextButton.icon(
-                    onPressed: _onUnlink,
+                    onPressed: _onDelete,
                     icon: const Icon(
                       Icons.delete_forever,
                       color: AppColors.danger,

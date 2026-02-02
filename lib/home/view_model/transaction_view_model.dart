@@ -30,10 +30,12 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     on<TransactionEventCreateTransaction>((event, emit) async {
       try {
         final userId = authRepository.currentUser?.uid ?? '';
-        final newTransaction = event.transaction
-          ..id = const Uuid().v4()
-          ..userId = userId
-          ..isSynced = false;
+        final newTransaction = event.transaction.copyWith(
+          id: event.transaction.id.isEmpty ? const Uuid().v4() : event.transaction.id,
+          userId: userId,
+          isSynced: false,
+        );
+
         final updatedList = [newTransaction, ...state.transactionsList];
 
         emit(TransactionStateSuccess(transactionsList: updatedList));

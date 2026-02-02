@@ -3,6 +3,7 @@ import 'package:budget_wise/accounts/data/models/card_brand.dart';
 import 'package:budget_wise/accounts/view/screens/edit_account_screen.dart';
 import 'package:budget_wise/accounts/view/widgets/credit_card_preview.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
@@ -29,207 +30,228 @@ class AccountDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final account = ModalRoute.of(context)!.settings.arguments as AccountModel;
+    final accountModel =
+        ModalRoute.of(context)!.settings.arguments as AccountModel;
     final authRepo = context.read<AuthRepository>();
     final userName = authRepo.currentUser?.displayName ?? '';
     final categoryState = context.watch<CategoryBloc>().state;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(account.title, style: AppTextStyles.heading3),
-        actions: [
-          IconButton(
-            icon: Icon(
-              PhosphorIcons.trash(PhosphorIconsStyle.regular),
-              color: AppColors.danger,
+    return BlocBuilder<AccountBloc, AccountState>(
+      builder: (context, state) {
+        final account =
+            state.accountsList
+                .where((acc) => acc.id == accountModel.id)
+                .firstOrNull ??
+            accountModel;
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColors.primaryBackground,
+            elevation: 0,
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: AppColors.textPrimary),
+              onPressed: () => Navigator.of(context).pop(),
             ),
-            onPressed: () {
-              context.read<AccountBloc>().add(
-                AccountEventDeleteAccount(accountId: account.id),
-              );
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-        ],
-      ),
-      backgroundColor: AppColors.primaryBackground,
-      body: CustomScrollView(
-        slivers: [
-          //* Hero Balance Section
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              child: Column(
-                children: [
-                  Text(
-                    '\$${account.balance.toStringAsFixed(2)}',
-                    style: AppTextStyles.heading1.copyWith(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    l10n.recentTransactions, // Placeholder for "Updated X ago"
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          //* Credit Card Section (Conditional)
-          if (account.accountType == AccountType.card) ...[
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: CreditCardPreview(
-                  bankName: account.cardBankName ?? '',
-                  cardNumber: account.cardNumber ?? '',
-                  cardHolderName: userName,
-                  expiryDate: account.cardExpiryDate ?? '',
-                  cardType: account.cardBrand ?? CardBrand.visa,
+            title: Text(account.title, style: AppTextStyles.heading3),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  PhosphorIcons.trash(PhosphorIconsStyle.regular),
+                  color: AppColors.danger,
                 ),
-              ),
-            ),
-          ],
-
-          //* Edit Account Button
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.md,
-              ),
-              child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(
-                    context,
-                  ).pushNamed(EditAccountScreen.routeName, arguments: account);
+                  context.read<AccountBloc>().add(
+                    AccountEventDeleteAccount(accountId: account.id),
+                  );
+                  if (Navigator.canPop(context)) {
+                    Navigator.of(context).pop();
+                  }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryAccent,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      PhosphorIcons.pencilSimple(PhosphorIconsStyle.regular),
-                      color: AppColors.textInverse,
-                      size: 20,
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      l10n.editAccount,
-                      style: AppTextStyles.button.copyWith(
-                        color: AppColors.textInverse,
-                      ),
-                    ),
-                  ],
-                ),
               ),
-            ),
+            ],
           ),
-
-          //* Recent Transactions Header
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.lg,
-                AppSpacing.lg,
-                AppSpacing.lg,
-                AppSpacing.md,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(l10n.recentTransactions, style: AppTextStyles.heading3),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                        AllTransactionsScreen.routeName,
-                        arguments: {
-                          'isNavFromAccount': true,
-                          'accountModel': account,
-                        },
-                      );
-                    },
-                    child: Text(
-                      l10n.viewAll,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.primaryAccent,
-                        fontWeight: FontWeight.bold,
+          body: CustomScrollView(
+            slivers: [
+              //* Hero Balance Section
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  child: Column(
+                    children: [
+                      Text(
+                        '\$${account.balance.toStringAsFixed(2)}',
+                        style: AppTextStyles.heading1.copyWith(
+                          fontSize: 42,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          //* Recent Transactions List
-          BlocBuilder<TransactionBloc, TransactionState>(
-            builder: (context, state) {
-              final transactions = state.transactionsList
-                  .where((t) => t.accountId == account.id)
-                  .take(10)
-                  .toList();
-
-              if (transactions.isEmpty) {
-                return SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    child: Center(
-                      child: Text(
-                        l10n.noDataThisMonth,
-                        style: AppTextStyles.bodyMedium.copyWith(
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        l10n.recentTransactions, // Placeholder for "Updated X ago"
+                        style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                         ),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+
+              //* Credit Card Section (Conditional)
+              if (account.accountType == AccountType.card) ...[
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: CreditCardPreview(
+                      bankName: account.cardBankName ?? '',
+                      cardNumber: account.cardNumber ?? '',
+                      cardHolderName: userName,
+                      expiryDate: account.cardExpiryDate ?? '',
+                      cardType: account.cardBrand ?? CardBrand.visa,
                     ),
                   ),
-                );
-              }
+                ),
+              ],
 
-              // Group transactions by date
-              final groupedTransactions = _groupTransactionsByDate(
-                transactions,
-                l10n,
-              );
+              //* Edit Account Button
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        EditAccountScreen.routeName,
+                        arguments: account,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusLg,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          PhosphorIcons.pencilSimple(
+                            PhosphorIconsStyle.regular,
+                          ),
+                          color: AppColors.textInverse,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          l10n.editAccount,
+                          style: AppTextStyles.button.copyWith(
+                            color: AppColors.textInverse,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
 
-              return SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final entry = groupedTransactions.entries.toList()[index];
-                  return _buildTransactionGroup(
-                    context,
-                    entry.key,
-                    entry.value,
-                    categoryState,
+              //* Recent Transactions Header
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        l10n.recentTransactions,
+                        style: AppTextStyles.heading3,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            AllTransactionsScreen.routeName,
+                            arguments: {
+                              'isNavFromAccount': true,
+                              'accountModel': account,
+                            },
+                          );
+                        },
+                        child: Text(
+                          l10n.viewAll,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.primaryAccent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              //* Recent Transactions List
+              BlocBuilder<TransactionBloc, TransactionState>(
+                builder: (context, state) {
+                  final transactions = state.transactionsList
+                      .where((t) => t.accountId == account.id)
+                      .take(10)
+                      .toList();
+
+                  if (transactions.isEmpty) {
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        child: Center(
+                          child: Text(
+                            l10n.noDataThisMonth,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  // Group transactions by date
+                  final groupedTransactions = _groupTransactionsByDate(
+                    transactions,
+                    l10n,
                   );
-                }, childCount: groupedTransactions.length),
-              );
-            },
-          ),
 
-          //* Bottom Spacing
-          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl * 2)),
-        ],
-      ),
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final entry = groupedTransactions.entries.toList()[index];
+                      return _buildTransactionGroup(
+                        context,
+                        entry.key,
+                        entry.value,
+                        categoryState,
+                      );
+                    }, childCount: groupedTransactions.length),
+                  );
+                },
+              ),
+
+              //* Bottom Spacing
+              const SliverToBoxAdapter(
+                child: SizedBox(height: AppSpacing.xxl * 2),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

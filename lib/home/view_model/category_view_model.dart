@@ -23,13 +23,14 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
       }
     });
     on<CategoryEventCreateCategory>((event, emit) {
+      final user = authRepository.currentUser;
       try {
-        final userId = authRepository.currentUser?.uid ?? '';
-        final newCategory = event.category
-          ..id = const Uuid().v4()
-          ..userId = userId
-          ..isSynced = false
-          ..index = state.categoriesList.length;
+        final newCategory = event.category.copyWith(
+          id: event.category.id.isEmpty ? const Uuid().v4() : event.category.id,
+          userId: user != null ? user.uid : '',
+          isSynced: false,
+          index: state.categoriesList.length,
+        );
 
         // Prevent duplicate categories with same title and type
         final alreadyExists = state.categoriesList.any(

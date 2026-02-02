@@ -6,8 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 enum TransactionType { income, expense }
 
 class TransactionModel {
-  String id;
-  String userId;
+  final String id;
+  final String userId;
   final TransactionType type;
   final String transactionTitle;
   final double transactionAmount;
@@ -15,7 +15,7 @@ class TransactionModel {
   final String accountId;
   final DateTime transactionDate;
   final String? transactionNotes;
-  bool isSynced;
+  final bool isSynced;
   final DateTime createdAt;
   final DateTime updatedAt;
 

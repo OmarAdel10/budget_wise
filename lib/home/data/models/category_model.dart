@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 
 class CategoryModel {
-  String id;
-  String userId;
+  final String id;
+  final String userId;
   final String categoryTitle;
   final IconData categoryIcon;
   final bool hasBudgetAmount;
   final double? budgetAmount;
   final TransactionType type;
-  bool isSynced;
-  int index;
+  final bool isSynced;
+  final int index;
   final DateTime createdAt;
   final DateTime updatedAt;
 
