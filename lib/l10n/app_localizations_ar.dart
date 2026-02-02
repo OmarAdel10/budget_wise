@@ -217,7 +217,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sourceFreelance => 'عمل حر';
 
   @override
-  String get sourceOther => 'أخرى';
+  String get sourceOther => 'آخر';
 
   @override
   String get categorySelectionTitle => 'اختر تصنيفات المصاريف';
