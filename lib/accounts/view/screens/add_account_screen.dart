@@ -8,7 +8,8 @@ import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:budget_wise/accounts/data/data_source/account_constants.dart';
+import 'package:budget_wise/accounts/view/widgets/bank_picker_bottom_sheet.dart';
+import 'package:budget_wise/shared/utils/stringCases.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -18,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:string_similarity/string_similarity.dart';
 
 class AddAccountScreen extends StatefulWidget {
   static const String routeName = '/addAccount';
@@ -31,47 +31,22 @@ class AddAccountScreen extends StatefulWidget {
 class _AddAccountScreenState extends State<AddAccountScreen> {
   final TextEditingController accountNameController = TextEditingController();
   final TextEditingController balanceController = TextEditingController();
-  final TextEditingController bankNameController = TextEditingController();
+  final TextEditingController cardHolderController = TextEditingController();
   final TextEditingController cardNumberController = TextEditingController();
   final TextEditingController expiryController = TextEditingController();
   final GlobalKey<FormState> _formKeyScreen1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyScreen2 = GlobalKey<FormState>();
   AccountType selectedAccount = AccountType.cash;
   String selectedCurrency = 'EGP';
+  String? selectedBankName;
+  List<String>? selectedBankSenderIds;
 
   bool _showCardEntry = false;
   bool _isPart2Enabled = false;
 
-  final Set<String> egyptBankWhiteListNames =
-      AccountConstants.egyptBankWhiteListNames;
   CardBrand selectedCardBrand = CardBrand.visa;
-  bool isBankValid = false;
-  String? hintText;
   bool isCardValid = false;
   bool isExpiryValid = false;
-
-  void _validateBankName(String input) {
-    final cleanedInput = input.toLowerCase().trim();
-
-    if (egyptBankWhiteListNames.contains(cleanedInput)) {
-      setState(() {
-        isBankValid = true;
-        hintText = null;
-      });
-    } else {
-      final bestMatch = cleanedInput.bestMatch(
-        egyptBankWhiteListNames.toList(),
-      );
-      setState(() {
-        isBankValid = false;
-        if (input.length > 2 && bestMatch.bestMatch.rating! > 0.4) {
-          hintText = bestMatch.bestMatch.target;
-        } else {
-          hintText = null;
-        }
-      });
-    }
-  }
 
   void _determineCardType(String cleanedCardNumber) {
     if (cleanedCardNumber.isNotEmpty) {
@@ -150,7 +125,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
   void dispose() {
     balanceController.dispose();
     accountNameController.dispose();
-    bankNameController.dispose();
+    cardHolderController.dispose();
     cardNumberController.dispose();
     expiryController.dispose();
     super.dispose();
@@ -162,9 +137,9 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
         final newAccount = AccountModel(
           accountType: selectedAccount,
           title: accountNameController.text.trim(),
-          accountIcon: PhosphorIcons.currencyCircleDollar(
-            PhosphorIconsStyle.regular,
-          ),
+          accountIcon: selectedAccount == AccountType.cash
+              ? PhosphorIcons.currencyCircleDollar(PhosphorIconsStyle.regular)
+              : PhosphorIcons.creditCard(PhosphorIconsStyle.regular),
           initialBalance:
               double.tryParse(balanceController.text.replaceAll(',', '')) ??
               0.0,
@@ -190,11 +165,13 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
 
   void _onSaveCard() {
     if (selectedAccount == AccountType.card) {
-      if (_formKeyScreen1.currentState!.validate()) {
+      if (_formKeyScreen2.currentState!.validate()) {
         final newAccount = AccountModel(
           accountType: selectedAccount,
           title: accountNameController.text.trim(),
-          accountIcon: PhosphorIcons.wallet(PhosphorIconsStyle.regular),
+          accountIcon: selectedAccount == AccountType.cash
+              ? PhosphorIcons.currencyCircleDollar(PhosphorIconsStyle.regular)
+              : PhosphorIcons.creditCard(PhosphorIconsStyle.regular),
           initialBalance:
               double.tryParse(
                 balanceController.text.replaceAll(',', '').trim(),
@@ -208,10 +185,16 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           currency: selectedCurrency,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          cardBankName: bankNameController.text.toUpperCase().trim(),
+          cardBankName: selectedBankName?.toTitleCase().trim(),
+          cardHolderName: cardHolderController.text.toTitleCase().trim(),
           cardNumber: cardNumberController.text.trim(),
           cardExpiryDate: expiryController.text.trim(),
           cardBrand: selectedCardBrand,
+          smsSenderIds: selectedBankSenderIds,
+          smsIdentifier: cardNumberController.text.replaceAll(' ', '').length >= 4
+              ? cardNumberController.text.replaceAll(' ', '').substring(
+                  cardNumberController.text.replaceAll(' ', '').length - 4)
+              : null,
         );
         context.read<AccountBloc>().add(
           AccountEventCreateAccount(model: newAccount),
@@ -567,19 +550,19 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       color: AppColors.textSecondary,
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return l10n.initialBalanceCantLeftEmpty;
-                    }
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return l10n.initialBalanceCantLeftEmpty;
+                  //   }
 
-                    final cleanValue = value.replaceAll(',', '');
-                    if (double.tryParse(cleanValue) == null ||
-                        double.tryParse(cleanValue)! < 0) {
-                      return l10n.youShouldEnterAValidBalance;
-                    }
+                  //   final cleanValue = value.replaceAll(',', '');
+                  //   if (double.tryParse(cleanValue) == null ||
+                  //       double.tryParse(cleanValue)! < 0) {
+                  //     return l10n.youShouldEnterAValidBalance;
+                  //   }
 
-                    return null;
-                  },
+                  //   return null;
+                  // },
                 ),
               ],
             ),
@@ -618,9 +601,11 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           CreditCardPreview(
-            bankName: bankNameController.text.trim().toUpperCase(),
+            bankName: selectedBankName?.trim().toTitleCase() ?? '',
             cardNumber: cardNumberController.text,
-            cardHolderName: authRepo.currentUser?.displayName ?? '',
+            cardHolderName:
+                authRepo.currentUser?.displayName ??
+                cardHolderController.text.trim().toTitleCase(),
             expiryDate: expiryController.text,
             cardType: selectedCardBrand,
           ),
@@ -643,99 +628,150 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                TextFormField(
-                  onTapOutside: (event) =>
-                      FocusManager.instance.primaryFocus?.unfocus(),
-                  controller: bankNameController,
-                  decoration: InputDecoration(
-                    suffixIcon: bankNameController.text.isNotEmpty
-                        ? Icon(
-                            isBankValid
-                                ? PhosphorIcons.checkCircle(
-                                    PhosphorIconsStyle.fill,
-                                  )
-                                : PhosphorIcons.xCircle(
-                                    PhosphorIconsStyle.fill,
-                                  ),
-                            color: isBankValid
-                                ? AppColors.primaryAccent
-                                : AppColors.danger,
-                          )
-                        : null,
-                    hintText: l10n.addAccountBankNamePlaceholder,
-                    filled: true,
-                    fillColor: AppColors.inputBackground,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.sm,
-                    ),
-                    hintStyle: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  keyboardType: TextInputType.text,
-                  onChanged: (_) => _validateBankName(bankNameController.text),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
+                FormField<String>(
+                  initialValue: selectedBankName,
+                  validator: (selectedBankName) {
+                    if (selectedBankName == null || selectedBankName.isEmpty) {
                       return l10n.bankNameCantLeftEmpty;
-                    }
-
-                    if (isBankValid == false) {
-                      return l10n.youShouldEnterAValidBankName;
                     }
 
                     return null;
                   },
-                ),
-                if (hintText != null) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 12.0),
-                    child: Row(
+                  builder: (state) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "${l10n.didYouMean} ",
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
                         GestureDetector(
                           onTap: () {
-                            bankNameController.text = hintText!;
-                            _validateBankName(hintText!);
-                            bankNameController.selection =
-                                TextSelection.fromPosition(
-                                  TextPosition(
-                                    offset: bankNameController.text.length,
-                                  ),
-                                );
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              builder: (context) => BankPickerBottomSheet(
+                                onBankSelected: (bankName, senderIds) {
+                                  setState(() {
+                                    selectedBankName = bankName;
+                                    selectedBankSenderIds = senderIds;
+                                  });
+                                  state.didChange(selectedBankName);
+                                },
+                              ),
+                            );
                           },
-                          child: Text(
-                            hintText!,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: Colors.blue.shade700,
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.blue.shade700,
+                          child: Container(
+                            height: MediaQuery.sizeOf(context).height * .05,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.sm,
+                            ),
+                            decoration: BoxDecoration(
+                              border: state.hasError
+                                  ? Border.all(color: AppColors.danger)
+                                  : null,
+                              color: AppColors.inputBackground,
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusMd,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  selectedBankName ??
+                                      l10n.addAccountBankNamePlaceholder,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: selectedBankName == null
+                                        ? AppColors.textSecondary
+                                        : AppColors.textPrimary,
+                                  ),
+                                ),
+                                Icon(
+                                  PhosphorIcons.caretDown(
+                                    PhosphorIconsStyle.bold,
+                                  ),
+                                  size: 20,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Text(
-                          " ${l10n.questionMark}",
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
+
+                        if (state.hasError)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              left: 12.0,
+                            ),
+                            child: Text(
+                              l10n.bankNameCantLeftEmpty,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.danger,
+                              ),
+                            ),
                           ),
-                        ),
                       ],
-                    ),
-                  ),
-                ],
+                    );
+                  },
+                ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.md),
+          //* Card Holder
+          if (authRepo.currentUser == null) ...[
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: AppColors.cardBackground,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.addAccountCardHolderLabel,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  TextFormField(
+                    onTapOutside: (event) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                    controller: cardHolderController,
+                    decoration: InputDecoration(
+                      hintText: l10n.addAccountCardHolderPlaceholder,
+                      filled: true,
+                      fillColor: AppColors.inputBackground,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusMd,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.sm,
+                      ),
+                      hintStyle: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    keyboardType: TextInputType.name,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return l10n.cardHolderCantLeftEmpty;
+                      }
+
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
           //* Card number
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),

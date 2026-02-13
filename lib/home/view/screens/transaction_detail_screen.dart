@@ -95,6 +95,7 @@ class TransactionDetailScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                     ),
                     child: Column(
+                      mainAxisSize: MainAxisSize.max,
                       children: [
                         _buildDetailItem(
                           icon: PhosphorIcons.tag(),
@@ -284,23 +285,25 @@ class TransactionDetailScreen extends StatelessWidget {
           child: Icon(icon, color: AppColors.textSecondary, size: 24),
         ),
         const SizedBox(width: AppSpacing.md),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              value,
-              style: AppTextStyles.bodyLarge.copyWith(
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: AppTextStyles.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

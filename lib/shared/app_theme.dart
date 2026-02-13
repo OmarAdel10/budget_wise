@@ -1,3 +1,4 @@
+import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'constants/colors.dart';
@@ -36,6 +37,7 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.cardBackground,
+        errorStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
         hintStyle: const TextStyle(color: AppColors.textSecondary),
         contentPadding: const EdgeInsets.all(AppSpacing.md),
         border: OutlineInputBorder(

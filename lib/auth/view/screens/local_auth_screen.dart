@@ -42,9 +42,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthStateSuccess) {
-          Navigator.of(context).pushReplacementNamed(
-            MainScreen.routeName,
-          );
+          Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
         }
         if (state is AuthStateError) {
           setState(() {
@@ -105,6 +103,5 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
         ),
       ),
     );
-
   }
 }

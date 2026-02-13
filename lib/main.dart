@@ -1,5 +1,6 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
+import 'package:budget_wise/accounts/view/screens/pending_sms_transactions_screen.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
 import 'package:budget_wise/accounts/view/screens/edit_account_screen.dart';
@@ -340,6 +341,17 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: EditAccountScreen(account: account),
+                );
+              case PendingSmsTransactionsScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: PendingSmsTransactionsScreen(),
                 );
               default:
                 return null;

@@ -1,9 +1,12 @@
+import 'package:budget_wise/accounts/view/screens/pending_sms_transactions_screen.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
 import 'package:budget_wise/home/view/widgets/transaction_list_item.dart';
 import 'package:budget_wise/home/view_model/home_event.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
+import 'package:budget_wise/home/view_model/transaction_state.dart';
+import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -60,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        final recentTransactions = state.model.transactions.take(5).toList();
+        final recentTransactions = state.model.transactions.take(3).toList();
         final categoryData = state.model.categories.where((cat) {
           if (_showIncome) {
             return cat.category.type == TransactionType.income;
@@ -82,7 +85,72 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            automaticallyImplyLeading: false, // Hide back button
+            automaticallyImplyLeading: false,
+            actions: [
+              BlocBuilder<TransactionBloc, TransactionState>(
+                builder: (context, transactionState) {
+                  final pendingSmsCount =
+                      transactionState.pendingSmsTransactions.length;
+                  return Row(
+                    children: [
+                      if (pendingSmsCount == 0) ...[
+                        IconButton(
+                          icon: Icon(
+                            PhosphorIcons.bellSimple(PhosphorIconsStyle.bold),
+                          ),
+                          onPressed: () {
+                            Navigator.of(
+                              context,
+                            ).pushNamed(PendingSmsTransactionsScreen.routeName);
+                          },
+                        ),
+                      ],
+                      if (pendingSmsCount > 0) ...[
+                        Stack(
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                PhosphorIcons.bellSimple(
+                                  PhosphorIconsStyle.bold,
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(
+                                  PendingSmsTransactionsScreen.routeName,
+                                );
+                              },
+                            ),
+                            Positioned(
+                              right: 5,
+                              top: 5,
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                constraints: const BoxConstraints(
+                                  minWidth: 16,
+                                  minHeight: 16,
+                                ),
+                                child: Text(
+                                  '$pendingSmsCount',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  );
+                },
+              ),
+            ],
           ),
           body: Column(
             children: [

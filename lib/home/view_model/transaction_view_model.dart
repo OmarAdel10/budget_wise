@@ -21,7 +21,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     required this.accountBloc,
     required this.transactionRepository,
     required this.authRepository,
-  }) : super(const TransactionStateInitial(transactionsList: [])) {
+  }) : super(TransactionState.initial()) {
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const TransactionEventFetchAll());
@@ -31,14 +31,16 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       try {
         final userId = authRepository.currentUser?.uid ?? '';
         final newTransaction = event.transaction.copyWith(
-          id: event.transaction.id.isEmpty ? const Uuid().v4() : event.transaction.id,
+          id: event.transaction.id.isEmpty
+              ? const Uuid().v4()
+              : event.transaction.id,
           userId: userId,
           isSynced: false,
         );
 
         final updatedList = [newTransaction, ...state.transactionsList];
 
-        emit(TransactionStateSuccess(transactionsList: updatedList));
+        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
 
         // Update Account Balance
         final amountDelta = newTransaction.type == TransactionType.income
@@ -63,19 +65,15 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
               })
               .catchError((e) {
                 emit(
-                  TransactionStateError(
-                    message: 'Cloud sync failed: ${e.toString()}',
-                    transactionsList: state.transactionsList,
+                  state.copyWith(
+                    errorMessage: 'Cloud sync failed: ${e.toString()}',
                   ),
                 );
               });
         }
       } catch (e) {
         emit(
-          TransactionStateError(
-            message: 'Local storage failed: ${e.toString()}',
-            transactionsList: state.transactionsList,
-          ),
+          state.copyWith(errorMessage: 'Local storage failed: ${e.toString()}'),
         );
       }
     });
@@ -93,7 +91,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
               : transaction;
         }).toList();
 
-        emit(TransactionStateSuccess(transactionsList: updatedList));
+        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
 
         // Update Account Balance
         if (oldTransaction.accountId == updatedTransaction.accountId) {
@@ -156,19 +154,15 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
               })
               .catchError((e) {
                 emit(
-                  TransactionStateError(
-                    message: 'Cloud sync failed: ${e.toString()}',
-                    transactionsList: state.transactionsList,
+                  state.copyWith(
+                    errorMessage: 'Cloud sync failed: ${e.toString()}',
                   ),
                 );
               });
         }
       } catch (e) {
         emit(
-          TransactionStateError(
-            message: 'Local update failed: ${e.toString()}',
-            transactionsList: state.transactionsList,
-          ),
+          state.copyWith(errorMessage: 'Local update failed: ${e.toString()}'),
         );
       }
     });
@@ -181,12 +175,11 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           }
           return transaction;
         }).toList();
-        emit(TransactionStateSuccess(transactionsList: updatedList));
+        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
       } catch (e) {
         emit(
-          TransactionStateError(
-            message: 'Marking as synced failed: ${e.toString()}',
-            transactionsList: state.transactionsList,
+          state.copyWith(
+            errorMessage: 'Marking as synced failed: ${e.toString()}',
           ),
         );
       }
@@ -223,12 +216,11 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           (a, b) => b.transactionDate.compareTo(a.transactionDate),
         );
 
-        emit(TransactionStateSuccess(transactionsList: updatedList));
+        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
       } catch (e) {
         emit(
-          TransactionStateError(
-            message: 'Failed to fetch transactions: ${e.toString()}',
-            transactionsList: state.transactionsList,
+          state.copyWith(
+            errorMessage: 'Failed to fetch transactions: ${e.toString()}',
           ),
         );
       }
@@ -244,7 +236,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             .where((transaction) => transaction.id != event.transactionId)
             .toList();
 
-        emit(TransactionStateSuccess(transactionsList: updatedList));
+        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
 
         // Reverse Account Balance
         final reversalDelta = transactionToDelete.type == TransactionType.income
@@ -269,21 +261,17 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
                   ...state.transactionsList,
                 ];
                 emit(
-                  TransactionStateError(
-                    message: 'Cloud delete failed. Will retry on next sync.',
+                  state.copyWith(
                     transactionsList: restoredList,
+                    errorMessage:
+                        'Cloud delete failed. Will retry on next sync.',
                   ),
                 );
                 log('Failed to delete transaction ${event.transactionId}: $e');
               });
         }
       } catch (e) {
-        emit(
-          TransactionStateError(
-            message: 'Delete failed: ${e.toString()}',
-            transactionsList: state.transactionsList,
-          ),
-        );
+        emit(state.copyWith(errorMessage: 'Delete failed: ${e.toString()}'));
       }
     });
 
@@ -318,10 +306,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         }
       } catch (e) {
         emit(
-          TransactionStateError(
-            message: 'Sync on login failed: ${e.toString()}',
-            transactionsList: state.transactionsList,
-          ),
+          state.copyWith(errorMessage: 'Sync on login failed: ${e.toString()}'),
         );
       }
     });
@@ -348,38 +333,69 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         }
       } catch (e) {
         emit(
-          TransactionStateError(
-            message: 'Check and sync failed: ${e.toString()}',
-            transactionsList: state.transactionsList,
+          state.copyWith(
+            errorMessage: 'Check and sync failed: ${e.toString()}',
           ),
         );
       }
+    });
+
+    on<TransactionEventAddSmsDraft>((event, emit) {
+      final newDraft = event.smsDraft.copyWith(
+        id: (event.smsDraft.id.isEmpty)
+            ? const Uuid().v4()
+            : event.smsDraft.id,
+      );
+
+      final updatedDrafts = [newDraft, ...state.pendingSmsTransactions];
+      emit(state.copyWith(pendingSmsTransactions: updatedDrafts));
+    });
+
+    on<TransactionEventConfirmSmsDraft>((event, emit) async {
+      final updatedDrafts = state.pendingSmsTransactions
+          .where((draft) => draft.id != event.smsDraftId)
+          .toList();
+
+      emit(
+        state.copyWith(
+          pendingSmsTransactions: updatedDrafts,
+          errorMessage: null,
+        ),
+      );
+
+      // Delegate creation to TransactionEventCreateTransaction
+      add(TransactionEventCreateTransaction(event.transaction));
+    });
+
+    on<TransactionEventDeclineSmsDraft>((event, emit) {
+      final updatedDrafts = state.pendingSmsTransactions
+          .where(
+            (draft) => draft.id != event.smsDraftId,
+          )
+          .toList();
+      emit(state.copyWith(pendingSmsTransactions: updatedDrafts));
+    });
+
+    on<TransactionEventUpdateSmsDraft>((event, emit) {
+      final updatedDrafts = state.pendingSmsTransactions.map((draft) {
+        return draft.id == event.updatedDraft.id ? event.updatedDraft : draft;
+      }).toList();
+      emit(state.copyWith(pendingSmsTransactions: updatedDrafts));
     });
   }
 
   @override
   TransactionState? fromJson(Map<String, dynamic> json) {
     try {
-      final List<dynamic>? list = json['transactionsList'];
-      if (list == null) {
-        return const TransactionStateInitial(transactionsList: []);
-      }
-      final List<TransactionModel> transactionsList = list
-          .map((e) => TransactionModel.fromMap(e))
-          .toList();
-      return TransactionStateSuccess(transactionsList: transactionsList);
+      return TransactionState.fromMap(json);
     } catch (e) {
-      log('Error During Serialization: $e');
+      log('Error During Deserialization: $e'); // Corrected log message
       return null;
     }
   }
 
   @override
   Map<String, dynamic>? toJson(TransactionState state) {
-    return {
-      'transactionsList': state.transactionsList
-          .map((transaction) => transaction.toMap())
-          .toList(),
-    };
+    return state.toMap();
   }
 }

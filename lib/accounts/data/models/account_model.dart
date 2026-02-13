@@ -17,6 +17,7 @@ class AccountModel {
   final double balance;
   final String currency;
   final String? cardBankName;
+  final String? cardHolderName;
   final String? cardNumber;
   final String? cardExpiryDate;
   final CardBrand? cardBrand;
@@ -24,6 +25,8 @@ class AccountModel {
   final DateTime updatedAt;
   final bool isSynced;
   final bool lowBalanceAlertEnabled;
+  final List<String>? smsSenderIds;
+  final String? smsIdentifier;
 
   AccountModel({
     this.id = '',
@@ -35,6 +38,7 @@ class AccountModel {
     required this.balance,
     required this.currency,
     this.cardBankName = '',
+    this.cardHolderName = '',
     this.cardNumber = '',
     this.cardExpiryDate = '',
     this.cardBrand = CardBrand.visa,
@@ -42,6 +46,8 @@ class AccountModel {
     required this.updatedAt,
     this.isSynced = false,
     this.lowBalanceAlertEnabled = false,
+    this.smsSenderIds,
+    this.smsIdentifier,
   });
 
   AccountModel copyWith({
@@ -61,6 +67,8 @@ class AccountModel {
     DateTime? updatedAt,
     bool? isSynced,
     bool? lowBalanceAlertEnabled,
+    List<String>? smsSenderIds,
+    String? smsIdentifier,
   }) {
     return AccountModel(
       id: id ?? this.id,
@@ -80,6 +88,8 @@ class AccountModel {
       isSynced: isSynced ?? this.isSynced,
       lowBalanceAlertEnabled:
           lowBalanceAlertEnabled ?? this.lowBalanceAlertEnabled,
+      smsSenderIds: smsSenderIds ?? this.smsSenderIds,
+      smsIdentifier: smsIdentifier ?? this.smsIdentifier,
     );
   }
 
@@ -103,6 +113,8 @@ class AccountModel {
       'updatedAt': updatedAt.toIso8601String(),
       'isSynced': isSynced,
       'lowBalanceAlertEnabled': lowBalanceAlertEnabled,
+      'smsSenderIds': smsSenderIds,
+      'smsIdentifier': smsIdentifier,
     };
   }
 
@@ -142,6 +154,10 @@ class AccountModel {
           : DateTime.parse(map['updatedAt'] as String),
       isSynced: map['isSynced'] as bool,
       lowBalanceAlertEnabled: map['lowBalanceAlertEnabled'] ?? false,
+      smsSenderIds: (map['smsSenderIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      smsIdentifier: map['smsIdentifier'] as String?,
     );
   }
 

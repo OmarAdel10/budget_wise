@@ -8,12 +8,14 @@ class SettingsModel extends Equatable {
   final String language;
   final bool isOnboardingCompleted;
   final bool hasLoggedIn;
+  final DateTime? lastForegroundActivityDateTime;
 
   const SettingsModel({
     this.localAuthEnabled = false,
     this.language = 'en',
     this.isOnboardingCompleted = false,
     this.hasLoggedIn = false,
+    this.lastForegroundActivityDateTime,
   });
 
   SettingsModel copyWith({
@@ -22,6 +24,7 @@ class SettingsModel extends Equatable {
     bool? isOnboardingCompleted,
     bool? isDataSyncSuccess,
     bool? hasLoggedIn,
+    DateTime? lastForegroundActivityDateTime,
   }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
@@ -29,6 +32,8 @@ class SettingsModel extends Equatable {
       isOnboardingCompleted:
           isOnboardingCompleted ?? this.isOnboardingCompleted,
       hasLoggedIn: hasLoggedIn ?? this.hasLoggedIn,
+      lastForegroundActivityDateTime:
+          lastForegroundActivityDateTime ?? this.lastForegroundActivityDateTime,
     );
   }
 
@@ -38,6 +43,8 @@ class SettingsModel extends Equatable {
       'language': language,
       'isOnboardingCompleted': isOnboardingCompleted,
       'hasLoggedIn': hasLoggedIn,
+      'lastForegroundActivityDateTime':
+          lastForegroundActivityDateTime?.toIso8601String(),
     };
   }
 
@@ -47,6 +54,10 @@ class SettingsModel extends Equatable {
       language: map['language'] as String,
       isOnboardingCompleted: map['isOnboardingCompleted'] as bool,
       hasLoggedIn: map['hasLoggedIn'] as bool,
+      lastForegroundActivityDateTime:
+          map['lastForegroundActivityDateTime'] != null
+              ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
+              : null,
     );
   }
 
@@ -61,5 +72,6 @@ class SettingsModel extends Equatable {
     language,
     isOnboardingCompleted,
     hasLoggedIn,
+    lastForegroundActivityDateTime,
   ];
 }

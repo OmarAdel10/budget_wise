@@ -150,7 +150,8 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children: _incomeCategories.map((category) {
-              final isSelected = _selectedCategoryTitle == category.categoryTitle;
+              final isSelected =
+                  _selectedCategoryTitle == category.categoryTitle;
               return ChoiceChip(
                 label: Text(
                   _getLocalizedSource(context, category.categoryTitle),
@@ -166,7 +167,9 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
                 selected: isSelected,
                 onSelected: (selected) {
                   setState(() {
-                    _selectedCategoryTitle = selected ? category.categoryTitle : null;
+                    _selectedCategoryTitle = selected
+                        ? category.categoryTitle
+                        : null;
                     _updateData();
                   });
                 },

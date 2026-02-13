@@ -33,6 +33,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get income => 'الدخل';
 
   @override
+  String get expense => 'مصروف';
+
+  @override
   String get expenses => 'المصروفات';
 
   @override
@@ -441,10 +444,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addAccountCardNumberLabel => 'رقم البطاقة';
 
   @override
+  String get addAccountCardHolderLabel => 'حامل البطاقة';
+
+  @override
+  String get addAccountCardHolderPlaceholder => 'أدخل اسم حامل البطاقة';
+
+  @override
   String get addAccountBankNameLabel => 'اسم البنك';
 
   @override
-  String get addAccountBankNamePlaceholder => 'مثال: بنك مصر';
+  String get addAccountBankNamePlaceholder => 'اضغط لاختيار البنك';
 
   @override
   String get addAccountCardExpiryLabel => 'تاريخ الانتهاء';
@@ -515,6 +524,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get youShouldEnterAValidCardNumber => 'يجب إدخال رقم بطاقة صالح';
+
+  @override
+  String get cardHolderCantLeftEmpty => 'لا يمكن ترك اسم حامل البطاقة فارغاً';
+
+  @override
+  String get youShouldEnterAValidCardHolderName =>
+      'يجب إدخال اسم حامل بطاقة صحيح';
 
   @override
   String get expiryDateCantLeftEmpty => 'لا يمكن ترك تاريخ الانتهاء فارغاً';
@@ -746,4 +762,90 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountDeleted => 'تم حذف الحساب';
+
+  @override
+  String get pendingSmsTransactionsTitle => 'عمليات الرسائل النصية المعلقة';
+
+  @override
+  String get noPendingSmsTransactions => 'لا توجد عمليات رسائل نصية معلقة.';
+
+  @override
+  String get sender => 'المرسل';
+
+  @override
+  String get transactionAmount => 'المبلغ';
+
+  @override
+  String get description => 'الوصف';
+
+  @override
+  String get transactionType => 'النوع';
+
+  @override
+  String get cardLast4Digits => 'آخر 4 أرقام من البطاقة';
+
+  @override
+  String get notAvailable => 'غير متوفر';
+
+  @override
+  String get noAccountsAvailable =>
+      'لا توجد حسابات متاحة. الرجاء إضافة حساب أولاً.';
+
+  @override
+  String get decline => 'رفض';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get smsSetupAssistantTitle => 'مساعد إعداد الرسائل النصية';
+
+  @override
+  String get smsSetupAssistantHeader => 'أتمتة التتبع الخاص بك';
+
+  @override
+  String get smsSetupAssistantSubtitle =>
+      'يمكننا مسح صندوق الوارد الخاص بك للعثور على معاملاتك السابقة وأتمتة المعاملات المستقبلية.';
+
+  @override
+  String get smsSetupAssistantScanButton => 'مسح صندوق الوارد';
+
+  @override
+  String get smsSetupAssistantScanning => 'جاري مسح صندوق الوارد...';
+
+  @override
+  String get smsSetupAssistantNoTransactionsFound =>
+      'لم يتم العثور على معاملات في صندوق الوارد الخاص بك.';
+
+  @override
+  String smsSetupAssistantSuccess(Object count) {
+    return 'اكتمل المسح! تم العثور على $count معاملة.';
+  }
+
+  @override
+  String get smsSetupAssistantError => 'حدث خطأ أثناء المسح.';
+
+  @override
+  String get smsSetupAssistantPlaceholder => 'إعداد موجه لحسابات بطاقاتك.';
+
+  @override
+  String get selectBankTitle => 'اختر بنكك';
+
+  @override
+  String get searchBankPlaceholder => 'ابحث عن بنكك';
+
+  @override
+  String get payment => 'دفع';
+
+  @override
+  String get editDraft => 'تعديل المسودة';
+
+  @override
+  String get draftSaved => 'تم حفظ المسودة';
+
+  @override
+  String get draftDeleted => 'تم حذف المسودة';
+
+  @override
+  String get time => 'الوقت';
 }

@@ -1,3 +1,4 @@
+import 'package:budget_wise/accounts/data/models/sms_draft_model.dart'; // New import
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -74,4 +75,45 @@ class TransactionEventCheckAndSyncPending extends TransactionEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+class TransactionEventAddSmsDraft extends TransactionEvent {
+  final SmsDraftModel smsDraft;
+
+  const TransactionEventAddSmsDraft({required this.smsDraft});
+
+  @override
+  List<Object?> get props => [smsDraft];
+}
+
+class TransactionEventConfirmSmsDraft extends TransactionEvent {
+  final String
+  smsDraftId; // Assuming SmsDraftModel will have an ID or use index
+  final TransactionModel transaction; // The confirmed transaction
+
+  const TransactionEventConfirmSmsDraft({
+    required this.smsDraftId,
+    required this.transaction,
+  });
+
+  @override
+  List<Object?> get props => [smsDraftId, transaction];
+}
+
+class TransactionEventDeclineSmsDraft extends TransactionEvent {
+  final String smsDraftId;
+
+  const TransactionEventDeclineSmsDraft({required this.smsDraftId});
+
+  @override
+  List<Object?> get props => [smsDraftId];
+}
+
+class TransactionEventUpdateSmsDraft extends TransactionEvent {
+  final SmsDraftModel updatedDraft;
+
+  const TransactionEventUpdateSmsDraft({required this.updatedDraft});
+
+  @override
+  List<Object?> get props => [updatedDraft];
 }

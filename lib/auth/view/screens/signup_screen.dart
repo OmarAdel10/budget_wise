@@ -158,9 +158,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Navigator.of(context).pop(true);
                           } else {
                             Navigator.of(context).pop();
-                            Navigator.of(
-                              context,
-                            ).pushNamedAndRemoveUntil(MainScreen.routeName, (route) => false,);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              MainScreen.routeName,
+                              (route) => false,
+                            );
                           }
                         }
                       },

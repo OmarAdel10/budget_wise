@@ -33,6 +33,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get income => 'Income';
 
   @override
+  String get expense => 'Expense';
+
+  @override
   String get expenses => 'Expenses';
 
   @override
@@ -442,10 +445,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addAccountCardNumberLabel => 'Card Number';
 
   @override
+  String get addAccountCardHolderLabel => 'Card Holder';
+
+  @override
+  String get addAccountCardHolderPlaceholder => 'Enter Card Holder Name';
+
+  @override
   String get addAccountBankNameLabel => 'Bank Name';
 
   @override
-  String get addAccountBankNamePlaceholder => 'e.g. Bank Misr';
+  String get addAccountBankNamePlaceholder => 'Tap To Select Bank';
 
   @override
   String get addAccountCardExpiryLabel => 'Expiry Date';
@@ -519,6 +528,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get youShouldEnterAValidCardNumber =>
       'You Should Enter A Valid Card Number';
+
+  @override
+  String get cardHolderCantLeftEmpty => 'Card Holder Name Can\'t Left Empty';
+
+  @override
+  String get youShouldEnterAValidCardHolderName =>
+      'You Should Enter A Valid Card Holder Name';
 
   @override
   String get expiryDateCantLeftEmpty => 'Expiry Date Can\'t Left Empty';
@@ -752,4 +768,91 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountDeleted => 'Account Deleted';
+
+  @override
+  String get pendingSmsTransactionsTitle => 'Pending SMS Transactions';
+
+  @override
+  String get noPendingSmsTransactions => 'No pending SMS transactions.';
+
+  @override
+  String get sender => 'Sender';
+
+  @override
+  String get transactionAmount => 'Amount';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get transactionType => 'Type';
+
+  @override
+  String get cardLast4Digits => 'Card Last 4 Digits';
+
+  @override
+  String get notAvailable => 'N/A';
+
+  @override
+  String get noAccountsAvailable =>
+      'No accounts available. Please add an account first.';
+
+  @override
+  String get decline => 'Decline';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get smsSetupAssistantTitle => 'SMS Setup Assistant';
+
+  @override
+  String get smsSetupAssistantHeader => 'Automate your tracking';
+
+  @override
+  String get smsSetupAssistantSubtitle =>
+      'We can scan your inbox to find your previous transactions and automate the future ones.';
+
+  @override
+  String get smsSetupAssistantScanButton => 'Scan Inbox';
+
+  @override
+  String get smsSetupAssistantScanning => 'Scanning your inbox...';
+
+  @override
+  String get smsSetupAssistantNoTransactionsFound =>
+      'No transactions found in your inbox.';
+
+  @override
+  String smsSetupAssistantSuccess(Object count) {
+    return 'Scan complete! $count transactions found.';
+  }
+
+  @override
+  String get smsSetupAssistantError => 'An error occurred while scanning.';
+
+  @override
+  String get smsSetupAssistantPlaceholder =>
+      'Guided setup for your card accounts.';
+
+  @override
+  String get selectBankTitle => 'Select Your Bank';
+
+  @override
+  String get searchBankPlaceholder => 'Search for your bank';
+
+  @override
+  String get payment => 'Payment';
+
+  @override
+  String get editDraft => 'Edit Draft';
+
+  @override
+  String get draftSaved => 'Draft Saved';
+
+  @override
+  String get draftDeleted => 'Draft Deleted';
+
+  @override
+  String get time => 'Time';
 }

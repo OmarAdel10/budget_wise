@@ -113,9 +113,7 @@ class CategoryDetailScreen extends StatelessWidget {
                     callbacks: ToastificationCallbacks(
                       onAutoCompleteCompleted: (item) {
                         catBloc.add(
-                          CategoryEventDeleteCategory(
-                            categoryId: categoryId,
-                          ),
+                          CategoryEventDeleteCategory(categoryId: categoryId),
                         );
                       },
                     ),

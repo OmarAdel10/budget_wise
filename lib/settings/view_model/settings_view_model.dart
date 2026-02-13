@@ -34,6 +34,14 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     on<SettingsEventLoggedOut>((event, emit) {
       emit(SettingsStateSuccess(state.model.copyWith(hasLoggedIn: false)));
     });
+
+    on<SettingsEventUpdateLastForegroundActivityDateTime>((event, emit) {
+      emit(
+        SettingsStateSuccess(
+          state.model.copyWith(lastForegroundActivityDateTime: event.dateTime),
+        ),
+      );
+    });
   }
 
   @override

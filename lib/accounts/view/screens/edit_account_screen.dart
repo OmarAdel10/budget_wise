@@ -1,11 +1,11 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/models/card_brand.dart';
 import 'package:budget_wise/accounts/data/models/card_formatters.dart';
+import 'package:budget_wise/accounts/view/widgets/bank_picker_bottom_sheet.dart';
 import 'package:budget_wise/accounts/view/widgets/currency_picker_bottom_sheet.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:budget_wise/accounts/data/data_source/account_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -13,7 +13,7 @@ import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:string_similarity/string_similarity.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class EditAccountScreen extends StatefulWidget {
   static const String routeName = '/editAccount';
@@ -28,7 +28,6 @@ class EditAccountScreen extends StatefulWidget {
 class _EditAccountScreenState extends State<EditAccountScreen> {
   late TextEditingController accountNameController;
   late TextEditingController balanceController;
-  late TextEditingController bankNameController;
   late TextEditingController cardNumberController;
   late TextEditingController expiryController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -36,14 +35,11 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
   late String selectedCurrency;
   late CardBrand selectedCardBrand;
   late bool lowBalanceAlertEnabled;
+  String? selectedBankName;
+  List<String>? selectedBankSenderIds;
 
-  bool isBankValid = true;
-  String? hintText;
   bool isCardValid = true;
   bool isExpiryValid = true;
-
-  final Set<String> egyptBankWhiteListNames =
-      AccountConstants.egyptBankWhiteListNames;
 
   @override
   void initState() {
@@ -51,9 +47,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     accountNameController = TextEditingController(text: widget.account.title);
     balanceController = TextEditingController(
       text: widget.account.balance.toString(),
-    );
-    bankNameController = TextEditingController(
-      text: widget.account.cardBankName,
     );
     cardNumberController = TextEditingController(
       text: widget.account.cardNumber,
@@ -64,41 +57,12 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     selectedCurrency = widget.account.currency;
     selectedCardBrand = widget.account.cardBrand ?? CardBrand.visa;
     lowBalanceAlertEnabled = widget.account.lowBalanceAlertEnabled;
+    selectedBankName = widget.account.cardBankName;
+    selectedBankSenderIds = widget.account.smsSenderIds;
 
     if (widget.account.accountType == AccountType.card) {
-      _validateBankName(bankNameController.text);
       _validateCardNumber(cardNumberController.text);
       _validateExpiryDate(expiryController.text);
-    }
-  }
-
-  void _validateBankName(String input) {
-    final cleanedInput = input.toLowerCase().trim();
-    if (cleanedInput.isEmpty) {
-      setState(() {
-        isBankValid = false;
-        hintText = null;
-      });
-      return;
-    }
-
-    if (egyptBankWhiteListNames.contains(cleanedInput)) {
-      setState(() {
-        isBankValid = true;
-        hintText = null;
-      });
-    } else {
-      final bestMatch = cleanedInput.bestMatch(
-        egyptBankWhiteListNames.toList(),
-      );
-      setState(() {
-        isBankValid = false;
-        if (input.length > 2 && bestMatch.bestMatch.rating! > 0.4) {
-          hintText = bestMatch.bestMatch.target;
-        } else {
-          hintText = null;
-        }
-      });
     }
   }
 
@@ -167,7 +131,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
   void dispose() {
     accountNameController.dispose();
     balanceController.dispose();
-    bankNameController.dispose();
     cardNumberController.dispose();
     expiryController.dispose();
     super.dispose();
@@ -184,7 +147,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
             0.0,
         currency: selectedCurrency,
         cardBankName: widget.account.accountType == AccountType.card
-            ? bankNameController.text.toUpperCase().trim()
+            ? selectedBankName?.toUpperCase().trim()
             : null,
         cardNumber: widget.account.accountType == AccountType.card
             ? cardNumberController.text.trim()
@@ -196,6 +159,11 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
             ? selectedCardBrand
             : null,
         lowBalanceAlertEnabled: lowBalanceAlertEnabled,
+        smsSenderIds: selectedBankSenderIds,
+        smsIdentifier: cardNumberController.text.replaceAll(' ', '').length >= 4
+            ? cardNumberController.text.replaceAll(' ', '').substring(
+                cardNumberController.text.replaceAll(' ', '').length - 4)
+            : null,
         updatedAt: DateTime.now(),
         isSynced: false,
       );
@@ -252,7 +220,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
         centerTitle: true,
         title: Text(l10n.editAccount, style: AppTextStyles.heading2),
         leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.primaryAccent),
+          icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -292,6 +260,71 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                             : null,
                       ),
                       if (widget.account.accountType == AccountType.card) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        _buildTextFieldLabel(l10n.addAccountBankNameLabel),
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              builder: (context) => BankPickerBottomSheet(
+                                onBankSelected: (bankName, senderIds) {
+                                  setState(() {
+                                    selectedBankName = bankName;
+                                    selectedBankSenderIds = senderIds;
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.md,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.inputBackground,
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radiusMd,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  selectedBankName ??
+                                      l10n.addAccountBankNamePlaceholder,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: selectedBankName == null
+                                        ? AppColors.textSecondary
+                                        : AppColors.textPrimary,
+                                  ),
+                                ),
+                                Icon(
+                                  PhosphorIcons.caretDown(
+                                    PhosphorIconsStyle.bold,
+                                  ),
+                                  size: 20,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (selectedBankName == null)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8.0,
+                              left: 12.0,
+                            ),
+                            child: Text(
+                              l10n.bankNameCantLeftEmpty,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.danger,
+                              ),
+                            ),
+                          ),
                         const SizedBox(height: AppSpacing.md),
                         _buildTextFieldLabel(l10n.addAccountCardNumberLabel),
                         TextFormField(

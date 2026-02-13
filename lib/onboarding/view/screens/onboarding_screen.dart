@@ -176,7 +176,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       updatedAt: DateTime.now(),
       accountType: AccountType.cash,
       title: 'Main Account',
-      accountIcon: PhosphorIconsRegular.wallet,
+      accountIcon: PhosphorIcons.currencyCircleDollar(
+        PhosphorIconsStyle.regular,
+      ),
       initialBalance: 0.0,
       balance: 0.0,
       currency: 'EGP',

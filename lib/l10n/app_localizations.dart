@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'Income'**
   String get income;
 
+  /// No description provided for @expense.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get expense;
+
   /// No description provided for @expenses.
   ///
   /// In en, this message translates to:
@@ -950,6 +956,18 @@ abstract class AppLocalizations {
   /// **'Card Number'**
   String get addAccountCardNumberLabel;
 
+  /// No description provided for @addAccountCardHolderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Holder'**
+  String get addAccountCardHolderLabel;
+
+  /// No description provided for @addAccountCardHolderPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Card Holder Name'**
+  String get addAccountCardHolderPlaceholder;
+
   /// No description provided for @addAccountBankNameLabel.
   ///
   /// In en, this message translates to:
@@ -959,7 +977,7 @@ abstract class AppLocalizations {
   /// No description provided for @addAccountBankNamePlaceholder.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Bank Misr'**
+  /// **'Tap To Select Bank'**
   String get addAccountBankNamePlaceholder;
 
   /// No description provided for @addAccountCardExpiryLabel.
@@ -1099,6 +1117,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You Should Enter A Valid Card Number'**
   String get youShouldEnterAValidCardNumber;
+
+  /// No description provided for @cardHolderCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Holder Name Can\'t Left Empty'**
+  String get cardHolderCantLeftEmpty;
+
+  /// No description provided for @youShouldEnterAValidCardHolderName.
+  ///
+  /// In en, this message translates to:
+  /// **'You Should Enter A Valid Card Holder Name'**
+  String get youShouldEnterAValidCardHolderName;
 
   /// No description provided for @expiryDateCantLeftEmpty.
   ///
@@ -1543,6 +1573,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account Deleted'**
   String get accountDeleted;
+
+  /// No description provided for @pendingSmsTransactionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending SMS Transactions'**
+  String get pendingSmsTransactionsTitle;
+
+  /// No description provided for @noPendingSmsTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending SMS transactions.'**
+  String get noPendingSmsTransactions;
+
+  /// No description provided for @sender.
+  ///
+  /// In en, this message translates to:
+  /// **'Sender'**
+  String get sender;
+
+  /// No description provided for @transactionAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get transactionAmount;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @transactionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get transactionType;
+
+  /// No description provided for @cardLast4Digits.
+  ///
+  /// In en, this message translates to:
+  /// **'Card Last 4 Digits'**
+  String get cardLast4Digits;
+
+  /// No description provided for @notAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get notAvailable;
+
+  /// No description provided for @noAccountsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No accounts available. Please add an account first.'**
+  String get noAccountsAvailable;
+
+  /// No description provided for @decline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get decline;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @smsSetupAssistantTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS Setup Assistant'**
+  String get smsSetupAssistantTitle;
+
+  /// No description provided for @smsSetupAssistantHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Automate your tracking'**
+  String get smsSetupAssistantHeader;
+
+  /// No description provided for @smsSetupAssistantSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We can scan your inbox to find your previous transactions and automate the future ones.'**
+  String get smsSetupAssistantSubtitle;
+
+  /// No description provided for @smsSetupAssistantScanButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Inbox'**
+  String get smsSetupAssistantScanButton;
+
+  /// No description provided for @smsSetupAssistantScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning your inbox...'**
+  String get smsSetupAssistantScanning;
+
+  /// No description provided for @smsSetupAssistantNoTransactionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions found in your inbox.'**
+  String get smsSetupAssistantNoTransactionsFound;
+
+  /// No description provided for @smsSetupAssistantSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan complete! {count} transactions found.'**
+  String smsSetupAssistantSuccess(Object count);
+
+  /// No description provided for @smsSetupAssistantError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while scanning.'**
+  String get smsSetupAssistantError;
+
+  /// No description provided for @smsSetupAssistantPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Guided setup for your card accounts.'**
+  String get smsSetupAssistantPlaceholder;
+
+  /// No description provided for @selectBankTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Your Bank'**
+  String get selectBankTitle;
+
+  /// No description provided for @searchBankPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for your bank'**
+  String get searchBankPlaceholder;
+
+  /// No description provided for @payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get payment;
+
+  /// No description provided for @editDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Draft'**
+  String get editDraft;
+
+  /// No description provided for @draftSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft Saved'**
+  String get draftSaved;
+
+  /// No description provided for @draftDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft Deleted'**
+  String get draftDeleted;
+
+  /// No description provided for @time.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get time;
 }
 
 class _AppLocalizationsDelegate

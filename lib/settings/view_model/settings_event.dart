@@ -22,3 +22,8 @@ class SettingsEventLoggedIn extends SettingsEvent {
 class SettingsEventLoggedOut extends SettingsEvent {
   const SettingsEventLoggedOut();
 }
+
+class SettingsEventUpdateLastForegroundActivityDateTime extends SettingsEvent {
+  final DateTime? dateTime;
+  const SettingsEventUpdateLastForegroundActivityDateTime(this.dateTime);
+}
