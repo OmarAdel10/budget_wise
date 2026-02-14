@@ -9,12 +9,14 @@ class SummaryCards extends StatelessWidget {
   final double totalIncome;
   final double totalExpenses;
   final double totalSavings;
+  final double totalSubscriptions;
 
   const SummaryCards({
     super.key,
     required this.totalIncome,
     required this.totalExpenses,
     required this.totalSavings,
+    required this.totalSubscriptions,
   });
 
   @override
@@ -58,13 +60,24 @@ class SummaryCards extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.md),
-        SizedBox(
-          width: double.infinity,
-          child: SummaryCard(
-            title: l10n.currentSavings,
-            amount: totalSavings,
-            amountColor: AppColors.savings,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: SummaryCard(
+                title: l10n.currentSavings,
+                amount: totalSavings,
+                amountColor: AppColors.savings,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: SummaryCard(
+                title: l10n.totalSubscriptions,
+                amount: totalSubscriptions,
+                amountColor: AppColors.categoryPurple,
+              ),
+            ),
+          ],
         ),
       ],
     );

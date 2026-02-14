@@ -848,4 +848,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get time => 'الوقت';
+
+  @override
+  String get totalSubscriptions => 'إجمالي الاشتراكات';
 }

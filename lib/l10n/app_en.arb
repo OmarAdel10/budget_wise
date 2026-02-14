@@ -275,5 +275,6 @@
   "editDraft": "Edit Draft",
   "draftSaved": "Draft Saved",
   "draftDeleted": "Draft Deleted",
-  "time": "Time"
+  "time": "Time",
+  "totalSubscriptions": "Total Subscriptions"
 }

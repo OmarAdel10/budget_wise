@@ -85,7 +85,7 @@ class CategoryChartSection extends StatelessWidget {
           ],
         ),
         SizedBox(
-          height: 300,
+          height: 280,
           child: ValueListenableBuilder<bool>(
             valueListenable: showIncomeNotifier,
             builder: (context, showIncomeValue, child) {
@@ -178,7 +178,7 @@ class CategoryChartSection extends StatelessWidget {
                             ? (item.totalSpending / total) * 100
                             : 0.0;
                         return SizedBox(
-                          width: 70,
+                          width: 80,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,

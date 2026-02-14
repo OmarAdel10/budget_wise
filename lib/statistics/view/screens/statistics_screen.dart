@@ -98,6 +98,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             totalIncome: model.totalIncome,
                             totalExpenses: model.totalExpenses,
                             totalSavings: model.totalSavings,
+                            totalSubscriptions: model.totalSubscriptions,
                           ),
                           const SizedBox(height: AppSpacing.xl),
                           TrendChartSection(

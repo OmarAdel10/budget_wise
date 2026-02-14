@@ -1735,6 +1735,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Time'**
   String get time;
+
+  /// No description provided for @totalSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Subscriptions'**
+  String get totalSubscriptions;
 }
 
 class _AppLocalizationsDelegate
