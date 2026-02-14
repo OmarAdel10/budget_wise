@@ -8,6 +8,7 @@ class StatisticsModel extends Equatable {
   final double totalIncome;
   final double totalExpenses;
   final double totalSavings;
+  final double totalSubscriptions;
   final List<CategoriesWithSpending> incomeBreakdown;
   final List<CategoriesWithSpending> expenseBreakdown;
   final List<double> dailyIncomeTrend;
@@ -19,6 +20,7 @@ class StatisticsModel extends Equatable {
     required this.totalIncome,
     required this.totalExpenses,
     required this.totalSavings,
+    required this.totalSubscriptions,
     required this.incomeBreakdown,
     required this.expenseBreakdown,
     required this.dailyIncomeTrend,
@@ -32,6 +34,7 @@ class StatisticsModel extends Equatable {
     totalIncome,
     totalExpenses,
     totalSavings,
+    totalSubscriptions,
     incomeBreakdown,
     expenseBreakdown,
     dailyIncomeTrend,
@@ -44,6 +47,7 @@ class StatisticsModel extends Equatable {
     double? totalIncome,
     double? totalExpenses,
     double? totalSavings,
+    double? totalSubscriptions,
     List<CategoriesWithSpending>? incomeBreakdown,
     List<CategoriesWithSpending>? expenseBreakdown,
     List<double>? dailyIncomeTrend,
@@ -55,6 +59,7 @@ class StatisticsModel extends Equatable {
       totalIncome: totalIncome ?? this.totalIncome,
       totalExpenses: totalExpenses ?? this.totalExpenses,
       totalSavings: totalSavings ?? this.totalSavings,
+      totalSubscriptions: totalSubscriptions ?? this.totalSubscriptions,
       incomeBreakdown: incomeBreakdown ?? this.incomeBreakdown,
       expenseBreakdown: expenseBreakdown ?? this.expenseBreakdown,
       dailyIncomeTrend: dailyIncomeTrend ?? this.dailyIncomeTrend,
@@ -69,6 +74,7 @@ class StatisticsModel extends Equatable {
       'totalIncome': totalIncome,
       'totalExpenses': totalExpenses,
       'totalSavings': totalSavings,
+      'totalSubscriptions': totalSubscriptions,
       'incomeBreakdown': incomeBreakdown.map((x) => x.toMap()).toList(),
       'expenseBreakdown': expenseBreakdown.map((x) => x.toMap()).toList(),
       'dailyIncomeTrend': dailyIncomeTrend,
@@ -83,6 +89,7 @@ class StatisticsModel extends Equatable {
       totalIncome: (map['totalIncome'] as num).toDouble(),
       totalExpenses: (map['totalExpenses'] as num).toDouble(),
       totalSavings: (map['totalSavings'] as num).toDouble(),
+      totalSubscriptions: (map['totalSubscriptions'] as num).toDouble(),
       incomeBreakdown: List<CategoriesWithSpending>.from(
         (map['incomeBreakdown'] as List<dynamic>).map<CategoriesWithSpending>(
           (x) => CategoriesWithSpending.fromMap(x as Map<String, dynamic>),

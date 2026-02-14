@@ -18,6 +18,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
             totalIncome: 0,
             totalExpenses: 0,
             totalSavings: 0,
+            totalSubscriptions: 0,
             incomeBreakdown: const [],
             expenseBreakdown: const [],
             dailyIncomeTrend: const [],

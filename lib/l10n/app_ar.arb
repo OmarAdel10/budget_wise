@@ -272,5 +272,6 @@
   "editDraft": "تعديل المسودة",
   "draftSaved": "تم حفظ المسودة",
   "draftDeleted": "تم حذف المسودة",
-  "time": "الوقت"
+  "time": "الوقت",
+  "totalSubscriptions": "إجمالي الاشتراكات"
 }
