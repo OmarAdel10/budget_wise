@@ -43,8 +43,8 @@ class SettingsModel extends Equatable {
       'language': language,
       'isOnboardingCompleted': isOnboardingCompleted,
       'hasLoggedIn': hasLoggedIn,
-      'lastForegroundActivityDateTime':
-          lastForegroundActivityDateTime?.toIso8601String(),
+      'lastForegroundActivityDateTime': lastForegroundActivityDateTime
+          ?.toIso8601String(),
     };
   }
 
@@ -56,8 +56,8 @@ class SettingsModel extends Equatable {
       hasLoggedIn: map['hasLoggedIn'] as bool,
       lastForegroundActivityDateTime:
           map['lastForegroundActivityDateTime'] != null
-              ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
-              : null,
+          ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
+          : null,
     );
   }
 

@@ -30,10 +30,12 @@ class SmsService {
     required List<AccountModel> accounts,
     List<String>? allPotentialSenderIds,
   }) {
-    final List<String> senderIds = allPotentialSenderIds ??
+    final List<String> senderIds =
+        allPotentialSenderIds ??
         accounts
-            .where((acc) =>
-                acc.smsSenderIds != null && acc.smsSenderIds!.isNotEmpty)
+            .where(
+              (acc) => acc.smsSenderIds != null && acc.smsSenderIds!.isNotEmpty,
+            )
             .expand((acc) => acc.smsSenderIds!)
             .toSet()
             .toList();
@@ -53,8 +55,8 @@ class SmsService {
       // 1. Check if last 4 card digits available in SMS and matches account.smsIdentifier
       final bool hasMatchingCardDigits =
           smsDraft.extractedCardLastFour != null &&
-              account.smsIdentifier != null &&
-              smsDraft.extractedCardLastFour == account.smsIdentifier;
+          account.smsIdentifier != null &&
+          smsDraft.extractedCardLastFour == account.smsIdentifier;
 
       if (hasMatchingCardDigits) {
         matchedAccountId = account.id;
@@ -62,10 +64,17 @@ class SmsService {
       }
 
       // 2. If no matching card digits, check if account.smsSenderIds contains message.address
-      final bool hasMatchingSenderId = account.smsSenderIds != null &&
-          account.smsSenderIds!.any((id) =>
-              (message.address ?? '').toUpperCase().contains(id.toUpperCase()) ||
-              id.toUpperCase().contains((message.address ?? '').toUpperCase()));
+      final bool hasMatchingSenderId =
+          account.smsSenderIds != null &&
+          account.smsSenderIds!.any(
+            (id) =>
+                (message.address ?? '').toUpperCase().contains(
+                  id.toUpperCase(),
+                ) ||
+                id.toUpperCase().contains(
+                  (message.address ?? '').toUpperCase(),
+                ),
+          );
 
       if (hasMatchingSenderId) {
         matchedAccountId = account.id;
@@ -73,9 +82,7 @@ class SmsService {
       }
     }
 
-    return smsDraft.copyWith(
-      matchedAccountId: matchedAccountId,
-    );
+    return smsDraft.copyWith(matchedAccountId: matchedAccountId);
   }
 
   /// Scans the inbox for messages received after [sinceDateTime].
@@ -89,7 +96,9 @@ class SmsService {
 
     // Pre-calculate all potential sender IDs once for the loop
     final List<String> allPotentialSenderIds = accounts
-        .where((acc) => acc.smsSenderIds != null && acc.smsSenderIds!.isNotEmpty)
+        .where(
+          (acc) => acc.smsSenderIds != null && acc.smsSenderIds!.isNotEmpty,
+        )
         .expand((acc) => acc.smsSenderIds!)
         .toSet()
         .toList();
@@ -97,8 +106,9 @@ class SmsService {
     // Filter messages older than sinceDateTime
     final List<SmsMessage> relevantMessages = messages.where((message) {
       // message.date is in milliseconds since epoch
-      final messageDate =
-          DateTime.fromMillisecondsSinceEpoch(message.date ?? 0);
+      final messageDate = DateTime.fromMillisecondsSinceEpoch(
+        message.date ?? 0,
+      );
       return messageDate.isAfter(sinceDateTime);
     }).toList();
 

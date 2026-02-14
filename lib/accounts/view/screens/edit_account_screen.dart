@@ -161,8 +161,11 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
         lowBalanceAlertEnabled: lowBalanceAlertEnabled,
         smsSenderIds: selectedBankSenderIds,
         smsIdentifier: cardNumberController.text.replaceAll(' ', '').length >= 4
-            ? cardNumberController.text.replaceAll(' ', '').substring(
-                cardNumberController.text.replaceAll(' ', '').length - 4)
+            ? cardNumberController.text
+                  .replaceAll(' ', '')
+                  .substring(
+                    cardNumberController.text.replaceAll(' ', '').length - 4,
+                  )
             : null,
         updatedAt: DateTime.now(),
         isSynced: false,

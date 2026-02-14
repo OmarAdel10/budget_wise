@@ -1,4 +1,5 @@
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/shared/utils/icon_all.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../constants/colors.dart';
@@ -10,28 +11,8 @@ class IconPickerBottomSheet extends StatelessWidget {
 
   const IconPickerBottomSheet({super.key, required this.onIconSelected});
 
-  static final List<IconData> _availableIcons = [
-    PhosphorIcons.fire(PhosphorIconsStyle.regular),
-    PhosphorIcons.forkKnife(PhosphorIconsStyle.regular),
-    PhosphorIcons.briefcase(PhosphorIconsStyle.regular),
-    PhosphorIcons.filmStrip(PhosphorIconsStyle.regular),
-    PhosphorIcons.coffee(PhosphorIconsStyle.regular),
-    PhosphorIcons.shoppingBag(PhosphorIconsStyle.regular),
-    PhosphorIcons.car(PhosphorIconsStyle.regular),
-    PhosphorIcons.lightbulb(PhosphorIconsStyle.regular),
-    PhosphorIcons.house(PhosphorIconsStyle.regular),
-    PhosphorIcons.airplane(PhosphorIconsStyle.regular),
-    PhosphorIcons.barbell(PhosphorIconsStyle.regular),
-    PhosphorIcons.book(PhosphorIconsStyle.regular),
-    PhosphorIcons.camera(PhosphorIconsStyle.regular),
-    PhosphorIcons.gameController(PhosphorIconsStyle.regular),
-    PhosphorIcons.gift(PhosphorIconsStyle.regular),
-    PhosphorIcons.graduationCap(PhosphorIconsStyle.regular),
-    PhosphorIcons.heart(PhosphorIconsStyle.regular),
-    PhosphorIcons.musicNote(PhosphorIconsStyle.regular),
-    PhosphorIcons.pawPrint(PhosphorIconsStyle.regular),
-    PhosphorIcons.phone(PhosphorIconsStyle.regular),
-  ];
+  static final List<IconData> _availableIcons = PhosphorIcons()
+      .allRegularIcons();
 
   @override
   Widget build(BuildContext context) {

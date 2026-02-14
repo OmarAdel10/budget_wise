@@ -9,7 +9,7 @@ import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/accounts/view/widgets/bank_picker_bottom_sheet.dart';
-import 'package:budget_wise/shared/utils/stringCases.dart';
+import 'package:budget_wise/shared/utils/string_cases.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -191,9 +191,13 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           cardExpiryDate: expiryController.text.trim(),
           cardBrand: selectedCardBrand,
           smsSenderIds: selectedBankSenderIds,
-          smsIdentifier: cardNumberController.text.replaceAll(' ', '').length >= 4
-              ? cardNumberController.text.replaceAll(' ', '').substring(
-                  cardNumberController.text.replaceAll(' ', '').length - 4)
+          smsIdentifier:
+              cardNumberController.text.replaceAll(' ', '').length >= 4
+              ? cardNumberController.text
+                    .replaceAll(' ', '')
+                    .substring(
+                      cardNumberController.text.replaceAll(' ', '').length - 4,
+                    )
               : null,
         );
         context.read<AccountBloc>().add(

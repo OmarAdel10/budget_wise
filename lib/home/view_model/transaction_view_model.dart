@@ -342,9 +342,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
 
     on<TransactionEventAddSmsDraft>((event, emit) {
       final newDraft = event.smsDraft.copyWith(
-        id: (event.smsDraft.id.isEmpty)
-            ? const Uuid().v4()
-            : event.smsDraft.id,
+        id: (event.smsDraft.id.isEmpty) ? const Uuid().v4() : event.smsDraft.id,
       );
 
       final updatedDrafts = [newDraft, ...state.pendingSmsTransactions];
@@ -369,9 +367,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
 
     on<TransactionEventDeclineSmsDraft>((event, emit) {
       final updatedDrafts = state.pendingSmsTransactions
-          .where(
-            (draft) => draft.id != event.smsDraftId,
-          )
+          .where((draft) => draft.id != event.smsDraftId)
           .toList();
       emit(state.copyWith(pendingSmsTransactions: updatedDrafts));
     });

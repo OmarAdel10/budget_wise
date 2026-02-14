@@ -74,8 +74,11 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       _startPeriodicCheck();
 
       // Targeted SMS scan for messages missed while app was inactive
-      final oldLastTime =
-          context.read<SettingsBloc>().state.model.lastForegroundActivityDateTime;
+      final oldLastTime = context
+          .read<SettingsBloc>()
+          .state
+          .model
+          .lastForegroundActivityDateTime;
       context.read<SettingsBloc>().add(
         const SettingsEventUpdateLastForegroundActivityDateTime(null),
       );
