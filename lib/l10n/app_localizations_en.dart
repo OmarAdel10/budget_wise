@@ -858,4 +858,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalSubscriptions => 'Total Subscriptions';
+
+  @override
+  String get defaultCurrency => 'Default Currency';
+
+  @override
+  String get noRecentTransactionsFound => 'No Recent Transactions Found.';
 }

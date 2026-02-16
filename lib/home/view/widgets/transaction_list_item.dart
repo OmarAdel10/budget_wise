@@ -55,8 +55,8 @@ class TransactionListItem extends StatelessWidget {
               children: [
                 Text(
                   model.type == TransactionType.income
-                      ? "+\$${model.transactionAmount}"
-                      : "-\$${model.transactionAmount}",
+                      ? "+${NumberFormat.currency(name: model.transactionCurrency).currencySymbol}${model.transactionAmount}"
+                      : "-${NumberFormat.currency(name: model.transactionCurrency).currencySymbol}${model.transactionAmount}",
                   style: AppTextStyles.bodyLarge.copyWith(
                     color: model.type == TransactionType.income
                         ? AppColors.primaryAccent

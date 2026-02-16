@@ -276,5 +276,7 @@
   "draftSaved": "Draft Saved",
   "draftDeleted": "Draft Deleted",
   "time": "Time",
-  "totalSubscriptions": "Total Subscriptions"
+  "totalSubscriptions": "Total Subscriptions",
+  "defaultCurrency": "Default Currency",
+  "noRecentTransactionsFound": "No Recent Transactions Found."
 }

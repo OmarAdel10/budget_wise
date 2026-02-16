@@ -9,6 +9,7 @@ class SettingsModel extends Equatable {
   final bool isOnboardingCompleted;
   final bool hasLoggedIn;
   final DateTime? lastForegroundActivityDateTime;
+  final String defaultCurrency;
 
   const SettingsModel({
     this.localAuthEnabled = false,
@@ -16,6 +17,7 @@ class SettingsModel extends Equatable {
     this.isOnboardingCompleted = false,
     this.hasLoggedIn = false,
     this.lastForegroundActivityDateTime,
+    this.defaultCurrency = 'EGP',
   });
 
   SettingsModel copyWith({
@@ -25,6 +27,7 @@ class SettingsModel extends Equatable {
     bool? isDataSyncSuccess,
     bool? hasLoggedIn,
     DateTime? lastForegroundActivityDateTime,
+    String? defaultCurrency,
   }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
@@ -34,6 +37,7 @@ class SettingsModel extends Equatable {
       hasLoggedIn: hasLoggedIn ?? this.hasLoggedIn,
       lastForegroundActivityDateTime:
           lastForegroundActivityDateTime ?? this.lastForegroundActivityDateTime,
+      defaultCurrency: defaultCurrency ?? this.defaultCurrency,
     );
   }
 
@@ -45,6 +49,7 @@ class SettingsModel extends Equatable {
       'hasLoggedIn': hasLoggedIn,
       'lastForegroundActivityDateTime': lastForegroundActivityDateTime
           ?.toIso8601String(),
+      'defaultCurrency': defaultCurrency,
     };
   }
 
@@ -58,6 +63,7 @@ class SettingsModel extends Equatable {
           map['lastForegroundActivityDateTime'] != null
           ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
           : null,
+      defaultCurrency: map['defaultCurrency'] as String
     );
   }
 
@@ -73,5 +79,6 @@ class SettingsModel extends Equatable {
     isOnboardingCompleted,
     hasLoggedIn,
     lastForegroundActivityDateTime,
+    defaultCurrency,
   ];
 }

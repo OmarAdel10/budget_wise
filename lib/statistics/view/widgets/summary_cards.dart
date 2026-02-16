@@ -1,6 +1,9 @@
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -116,7 +119,7 @@ class SummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            "\$${amount.toStringAsFixed(0)}",
+            "${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol} ${amount.toStringAsFixed(0)}",
             style: AppTextStyles.heading3.copyWith(color: amountColor),
           ),
         ],

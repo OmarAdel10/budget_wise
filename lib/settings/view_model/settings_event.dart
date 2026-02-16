@@ -27,3 +27,9 @@ class SettingsEventUpdateLastForegroundActivityDateTime extends SettingsEvent {
   final DateTime? dateTime;
   const SettingsEventUpdateLastForegroundActivityDateTime(this.dateTime);
 }
+
+class SettingsEventUpdateDefaultCurrency extends SettingsEvent {
+  final String newDefaultCurrency;
+
+  const SettingsEventUpdateDefaultCurrency({required this.newDefaultCurrency});
+}

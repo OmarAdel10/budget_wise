@@ -1,3 +1,4 @@
+import 'package:budget_wise/accounts/view/widgets/currency_picker_bottom_sheet.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/models/user_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
@@ -304,6 +305,86 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   }
                                 },
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    const Divider(color: AppColors.borderColor),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              PhosphorIcons.currencyBtc(
+                                PhosphorIconsStyle.regular,
+                              ),
+                              color: AppColors.textPrimary,
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Text(
+                              l10n.defaultCurrency,
+                              style: AppTextStyles.bodyLarge,
+                            ),
+                          ],
+                        ),
+                        BlocBuilder<SettingsBloc, SettingsState>(
+                          builder: (context, state) {
+                            return GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  backgroundColor: Colors.transparent,
+                                  isScrollControlled: true,
+                                  builder: (context) =>
+                                      CurrencyPickerBottomSheet(
+                                        selectedCurrency:
+                                            state.model.defaultCurrency,
+                                        onCurrencySelected: (currency) {
+                                          context.read<SettingsBloc>().add(
+                                            SettingsEventUpdateDefaultCurrency(
+                                              newDefaultCurrency: currency,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                width: 80,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: AppColors.cardBackground,
+                                  borderRadius: BorderRadius.circular(
+                                    AppSpacing.radiusSm,
+                                  ),
+                                  border: Border.all(
+                                    color: AppColors.borderColor,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      state.model.defaultCurrency,
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Icon(
+                                      PhosphorIcons.caretDown(
+                                        PhosphorIconsStyle.bold,
+                                      ),
+                                      size: 14,
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           },

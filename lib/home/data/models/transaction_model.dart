@@ -11,6 +11,7 @@ class TransactionModel {
   final TransactionType type;
   final String transactionTitle;
   final double transactionAmount;
+  final String transactionCurrency;
   final String categoryId;
   final String accountId;
   final DateTime transactionDate;
@@ -25,6 +26,7 @@ class TransactionModel {
     required this.type,
     required this.transactionTitle,
     required this.transactionAmount,
+    required this.transactionCurrency,
     required this.categoryId,
     required this.accountId,
     required this.transactionDate,
@@ -41,6 +43,7 @@ class TransactionModel {
       'type': type.name,
       'transactionTitle': transactionTitle,
       'transactionAmount': transactionAmount,
+      'transactionCurrency': transactionCurrency,
       'categoryId': categoryId,
       'accountId': accountId,
       'transactionDate': transactionDate.toIso8601String(),
@@ -60,6 +63,7 @@ class TransactionModel {
       ),
       transactionTitle: map['transactionTitle'] as String,
       transactionAmount: map['transactionAmount'] as double,
+      transactionCurrency: map['transactionCurrency'] as String,
       categoryId: map['categoryId'] as String,
       accountId: map['accountId'] as String,
       transactionDate: map['transactionDate'] is Timestamp
@@ -89,6 +93,7 @@ class TransactionModel {
     TransactionType? type,
     String? transactionTitle,
     double? transactionAmount,
+    String? transactionCurrency,
     String? categoryId,
     String? accountId,
     DateTime? transactionDate,
@@ -103,6 +108,7 @@ class TransactionModel {
       type: type ?? this.type,
       transactionTitle: transactionTitle ?? this.transactionTitle,
       transactionAmount: transactionAmount ?? this.transactionAmount,
+      transactionCurrency: transactionCurrency ?? this.transactionCurrency,
       categoryId: categoryId ?? this.categoryId,
       accountId: accountId ?? this.accountId,
       transactionDate: transactionDate ?? this.transactionDate,

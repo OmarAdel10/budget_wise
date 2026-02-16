@@ -7,6 +7,7 @@ import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_state.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -244,123 +245,145 @@ class _HomeScreenState extends State<HomeScreen> {
                             0.0,
                             1.0,
                           );
-                          return FlexibleSpaceBar(
-                            centerTitle: true,
-                            titlePadding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.lg,
-                              vertical: 14,
-                            ),
-                            expandedTitleScale: 1.0,
-                            background: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 150),
-                              opacity: backgroundOpacity,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
+                          return BlocBuilder<SettingsBloc, SettingsState>(
+                            builder: (context, settingsState) {
+                              return FlexibleSpaceBar(
+                                centerTitle: true,
+                                titlePadding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.lg,
+                                  vertical: 14,
                                 ),
-                                child: Column(
-                                  children: [
-                                    //* Summary Cards
-                                    Row(
+                                expandedTitleScale: 1.0,
+                                background: AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 150),
+                                  opacity: backgroundOpacity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.lg,
+                                    ),
+                                    child: Column(
                                       children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).pushNamed(
-                                                TransactionTypeDetailScreen
-                                                    .routeName,
-                                                arguments: {'type': 'income'},
-                                              );
-                                            },
-                                            child: SummaryCard(
-                                              title: l10n.income,
-                                              amount:
-                                                  "\$${state.model.totalIncome.toStringAsFixed(0)}",
-                                              amountColor:
-                                                  AppColors.primaryAccent,
+                                        //* Summary Cards
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(
+                                                    context,
+                                                  ).pushNamed(
+                                                    TransactionTypeDetailScreen
+                                                        .routeName,
+                                                    arguments: {
+                                                      'type': 'income',
+                                                    },
+                                                  );
+                                                },
+                                                child: SummaryCard(
+                                                  title: l10n.income,
+                                                  amount:
+                                                      "${NumberFormat.currency(name: settingsState.model.defaultCurrency).currencySymbol} ${state.model.totalIncome.toStringAsFixed(0)}",
+                                                  amountColor:
+                                                      AppColors.primaryAccent,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: AppSpacing.md),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).pushNamed(
-                                                TransactionTypeDetailScreen
-                                                    .routeName,
-                                                arguments: {'type': 'outcome'},
-                                              );
-                                            },
-                                            child: SummaryCard(
-                                              title: l10n.expenses,
-                                              amount:
-                                                  "\$${state.model.totalExpenses.toStringAsFixed(0)}",
-                                              amountColor: AppColors.danger,
+                                            const SizedBox(
+                                              width: AppSpacing.md,
                                             ),
-                                          ),
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(
+                                                    context,
+                                                  ).pushNamed(
+                                                    TransactionTypeDetailScreen
+                                                        .routeName,
+                                                    arguments: {
+                                                      'type': 'outcome',
+                                                    },
+                                                  );
+                                                },
+                                                child: SummaryCard(
+                                                  title: l10n.expenses,
+                                                  amount:
+                                                      "${NumberFormat.currency(name: settingsState.model.defaultCurrency).currencySymbol} ${state.model.totalExpenses.toStringAsFixed(0)}",
+                                                  amountColor: AppColors.danger,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            title: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 150),
-                              curve: Curves.easeInOut,
-                              opacity: opacity,
-                              child: GestureDetector(
-                                onTap: () {
-                                  _scrollController.animateTo(
-                                    0,
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.easeInOut,
-                                  );
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${l10n.income}: ',
-                                      style: AppTextStyles.bodyMedium.copyWith(
-                                        color: AppColors.textPrimary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                title: AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 150),
+                                  curve: Curves.easeInOut,
+                                  opacity: opacity,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _scrollController.animateTo(
+                                        0,
+                                        duration: const Duration(
+                                          milliseconds: 500,
+                                        ),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '${l10n.income}: ',
+                                          style: AppTextStyles.bodyMedium
+                                              .copyWith(
+                                                color: AppColors.textPrimary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat.currency(name: settingsState.model.defaultCurrency).currencySymbol} ${state.model.totalIncome.toStringAsFixed(0)}',
+                                          style: AppTextStyles.bodyLarge
+                                              .copyWith(
+                                                color: AppColors.primaryAccent,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                        const SizedBox(width: AppSpacing.md),
+                                        Text(
+                                          '|',
+                                          style: AppTextStyles.bodyLarge
+                                              .copyWith(
+                                                color: AppColors.textSecondary,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                        const SizedBox(width: AppSpacing.md),
+                                        Text(
+                                          '${l10n.expenses}: ',
+                                          style: AppTextStyles.bodyMedium
+                                              .copyWith(
+                                                color: AppColors.textPrimary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat.currency(name: settingsState.model.defaultCurrency).currencySymbol} ${state.model.totalExpenses.toStringAsFixed(0)}',
+                                          style: AppTextStyles.bodyLarge
+                                              .copyWith(
+                                                color: AppColors.danger,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      '\$${state.model.totalIncome.toStringAsFixed(0)}',
-                                      style: AppTextStyles.bodyLarge.copyWith(
-                                        color: AppColors.primaryAccent,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(width: AppSpacing.md),
-                                    Text(
-                                      '|',
-                                      style: AppTextStyles.bodyLarge.copyWith(
-                                        color: AppColors.textSecondary,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(width: AppSpacing.md),
-                                    Text(
-                                      '${l10n.expenses}: ',
-                                      style: AppTextStyles.bodyMedium.copyWith(
-                                        color: AppColors.textPrimary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Text(
-                                      '\$${state.model.totalExpenses.toStringAsFixed(0)}',
-                                      style: AppTextStyles.bodyLarge.copyWith(
-                                        color: AppColors.danger,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
                         },
                       ),

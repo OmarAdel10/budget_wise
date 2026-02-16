@@ -1,9 +1,12 @@
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/home/data/models/home_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/statistics/data/models/statistics_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -194,7 +197,7 @@ class CategoryListSection extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${showIncomeValue ? "+" : "-"}\$${item.totalSpending.toInt()}',
+                          '${showIncomeValue ? "+" : "-"}${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol}${item.totalSpending.toInt()}',
                           style: AppTextStyles.bodyLarge.copyWith(color: color),
                         ),
                         const SizedBox(width: AppSpacing.md),

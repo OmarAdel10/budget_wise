@@ -3,10 +3,10 @@ import 'package:budget_wise/home/view/widgets/transaction_list_item.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -76,7 +76,7 @@ class TransactionTypeDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         Text(
-                          "\$${type == 'income' ? model.totalIncome : model.totalExpenses}",
+                          "${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol} ${type == 'income' ? model.totalIncome : model.totalExpenses}",
                           style: AppTextStyles.heading1.copyWith(
                             color: type == 'income'
                                 ? AppColors.primaryAccent
@@ -108,11 +108,9 @@ class TransactionTypeDetailScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               const SizedBox(height: AppSpacing.xxl),
-                              Lottie.asset(
-                                'assets/lottie/no_data.json',
-                                width: 250,
-                                height: 250,
-                                fit: BoxFit.contain,
+                              Text(
+                                l10n.noTransactionsFound,
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ],
                           ),

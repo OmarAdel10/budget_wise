@@ -1,4 +1,3 @@
-import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view/screens/add_category_screen.dart';
 import 'package:budget_wise/home/view/widgets/transaction_list_item.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
@@ -8,7 +7,6 @@ import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:toastification/toastification.dart';
 import '../../../shared/constants/colors.dart';
@@ -43,11 +41,10 @@ class CategoryDetailScreen extends StatelessWidget {
         }
 
         final category = state.model.categories[categoryIndex];
-        final expensesList = state.model.transactions
+        final recentTransactionsList = state.model.transactions
             .where(
               (expense) =>
-                  expense.categoryId == categoryId &&
-                  expense.type == TransactionType.expense,
+                  expense.categoryId == categoryId
             )
             .toList();
 
@@ -159,7 +156,9 @@ class CategoryDetailScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(width: AppSpacing.xs),
                                     Text(
-                                      "/ \$${category.category.budgetAmount?.toInt() ?? 0}",
+                                      category.category.hasBudgetAmount
+                                          ? "/ \$${category.category.budgetAmount?.toInt() ?? 0}"
+                                          : '',
                                       style: AppTextStyles.bodyMedium.copyWith(
                                         color: AppColors.textSecondary,
                                       ),
@@ -215,12 +214,12 @@ class CategoryDetailScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.md),
 
                   // Expenses List
-                  expensesList.isNotEmpty
+                  recentTransactionsList.isNotEmpty
                       ? Expanded(
                           child: ListView.separated(
-                            itemCount: expensesList.length,
+                            itemCount: recentTransactionsList.length,
                             itemBuilder: (context, index) {
-                              final expense = expensesList[index];
+                              final expense = recentTransactionsList[index];
                               return TransactionListItem(model: expense);
                             },
                             separatorBuilder: (context, index) =>
@@ -229,13 +228,12 @@ class CategoryDetailScreen extends StatelessWidget {
                         )
                       : Center(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const SizedBox(height: AppSpacing.xxl),
-                              Lottie.asset(
-                                'assets/lottie/no_data.json',
-                                width: 250,
-                                height: 250,
-                                fit: BoxFit.contain,
+                              Text(
+                                l10n.noRecentTransactionsFound,
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ],
                           ),

@@ -1,4 +1,7 @@
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -124,7 +127,7 @@ class CategoryChartSection extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            '\$ ${item.totalSpending.toString()}',
+                            '${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol} ${item.totalSpending.toString()}',
                             style: AppTextStyles.bodySmall.copyWith(
                               fontSize: 10,
                             ),

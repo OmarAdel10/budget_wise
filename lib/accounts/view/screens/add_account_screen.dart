@@ -9,6 +9,7 @@ import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/accounts/view/widgets/bank_picker_bottom_sheet.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/utils/string_cases.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
@@ -37,7 +38,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
   final GlobalKey<FormState> _formKeyScreen1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyScreen2 = GlobalKey<FormState>();
   AccountType selectedAccount = AccountType.cash;
-  String selectedCurrency = 'EGP';
+  String? selectedCurrency;
   String? selectedBankName;
   List<String>? selectedBankSenderIds;
 
@@ -47,6 +48,12 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
   CardBrand selectedCardBrand = CardBrand.visa;
   bool isCardValid = false;
   bool isExpiryValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCurrency = context.read<SettingsBloc>().state.model.defaultCurrency;
+  }
 
   void _determineCardType(String cleanedCardNumber) {
     if (cleanedCardNumber.isNotEmpty) {
@@ -146,7 +153,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           balance:
               double.tryParse(balanceController.text.replaceAll(',', '')) ??
               0.0,
-          currency: selectedCurrency,
+          currency: selectedCurrency!,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
@@ -182,7 +189,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                 balanceController.text.replaceAll(',', '').trim(),
               ) ??
               0.0,
-          currency: selectedCurrency,
+          currency: selectedCurrency!,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           cardBankName: selectedBankName?.toTitleCase().trim(),
@@ -502,7 +509,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                           backgroundColor: Colors.transparent,
                           isScrollControlled: true,
                           builder: (context) => CurrencyPickerBottomSheet(
-                            selectedCurrency: selectedCurrency,
+                            selectedCurrency: selectedCurrency!,
                             onCurrencySelected: (currency) {
                               setState(() => selectedCurrency = currency);
                             },
@@ -524,7 +531,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              selectedCurrency,
+                              selectedCurrency!,
                               style: AppTextStyles.bodySmall.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -554,19 +561,6 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       color: AppColors.textSecondary,
                     ),
                   ),
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return l10n.initialBalanceCantLeftEmpty;
-                  //   }
-
-                  //   final cleanValue = value.replaceAll(',', '');
-                  //   if (double.tryParse(cleanValue) == null ||
-                  //       double.tryParse(cleanValue)! < 0) {
-                  //     return l10n.youShouldEnterAValidBalance;
-                  //   }
-
-                  //   return null;
-                  // },
                 ),
               ],
             ),

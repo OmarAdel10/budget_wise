@@ -1,4 +1,6 @@
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -97,7 +99,7 @@ class TrendChartSection extends StatelessWidget {
                           axisLine: const AxisLine(width: 0),
                           labelStyle: AppTextStyles.bodySmall,
                           numberFormat: NumberFormat.compactCurrency(
-                            symbol: '\$',
+                            symbol: NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol,
                             decimalDigits: 0,
                           ),
                         ),

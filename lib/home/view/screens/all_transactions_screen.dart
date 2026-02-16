@@ -3,6 +3,7 @@ import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view_model/home_event.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -123,8 +124,7 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
                       ),
                     ),
                     Text(
-                      // '\$${state.model.totalIncome.toStringAsFixed(0)}',
-                      '\$$income',
+                      '${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol} ${income.toStringAsFixed(1)}',
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: AppColors.primaryAccent,
                         fontWeight: FontWeight.bold,
@@ -147,8 +147,7 @@ class _AllTransactionsScreenState extends State<AllTransactionsScreen> {
                       ),
                     ),
                     Text(
-                      // '\$${state.model.totalExpenses.toStringAsFixed(0)}',
-                      '\$$expenses',
+                      '${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol} ${expenses.toStringAsFixed(1)}',
                       style: AppTextStyles.bodyLarge.copyWith(
                         color: AppColors.danger,
                         fontWeight: FontWeight.bold,

@@ -77,6 +77,7 @@ class _PendingSmsTransactionsScreenState
                       onConfirm: (selectedAccount, selectedCategory) {
                         final newTransaction = TransactionModel(
                           transactionAmount: draft.extractedAmount ?? 0.0,
+                          transactionCurrency: draft.extractedCurrency ?? 'EGP',
                           transactionDate:
                               draft.extractedDate ?? DateTime.now(),
                           transactionTitle:

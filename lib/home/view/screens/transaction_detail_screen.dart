@@ -75,7 +75,7 @@ class TransactionDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         Text(
-                          "\$${transaction.transactionAmount}",
+                          "${NumberFormat.currency(name: transaction.transactionCurrency).currencySymbol}${transaction.transactionAmount}",
                           style: AppTextStyles.heading1.copyWith(
                             color: transaction.type == TransactionType.income
                                 ? AppColors.primaryAccent

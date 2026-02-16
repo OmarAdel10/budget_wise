@@ -1,3 +1,4 @@
+import 'package:budget_wise/accounts/view/widgets/currency_picker_bottom_sheet.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/home/data/models/transaction_model.dart';
@@ -6,6 +7,7 @@ import 'package:budget_wise/home/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/transaction_event.dart';
 import 'package:budget_wise/home/view_model/transaction_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +39,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   late DateTime _selectedDate;
   String? _selectedCategoryId;
   String? _selectedAccountId;
+  String? _selectedCurrency;
   late TransactionType _selectedType;
 
   bool get _isEditMode => widget.transactionToEdit != null;
@@ -48,6 +51,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       final trans = widget.transactionToEdit!;
       _titleController.text = trans.transactionTitle;
       _amountController.text = trans.transactionAmount.toStringAsFixed(2);
+      _selectedCurrency = trans.transactionCurrency;
       _notesController.text = trans.transactionNotes ?? '';
       _selectedDate = trans.transactionDate;
       _selectedCategoryId = trans.categoryId;
@@ -56,6 +60,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     } else {
       _selectedDate = DateTime.now();
       _selectedType = TransactionType.expense;
+      _selectedCurrency = context.read<SettingsBloc>().state.model.defaultCurrency;
     }
   }
 
@@ -149,6 +154,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         type: _selectedType,
         transactionTitle: title,
         transactionAmount: amount,
+        transactionCurrency: _selectedCurrency ?? 'EGP',
         categoryId: _selectedCategoryId,
         accountId: _selectedAccountId,
         transactionDate: _selectedDate,
@@ -164,6 +170,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         type: _selectedType,
         transactionTitle: title,
         transactionAmount: amount,
+        transactionCurrency: _selectedCurrency ?? 'EGP',
         categoryId: _selectedCategoryId!,
         accountId: _selectedAccountId!,
         transactionDate: _selectedDate,
@@ -247,6 +254,51 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
                       ThousandsSeparatorInputFormatter(),
                     ],
+                    prefixIcon: GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (context) => CurrencyPickerBottomSheet(
+                            selectedCurrency: _selectedCurrency!,
+                            onCurrencySelected: (currency) {
+                              setState(() => _selectedCurrency = currency);
+                            },
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(8),
+                        width: 80,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: AppColors.cardBackground,
+                          borderRadius: BorderRadius.circular(
+                            AppSpacing.radiusSm,
+                          ),
+                          border: Border.all(color: AppColors.borderColor),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              _selectedCurrency!,
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              PhosphorIcons.caretDown(PhosphorIconsStyle.bold),
+                              size: 14,
+                              color: AppColors.textPrimary,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    
                   ),
                   const SizedBox(height: AppSpacing.lg),
 

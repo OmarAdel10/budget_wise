@@ -1741,6 +1741,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Subscriptions'**
   String get totalSubscriptions;
+
+  /// No description provided for @defaultCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Currency'**
+  String get defaultCurrency;
+
+  /// No description provided for @noRecentTransactionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Recent Transactions Found.'**
+  String get noRecentTransactionsFound;
 }
 
 class _AppLocalizationsDelegate

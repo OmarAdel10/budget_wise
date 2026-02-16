@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
@@ -45,6 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // State for new pages
   double _incomeAmount = 0.0;
   String? _incomeCategoryTitle;
+  String? _selectedCurrency;
   List<CategoryModel> _selectedCategories = [];
 
   @override
@@ -75,7 +75,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       } else if (result == 'switch_to_login') {
         _openAuthFlow(startWithLogin: true);
       } else if (result == true) {
-        log("Returned from Auth Screen after successful login/signup.");
         _pageController.nextPage(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
@@ -89,7 +88,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           description: Text(l10n.continueOnboarding),
         );
       } else {
-        log("Returned from Auth Screen without successful login.");
         toastification.show(
           autoCloseDuration: const Duration(seconds: 3),
           context: context,
@@ -164,7 +162,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _finishOnboarding() {
     final l10n = AppLocalizations.of(context)!;
-    log("Onboarding Completed!");
 
     // Generate IDs
     final accountId = const Uuid().v4();
@@ -231,6 +228,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       final transaction = TransactionModel(
         type: TransactionType.income,
         transactionAmount: _incomeAmount,
+        transactionCurrency: _selectedCurrency ?? 'EGP',
         transactionTitle: '${l10n.income} ${date.format(DateTime.now())}',
         transactionDate: DateTime.now(),
         categoryId: incomeCategoryId,
@@ -240,6 +238,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       );
       context.read<TransactionBloc>().add(
         TransactionEventCreateTransaction(transaction),
+      );
+
+      context.read<SettingsBloc>().add(
+        SettingsEventUpdateDefaultCurrency(
+          newDefaultCurrency: _selectedCurrency ?? 'EGP',
+        ),
       );
     }
 
@@ -315,10 +319,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                   IncomeSetupPage(
-                    onDataChanged: (amount, categoryTitle) {
+                    onDataChanged: (amount, categoryTitle, selectedCurrency) {
                       setState(() {
                         _incomeAmount = amount;
                         _incomeCategoryTitle = categoryTitle;
+                        _selectedCurrency = selectedCurrency;
                       });
                     },
                   ),

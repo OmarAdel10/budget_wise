@@ -273,5 +273,7 @@
   "draftSaved": "تم حفظ المسودة",
   "draftDeleted": "تم حذف المسودة",
   "time": "الوقت",
-  "totalSubscriptions": "إجمالي الاشتراكات"
+  "totalSubscriptions": "إجمالي الاشتراكات",
+  "defaultCurrency": "العملة الافتراضية",
+  "noRecentTransactionsFound": "لم يتم العثور على معاملات حديثة."
 }

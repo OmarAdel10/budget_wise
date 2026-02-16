@@ -42,6 +42,14 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
         ),
       );
     });
+
+    on<SettingsEventUpdateDefaultCurrency>((event, emit) {
+      emit(
+        SettingsStateSuccess(
+          state.model.copyWith(defaultCurrency: event.newDefaultCurrency),
+        ),
+      );
+    });
   }
 
   @override

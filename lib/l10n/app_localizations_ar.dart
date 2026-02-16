@@ -851,4 +851,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get totalSubscriptions => 'إجمالي الاشتراكات';
+
+  @override
+  String get defaultCurrency => 'العملة الافتراضية';
+
+  @override
+  String get noRecentTransactionsFound => 'لم يتم العثور على معاملات حديثة.';
 }

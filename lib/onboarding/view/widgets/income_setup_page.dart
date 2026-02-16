@@ -1,3 +1,4 @@
+import 'package:budget_wise/accounts/view/widgets/currency_picker_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import '../../../shared/constants/colors.dart';
@@ -10,7 +11,8 @@ import 'package:budget_wise/home/data/models/transaction_model.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class IncomeSetupPage extends StatefulWidget {
-  final Function(double amount, String categoryTitle) onDataChanged;
+  final Function(double amount, String categoryTitle, String selectedCurrency)
+  onDataChanged;
 
   const IncomeSetupPage({super.key, required this.onDataChanged});
 
@@ -23,11 +25,13 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
   final TextEditingController _amountController = TextEditingController();
   List<CategoryModel> _incomeCategories = [];
   String? _selectedCategoryTitle;
+  String? _selectedCurrency;
 
   @override
   void initState() {
     super.initState();
     _amountController.addListener(_updateData);
+    _selectedCurrency = 'EGP';
     _initializeIncomeCategories();
   }
 
@@ -62,7 +66,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
     final amount =
         double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0.0;
     if (_selectedCategoryTitle != null) {
-      widget.onDataChanged(amount, _selectedCategoryTitle!);
+      widget.onDataChanged(amount, _selectedCategoryTitle!, _selectedCurrency!);
     }
   }
 
@@ -130,9 +134,47 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
             controller: _amountController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [ThousandsSeparatorInputFormatter()],
-            suffixIcon: const Icon(
-              Icons.attach_money,
-              color: AppColors.textSecondary,
+            prefixIcon: GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (context) => CurrencyPickerBottomSheet(
+                    selectedCurrency: _selectedCurrency!,
+                    onCurrencySelected: (currency) {
+                      setState(() => _selectedCurrency = currency);
+                    },
+                  ),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                width: 80,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.cardBackground,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  border: Border.all(color: AppColors.borderColor),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _selectedCurrency!,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      PhosphorIcons.caretDown(PhosphorIconsStyle.bold),
+                      size: 14,
+                      color: AppColors.textPrimary,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
 
