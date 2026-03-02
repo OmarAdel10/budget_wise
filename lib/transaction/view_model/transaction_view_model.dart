@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
-import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
-import 'package:budget_wise/home/view_model/transaction_event.dart';
-import 'package:budget_wise/home/view_model/transaction_state.dart';
+import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
+import 'package:budget_wise/transaction/view_model/transaction_event.dart';
+import 'package:budget_wise/transaction/view_model/transaction_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -40,7 +40,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
 
         final updatedList = [newTransaction, ...state.transactionsList];
 
-        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
 
         // Update Account Balance
         final amountDelta = newTransaction.type == TransactionType.income
@@ -91,7 +91,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
               : transaction;
         }).toList();
 
-        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
 
         // Update Account Balance
         if (oldTransaction.accountId == updatedTransaction.accountId) {
@@ -175,7 +175,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           }
           return transaction;
         }).toList();
-        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
       } catch (e) {
         emit(
           state.copyWith(
@@ -216,7 +216,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           (a, b) => b.transactionDate.compareTo(a.transactionDate),
         );
 
-        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
       } catch (e) {
         emit(
           state.copyWith(
@@ -236,7 +236,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             .where((transaction) => transaction.id != event.transactionId)
             .toList();
 
-        emit(state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
 
         // Reverse Account Balance
         final reversalDelta = transactionToDelete.type == TransactionType.income
@@ -378,6 +378,62 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       }).toList();
       emit(state.copyWith(pendingSmsTransactions: updatedDrafts));
     });
+
+    on<TransactionEventSelectAccount>((event, emit) {
+      final newState = _calculateAccountDetails(
+        accountId: event.accountId,
+        transactions: state.transactionsList,
+        currentState: state,
+      );
+      emit(newState.copyWith(selectedAccountId: event.accountId));
+    });
+  }
+
+  TransactionState _calculateAccountDetails({
+    required String? accountId,
+    required List<TransactionModel> transactions,
+    required TransactionState currentState,
+  }) {
+    if (accountId == null || accountId.isEmpty) {
+      return currentState.copyWith(
+        recentTransactions: [],
+        currentAccountBalance: 0.0,
+      );
+    }
+
+    final accountTransactions =
+        transactions.where((t) => t.accountId == accountId).toList();
+
+    final recent = accountTransactions.take(5).toList();
+
+    final balance = accountTransactions.fold<double>(0.0, (sum, t) {
+      return sum +
+          (t.type == TransactionType.income
+              ? t.transactionAmount
+              : -t.transactionAmount);
+    });
+
+    DateTime? lastUpdated;
+    if (accountTransactions.isNotEmpty) {
+      lastUpdated = accountTransactions
+          .map((t) => t.updatedAt)
+          .reduce((a, b) => a.isAfter(b) ? a : b);
+    }
+
+    return currentState.copyWith(
+      recentTransactions: recent,
+      currentAccountBalance: balance,
+      lastAccountUpdatedAt: lastUpdated,
+    );
+  }
+
+  void _emitUpdatedState(Emitter<TransactionState> emit, TransactionState newState) {
+    final stateWithDetails = _calculateAccountDetails(
+      accountId: newState.selectedAccountId,
+      transactions: newState.transactionsList,
+      currentState: newState,
+    );
+    emit(stateWithDetails);
   }
 
   @override

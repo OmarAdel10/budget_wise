@@ -1,9 +1,10 @@
-import 'package:budget_wise/accounts/view/widgets/currency_picker_bottom_sheet.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/shared/widgets/currency_picker_bottom_sheet.dart';
+import 'package:budget_wise/transaction/data/model/transaction_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -115,22 +116,77 @@ class _EditDraftBottomSheetState extends State<EditDraftBottomSheet> {
 
           // Title Field
           _buildLabel(l10n.title),
-          _buildTextField(
+          CustomTextField(
             controller: titleController,
-            hint: widget.title,
-            icon: PhosphorIcons.tag(),
-            isAmount: false,
+            hintText: widget.title,
+            prefixIcon: Icon(
+              PhosphorIcons.tag(),
+              color: AppColors.textSecondary,
+              size: 20,
+            ),
+            activeColor: AppColors.primaryAccent,
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.close, size: 18),
+              onPressed: () => titleController.clear(),
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
 
           // Amount Field
           _buildLabel(l10n.transactionAmount),
-          _buildTextField(
+          CustomTextField(
             controller: amountController,
-            hint: widget.amount.toString(),
-            // icon: PhosphorIcons.currencyDollar(),
-            isAmount: true,
+            hintText: widget.amount.toString(),
+            activeColor: AppColors.primaryAccent,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            prefixIcon: GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (context) => CurrencyPickerBottomSheet(
+                    selectedCurrency: selectedCurrency,
+                    onCurrencySelected: (currency) {
+                      setState(() => selectedCurrency = currency);
+                    },
+                  ),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                width: 80,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.cardBackground,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  border: Border.all(color: AppColors.borderColor),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      selectedCurrency,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      PhosphorIconsBold.caretDown,
+                      size: 14,
+                      color: AppColors.textPrimary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.close, size: 18),
+              onPressed: () => amountController.clear(),
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -234,80 +290,6 @@ class _EditDraftBottomSheetState extends State<EditDraftBottomSheet> {
         style: AppTextStyles.bodySmall.copyWith(
           color: AppColors.textSecondary,
           fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    IconData? icon,
-    required bool isAmount,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.inputBackground,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        style: AppTextStyles.bodyLarge,
-        decoration: InputDecoration(
-          prefixIcon: isAmount
-              ? GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      isScrollControlled: true,
-                      builder: (context) => CurrencyPickerBottomSheet(
-                        selectedCurrency: selectedCurrency,
-                        onCurrencySelected: (currency) {
-                          setState(() => selectedCurrency = currency);
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(8),
-                    width: 80,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                      border: Border.all(color: AppColors.borderColor),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          selectedCurrency,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          PhosphorIcons.caretDown(PhosphorIconsStyle.bold),
-                          size: 14,
-                          color: AppColors.textPrimary,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : Icon(icon, color: AppColors.textSecondary, size: 20),
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.close, size: 18),
-            onPressed: () => controller.clear(),
-            color: AppColors.textSecondary,
-          ),
-          hintText: hint,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 14),
         ),
       ),
     );

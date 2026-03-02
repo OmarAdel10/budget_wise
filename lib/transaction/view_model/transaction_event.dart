@@ -1,5 +1,5 @@
-import 'package:budget_wise/accounts/data/models/sms_draft_model.dart'; // New import
-import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/transaction/data/model/sms_draft_model.dart'; // New import
+import 'package:budget_wise/transaction/data/model/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class TransactionEvent extends Equatable {
@@ -38,14 +38,6 @@ class TransactionEventSyncUnsynced extends TransactionEvent {
   @override
   List<Object?> get props => [];
 }
-
-// class TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly
-//     extends TransactionEvent {
-//   const TransactionEventUpdateUserIdInAllTransactionsAfterFirstTimeLoginOnly();
-
-//   @override
-//   List<Object?> get props => [];
-// }
 
 class TransactionEventFetchAll extends TransactionEvent {
   const TransactionEventFetchAll();
@@ -116,4 +108,13 @@ class TransactionEventUpdateSmsDraft extends TransactionEvent {
 
   @override
   List<Object?> get props => [updatedDraft];
+}
+
+class TransactionEventSelectAccount extends TransactionEvent {
+  final String? accountId;
+
+  const TransactionEventSelectAccount(this.accountId);
+
+  @override
+  List<Object?> get props => [accountId];
 }
