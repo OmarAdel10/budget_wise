@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'dart:developer';
-import 'package:budget_wise/home/data/models/category_model.dart';
-import 'package:budget_wise/home/data/repositories/category_repository.dart';
-import 'package:budget_wise/home/view_model/category_event.dart';
-import 'package:budget_wise/home/view_model/category_state.dart';
+import 'package:budget_wise/category/data/model/category_model.dart';
+import 'package:budget_wise/category/data/repositories/category_repository.dart';
+import 'package:budget_wise/category/view_model/category_event.dart';
+import 'package:budget_wise/category/view_model/category_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -12,16 +13,19 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
   final SettingsBloc settingsBloc;
   final AuthRepository authRepository;
   final CategoryRepository categoryRepository;
+  late final StreamSubscription _authSubscription;
+
   CategoryBloc({
     required this.settingsBloc,
     required this.authRepository,
     required this.categoryRepository,
   }) : super(const CategoryStateInitial(categoriesList: [])) {
-    authRepository.authStateChanges.listen((user) {
+    _authSubscription = authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const CategoryEventFetchAll());
       }
     });
+
     on<CategoryEventCreateCategory>((event, emit) {
       final user = authRepository.currentUser;
       try {
@@ -291,6 +295,12 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
         );
       }
     });
+  }
+
+  @override
+  Future<void> close() {
+    _authSubscription.cancel();
+    return super.close();
   }
 
   @override

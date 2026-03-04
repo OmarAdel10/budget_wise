@@ -1,5 +1,5 @@
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/home/data/models/category_model.dart';
+import 'package:budget_wise/category/data/model/category_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CategoryRepository {
@@ -35,20 +35,20 @@ class CategoryRepository {
     }
   }
 
-  Future<List<CategoryModel>> getAllCategories() async {
-    final CollectionReference<CategoryModel> collection =
-        getCategoriesCollection();
-    final user = authRepository.currentUser;
-    if (user != null) {
-      final querySnapShot = await collection
-          .where('userId', isEqualTo: user.uid)
-          .where('type', isEqualTo: 'expense')
-          .orderBy('index')
-          .get();
-      return querySnapShot.docs.map((doc) => doc.data()).toList();
-    }
-    return [];
-  }
+  // Future<List<CategoryModel>> getAllCategories() async {
+  //   final CollectionReference<CategoryModel> collection =
+  //       getCategoriesCollection();
+  //   final user = authRepository.currentUser;
+  //   if (user != null) {
+  //     final querySnapShot = await collection
+  //         .where('userId', isEqualTo: user.uid)
+  //         .where('type', isEqualTo: 'expense')
+  //         .orderBy('index')
+  //         .get();
+  //     return querySnapShot.docs.map((doc) => doc.data()).toList();
+  //   }
+  //   return [];
+  // }
 
   Future<List<CategoryModel>> fetchAllCategories() async {
     final CollectionReference<CategoryModel> collection =

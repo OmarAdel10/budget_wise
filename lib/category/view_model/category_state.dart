@@ -1,4 +1,4 @@
-import 'package:budget_wise/home/data/models/category_model.dart';
+import 'package:budget_wise/category/data/model/category_model.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class CategoryState extends Equatable {

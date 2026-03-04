@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/transaction/data/model/transaction_model.dart';
 
 class CategoryModel {
   final String id;
