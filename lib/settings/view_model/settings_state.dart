@@ -3,30 +3,31 @@ import 'package:equatable/equatable.dart';
 
 sealed class SettingsState extends Equatable {
   final SettingsModel model;
-  const SettingsState(this.model);
+  final String currencySymbol;
+  const SettingsState(this.model, this.currencySymbol);
 
   @override
-  List<Object?> get props => [model];
+  List<Object?> get props => [model, currencySymbol];
 }
 
 class SettingsInitial extends SettingsState {
-  const SettingsInitial(super.model);
+  const SettingsInitial(super.model, super.currencySymbol);
 
   @override
-  List<Object?> get props => [model];
+  List<Object?> get props => [model, currencySymbol];
 }
 
 class SettingsStateSuccess extends SettingsState {
-  const SettingsStateSuccess(super.model);
+  const SettingsStateSuccess(super.model, super.currencySymbol);
 
   @override
-  List<Object?> get props => [model];
+  List<Object?> get props => [model, currencySymbol];
 }
 
 class SettingsStateError extends SettingsState {
   final String message;
-  const SettingsStateError(this.message, super.model);
+  const SettingsStateError(this.message, super.model, super.currencySymbol);
 
   @override
-  List<Object?> get props => [message, model];
+  List<Object?> get props => [message, model, currencySymbol];
 }

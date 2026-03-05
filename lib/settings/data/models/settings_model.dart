@@ -63,7 +63,7 @@ class SettingsModel extends Equatable {
           map['lastForegroundActivityDateTime'] != null
           ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
           : null,
-      defaultCurrency: map['defaultCurrency'] as String
+      defaultCurrency: map['defaultCurrency'] as String,
     );
   }
 

@@ -4,52 +4,65 @@ import 'package:budget_wise/settings/data/models/settings_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:intl/intl.dart';
 
 class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
-  SettingsBloc() : super(SettingsInitial(SettingsModel())) {
-    on<SettingsEventLocalAuth>((event, emit) {
-      emit(
-        SettingsStateSuccess(
-          state.model.copyWith(localAuthEnabled: !state.model.localAuthEnabled),
+  SettingsBloc()
+    : super(
+        SettingsInitial(
+          SettingsModel(),
+          _getCurrencySymbol(SettingsModel().defaultCurrency),
         ),
+      ) {
+    on<SettingsEventLocalAuth>((event, emit) {
+      final newModel = state.model.copyWith(
+        localAuthEnabled: !state.model.localAuthEnabled,
       );
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
     on<SettingsEventLanguageChange>((event, emit) {
-      emit(
-        SettingsStateSuccess(state.model.copyWith(language: event.language)),
-      );
+      final newModel = state.model.copyWith(language: event.language);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
     on<SettingsEventOnBoardingFinished>((event, emit) {
-      emit(
-        SettingsStateSuccess(state.model.copyWith(isOnboardingCompleted: true)),
-      );
+      final newModel = state.model.copyWith(isOnboardingCompleted: true);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
     on<SettingsEventLoggedIn>((event, emit) {
-      emit(SettingsStateSuccess(state.model.copyWith(hasLoggedIn: true)));
+      final newModel = state.model.copyWith(hasLoggedIn: true);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
     on<SettingsEventLoggedOut>((event, emit) {
-      emit(SettingsStateSuccess(state.model.copyWith(hasLoggedIn: false)));
+      final newModel = state.model.copyWith(hasLoggedIn: false);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
     on<SettingsEventUpdateLastForegroundActivityDateTime>((event, emit) {
-      emit(
-        SettingsStateSuccess(
-          state.model.copyWith(lastForegroundActivityDateTime: event.dateTime),
-        ),
+      final newModel = state.model.copyWith(
+        lastForegroundActivityDateTime: event.dateTime,
       );
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
     on<SettingsEventUpdateDefaultCurrency>((event, emit) {
+      final newModel = state.model.copyWith(
+        defaultCurrency: event.newDefaultCurrency,
+      );
       emit(
         SettingsStateSuccess(
-          state.model.copyWith(defaultCurrency: event.newDefaultCurrency),
+          newModel,
+          _getCurrencySymbol(newModel.defaultCurrency),
         ),
       );
     });
+  }
+
+  static String _getCurrencySymbol(String currencyCode) {
+    return NumberFormat.currency(name: currencyCode).currencySymbol;
   }
 
   @override
@@ -58,7 +71,10 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       final model = SettingsModel.fromMap(
         json['settingsModel'] as Map<String, dynamic>,
       );
-      return SettingsStateSuccess(model);
+      return SettingsStateSuccess(
+        model,
+        _getCurrencySymbol(model.defaultCurrency),
+      );
     } catch (e) {
       log('Error During Serialization: $e');
       return null;
