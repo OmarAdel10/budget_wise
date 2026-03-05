@@ -1,7 +1,7 @@
 import 'package:budget_wise/home/data/models/home_model.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
-import 'package:budget_wise/home/view_model/category_view_model.dart';
-import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/statistics/data/models/statistics_model.dart';
 import 'package:budget_wise/statistics/view_model/statistics_event.dart';
 import 'package:budget_wise/statistics/view_model/statistics_state.dart';
@@ -83,7 +83,13 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         final incomeBreakdown = allCategories
             .where((cat) => cat.type == TransactionType.income)
             .map((cat) {
-              return CategoriesWithSpending(cat, incomeMap[cat.id] ?? 0.0);
+              final amount = incomeMap[cat.id] ?? 0.0;
+              final percentage = income > 0 ? (amount / income) * 100 : 0.0;
+              return CategoriesWithSpending(
+                cat,
+                amount,
+                percentage: percentage,
+              );
             })
             .where((element) => element.totalSpending > 0)
             .toList();
@@ -92,7 +98,13 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         final expenseBreakdown = allCategories
             .where((cat) => cat.type == TransactionType.expense)
             .map((cat) {
-              return CategoriesWithSpending(cat, expenseMap[cat.id] ?? 0.0);
+              final amount = expenseMap[cat.id] ?? 0.0;
+              final percentage = expenses > 0 ? (amount / expenses) * 100 : 0.0;
+              return CategoriesWithSpending(
+                cat,
+                amount,
+                percentage: percentage,
+              );
             })
             .where((element) => element.totalSpending > 0)
             .toList();
@@ -135,6 +147,11 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         expenseBreakdown: expenseBreakdown,
       );
 
+      emit(StatisticsStateSuccess(updatedModel));
+    });
+
+    on<StatisticsEventToggleType>((event, emit) {
+      final updatedModel = state.model.copyWith(toggleType: event.toggleType);
       emit(StatisticsStateSuccess(updatedModel));
     });
   }

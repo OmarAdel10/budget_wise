@@ -99,7 +99,13 @@ class TrendChartSection extends StatelessWidget {
                           axisLine: const AxisLine(width: 0),
                           labelStyle: AppTextStyles.bodySmall,
                           numberFormat: NumberFormat.compactCurrency(
-                            symbol: NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol,
+                            symbol: NumberFormat.currency(
+                              name: context
+                                  .read<SettingsBloc>()
+                                  .state
+                                  .model
+                                  .defaultCurrency,
+                            ).currencySymbol,
                             decimalDigits: 0,
                           ),
                         ),

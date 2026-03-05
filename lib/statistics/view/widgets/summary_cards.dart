@@ -1,12 +1,12 @@
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/widgets/summary_card.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
+import 'package:budget_wise/transaction/view/screens/transaction_type_detail_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
-import '../../../shared/constants/text_styles.dart';
 
 class SummaryCards extends StatelessWidget {
   final double totalIncome;
@@ -25,39 +25,41 @@ class SummaryCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final currencySymbol = NumberFormat.currency(
+      name: context.read<SettingsBloc>().state.model.defaultCurrency,
+    ).currencySymbol;
+
     return Column(
       children: [
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
+              child: shared.SummaryCard(
+                isCompact: true,
+                title: l10n.totalIncome,
+                amount: "$currencySymbol ${totalIncome.toStringAsFixed(0)}",
+                amountColor: AppColors.income,
                 onTap: () {
                   Navigator.of(context).pushNamed(
                     TransactionTypeDetailScreen.routeName,
                     arguments: {'type': 'income'},
                   );
                 },
-                child: SummaryCard(
-                  title: l10n.totalIncome,
-                  amount: totalIncome,
-                  amountColor: AppColors.income,
-                ),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: GestureDetector(
+              child: shared.SummaryCard(
+                isCompact: true,
+                title: l10n.totalExpenses,
+                amount: "$currencySymbol ${totalExpenses.toStringAsFixed(0)}",
+                amountColor: AppColors.expense,
                 onTap: () {
                   Navigator.of(context).pushNamed(
                     TransactionTypeDetailScreen.routeName,
                     arguments: {'type': 'outcome'},
                   );
                 },
-                child: SummaryCard(
-                  title: l10n.totalExpenses,
-                  amount: totalExpenses,
-                  amountColor: AppColors.expense,
-                ),
               ),
             ),
           ],
@@ -66,64 +68,26 @@ class SummaryCards extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: SummaryCard(
+              child: shared.SummaryCard(
+                isCompact: true,
                 title: l10n.currentSavings,
-                amount: totalSavings,
+                amount: "$currencySymbol ${totalSavings.toStringAsFixed(0)}",
                 amountColor: AppColors.savings,
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: SummaryCard(
+              child: shared.SummaryCard(
+                isCompact: true,
                 title: l10n.totalSubscriptions,
-                amount: totalSubscriptions,
+                amount:
+                    "$currencySymbol ${totalSubscriptions.toStringAsFixed(0)}",
                 amountColor: AppColors.categoryPurple,
               ),
             ),
           ],
         ),
       ],
-    );
-  }
-}
-
-class SummaryCard extends StatelessWidget {
-  final String title;
-  final double amount;
-  final Color amountColor;
-
-  const SummaryCard({
-    super.key,
-    required this.title,
-    required this.amount,
-    required this.amountColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            "${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol} ${amount.toStringAsFixed(0)}",
-            style: AppTextStyles.heading3.copyWith(color: amountColor),
-          ),
-        ],
-      ),
     );
   }
 }
