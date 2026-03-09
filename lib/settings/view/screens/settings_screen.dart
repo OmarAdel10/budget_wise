@@ -1,6 +1,6 @@
 import 'package:budget_wise/shared/constants/app_constants.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/auth/data/models/user_model.dart';
+import 'package:budget_wise/auth/utils/auth_constants.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';

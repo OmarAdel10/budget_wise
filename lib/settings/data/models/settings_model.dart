@@ -10,6 +10,8 @@ class SettingsModel extends Equatable {
   final bool hasLoggedIn;
   final DateTime? lastForegroundActivityDateTime;
   final String defaultCurrency;
+  final String? passcode;
+  final bool useBiometrics;
 
   const SettingsModel({
     this.localAuthEnabled = false,
@@ -18,7 +20,11 @@ class SettingsModel extends Equatable {
     this.hasLoggedIn = false,
     this.lastForegroundActivityDateTime,
     this.defaultCurrency = 'EGP',
+    this.passcode,
+    this.useBiometrics = true,
   });
+
+  bool get isPasscodeSet => passcode != null && passcode!.length == 4;
 
   SettingsModel copyWith({
     bool? localAuthEnabled,
@@ -28,6 +34,8 @@ class SettingsModel extends Equatable {
     bool? hasLoggedIn,
     DateTime? lastForegroundActivityDateTime,
     String? defaultCurrency,
+    String? passcode,
+    bool? useBiometrics,
   }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
@@ -38,6 +46,8 @@ class SettingsModel extends Equatable {
       lastForegroundActivityDateTime:
           lastForegroundActivityDateTime ?? this.lastForegroundActivityDateTime,
       defaultCurrency: defaultCurrency ?? this.defaultCurrency,
+      passcode: passcode ?? this.passcode,
+      useBiometrics: useBiometrics ?? this.useBiometrics,
     );
   }
 
@@ -47,9 +57,11 @@ class SettingsModel extends Equatable {
       'language': language,
       'isOnboardingCompleted': isOnboardingCompleted,
       'hasLoggedIn': hasLoggedIn,
-      'lastForegroundActivityDateTime': lastForegroundActivityDateTime
-          ?.toIso8601String(),
+      'lastForegroundActivityDateTime':
+          lastForegroundActivityDateTime?.toIso8601String(),
       'defaultCurrency': defaultCurrency,
+      'passcode': passcode,
+      'useBiometrics': useBiometrics,
     };
   }
 
@@ -61,9 +73,11 @@ class SettingsModel extends Equatable {
       hasLoggedIn: map['hasLoggedIn'] as bool,
       lastForegroundActivityDateTime:
           map['lastForegroundActivityDateTime'] != null
-          ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
-          : null,
+              ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
+              : null,
       defaultCurrency: map['defaultCurrency'] as String,
+      passcode: map['passcode'] as String?,
+      useBiometrics: map['useBiometrics'] as bool? ?? true,
     );
   }
 
@@ -74,11 +88,13 @@ class SettingsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    localAuthEnabled,
-    language,
-    isOnboardingCompleted,
-    hasLoggedIn,
-    lastForegroundActivityDateTime,
-    defaultCurrency,
-  ];
+        localAuthEnabled,
+        language,
+        isOnboardingCompleted,
+        hasLoggedIn,
+        lastForegroundActivityDateTime,
+        defaultCurrency,
+        passcode,
+        useBiometrics,
+      ];
 }

@@ -59,6 +59,18 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
         ),
       );
     });
+
+    on<SettingsEventUpdatePasscode>((event, emit) {
+      final newModel = state.model.copyWith(passcode: event.passcode);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
+
+    on<SettingsEventToggleBiometrics>((event, emit) {
+      final newModel = state.model.copyWith(
+        useBiometrics: !state.model.useBiometrics,
+      );
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
   }
 
   static String _getCurrencySymbol(String currencyCode) {

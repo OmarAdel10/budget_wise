@@ -33,3 +33,12 @@ class SettingsEventUpdateDefaultCurrency extends SettingsEvent {
 
   const SettingsEventUpdateDefaultCurrency({required this.newDefaultCurrency});
 }
+
+class SettingsEventUpdatePasscode extends SettingsEvent {
+  final String? passcode;
+  const SettingsEventUpdatePasscode(this.passcode);
+}
+
+class SettingsEventToggleBiometrics extends SettingsEvent {
+  const SettingsEventToggleBiometrics();
+}

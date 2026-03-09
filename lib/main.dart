@@ -21,6 +21,7 @@ import 'package:budget_wise/statistics/view_model/statistics_view_model.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
+import 'package:budget_wise/settings/view/screens/passcode_setup_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -352,6 +353,17 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: PendingSmsTransactionsScreen(),
+                );
+              case PasscodeSetupScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: const PasscodeSetupScreen(),
                 );
               default:
                 return null;

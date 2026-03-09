@@ -12,15 +12,13 @@ import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:toastification/toastification.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
-import '../../../shared/constants/text_styles.dart';
-import '../../../shared/widgets/custom_button.dart';
-import '../../../shared/widgets/custom_text_field.dart';
 import '../../../main_navigation/view/screens/main_screen.dart';
-import 'login_screen.dart';
+import '../widgets/signup_footer.dart';
+import '../widgets/signup_form.dart';
+import '../widgets/signup_header.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const String routeName = '/signup';
@@ -38,6 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -72,8 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () =>
-              Navigator.of(context).pop(), // Or navigate to welcome
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           l10n.createAccount,
@@ -85,207 +83,73 @@ class _SignUpScreenState extends State<SignUpScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthStateError) {
+              AppToast.show(
+                context,
+                type: AppToastType.error,
+                title: state.message,
+              );
+            }
+            if (state is AuthStateSuccess) {
+              context.read<SettingsBloc>().add(
+                const SettingsEventLoggedIn(),
+              );
+
+              context.read<TransactionBloc>().add(
+                const TransactionEventSyncPendingOnLogin(),
+              );
+
+              context.read<CategoryBloc>().add(
+                const CategoryEventSyncPendingOnLogin(),
+              );
+
+              context.read<AccountBloc>().add(
+                const AccountEventSyncPendingOnLogin(),
+              );
+
+              if (isFromOnboarding) {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
+              } else {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  MainScreen.routeName,
+                  (route) => false,
+                );
+              }
+            }
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                   ),
-                  child: IntrinsicHeight(
-                    child: BlocListener<AuthBloc, AuthState>(
-                      listener: (context, state) {
-                        if (state is AuthStateLoading) {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              scrollable: false,
-                              constraints: BoxConstraints(
-                                minHeight:
-                                    MediaQuery.sizeOf(context).height * 0.25,
-                                maxHeight:
-                                    MediaQuery.sizeOf(context).height * 0.25,
-                                minWidth:
-                                    MediaQuery.sizeOf(context).width * 0.75,
-                                maxWidth:
-                                    MediaQuery.sizeOf(context).width * 0.75,
-                              ),
-                              content: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                  const SizedBox(height: AppSpacing.md),
-                                  Center(child: Text(l10n.loading)),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is AuthStateError) {
-                          Navigator.of(context).pop();
-                          toastification.show(
-                            autoCloseDuration: const Duration(seconds: 3),
-                            context: context,
-                            type: ToastificationType.error,
-                            style: ToastificationStyle.flatColored,
-                            title: Text(state.message),
-                          );
-                        }
-                        if (state is AuthStateSuccess) {
-                          context.read<SettingsBloc>().add(
-                            const SettingsEventLoggedIn(),
-                          );
-
-                          context.read<TransactionBloc>().add(
-                            const TransactionEventSyncPendingOnLogin(),
-                          );
-
-                          context.read<CategoryBloc>().add(
-                            const CategoryEventSyncPendingOnLogin(),
-                          );
-
-                          context.read<AccountBloc>().add(
-                            const AccountEventSyncPendingOnLogin(),
-                          );
-
-                          if (isFromOnboarding) {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop(true);
-                          } else {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              MainScreen.routeName,
-                              (route) => false,
-                            );
-                          }
-                        }
-                      },
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 4.7,
-                            ),
-
-                            // Name Input
-                            CustomTextField(
-                              hintText: l10n.name,
-                              controller: _nameController,
-                              keyboardType: TextInputType.name,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return l10n.nameRequired;
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-
-                            // Email Input
-                            CustomTextField(
-                              hintText: l10n.email,
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return l10n.emailRequired;
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-
-                            // Password Input
-                            CustomTextField(
-                              hintText: l10n.password,
-                              controller: _passwordController,
-                              isPassword: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return l10n.passwordRequired;
-                                }
-
-                                if (value.length < 6) {
-                                  return l10n.passwordTooShort;
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: AppSpacing.xl),
-
-                            // Sign Up Button
-                            CustomButton(
-                              text: l10n.createAccount,
-                              onPressed: _onSignUp,
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-
-                            // Google Login Button
-                            CustomButton(
-                              text: l10n.loginWithGoogle,
-                              type: CustomButtonType.secondary,
-                              onPressed: _onGoogleLogin,
-                              icon: Icon(
-                                PhosphorIcons.googleLogo(
-                                  PhosphorIconsStyle.bold,
-                                ),
-                              ),
-                            ),
-
-                            const Spacer(),
-
-                            // Login Link (Footer)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  l10n.alreadyHaveAccount,
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    color: AppColors.textSecondary,
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    if (isFromOnboarding) {
-                                      Navigator.of(
-                                        context,
-                                      ).pop('switch_to_login');
-                                    } else {
-                                      Navigator.of(
-                                        context,
-                                      ).pushReplacementNamed(
-                                        LoginScreen.routeName,
-                                      );
-                                    }
-                                  },
-                                  child: Text(
-                                    l10n.login,
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                      color: AppColors.textSecondary,
-                                      decoration: TextDecoration.underline,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: AppSpacing.lg),
-                          ],
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SignUpHeader(),
+                      SignUpForm(
+                        formKey: _formKey,
+                        nameController: _nameController,
+                        emailController: _emailController,
+                        passwordController: _passwordController,
+                        onSignUp: _onSignUp,
+                        onGoogleLogin: _onGoogleLogin,
                       ),
-                    ),
+                      const Spacer(),
+                      SignUpFooter(isFromOnboarding: isFromOnboarding),
+                      const SizedBox(height: AppSpacing.lg),
+                    ],
                   ),
                 ),
               ),
-            );
-          },
+            ],
+          ),
         ),
       ),
     );

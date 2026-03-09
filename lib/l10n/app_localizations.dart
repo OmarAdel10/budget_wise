@@ -1795,6 +1795,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account Details'**
   String get accountDetails;
+
+  /// No description provided for @setPasscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Passcode'**
+  String get setPasscode;
+
+  /// No description provided for @changePasscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Passcode'**
+  String get changePasscode;
+
+  /// No description provided for @useBiometrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with Biometrics'**
+  String get useBiometrics;
+
+  /// No description provided for @enterPasscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Passcode'**
+  String get enterPasscode;
+
+  /// No description provided for @confirmPasscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Passcode'**
+  String get confirmPasscode;
+
+  /// No description provided for @passcodeMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passcodes do not match'**
+  String get passcodeMismatch;
+
+  /// No description provided for @passcodeIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect Passcode'**
+  String get passcodeIncorrect;
+
+  /// No description provided for @passcodeSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Passcode Set Successfully'**
+  String get passcodeSet;
 }
 
 class _AppLocalizationsDelegate

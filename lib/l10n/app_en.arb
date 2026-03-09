@@ -285,5 +285,14 @@
   "syncing" : "Syncing",
   "lastUpdatedAt": "Last Updated At:",
   "lowBalanceWarning": "Low Balance Warning",
-  "accountDetails": "Account Details"
+  "accountDetails": "Account Details",
+  "setPasscode": "Set Passcode",
+  "changePasscode": "Change Passcode",
+  "useBiometrics": "Unlock with Biometrics",
+  "enterPasscode": "Enter Passcode",
+  "confirmPasscode": "Confirm Passcode",
+  "passcodeMismatch": "Passcodes do not match",
+  "passcodeIncorrect": "Incorrect Passcode",
+  "passcodeSet": "Passcode Set Successfully"
+
 }

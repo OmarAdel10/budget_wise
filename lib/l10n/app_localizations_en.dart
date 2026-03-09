@@ -887,4 +887,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountDetails => 'Account Details';
+
+  @override
+  String get setPasscode => 'Set Passcode';
+
+  @override
+  String get changePasscode => 'Change Passcode';
+
+  @override
+  String get useBiometrics => 'Unlock with Biometrics';
+
+  @override
+  String get enterPasscode => 'Enter Passcode';
+
+  @override
+  String get confirmPasscode => 'Confirm Passcode';
+
+  @override
+  String get passcodeMismatch => 'Passcodes do not match';
+
+  @override
+  String get passcodeIncorrect => 'Incorrect Passcode';
+
+  @override
+  String get passcodeSet => 'Passcode Set Successfully';
 }

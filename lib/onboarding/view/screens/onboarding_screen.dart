@@ -1,8 +1,7 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/auth/data/models/user_model.dart';
-// import 'package:budget_wise/auth/utils/auth_constants.dart';
+import 'package:budget_wise/auth/utils/auth_constants.dart';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/auth/view/screens/signup_screen.dart';
 import 'package:budget_wise/category/data/models/category_model.dart';

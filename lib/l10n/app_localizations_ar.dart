@@ -880,4 +880,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountDetails => 'تفاصيل الحساب';
+
+  @override
+  String get setPasscode => 'تعيين رمز المرور';
+
+  @override
+  String get changePasscode => 'تغيير رمز المرور';
+
+  @override
+  String get useBiometrics => 'إلغاء القفل بالبصمة';
+
+  @override
+  String get enterPasscode => 'أدخل رمز المرور';
+
+  @override
+  String get confirmPasscode => 'تأكيد رمز المرور';
+
+  @override
+  String get passcodeMismatch => 'رموز المرور غير متطابقة';
+
+  @override
+  String get passcodeIncorrect => 'رمز المرور غير صحيح';
+
+  @override
+  String get passcodeSet => 'تم تعيين رمز المرور بنجاح';
 }
