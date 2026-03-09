@@ -2,24 +2,25 @@ import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/models/user_model.dart';
+// import 'package:budget_wise/auth/utils/auth_constants.dart';
 import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/auth/view/screens/signup_screen.dart';
-import 'package:budget_wise/home/data/models/category_model.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
-import 'package:budget_wise/home/view_model/category_event.dart';
-import 'package:budget_wise/home/view_model/category_view_model.dart';
-import 'package:budget_wise/home/view_model/transaction_event.dart';
-import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
+import 'package:budget_wise/category/view_model/category_event.dart';
+import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_event.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:toastification/toastification.dart';
 import 'package:uuid/uuid.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -79,22 +80,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
-        toastification.show(
-          autoCloseDuration: const Duration(seconds: 3),
-          context: context,
-          type: ToastificationType.success,
-          style: ToastificationStyle.flatColored,
-          title: Text(l10n.loginSuccessful),
-          description: Text(l10n.continueOnboarding),
+        AppToast.show(
+          context,
+          type: AppToastType.success,
+          title: l10n.loginSuccessful,
+          description: l10n.continueOnboarding,
         );
       } else {
-        toastification.show(
-          autoCloseDuration: const Duration(seconds: 3),
-          context: context,
-          type: ToastificationType.error,
-          style: ToastificationStyle.flatColored,
-          title: Text(l10n.loginFailed),
-          description: Text(l10n.tryAgainLocally),
+        AppToast.show(
+          context,
+          type: AppToastType.error,
+          title: l10n.loginFailed,
+          description: l10n.tryAgainLocally,
         );
       }
     });
@@ -117,23 +114,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       // Validation check before moving from Income Page (Page 3)
       if (_currentPage == 3) {
         if (_incomeAmount < 1) {
-          toastification.show(
-            autoCloseDuration: const Duration(seconds: 3),
-            context: context,
-            type: ToastificationType.error,
-            style: ToastificationStyle.flatColored,
-            title: Text(l10n.enterValidIncome),
-            description: Text(l10n.amountGreaterThan1),
+          AppToast.show(
+            context,
+            type: AppToastType.error,
+            title: l10n.enterValidIncome,
+            description: l10n.amountGreaterThan1,
           );
           return;
         }
         if (_incomeCategoryTitle == null) {
-          toastification.show(
-            autoCloseDuration: const Duration(seconds: 3),
-            context: context,
-            type: ToastificationType.error,
-            style: ToastificationStyle.flatColored,
-            title: Text(l10n.selectIncomeSource),
+          AppToast.show(
+            context,
+            type: AppToastType.error,
+            title: l10n.selectIncomeSource,
           );
           return;
         }
@@ -146,12 +139,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     } else {
       // Final Validation (Category Selection - Page 4)
       if (_selectedCategories.length < 4) {
-        toastification.show(
-          autoCloseDuration: const Duration(seconds: 3),
-          context: context,
-          type: ToastificationType.error,
-          style: ToastificationStyle.flatColored,
-          title: Text(l10n.errorSelectCategories),
+        AppToast.show(
+          context,
+          type: AppToastType.error,
+          title: l10n.errorSelectCategories,
         );
         return;
       }

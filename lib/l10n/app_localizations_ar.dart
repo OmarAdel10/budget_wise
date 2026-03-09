@@ -857,4 +857,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noRecentTransactionsFound => 'لم يتم العثور على معاملات حديثة.';
+
+  @override
+  String get noAccountsAvailableForSelectedCurrency =>
+      'لا توجد حسابات متاحة للعملة المحددة.';
+
+  @override
+  String get lowBalanceAlertAmount => 'مبلغ تنبيه الرصيد المنخفض';
+
+  @override
+  String get yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount =>
+      'رصيد حسابك أقل من مبلغ تنبيه الرصيد المنخفض المحدد.';
+
+  @override
+  String get syncing => 'جاري المزامنة';
+
+  @override
+  String get lastUpdatedAt => 'آخر تحديث:';
+
+  @override
+  String get lowBalanceWarning => 'تحذير انخفاض الرصيد';
+
+  @override
+  String get accountDetails => 'تفاصيل الحساب';
 }

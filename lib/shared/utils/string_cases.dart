@@ -1,6 +1,6 @@
 extension StringCases on String {
   String toTitleCase() {
-    if (this.isEmpty) return this;
+    if (isEmpty) return this;
     return split(' ')
         .map(
           (word) => word.isNotEmpty
@@ -8,5 +8,15 @@ extension StringCases on String {
               : word,
         )
         .join(' ');
+  }
+
+  String initialChars() {
+    if (isEmpty) return this;
+    return split(' ')
+        .where((word) => word.toLowerCase() != 'of')
+        .map((word) {
+          return word.isNotEmpty ? word[0].toUpperCase() : word;
+        }).where((initial) => initial.isNotEmpty)
+        .join('.');
   }
 }

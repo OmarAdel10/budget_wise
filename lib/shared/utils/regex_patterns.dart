@@ -5,11 +5,6 @@ class RegexPatterns {
     unicode: true,
   );
 
-  // static final RegExp merchantExtraction = RegExp(
-  //   r'(?:at|to|with|from|عند|إلى|من|لدى)\s+(.+?)(?=\s+(?:on|date|amount|value|يوم|بتاريخ|بمبلغ|رقم|الساعة|$))',
-  //   caseSensitive: false,
-  //   unicode: true,
-  // );
   static final RegExp merchantExtraction = RegExp(
     r'(?:at|to|with|from|عند|لدى|إلى|من)\s+([^0-9\r\n]+?)(?=\s|$)',
     caseSensitive: false,
@@ -32,8 +27,8 @@ class RegexPatterns {
   static final RegExp amountWithCurrencyRegex = RegExp(
     r'(?:(' +
         _currencyPattern +
-        r')\s*(\d+(?:,\d{3})*(?:\.\d+)?))|' // Group 1: Currency, Group 2: Amount
-            r'(?:(\d+(?:,\d{3})*(?:\.\d+)?)\s*(' +
+        r')\s*(\d+(?:,\d{3})*(?:\.\d+)?))|' + // Group 1: Currency, Group 2: Amount
+        r'(?:(\d+(?:,\d{3})*(?:\.\d+)?)\s*(' +
         _currencyPattern +
         r'))', // Group 3: Amount, Group 4: Currency
     caseSensitive: false,

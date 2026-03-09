@@ -278,5 +278,12 @@
   "time": "Time",
   "totalSubscriptions": "Total Subscriptions",
   "defaultCurrency": "Default Currency",
-  "noRecentTransactionsFound": "No Recent Transactions Found."
+  "noRecentTransactionsFound": "No Recent Transactions Found.",
+  "noAccountsAvailableForSelectedCurrency": "No Accounts Available For The Selected Currency.",
+  "lowBalanceAlertAmount" : "Low Balance Alert Amount",
+  "yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount": "Your account balance is below the specified low balance amount.",
+  "syncing" : "Syncing",
+  "lastUpdatedAt": "Last Updated At:",
+  "lowBalanceWarning": "Low Balance Warning",
+  "accountDetails": "Account Details"
 }

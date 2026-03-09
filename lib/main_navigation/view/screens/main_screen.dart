@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:another_telephony/telephony.dart'; // Changed import
-import 'package:budget_wise/accounts/data/models/sms_draft_model.dart'; // New import
+import 'package:budget_wise/transaction/data/models/sms_draft_model.dart'; // New import
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/home/view_model/category_event.dart';
-import 'package:budget_wise/home/view_model/category_view_model.dart';
-import 'package:budget_wise/home/view_model/transaction_event.dart';
-import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/category/view_model/category_event.dart';
+import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_event.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';

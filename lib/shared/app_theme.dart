@@ -36,7 +36,7 @@ class AppTheme {
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.cardBackground,
+        fillColor: AppColors.inputBackground,
         errorStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
         hintStyle: const TextStyle(color: AppColors.textSecondary),
         contentPadding: const EdgeInsets.all(AppSpacing.md),

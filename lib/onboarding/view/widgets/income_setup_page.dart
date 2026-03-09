@@ -1,4 +1,4 @@
-import 'package:budget_wise/accounts/view/widgets/currency_picker_bottom_sheet.dart';
+import 'package:budget_wise/shared/widgets/currency_picker_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import '../../../shared/constants/colors.dart';
@@ -6,8 +6,8 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/utils/thousands_formatter.dart';
-import 'package:budget_wise/home/data/models/category_model.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class IncomeSetupPage extends StatefulWidget {
@@ -167,10 +167,10 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
                       ),
                     ),
                     const SizedBox(width: 4),
-                    Icon(
-                      PhosphorIcons.caretDown(PhosphorIconsStyle.bold),
+                    const Icon(
+                      PhosphorIconsBold.caretDown,
                       size: 14,
-                      color: AppColors.textPrimary,
+                      color: AppColors.textSecondary,
                     ),
                   ],
                 ),

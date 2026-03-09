@@ -10,6 +10,7 @@ class CustomButton extends StatelessWidget {
   final CustomButtonType type;
   final bool isLoading;
   final Widget? icon;
+  final Color? color;
 
   const CustomButton({
     super.key,
@@ -18,13 +19,16 @@ class CustomButton extends StatelessWidget {
     this.type = CustomButtonType.primary,
     this.isLoading = false,
     this.icon,
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = type == CustomButtonType.primary
-        ? AppColors.primaryAccent
-        : AppColors.cardBackground;
+    final backgroundColor =
+        color ??
+        (type == CustomButtonType.primary
+            ? AppColors.primaryAccent
+            : AppColors.cardBackground);
 
     final textColor = type == CustomButtonType.primary
         ? AppColors.textInverse

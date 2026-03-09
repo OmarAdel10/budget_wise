@@ -864,4 +864,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noRecentTransactionsFound => 'No Recent Transactions Found.';
+
+  @override
+  String get noAccountsAvailableForSelectedCurrency =>
+      'No Accounts Available For The Selected Currency.';
+
+  @override
+  String get lowBalanceAlertAmount => 'Low Balance Alert Amount';
+
+  @override
+  String get yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount =>
+      'Your account balance is below the specified low balance amount.';
+
+  @override
+  String get syncing => 'Syncing';
+
+  @override
+  String get lastUpdatedAt => 'Last Updated At:';
+
+  @override
+  String get lowBalanceWarning => 'Low Balance Warning';
+
+  @override
+  String get accountDetails => 'Account Details';
 }

@@ -1753,6 +1753,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Recent Transactions Found.'**
   String get noRecentTransactionsFound;
+
+  /// No description provided for @noAccountsAvailableForSelectedCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'No Accounts Available For The Selected Currency.'**
+  String get noAccountsAvailableForSelectedCurrency;
+
+  /// No description provided for @lowBalanceAlertAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Balance Alert Amount'**
+  String get lowBalanceAlertAmount;
+
+  /// No description provided for @yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account balance is below the specified low balance amount.'**
+  String get yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount;
+
+  /// No description provided for @syncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing'**
+  String get syncing;
+
+  /// No description provided for @lastUpdatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated At:'**
+  String get lastUpdatedAt;
+
+  /// No description provided for @lowBalanceWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Balance Warning'**
+  String get lowBalanceWarning;
+
+  /// No description provided for @accountDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Details'**
+  String get accountDetails;
 }
 
 class _AppLocalizationsDelegate
