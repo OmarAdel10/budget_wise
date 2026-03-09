@@ -1,5 +1,5 @@
-import 'package:budget_wise/transaction/data/model/sms_draft_model.dart'; // New import
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/sms_draft_model.dart'; // New import
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class TransactionEvent extends Equatable {

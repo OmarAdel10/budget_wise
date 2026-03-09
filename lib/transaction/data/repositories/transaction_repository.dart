@@ -1,5 +1,5 @@
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TransactionRepository {

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
 class SmsDraftModel extends Equatable {

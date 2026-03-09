@@ -1,8 +1,8 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
-import 'package:budget_wise/category/data/model/category_model.dart';
+import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
-import 'package:budget_wise/transaction/data/model/sms_draft_model.dart';
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view/widgets/draft_transaction_card_item.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';

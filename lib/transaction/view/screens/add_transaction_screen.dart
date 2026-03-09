@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:budget_wise/shared/widgets/currency_prefix.dart';
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view/widgets/transaction_title_suggestions.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';

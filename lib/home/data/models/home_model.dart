@@ -3,13 +3,14 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-import 'package:budget_wise/home/data/models/category_model.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 
 class HomeModel extends Equatable {
   final double totalIncome;
   final double totalExpenses;
   final DateTime currentMonth;
+  final String? filterAccountId;
   final List<CategoriesWithSpending> categories;
   final List<TransactionModel> transactions;
 
@@ -17,6 +18,7 @@ class HomeModel extends Equatable {
     required this.totalIncome,
     required this.totalExpenses,
     required this.currentMonth,
+    this.filterAccountId,
     required this.categories,
     required this.transactions,
   });
@@ -26,6 +28,7 @@ class HomeModel extends Equatable {
     totalIncome,
     totalExpenses,
     currentMonth,
+    filterAccountId,
     categories,
     transactions,
   ];
@@ -34,13 +37,18 @@ class HomeModel extends Equatable {
     double? totalIncome,
     double? totalExpenses,
     DateTime? currentMonth,
+    String? filterAccountId,
     List<CategoriesWithSpending>? categories,
     List<TransactionModel>? transactions,
+    bool clearFilteredAccountId = false,
   }) {
     return HomeModel(
       totalIncome: totalIncome ?? this.totalIncome,
       totalExpenses: totalExpenses ?? this.totalExpenses,
       currentMonth: currentMonth ?? this.currentMonth,
+      filterAccountId: clearFilteredAccountId
+          ? null
+          : (filterAccountId ?? this.filterAccountId),
       categories: categories ?? this.categories,
       transactions: transactions ?? this.transactions,
     );
@@ -51,6 +59,7 @@ class HomeModel extends Equatable {
       'totalIncome': totalIncome,
       'totalExpenses': totalExpenses,
       'currentMonth': currentMonth.millisecondsSinceEpoch,
+      'filterAccountId': filterAccountId,
       'categories': categories.map((x) => x.toMap()).toList(),
       'transactions': transactions.map((x) => x.toMap()).toList(),
     };
@@ -63,6 +72,7 @@ class HomeModel extends Equatable {
       currentMonth: DateTime.fromMillisecondsSinceEpoch(
         map['currentMonth'] as int,
       ),
+      filterAccountId: map['filterAccountId'] as String?,
       categories: List<CategoriesWithSpending>.from(
         (map['categories'] as List<dynamic>).map<CategoriesWithSpending>(
           (x) => CategoriesWithSpending.fromMap(x as Map<String, dynamic>),
@@ -85,23 +95,30 @@ class HomeModel extends Equatable {
 class CategoriesWithSpending extends Equatable {
   final CategoryModel category;
   final double totalSpending;
+  final double percentage;
 
-  const CategoriesWithSpending(this.category, this.totalSpending);
+  const CategoriesWithSpending(
+    this.category,
+    this.totalSpending, {
+    this.percentage = 0.0,
+  });
 
   @override
-  List<Object?> get props => [category, totalSpending];
+  List<Object?> get props => [category, totalSpending, percentage];
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'category': category.toMap(),
       'totalSpending': totalSpending,
+      'percentage': percentage,
     };
   }
 
   factory CategoriesWithSpending.fromMap(Map<String, dynamic> map) {
     return CategoriesWithSpending(
       CategoryModel.fromMap(map['category'] as Map<String, dynamic>),
-      map['totalSpending'] as double,
+      (map['totalSpending'] as num).toDouble(),
+      percentage: (map['percentage'] as num? ?? 0.0).toDouble(),
     );
   }
 
@@ -115,10 +132,12 @@ class CategoriesWithSpending extends Equatable {
   CategoriesWithSpending copyWith({
     CategoryModel? category,
     double? totalSpending,
+    double? percentage,
   }) {
     return CategoriesWithSpending(
       category ?? this.category,
       totalSpending ?? this.totalSpending,
+      percentage: percentage ?? this.percentage,
     );
   }
 }

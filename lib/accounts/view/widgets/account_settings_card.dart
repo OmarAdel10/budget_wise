@@ -47,6 +47,9 @@ class AccountSettingsCard extends StatelessWidget {
                     color: AppColors.textSecondary,
                   ),
                   activeThumbColor: AppColors.primaryAccent,
+                  activeTrackColor: AppColors.primaryAccent.withValues(
+                    alpha: 0.3,
+                  ),
                   inactiveTrackColor: AppColors.inputBackground,
                 ),
                 if (isEnabled) ...[

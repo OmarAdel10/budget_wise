@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:budget_wise/category/data/model/category_model.dart';
+import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/category/data/repositories/category_repository.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_state.dart';

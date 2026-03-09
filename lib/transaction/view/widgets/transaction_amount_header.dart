@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../data/model/transaction_model.dart';
+import '../../data/models/transaction_model.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/constants/colors.dart';
 import '../../../../shared/constants/spacing.dart';

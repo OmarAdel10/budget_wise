@@ -1,5 +1,5 @@
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/category/data/model/category_model.dart';
+import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CategoryRepository {

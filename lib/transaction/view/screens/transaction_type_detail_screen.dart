@@ -1,4 +1,4 @@
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view/widgets/transaction_type_empty_state.dart';
 import 'package:budget_wise/transaction/view/widgets/transaction_type_header_card.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';

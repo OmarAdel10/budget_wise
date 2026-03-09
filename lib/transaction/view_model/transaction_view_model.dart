@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_state.dart';

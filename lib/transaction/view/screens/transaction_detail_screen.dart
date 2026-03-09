@@ -1,4 +1,4 @@
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view_model/transaction_state.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';

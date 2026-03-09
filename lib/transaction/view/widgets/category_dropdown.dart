@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/category/view_model/category_state.dart';
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';

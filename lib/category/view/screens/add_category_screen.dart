@@ -1,5 +1,5 @@
-import 'package:budget_wise/category/data/model/category_model.dart';
-import 'package:budget_wise/transaction/data/model/transaction_model.dart';
+import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/category/view/widgets/budget_section.dart';
 import 'package:budget_wise/category/view/widgets/icon_section.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';

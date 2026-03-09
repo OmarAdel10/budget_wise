@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import '../../data/model/transaction_model.dart';
+import '../../data/models/transaction_model.dart';
 import '../../../../accounts/view_model/account_state.dart';
 import '../../../../accounts/view_model/account_view_model.dart';
 import '../../../../home/view_model/home_state.dart';

@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:budget_wise/home/data/models/home_model.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
-import 'package:budget_wise/home/data/repositories/category_repository.dart';
-import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
+import 'package:budget_wise/category/data/repositories/category_repository.dart';
+import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/home/view_model/home_event.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
-import 'package:budget_wise/home/view_model/category_event.dart';
-import 'package:budget_wise/home/view_model/category_view_model.dart';
-import 'package:budget_wise/home/view_model/transaction_event.dart';
-import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/category/view_model/category_event.dart';
+import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_event.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,6 +19,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final SettingsBloc settingsBloc;
   final CategoryBloc categoryBloc;
   final TransactionBloc transactionBloc;
+  late final StreamSubscription _transSub;
+  late final StreamSubscription _catSub;
+
   HomeBloc({
     required this.categoryRepository,
     required this.transactionRepository,
@@ -38,126 +43,158 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       transactionBloc.add(const TransactionEventSyncUnsynced());
       categoryBloc.add(const CategoryEventSyncUnsynced());
     }
-    transactionBloc.stream.listen(
-      (event) => add(HomeEventLoadAllData(state.model.currentMonth)),
-    );
-    categoryBloc.stream.listen(
-      (event) => add(HomeEventLoadAllData(state.model.currentMonth)),
-    );
-
     on<HomeEventLoadAllData>((event, emit) async {
-      try {
-        final allTransactions = transactionBloc.state.transactionsList;
-        final allCategories = categoryBloc.state.categoriesList;
-        double income = 0;
-        double expenses = 0;
-        Map<String, dynamic> spendingMap = {};
-
-        final monthTransaction = allTransactions
-            .where(
-              (trans) =>
-                  trans.transactionDate.year == event.monthDate.year &&
-                  trans.transactionDate.month == event.monthDate.month,
-            )
-            .toList();
-
-        for (var transaction in monthTransaction) {
-          if (transaction.type == TransactionType.income) {
-            income += transaction.transactionAmount;
-            if (spendingMap.containsKey(transaction.categoryId)) {
-              spendingMap[transaction.categoryId] +=
-                  transaction.transactionAmount;
-            } else {
-              spendingMap[transaction.categoryId] =
-                  transaction.transactionAmount;
-            }
-          } else {
-            expenses += transaction.transactionAmount;
-            if (spendingMap.containsKey(transaction.categoryId)) {
-              spendingMap[transaction.categoryId] +=
-                  transaction.transactionAmount;
-            } else {
-              spendingMap[transaction.categoryId] =
-                  transaction.transactionAmount;
-            }
-          }
-        }
-
-        final List<CategoriesWithSpending> categoriesWithSpendingList =
-            allCategories
-                .map(
-                  (cat) =>
-                      CategoriesWithSpending(cat, spendingMap[cat.id] ?? 0.0),
-                )
-                .toList();
-
-        emit(
-          HomeStateSuccess(
-            model: state.model.copyWith(
-              categories: categoriesWithSpendingList,
-              currentMonth: event.monthDate,
-              totalIncome: income,
-              totalExpenses: expenses,
-              transactions: monthTransaction,
-            ),
-          ),
-        );
-      } catch (e) {
-        emit(HomeStateError(model: state.model, message: e.toString()));
-      }
+      _loadData(emit, monthDate: event.monthDate, accountId: event.accountId);
     });
 
-    // on<HomeEventLoadAllData>((event, emit) async {
-    //   emit(HomeStateLoading());
-    //   try {
-    //     final categoriesSnapShot = await categoryRepository
-    //         .getCategoriesCollection()
-    //         .where('userId', isEqualTo: authRepository.currentUser!.uid)
-    //         .get();
-    //     final transactions = await transactionRepository.getTransactionsByMonth(
-    //       event.monthDate,
-    //     );
-    //     double totalIncome = 0;
-    //     double totalOutcome = 0;
-    //     Map<String, dynamic> categoriesWithSpendingMap = {};
+    on<HomeEventChangeMonth>((event, emit) async {
+      _loadData(emit, monthDate: event.monthDate);
+    });
 
-    //     for (var transaction in transactions) {
-    //       if (transaction.type == TransactionType.income) {
-    //         totalIncome += transaction.transactionAmount;
-    //       } else {
-    //         totalOutcome += transaction.transactionAmount;
-    //       }
-    //       if (categoriesWithSpendingMap.containsKey(transaction.categoryId)) {
-    //         categoriesWithSpendingMap[transaction.categoryId] +=
-    //             transaction.transactionAmount;
-    //       } else {
-    //         categoriesWithSpendingMap[transaction.categoryId] =
-    //             transaction.transactionAmount;
-    //       }
-    //     }
+    on<HomeEventChangeAccountFilter>((event, emit) async {
+      emit(HomeStateSuccess(model: state.model.copyWith(
+        filterAccountId: event.accountId,
+        clearFilteredAccountId: event.accountId == null
+      )));
+      _loadData(emit, accountId: event.accountId);
+    });
 
-    //     final List<CategoriesWithSpending> categoriesWithSpendingList =
-    //         categoriesSnapShot.docs
-    //             .map((doc) => doc.data())
-    //             .map(
-    //               (category) => CategoriesWithSpending(
-    //                 category,
-    //                 categoriesWithSpendingMap[category.id] ?? 0,
-    //               ),
-    //             )
-    //             .toList();
-
-    //     emit(
-    //       HomeStateSuccess(
-    //         totalIncome: totalIncome,
-    //         totalOutcome: totalOutcome,
-    //         currentMonth: event.monthDate,
-    //         categories: categoriesWithSpendingList,
-    //       ),
-    //     );
-    //   } catch (e) {
-    //     emit(HomeStateError(e.toString()));
-    //   }
-    // });
+    _transSub = transactionBloc.stream.listen(
+      (event) => add(
+        HomeEventLoadAllData(
+          state.model.currentMonth,
+          accountId: state.model.filterAccountId,
+        ),
+      ),
+    );
+    _catSub = categoryBloc.stream.listen(
+      (event) => add(
+        HomeEventLoadAllData(
+          state.model.currentMonth,
+          accountId: state.model.filterAccountId,
+        ),
+      ),
+    );
   }
+
+  void _loadData(
+    Emitter<HomeState> emit, {
+    DateTime? monthDate,
+    String? accountId,
+  }) {
+    try {
+      final currentMonth = monthDate ?? state.model.currentMonth;
+      final currentAccountId = accountId ?? state.model.filterAccountId;
+
+      final allTransactions = transactionBloc.state.transactionsList;
+      final allCategories = categoryBloc.state.categoriesList;
+
+      double income = 0;
+      double expenses = 0;
+      Map<String, double> spendingMap = {};
+
+      final monthTransactions = allTransactions.where((trans) {
+        return trans.transactionDate.year == currentMonth.year &&
+            trans.transactionDate.month == currentMonth.month;
+      }).toList();
+
+      final filteredTransactions = currentAccountId == null
+          ? monthTransactions
+          : monthTransactions
+                .where((t) => t.accountId == currentAccountId)
+                .toList();
+
+      for (final transaction in filteredTransactions) {
+        if (transaction.type == TransactionType.income) {
+          income += transaction.transactionAmount;
+        } else {
+          expenses += transaction.transactionAmount;
+        }
+
+        spendingMap[transaction.categoryId] =
+            (spendingMap[transaction.categoryId] ?? 0.0) +
+            transaction.transactionAmount;
+      }
+
+      final List<CategoriesWithSpending> categoriesWithSpendingList =
+          allCategories.map((cat) {
+            return CategoriesWithSpending(cat, spendingMap[cat.id] ?? 0.0);
+          }).toList();
+
+      emit(
+        HomeStateSuccess(
+          model: state.model.copyWith(
+            categories: categoriesWithSpendingList,
+            currentMonth: currentMonth,
+            filterAccountId: currentAccountId,
+            totalIncome: income,
+            totalExpenses: expenses,
+            transactions: filteredTransactions,
+          ),
+        ),
+      );
+    } catch (e) {
+      emit(HomeStateError(model: state.model, message: e.toString()));
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _transSub.cancel();
+    _catSub.cancel();
+    return super.close();
+  }
+
+  // on<HomeEventLoadAllData>((event, emit) async {
+  //   emit(HomeStateLoading());
+  //   try {
+  //     final categoriesSnapShot = await categoryRepository
+  //         .getCategoriesCollection()
+  //         .where('userId', isEqualTo: authRepository.currentUser!.uid)
+  //         .get();
+  //     final transactions = await transactionRepository.getTransactionsByMonth(
+  //       event.monthDate,
+  //     );
+  //     double totalIncome = 0;
+  //     double totalOutcome = 0;
+  //     Map<String, dynamic> categoriesWithSpendingMap = {};
+
+  //     for (var transaction in transactions) {
+  //       if (transaction.type == TransactionType.income) {
+  //         totalIncome += transaction.transactionAmount;
+  //       } else {
+  //         totalOutcome += transaction.transactionAmount;
+  //       }
+  //       if (categoriesWithSpendingMap.containsKey(transaction.categoryId)) {
+  //         categoriesWithSpendingMap[transaction.categoryId] +=
+  //             transaction.transactionAmount;
+  //       } else {
+  //         categoriesWithSpendingMap[transaction.categoryId] =
+  //             transaction.transactionAmount;
+  //       }
+  //     }
+
+  //     final List<CategoriesWithSpending> categoriesWithSpendingList =
+  //         categoriesSnapShot.docs
+  //             .map((doc) => doc.data())
+  //             .map(
+  //               (category) => CategoriesWithSpending(
+  //                 category,
+  //                 categoriesWithSpendingMap[category.id] ?? 0,
+  //               ),
+  //             )
+  //             .toList();
+
+  //     emit(
+  //       HomeStateSuccess(
+  //         totalIncome: totalIncome,
+  //         totalOutcome: totalOutcome,
+  //         currentMonth: event.monthDate,
+  //         categories: categoriesWithSpendingList,
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     emit(HomeStateError(e.toString()));
+  //   }
+  // });
 }
