@@ -51,5 +51,6 @@ android/app/build/
 /project_UI/
 
 # Gemini related
+.gemini/
 GEMINI.md
 docs/
