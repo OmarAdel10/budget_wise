@@ -10,7 +10,7 @@ import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
-import 'package:budget_wise/subscriptions/view/screens/subscription_list_screen.dart';
+import 'package:budget_wise/subscriptions/view/screens/subscription_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:budget_wise/shared/utils/sms_service.dart'; // New import
@@ -41,7 +41,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   final List<Widget> _screens = [
     const HomeScreen(),
     const AccountsScreen(),
-    const SubscriptionListScreen(),
+    const SubscriptionScreen(),
     const SavingsScreen(),
     const StatisticsScreen(),
     const SettingsScreen(),

@@ -27,7 +27,7 @@ import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/subscriptions/data/repositories/subscription_repository.dart';
 import 'package:budget_wise/subscriptions/view/screens/add_subscription_screen.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
-import 'package:budget_wise/subscriptions/view/screens/subscription_list_screen.dart';
+import 'package:budget_wise/subscriptions/view/screens/subscription_screen.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -381,7 +381,7 @@ class MyApp extends StatelessWidget {
                   settings: settings,
                   child: const PasscodeSetupScreen(),
                 );
-              case SubscriptionListScreen.routeName:
+              case SubscriptionScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
                   reverseType: PageTransitionType.leftToRight,
@@ -390,7 +390,7 @@ class MyApp extends StatelessWidget {
                   reverseDuration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
-                  child: const SubscriptionListScreen(),
+                  child: const SubscriptionScreen(),
                 );
               case SubscriptionDetailsScreen.routeName:
                 return PageTransition(

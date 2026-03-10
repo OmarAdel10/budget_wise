@@ -13,10 +13,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class SubscriptionListScreen extends StatelessWidget {
+class SubscriptionScreen extends StatelessWidget {
   static const routeName = '/subscriptions';
 
-  const SubscriptionListScreen({super.key});
+  const SubscriptionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
