@@ -1,6 +1,6 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
-import 'package:budget_wise/accounts/view/screens/pending_sms_transactions_screen.dart';
+import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
 import 'package:budget_wise/accounts/view/screens/edit_account_screen.dart';
@@ -11,16 +11,17 @@ import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/auth/view/screens/signup_screen.dart';
 import 'package:budget_wise/auth/view/screens/forgot_password_screen.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
-import 'package:budget_wise/home/data/repositories/category_repository.dart';
-import 'package:budget_wise/home/data/repositories/transaction_repository.dart';
+import 'package:budget_wise/category/data/repositories/category_repository.dart';
+import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
-import 'package:budget_wise/home/view_model/category_view_model.dart';
-import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/statistics/view_model/statistics_event.dart';
 import 'package:budget_wise/statistics/view_model/statistics_view_model.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
+import 'package:budget_wise/settings/view/screens/passcode_setup_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/subscriptions/data/repositories/subscription_repository.dart';
@@ -34,14 +35,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:budget_wise/shared/app_theme.dart';
 import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
-import 'package:budget_wise/home/view/screens/add_category_screen.dart';
-import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
-import 'package:budget_wise/home/view/screens/add_transaction_screen.dart';
+import 'package:budget_wise/category/view/screens/add_category_screen.dart';
+import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
+import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
 import 'package:budget_wise/savings/view/screens/add_saving_goal_screen.dart';
 import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
-import 'package:budget_wise/home/view/screens/transaction_type_detail_screen.dart';
-import 'package:budget_wise/home/view/screens/transaction_detail_screen.dart';
-import 'package:budget_wise/home/view/screens/all_transactions_screen.dart';
+import 'package:budget_wise/transaction/view/screens/transaction_type_detail_screen.dart';
+import 'package:budget_wise/transaction/view/screens/transaction_detail_screen.dart';
+import 'package:budget_wise/transaction/view/screens/all_transactions_screen.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -369,6 +370,17 @@ class MyApp extends StatelessWidget {
                   settings: settings,
                   child: PendingSmsTransactionsScreen(),
                 );
+              case PasscodeSetupScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: const Duration(milliseconds: 500),
+                  reverseDuration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: const PasscodeSetupScreen(),
+                );
               case SubscriptionListScreen.routeName:
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
@@ -389,8 +401,7 @@ class MyApp extends StatelessWidget {
                   reverseDuration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
-                  child: SubscriptionDetailsScreen(
-                  ),
+                  child: SubscriptionDetailsScreen(),
                 );
               case AddSubscriptionScreen.routeName:
                 return PageTransition(

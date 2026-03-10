@@ -1,3 +1,5 @@
+import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class HomeEvent extends Equatable {
@@ -6,15 +8,31 @@ sealed class HomeEvent extends Equatable {
 
 class HomeEventLoadAllData extends HomeEvent {
   final DateTime monthDate;
-  const HomeEventLoadAllData(this.monthDate);
+  final String? accountId;
+  const HomeEventLoadAllData(this.monthDate, {this.accountId});
+
+  @override
+  List<Object?> get props => [monthDate, accountId];
+}
+
+class HomeEventChangeMonth extends HomeEvent {
+  final DateTime monthDate;
+  const HomeEventChangeMonth(this.monthDate);
 
   @override
   List<Object?> get props => [monthDate];
 }
 
+class HomeEventChangeAccountFilter extends HomeEvent {
+  final String? accountId;
+  const HomeEventChangeAccountFilter(this.accountId);
+
+  @override
+  List<Object?> get props => [accountId];
+}
+
 class HomeEventUpdateCategory extends HomeEvent {
-  final dynamic
-  category; // Using dynamic for now to match CategoryModel or Category entity, will refine if needed
+  final CategoryModel category;
   const HomeEventUpdateCategory(this.category);
 
   @override
@@ -22,7 +40,7 @@ class HomeEventUpdateCategory extends HomeEvent {
 }
 
 class HomeEventUpdateTransaction extends HomeEvent {
-  final dynamic transaction; // Using dynamic to match TransactionModel
+  final TransactionModel transaction;
   const HomeEventUpdateTransaction(this.transaction);
 
   @override

@@ -1,29 +1,21 @@
+import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/home/data/models/home_model.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
-import 'package:budget_wise/home/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/statistics/data/models/statistics_model.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
+import 'category_list_item.dart';
 
-class CategoryListSection extends StatelessWidget {
-  final List<CategoriesWithSpending> incomeBreakdown;
-  final List<CategoriesWithSpending> expenseBreakdown;
-  final ValueNotifier<bool> showIncomeNotifier;
-  final double totalIncome;
-  final double totalExpenses;
+class CategoryListHeader extends StatelessWidget {
+  final ToggleOption toggleType;
   final StatisticsSorting currentSorting;
   final Function(StatisticsSorting) onSortChanged;
 
-  const CategoryListSection({
+  const CategoryListHeader({
     super.key,
-    required this.incomeBreakdown,
-    required this.expenseBreakdown,
-    required this.showIncomeNotifier,
-    required this.totalIncome,
-    required this.totalExpenses,
+    required this.toggleType,
     required this.currentSorting,
     required this.onSortChanged,
   });
@@ -38,16 +30,11 @@ class CategoryListSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: ValueListenableBuilder<bool>(
-                valueListenable: showIncomeNotifier,
-                builder: (context, showIncomeValue, child) {
-                  return Text(
-                    showIncomeValue
-                        ? l10n.earningsByCategory
-                        : l10n.spendingByCategory,
-                    style: AppTextStyles.heading3,
-                  );
-                },
+              child: Text(
+                toggleType == ToggleOption.income
+                    ? l10n.earningsByCategory
+                    : l10n.spendingByCategory,
+                style: AppTextStyles.heading3,
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -86,7 +73,7 @@ class CategoryListSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
                 l10n.category,
@@ -104,114 +91,30 @@ class CategoryListSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-
-        ValueListenableBuilder<bool>(
-          valueListenable: showIncomeNotifier,
-          builder: (context, showIncomeValue, child) {
-            final breakdown = showIncomeValue
-                ? incomeBreakdown
-                : expenseBreakdown;
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: breakdown.length,
-              itemBuilder: (context, index) {
-                final item = breakdown[index];
-                final category = item.category;
-                final color = showIncomeValue
-                    ? AppColors.income
-                    : AppColors.expense;
-                final total = showIncomeValue ? totalIncome : totalExpenses;
-                final percentage = total > 0
-                    ? (item.totalSpending / total) * 100
-                    : 0.0;
-                final isIncome = category.type == TransactionType.income;
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(
-                      CategoryDetailScreen.routeName,
-                      arguments: {'categoryId': category.id},
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: color.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          child: Text(
-                            "${percentage.toStringAsFixed(0)}%",
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: color,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: isIncome
-                                ? AppColors.income.withValues(alpha: 0.1)
-                                : AppColors.expense.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(
-                              AppSpacing.radiusMd,
-                            ),
-                            border: Border.all(
-                              color: isIncome
-                                  ? AppColors.income.withValues(alpha: 0.2)
-                                  : AppColors.expense.withValues(alpha: 0.2),
-                            ),
-                          ),
-                          child: Icon(
-                            category.categoryIcon,
-                            color: color,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: Text(
-                            category.categoryTitle,
-                            style: AppTextStyles.bodyLarge.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text(
-                          '${showIncomeValue ? "+" : "-"}\$${item.totalSpending.toInt()}',
-                          style: AppTextStyles.bodyLarge.copyWith(color: color),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        const Icon(
-                          Icons.chevron_right,
-                          color: AppColors.textSecondary,
-                          size: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
       ],
+    );
+  }
+}
+
+class CategoryListSliver extends StatelessWidget {
+  final List<CategoriesWithSpending> breakdown;
+  final ToggleOption toggleType;
+
+  const CategoryListSliver({
+    super.key,
+    required this.breakdown,
+    required this.toggleType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        return CategoryListItem(
+          item: breakdown[index],
+          currentSelection: toggleType,
+        );
+      }, childCount: breakdown.length),
     );
   }
 }

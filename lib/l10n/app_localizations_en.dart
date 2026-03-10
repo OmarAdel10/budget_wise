@@ -927,4 +927,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nextRenewalDate => 'Next Renewal Date';
+
+  @override  
+  String get defaultCurrency => 'Default Currency';
+
+  @override
+  String get noRecentTransactionsFound => 'No Recent Transactions Found.';
+
+  @override
+  String get noAccountsAvailableForSelectedCurrency =>
+      'No Accounts Available For The Selected Currency.';
+
+  @override
+  String get lowBalanceAlertAmount => 'Low Balance Alert Amount';
+
+  @override
+  String get yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount =>
+      'Your account balance is below the specified low balance amount.';
+
+  @override
+  String get syncing => 'Syncing';
+
+  @override
+  String get lastUpdatedAt => 'Last Updated At:';
+
+  @override
+  String get lowBalanceWarning => 'Low Balance Warning';
+
+  @override
+  String get accountDetails => 'Account Details';
+
+  @override
+  String get setPasscode => 'Set Passcode';
+
+  @override
+  String get changePasscode => 'Change Passcode';
+
+  @override
+  String get useBiometrics => 'Unlock with Biometrics';
+
+  @override
+  String get enterPasscode => 'Enter Passcode';
+
+  @override
+  String get confirmPasscode => 'Confirm Passcode';
+
+  @override
+  String get passcodeMismatch => 'Passcodes do not match';
+
+  @override
+  String get passcodeIncorrect => 'Incorrect Passcode';
+
+  @override
+  String get passcodeSet => 'Passcode Set Successfully';
 }

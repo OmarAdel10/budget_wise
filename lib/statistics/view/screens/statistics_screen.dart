@@ -1,6 +1,7 @@
+import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:budget_wise/statistics/view/widgets/category_chart_section.dart';
 import 'package:budget_wise/statistics/view/widgets/category_list_section.dart';
-import 'package:budget_wise/statistics/view/widgets/month_selector.dart';
+import 'package:budget_wise/shared/widgets/month_selector.dart';
 import 'package:budget_wise/statistics/view/widgets/summary_cards.dart';
 import 'package:budget_wise/statistics/view/widgets/trend_chart_section.dart';
 import 'package:budget_wise/statistics/view_model/statistics_event.dart';
@@ -21,19 +22,16 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  late final ValueNotifier<bool> _showIncomeNotifier;
   late final ValueNotifier<bool> _isTrendExpandedNotifier;
 
   @override
   void initState() {
     super.initState();
-    _showIncomeNotifier = ValueNotifier<bool>(false);
     _isTrendExpandedNotifier = ValueNotifier<bool>(true);
   }
 
   @override
   void dispose() {
-    _showIncomeNotifier.dispose();
     _isTrendExpandedNotifier.dispose();
     super.dispose();
   }
@@ -41,81 +39,116 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return BlocBuilder<StatisticsBloc, StatisticsState>(
-      buildWhen: (previous, current) => previous.model != current.model,
-      builder: (context, state) {
-        final model = state.model;
-        final hasData =
-            model.incomeBreakdown.isNotEmpty ||
-            model.expenseBreakdown.isNotEmpty;
+    final statisticsBloc = context.read<StatisticsBloc>();
 
-        return Scaffold(
-          backgroundColor: AppColors.primaryBackground,
-          appBar: AppBar(
-            backgroundColor: AppColors.primaryBackground,
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            title: Text(
-              l10n.financialStatistics,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            centerTitle: true,
+    return Scaffold(
+      backgroundColor: AppColors.primaryBackground,
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryBackground,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Text(
+          l10n.financialStatistics,
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
           ),
-          body: Column(
-            children: [
-              MonthSelector(
-                selectedMonth: model.selectedMonth,
+        ),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          BlocSelector<StatisticsBloc, StatisticsState, DateTime>(
+            selector: (state) => state.model.selectedMonth,
+            builder: (context, selectedMonth) {
+              return MonthSelector(
+                selectedMonth: selectedMonth,
                 onPrevious: () {
                   final prevMonth = DateTime(
-                    model.selectedMonth.year,
-                    model.selectedMonth.month - 1,
+                    selectedMonth.year,
+                    selectedMonth.month - 1,
                   );
-                  context.read<StatisticsBloc>().add(
-                    StatisticsEventLoadRequested(prevMonth),
-                  );
+                  statisticsBloc.add(StatisticsEventLoadRequested(prevMonth));
                 },
                 onNext: () {
                   final nextMonth = DateTime(
-                    model.selectedMonth.year,
-                    model.selectedMonth.month + 1,
+                    selectedMonth.year,
+                    selectedMonth.month + 1,
                   );
-                  context.read<StatisticsBloc>().add(
-                    StatisticsEventLoadRequested(nextMonth),
-                  );
+                  statisticsBloc.add(StatisticsEventLoadRequested(nextMonth));
                 },
-              ),
-              Expanded(
-                child: CustomScrollView(
-                  slivers: [
-                    SliverPadding(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      sliver: SliverList(
-                        delegate: SliverChildListDelegate([
-                          SummaryCards(
-                            totalIncome: model.totalIncome,
-                            totalExpenses: model.totalExpenses,
-                            totalSavings: model.totalSavings,
-                            totalSubscriptions: model.totalSubscriptions,
-                          ),
-                          const SizedBox(height: AppSpacing.xl),
-                          TrendChartSection(
-                            dailyIncomeTrend: model.dailyIncomeTrend,
-                            dailyExpenseTrend: model.dailyExpenseTrend,
+              );
+            },
+          ),
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      BlocSelector<
+                        StatisticsBloc,
+                        StatisticsState,
+                        (double, double, double, double)
+                      >(
+                        selector: (state) => (
+                          state.model.totalIncome,
+                          state.model.totalExpenses,
+                          state.model.totalSavings,
+                          state.model.totalSubscriptions,
+                        ),
+                        builder: (context, data) {
+                          return SummaryCards(
+                            totalIncome: data.$1,
+                            totalExpenses: data.$2,
+                            totalSavings: data.$3,
+                            totalSubscriptions: data.$4,
+                          );
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                      BlocSelector<
+                        StatisticsBloc,
+                        StatisticsState,
+                        (List<double>, List<double>)
+                      >(
+                        selector: (state) => (
+                          state.model.dailyIncomeTrend,
+                          state.model.dailyExpenseTrend,
+                        ),
+                        builder: (context, data) {
+                          return TrendChartSection(
+                            dailyIncomeTrend: data.$1,
+                            dailyExpenseTrend: data.$2,
                             isTrendExpandedNotifier: _isTrendExpandedNotifier,
-                          ),
-                          ValueListenableBuilder<bool>(
-                            valueListenable: _isTrendExpandedNotifier,
-                            builder: (context, isExpanded, child) {
-                              return isExpanded
-                                  ? const SizedBox(height: AppSpacing.xl)
-                                  : const SizedBox.shrink();
-                            },
-                          ),
-                          if (!hasData)
-                            Padding(
+                          );
+                        },
+                      ),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: _isTrendExpandedNotifier,
+                        builder: (context, isExpanded, child) {
+                          return isExpanded
+                              ? const SizedBox(height: AppSpacing.xl)
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                      BlocBuilder<StatisticsBloc, StatisticsState>(
+                        buildWhen: (previous, current) =>
+                            previous.model.incomeBreakdown !=
+                                current.model.incomeBreakdown ||
+                            previous.model.expenseBreakdown !=
+                                current.model.expenseBreakdown ||
+                            previous.model.toggleType !=
+                                current.model.toggleType,
+                        builder: (context, state) {
+                          final model = state.model;
+                          final hasData =
+                              model.incomeBreakdown.isNotEmpty ||
+                              model.expenseBreakdown.isNotEmpty;
+
+                          if (!hasData) {
+                            return Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: AppSpacing.xl * 2,
                               ),
@@ -127,43 +160,76 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   ),
                                 ),
                               ),
-                            )
-                          else ...[
-                            CategoryChartSection(
-                              incomeBreakdown: model.incomeBreakdown,
-                              expenseBreakdown: model.expenseBreakdown,
-                              showIncomeNotifier: _showIncomeNotifier,
-                              totalIncome: model.totalIncome,
-                              totalExpenses: model.totalExpenses,
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            CategoryListSection(
-                              incomeBreakdown: model.incomeBreakdown,
-                              expenseBreakdown: model.expenseBreakdown,
-                              showIncomeNotifier: _showIncomeNotifier,
-                              totalIncome: model.totalIncome,
-                              totalExpenses: model.totalExpenses,
-                              currentSorting: model.sortingType,
-                              onSortChanged: (type) {
-                                context.read<StatisticsBloc>().add(
-                                  StatisticsEventSortChanged(type),
-                                );
-                              },
-                            ),
-                          ],
-                        ]),
+                            );
+                          }
+
+                          return Column(
+                            children: [
+                              CategoryChartSection(
+                                incomeBreakdown: model.incomeBreakdown,
+                                expenseBreakdown: model.expenseBreakdown,
+                                toggleType: model.toggleType,
+                                totalIncome: model.totalIncome,
+                                totalExpenses: model.totalExpenses,
+                                onToggle: (type) {
+                                  statisticsBloc.add(
+                                    StatisticsEventToggleType(type),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              CategoryListHeader(
+                                toggleType: model.toggleType,
+                                currentSorting: model.sortingType,
+                                onSortChanged: (type) {
+                                  statisticsBloc.add(
+                                    StatisticsEventSortChanged(type),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: AppSpacing.xl),
-                    ),
-                  ],
+                    ]),
+                  ),
                 ),
-              ),
-            ],
+                BlocBuilder<StatisticsBloc, StatisticsState>(
+                  buildWhen: (previous, current) =>
+                      previous.model.incomeBreakdown !=
+                          current.model.incomeBreakdown ||
+                      previous.model.expenseBreakdown !=
+                          current.model.expenseBreakdown ||
+                      previous.model.toggleType != current.model.toggleType,
+                  builder: (context, state) {
+                    final model = state.model;
+                    final breakdown = model.toggleType == ToggleOption.income
+                        ? model.incomeBreakdown
+                        : model.expenseBreakdown;
+
+                    if (breakdown.isEmpty) {
+                      return const SliverToBoxAdapter(child: SizedBox.shrink());
+                    }
+
+                    return SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                      ),
+                      sliver: CategoryListSliver(
+                        breakdown: breakdown,
+                        toggleType: model.toggleType,
+                      ),
+                    );
+                  },
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.xl),
+                ),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

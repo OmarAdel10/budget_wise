@@ -1,5 +1,5 @@
-import 'package:budget_wise/accounts/data/models/sms_draft_model.dart';
-import 'package:budget_wise/home/data/models/transaction_model.dart';
+import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/shared/utils/regex_patterns.dart';
 
 class SmsParser {

@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../constants/colors.dart';
 import '../constants/text_styles.dart';
 import '../constants/spacing.dart';
+import 'generic_icon_container.dart';
 
 class CategoryListItem extends StatelessWidget {
   final String name;
@@ -17,6 +18,7 @@ class CategoryListItem extends StatelessWidget {
   final int? index;
   final bool hasBudgetAmount;
   final bool isIncome;
+  final double? progress;
 
   const CategoryListItem({
     super.key,
@@ -31,8 +33,6 @@ class CategoryListItem extends StatelessWidget {
     this.hasBudgetAmount = false,
     this.isIncome = false,
   });
-
-  final double? progress;
 
   @override
   Widget build(BuildContext context) {
@@ -64,25 +64,9 @@ class CategoryListItem extends StatelessWidget {
                   ),
                 ),
               ),
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: isIncome
-                    ? AppColors.primaryAccent.withValues(alpha: 0.1)
-                    : AppColors.expense.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(
-                  color: isIncome
-                      ? AppColors.primaryAccent.withValues(alpha: 0.2)
-                      : AppColors.expense.withValues(alpha: 0.2),
-                ),
-              ),
-              child: Icon(
-                icon,
-                color: isIncome ? AppColors.primaryAccent : AppColors.expense,
-                size: 22,
-              ),
+            GenericIconContainer(
+              icon: icon,
+              color: isIncome ? AppColors.primaryAccent : AppColors.expense,
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(

@@ -3,6 +3,7 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class BankPickerBottomSheet extends StatefulWidget {
@@ -17,11 +18,18 @@ class BankPickerBottomSheet extends StatefulWidget {
 class _BankPickerBottomSheetState extends State<BankPickerBottomSheet> {
   String _searchQuery = '';
   List<MapEntry<String, List<String>>> _filteredBanks = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _filterBanks();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _filterBanks() {
@@ -70,29 +78,16 @@ class _BankPickerBottomSheetState extends State<BankPickerBottomSheet> {
                     const SizedBox(height: AppSpacing.md),
                     Text(l10n.selectBankTitle, style: AppTextStyles.heading2),
                     const SizedBox(height: AppSpacing.md),
-                    TextField(
+                    CustomTextField(
+                      controller: _searchController,
+                      hintText: l10n.searchBankPlaceholder,
+                      prefixIcon: const Icon(Icons.search),
                       onChanged: (value) {
                         setState(() {
                           _searchQuery = value;
                           _filterBanks();
                         });
                       },
-                      decoration: InputDecoration(
-                        hintText: l10n.searchBankPlaceholder,
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: AppColors.inputBackground,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radiusMd,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm,
-                        ),
-                      ),
                     ),
                   ],
                 ),

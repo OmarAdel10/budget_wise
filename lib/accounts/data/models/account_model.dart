@@ -27,6 +27,7 @@ class AccountModel {
   final bool lowBalanceAlertEnabled;
   final List<String>? smsSenderIds;
   final String? smsIdentifier;
+  final double lowBalanceAlertAmount;
 
   AccountModel({
     this.id = '',
@@ -48,6 +49,7 @@ class AccountModel {
     this.lowBalanceAlertEnabled = false,
     this.smsSenderIds,
     this.smsIdentifier,
+    this.lowBalanceAlertAmount = 0.0,
   });
 
   AccountModel copyWith({
@@ -60,6 +62,7 @@ class AccountModel {
     double? balance,
     String? currency,
     String? cardBankName,
+    String? cardHolderName,
     String? cardNumber,
     String? cardExpiryDate,
     CardBrand? cardBrand,
@@ -69,6 +72,7 @@ class AccountModel {
     bool? lowBalanceAlertEnabled,
     List<String>? smsSenderIds,
     String? smsIdentifier,
+    double? lowBalanceAlertAmount,
   }) {
     return AccountModel(
       id: id ?? this.id,
@@ -80,6 +84,7 @@ class AccountModel {
       balance: balance ?? this.balance,
       currency: currency ?? this.currency,
       cardBankName: cardBankName ?? this.cardBankName,
+      cardHolderName: cardHolderName ?? this.cardHolderName,
       cardNumber: cardNumber ?? this.cardNumber,
       cardExpiryDate: cardExpiryDate ?? this.cardExpiryDate,
       cardBrand: cardBrand ?? this.cardBrand,
@@ -90,6 +95,8 @@ class AccountModel {
           lowBalanceAlertEnabled ?? this.lowBalanceAlertEnabled,
       smsSenderIds: smsSenderIds ?? this.smsSenderIds,
       smsIdentifier: smsIdentifier ?? this.smsIdentifier,
+      lowBalanceAlertAmount:
+          lowBalanceAlertAmount ?? this.lowBalanceAlertAmount,
     );
   }
 
@@ -106,6 +113,7 @@ class AccountModel {
       'balance': balance,
       'currency': currency,
       'cardBankName': cardBankName,
+      'cardHolderName': cardHolderName,
       'cardNumber': cardNumber,
       'cardExpiryDate': cardExpiryDate,
       'cardBrand': cardBrand?.name,
@@ -115,6 +123,7 @@ class AccountModel {
       'lowBalanceAlertEnabled': lowBalanceAlertEnabled,
       'smsSenderIds': smsSenderIds,
       'smsIdentifier': smsIdentifier,
+      'lowBalanceAlertAmount': lowBalanceAlertAmount,
     };
   }
 
@@ -137,6 +146,9 @@ class AccountModel {
       cardBankName: map['cardBankName'] != null
           ? map['cardBankName'] as String
           : null,
+      cardHolderName: map['cardHolderName'] != null
+          ? map['cardHolderName'] as String
+          : null,
       cardNumber: map['cardNumber'] != null
           ? map['cardNumber'] as String
           : null,
@@ -144,7 +156,10 @@ class AccountModel {
           ? map['cardExpiryDate'] as String
           : null,
       cardBrand: map['cardBrand'] != null
-          ? CardBrand.values.firstWhere((e) => e.name == map['cardBrand'])
+          ? CardBrand.values.firstWhere(
+              (e) => e.name == map['cardBrand'],
+              orElse: () => CardBrand.mastercard,
+            )
           : null,
       createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
@@ -158,6 +173,8 @@ class AccountModel {
           ?.map((e) => e as String)
           .toList(),
       smsIdentifier: map['smsIdentifier'] as String?,
+      lowBalanceAlertAmount:
+          (map['lowBalanceAlertAmount'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

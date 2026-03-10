@@ -1,3 +1,4 @@
+import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:equatable/equatable.dart';
 import 'package:budget_wise/statistics/data/models/statistics_model.dart';
 
@@ -24,4 +25,13 @@ class StatisticsEventSortChanged extends StatisticsEvent {
 
   @override
   List<Object?> get props => [sortingType];
+}
+
+class StatisticsEventToggleType extends StatisticsEvent {
+  final ToggleOption toggleType;
+
+  const StatisticsEventToggleType(this.toggleType);
+
+  @override
+  List<Object?> get props => [toggleType];
 }

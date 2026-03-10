@@ -27,3 +27,18 @@ class SettingsEventUpdateLastForegroundActivityDateTime extends SettingsEvent {
   final DateTime? dateTime;
   const SettingsEventUpdateLastForegroundActivityDateTime(this.dateTime);
 }
+
+class SettingsEventUpdateDefaultCurrency extends SettingsEvent {
+  final String newDefaultCurrency;
+
+  const SettingsEventUpdateDefaultCurrency({required this.newDefaultCurrency});
+}
+
+class SettingsEventUpdatePasscode extends SettingsEvent {
+  final String? passcode;
+  const SettingsEventUpdatePasscode(this.passcode);
+}
+
+class SettingsEventToggleBiometrics extends SettingsEvent {
+  const SettingsEventToggleBiometrics();
+}

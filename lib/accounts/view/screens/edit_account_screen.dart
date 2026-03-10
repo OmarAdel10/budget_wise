@@ -1,8 +1,7 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/models/card_brand.dart';
-import 'package:budget_wise/accounts/data/models/card_formatters.dart';
-import 'package:budget_wise/accounts/view/widgets/bank_picker_bottom_sheet.dart';
-import 'package:budget_wise/accounts/view/widgets/currency_picker_bottom_sheet.dart';
+import 'package:budget_wise/accounts/view/widgets/account_basic_info_card.dart';
+import 'package:budget_wise/accounts/view/widgets/account_delete_card.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -10,10 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
-import 'package:budget_wise/shared/utils/thousands_formatter.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:budget_wise/accounts/view/widgets/section_header.dart';
+import 'package:budget_wise/accounts/view/widgets/edit_account_bottom_nav_bar.dart';
+import 'package:budget_wise/accounts/view/widgets/account_settings_card.dart';
+import 'package:budget_wise/accounts/view/widgets/account_financials_card.dart';
+import 'package:budget_wise/accounts/utils/card_validation_mixin.dart';
 
 class EditAccountScreen extends StatefulWidget {
   static const String routeName = '/editAccount';
@@ -25,28 +26,35 @@ class EditAccountScreen extends StatefulWidget {
   State<EditAccountScreen> createState() => _EditAccountScreenState();
 }
 
-class _EditAccountScreenState extends State<EditAccountScreen> {
+class _EditAccountScreenState extends State<EditAccountScreen>
+    with CardValidationMixin {
   late TextEditingController accountNameController;
   late TextEditingController balanceController;
+  late TextEditingController lowBalanceAlertAmountController;
   late TextEditingController cardNumberController;
   late TextEditingController expiryController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  late String selectedCurrency;
-  late CardBrand selectedCardBrand;
-  late bool lowBalanceAlertEnabled;
-  String? selectedBankName;
-  List<String>? selectedBankSenderIds;
-
-  bool isCardValid = true;
-  bool isExpiryValid = true;
+  final ValueNotifier<String> selectedCurrencyNotifier = ValueNotifier<String>(
+    '',
+  );
+  final ValueNotifier<bool> lowBalanceAlertEnabledNotifier =
+      ValueNotifier<bool>(false);
+  final ValueNotifier<String?> selectedBankNameNotifier =
+      ValueNotifier<String?>(null);
+  final ValueNotifier<List<String>?> selectedBankSenderIdsNotifier =
+      ValueNotifier<List<String>?>(null);
 
   @override
   void initState() {
     super.initState();
     accountNameController = TextEditingController(text: widget.account.title);
     balanceController = TextEditingController(
-      text: widget.account.balance.toString(),
+      text: widget.account.balance.toStringAsFixed(1),
+    );
+
+    lowBalanceAlertAmountController = TextEditingController(
+      text: widget.account.lowBalanceAlertAmount.toStringAsFixed(1),
     );
     cardNumberController = TextEditingController(
       text: widget.account.cardNumber,
@@ -54,77 +62,19 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     expiryController = TextEditingController(
       text: widget.account.cardExpiryDate,
     );
-    selectedCurrency = widget.account.currency;
-    selectedCardBrand = widget.account.cardBrand ?? CardBrand.visa;
-    lowBalanceAlertEnabled = widget.account.lowBalanceAlertEnabled;
-    selectedBankName = widget.account.cardBankName;
-    selectedBankSenderIds = widget.account.smsSenderIds;
+
+    selectedCurrencyNotifier.value = widget.account.currency;
+    lowBalanceAlertEnabledNotifier.value =
+        widget.account.lowBalanceAlertEnabled;
+    selectedBankNameNotifier.value = widget.account.cardBankName;
+    selectedBankSenderIdsNotifier.value = widget.account.smsSenderIds;
 
     if (widget.account.accountType == AccountType.card) {
-      _validateCardNumber(cardNumberController.text);
-      _validateExpiryDate(expiryController.text);
+      selectedCardBrandNotifier.value =
+          widget.account.cardBrand ?? CardBrand.visa;
+      validateCardNumber(cardNumberController.text);
+      validateExpiryDate(expiryController.text);
     }
-  }
-
-  void _determineCardType(String cleanedCardNumber) {
-    if (cleanedCardNumber.isNotEmpty) {
-      if (cleanedCardNumber.startsWith('4')) {
-        selectedCardBrand = CardBrand.visa;
-      } else if (RegExp(r'^5[1-5]').hasMatch(cleanedCardNumber) ||
-          RegExp(
-            r'^2(22[1-9]|2[3-9][0-9]|[3-6][0-9]{2}|7[01][0-9]|720)',
-          ).hasMatch(cleanedCardNumber)) {
-        selectedCardBrand = CardBrand.mastercard;
-      } else if (cleanedCardNumber.startsWith('5078') ||
-          cleanedCardNumber.startsWith('9828')) {
-        selectedCardBrand = CardBrand.mezza;
-      }
-    }
-  }
-
-  void _validateCardNumber(String cardNumber) {
-    final cleanedNumber = cardNumber.replaceAll(' ', '');
-    bool isValid = true;
-    if (cleanedNumber.length != 16) isValid = false;
-
-    int sum = 0;
-    for (int i = 0; i < cleanedNumber.length; i++) {
-      int digit = int.parse(cleanedNumber[i]);
-      if (i % 2 == 0) {
-        digit *= 2;
-        if (digit > 9) digit -= 9;
-      }
-      sum += digit;
-    }
-    if (sum % 10 != 0) isValid = false;
-
-    setState(() {
-      _determineCardType(cardNumber);
-      isCardValid = isValid;
-    });
-  }
-
-  void _validateExpiryDate(String input) {
-    bool isValid = true;
-    if (input.length != 5) isValid = false;
-    final parts = input.split('/');
-    if (isValid && parts.length != 2) isValid = false;
-    if (isValid) {
-      final int? month = int.tryParse(parts[0]);
-      final int? year = int.tryParse(parts[1]);
-      if (month == null || year == null || month < 1 || month > 12) {
-        isValid = false;
-      } else {
-        final now = DateTime.now();
-        final int currentYear = now.year % 100;
-        final int currentMonth = now.month;
-        if (year < currentYear ||
-            (year == currentYear && month < currentMonth)) {
-          isValid = false;
-        }
-      }
-    }
-    setState(() => isExpiryValid = isValid);
   }
 
   @override
@@ -133,10 +83,16 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     balanceController.dispose();
     cardNumberController.dispose();
     expiryController.dispose();
+    selectedCurrencyNotifier.dispose();
+    lowBalanceAlertEnabledNotifier.dispose();
+    selectedBankNameNotifier.dispose();
+    selectedBankSenderIdsNotifier.dispose();
+    disposeCardValidationNotifiers();
     super.dispose();
   }
 
   void _onSave() {
+    bool isCard = widget.account.accountType == AccountType.card;
     if (_formKey.currentState!.validate()) {
       final updatedAccount = widget.account.copyWith(
         title: accountNameController.text.trim(),
@@ -145,21 +101,20 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               balanceController.text.replaceAll(',', '').trim(),
             ) ??
             0.0,
-        currency: selectedCurrency,
-        cardBankName: widget.account.accountType == AccountType.card
-            ? selectedBankName?.toUpperCase().trim()
+        currency: selectedCurrencyNotifier.value,
+        cardBankName: isCard
+            ? selectedBankNameNotifier.value?.toUpperCase().trim()
             : null,
-        cardNumber: widget.account.accountType == AccountType.card
-            ? cardNumberController.text.trim()
-            : null,
-        cardExpiryDate: widget.account.accountType == AccountType.card
-            ? expiryController.text.trim()
-            : null,
-        cardBrand: widget.account.accountType == AccountType.card
-            ? selectedCardBrand
-            : null,
-        lowBalanceAlertEnabled: lowBalanceAlertEnabled,
-        smsSenderIds: selectedBankSenderIds,
+        cardNumber: isCard ? cardNumberController.text.trim() : null,
+        cardExpiryDate: isCard ? expiryController.text.trim() : null,
+        cardBrand: isCard ? selectedCardBrandNotifier.value : null,
+        lowBalanceAlertEnabled: lowBalanceAlertEnabledNotifier.value,
+        lowBalanceAlertAmount:
+            double.tryParse(
+              lowBalanceAlertAmountController.text.replaceAll(',', '').trim(),
+            ) ??
+            0.0,
+        smsSenderIds: selectedBankSenderIdsNotifier.value,
         smsIdentifier: cardNumberController.text.replaceAll(' ', '').length >= 4
             ? cardNumberController.text
                   .replaceAll(' ', '')
@@ -176,39 +131,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       );
       Navigator.of(context).pop(updatedAccount);
     }
-  }
-
-  void _onDelete() {
-    final l10n = AppLocalizations.of(context)!;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.deleteAccount, style: AppTextStyles.heading3),
-        content: Text(l10n.deleteAccountConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              l10n.back,
-              style: const TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              context.read<AccountBloc>().add(
-                AccountEventDeleteAccount(accountId: widget.account.id),
-              );
-              Navigator.of(context).pop(); // Close dialog
-              Navigator.of(context).pop(); // Return to previous screen
-            },
-            child: Text(
-              l10n.deleteAccount,
-              style: const TextStyle(color: AppColors.danger),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -239,254 +161,40 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 //* Basic Information Section
-                _buildSectionHeader(l10n.basicInformation),
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                    border: Border.all(
-                      color: AppColors.borderColor.withValues(alpha: 0.1),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildTextFieldLabel(l10n.addAccountAccountNameLabel),
-                      TextFormField(
-                        controller: accountNameController,
-                        decoration: _getInputDecoration(
-                          l10n.addAccountAccountNamePlaceholder,
-                        ),
-                        validator: (value) => (value == null || value.isEmpty)
-                            ? l10n.accountNameCantLeftEmpty
-                            : null,
-                      ),
-                      if (widget.account.accountType == AccountType.card) ...[
-                        const SizedBox(height: AppSpacing.md),
-                        _buildTextFieldLabel(l10n.addAccountBankNameLabel),
-                        GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              backgroundColor: Colors.transparent,
-                              isScrollControlled: true,
-                              builder: (context) => BankPickerBottomSheet(
-                                onBankSelected: (bankName, senderIds) {
-                                  setState(() {
-                                    selectedBankName = bankName;
-                                    selectedBankSenderIds = senderIds;
-                                  });
-                                },
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.md,
-                              vertical: AppSpacing.md,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.inputBackground,
-                              borderRadius: BorderRadius.circular(
-                                AppSpacing.radiusMd,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  selectedBankName ??
-                                      l10n.addAccountBankNamePlaceholder,
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    color: selectedBankName == null
-                                        ? AppColors.textSecondary
-                                        : AppColors.textPrimary,
-                                  ),
-                                ),
-                                Icon(
-                                  PhosphorIcons.caretDown(
-                                    PhosphorIconsStyle.bold,
-                                  ),
-                                  size: 20,
-                                  color: AppColors.textPrimary,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        if (selectedBankName == null)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              top: 8.0,
-                              left: 12.0,
-                            ),
-                            child: Text(
-                              l10n.bankNameCantLeftEmpty,
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.danger,
-                              ),
-                            ),
-                          ),
-                        const SizedBox(height: AppSpacing.md),
-                        _buildTextFieldLabel(l10n.addAccountCardNumberLabel),
-                        TextFormField(
-                          controller: cardNumberController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(16),
-                            CardNumberFormatter(),
-                          ],
-                          decoration: _getInputDecoration(
-                            '**** **** **** ****',
-                            suffixIcon: _getValidationIcon(
-                              isCardValid,
-                              cardNumberController.text,
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                          onChanged: (_) =>
-                              _validateCardNumber(cardNumberController.text),
-                          validator: (value) =>
-                              (value == null || value.isEmpty || !isCardValid)
-                              ? l10n.youShouldEnterAValidCardNumber
-                              : null,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        _buildTextFieldLabel(l10n.addAccountCardExpiryLabel),
-                        TextFormField(
-                          controller: expiryController,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(4),
-                            CardExpirationFormatter(),
-                          ],
-                          decoration: _getInputDecoration(
-                            'MM/YY',
-                            suffixIcon: _getValidationIcon(
-                              isExpiryValid,
-                              expiryController.text,
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                          onChanged: (_) =>
-                              _validateExpiryDate(expiryController.text),
-                          validator: (value) =>
-                              (value == null || value.isEmpty || !isExpiryValid)
-                              ? l10n.youShouldEnterAValidExpiryDate
-                              : null,
-                        ),
-                      ],
-                    ],
-                  ),
+                SectionHeader(title: l10n.basicInformation),
+                AccountBasicInfoCard(
+                  accountType: widget.account.accountType,
+                  accountNameController: accountNameController,
+                  cardNumberController: cardNumberController,
+                  expiryController: expiryController,
+                  selectedBankNameNotifier: selectedBankNameNotifier,
+                  selectedBankSenderIdsNotifier: selectedBankSenderIdsNotifier,
+                  cardValidationMixin: this,
                 ),
-
                 const SizedBox(height: AppSpacing.lg),
 
                 //* Financials Section
-                _buildSectionHeader(l10n.financials),
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                    border: Border.all(
-                      color: AppColors.borderColor.withValues(alpha: 0.1),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildTextFieldLabel(l10n.currentBalance),
-                      TextFormField(
-                        controller: balanceController,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
-                          ThousandsSeparatorInputFormatter(),
-                        ],
-                        style: AppTextStyles.bodyLarge.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        decoration: _getInputDecoration(
-                          l10n.addAccountInitialBalancePlaceholder,
-                          prefixIcon: _buildCurrencyPrefix(context),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return l10n.youShouldEnterAValidBalance;
-                          }
-                          final cleanValue = value.replaceAll(',', '');
-                          if (double.tryParse(cleanValue) == null) {
-                            return l10n.youShouldEnterAValidBalance;
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
+                SectionHeader(title: l10n.financials),
+                AccountFinancialsCard(
+                  balanceController: balanceController,
+                  selectedCurrencyNotifier: selectedCurrencyNotifier,
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
 
                 //* Settings Section
-                _buildSectionHeader(l10n.navSettings),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                    border: Border.all(
-                      color: AppColors.borderColor.withValues(alpha: 0.1),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      SwitchListTile(
-                        value: lowBalanceAlertEnabled,
-                        onChanged: (value) =>
-                            setState(() => lowBalanceAlertEnabled = value),
-                        title: Text(
-                          l10n.alertOnLowBalance,
-                          style: AppTextStyles.bodyMedium,
-                        ),
-                        secondary: const Icon(
-                          Icons.notifications_none,
-                          color: AppColors.textSecondary,
-                        ),
-                        activeThumbColor: AppColors.primaryAccent,
-                      ),
-                    ],
-                  ),
+                SectionHeader(title: l10n.navSettings),
+                AccountSettingsCard(
+                  lowBalanceAlertEnabledNotifier:
+                      lowBalanceAlertEnabledNotifier,
+                  lowBalanceAlertAmountController:
+                      lowBalanceAlertAmountController,
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
 
                 //* Delete Action
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                    border: Border.all(
-                      color: AppColors.borderColor.withValues(alpha: 0.1),
-                    ),
-                  ),
-                  child: TextButton.icon(
-                    onPressed: _onDelete,
-                    icon: const Icon(
-                      Icons.delete_forever,
-                      color: AppColors.danger,
-                    ),
-                    label: Text(
-                      l10n.deleteAccount,
-                      style: AppTextStyles.button.copyWith(
-                        color: AppColors.danger,
-                      ),
-                    ),
-                  ),
-                ),
+                AccountDeleteCard(accountId: widget.account.id),
 
                 const SizedBox(height: AppSpacing.xxl * 2),
               ],
@@ -494,128 +202,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: ElevatedButton(
-          onPressed: _onSave,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryAccent,
-            padding: const EdgeInsets.symmetric(vertical: 18),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            ),
-            elevation: 8,
-            shadowColor: AppColors.primaryAccent.withValues(alpha: 0.3),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.save, color: Colors.white),
-              const SizedBox(width: 8),
-              Text(
-                l10n.saveChanges,
-                style: AppTextStyles.button.copyWith(color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, bottom: 8),
-      child: Text(
-        title.toUpperCase(),
-        style: AppTextStyles.bodySmall.copyWith(
-          color: AppColors.textSecondary,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.2,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextFieldLabel(String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        label,
-        style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
-      ),
-    );
-  }
-
-  InputDecoration _getInputDecoration(
-    String hint, {
-    Widget? prefixIcon,
-    Widget? suffixIcon,
-  }) {
-    return InputDecoration(
-      hintText: hint,
-      prefixIcon: prefixIcon,
-      suffixIcon: suffixIcon,
-      filled: true,
-      fillColor: AppColors.inputBackground,
-      border: OutlineInputBorder(
-        borderSide: BorderSide.none,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.md,
-      ),
-      hintStyle: AppTextStyles.bodyMedium.copyWith(
-        color: AppColors.textSecondary,
-      ),
-    );
-  }
-
-  Widget? _getValidationIcon(bool isValid, String text) {
-    if (text.isEmpty) return null;
-    return Icon(
-      isValid ? Icons.check_circle : Icons.error,
-      color: isValid ? AppColors.primaryAccent : AppColors.danger,
-    );
-  }
-
-  Widget _buildCurrencyPrefix(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          backgroundColor: Colors.transparent,
-          isScrollControlled: true,
-          builder: (context) => CurrencyPickerBottomSheet(
-            selectedCurrency: selectedCurrency,
-            onCurrencySelected: (currency) =>
-                setState(() => selectedCurrency = currency),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.all(8),
-        width: 60,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          border: Border.all(color: AppColors.borderColor),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              selectedCurrency,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Icon(Icons.keyboard_arrow_down, size: 14),
-          ],
-        ),
-      ),
+      bottomNavigationBar: EditAccountBottomNavBar(onSave: _onSave),
     );
   }
 }

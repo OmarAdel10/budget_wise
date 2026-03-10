@@ -295,4 +295,21 @@
   "deleteSubscription": "حذف الاشتراك",
   "subscriptionDeleted": "تم حذف الاشتراك",
   "nextRenewalDate": "تاريخ التجديد التالي"
+  "defaultCurrency": "العملة الافتراضية",
+  "noRecentTransactionsFound": "لم يتم العثور على معاملات حديثة.",
+  "noAccountsAvailableForSelectedCurrency": "لا توجد حسابات متاحة للعملة المحددة.",
+  "lowBalanceAlertAmount": "مبلغ تنبيه الرصيد المنخفض",
+  "yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount": "رصيد حسابك أقل من مبلغ تنبيه الرصيد المنخفض المحدد.",
+  "syncing": "جاري المزامنة",
+  "lastUpdatedAt": "آخر تحديث:",
+  "lowBalanceWarning": "تحذير انخفاض الرصيد",
+  "accountDetails": "تفاصيل الحساب",
+  "setPasscode": "تعيين رمز المرور",
+  "changePasscode": "تغيير رمز المرور",
+  "useBiometrics": "إلغاء القفل بالبصمة",
+  "enterPasscode": "أدخل رمز المرور",
+  "confirmPasscode": "تأكيد رمز المرور",
+  "passcodeMismatch": "رموز المرور غير متطابقة",
+  "passcodeIncorrect": "رمز المرور غير صحيح",
+  "passcodeSet": "تم تعيين رمز المرور بنجاح"
 }

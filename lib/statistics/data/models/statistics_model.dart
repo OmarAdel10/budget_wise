@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:equatable/equatable.dart';
 import 'package:budget_wise/home/data/models/home_model.dart';
 
@@ -15,6 +16,7 @@ class StatisticsModel extends Equatable {
   final List<double> dailyExpenseTrend;
   final StatisticsSorting sortingType;
   final DateTime selectedMonth;
+  final ToggleOption toggleType;
 
   const StatisticsModel({
     required this.totalIncome,
@@ -27,6 +29,7 @@ class StatisticsModel extends Equatable {
     required this.dailyExpenseTrend,
     required this.sortingType,
     required this.selectedMonth,
+    this.toggleType = ToggleOption.expense,
   });
 
   @override
@@ -41,6 +44,7 @@ class StatisticsModel extends Equatable {
     dailyExpenseTrend,
     sortingType,
     selectedMonth,
+    toggleType,
   ];
 
   StatisticsModel copyWith({
@@ -54,6 +58,7 @@ class StatisticsModel extends Equatable {
     List<double>? dailyExpenseTrend,
     StatisticsSorting? sortingType,
     DateTime? selectedMonth,
+    ToggleOption? toggleType,
   }) {
     return StatisticsModel(
       totalIncome: totalIncome ?? this.totalIncome,
@@ -66,6 +71,7 @@ class StatisticsModel extends Equatable {
       dailyExpenseTrend: dailyExpenseTrend ?? this.dailyExpenseTrend,
       sortingType: sortingType ?? this.sortingType,
       selectedMonth: selectedMonth ?? this.selectedMonth,
+      toggleType: toggleType ?? this.toggleType,
     );
   }
 
@@ -81,6 +87,7 @@ class StatisticsModel extends Equatable {
       'dailyExpenseTrend': dailyExpenseTrend,
       'sortingType': sortingType.index,
       'selectedMonth': selectedMonth.millisecondsSinceEpoch,
+      'toggleType': toggleType.index,
     };
   }
 
@@ -106,6 +113,11 @@ class StatisticsModel extends Equatable {
       selectedMonth: DateTime.fromMillisecondsSinceEpoch(
         map['selectedMonth'] as int,
       ),
+      toggleType:
+          map['toggleType'] != null &&
+              (map['toggleType'] as num).toInt() < ToggleOption.values.length
+          ? ToggleOption.values[(map['toggleType'] as num).toInt()]
+          : ToggleOption.expense,
     );
   }
 

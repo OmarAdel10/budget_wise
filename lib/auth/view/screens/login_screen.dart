@@ -1,26 +1,27 @@
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/auth/data/models/user_model.dart';
+import 'package:budget_wise/auth/utils/auth_constants.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
-import 'package:budget_wise/home/view_model/category_event.dart';
-import 'package:budget_wise/home/view_model/category_view_model.dart';
-import 'package:budget_wise/home/view_model/transaction_event.dart';
-import 'package:budget_wise/home/view_model/transaction_view_model.dart';
+import 'package:budget_wise/category/view_model/category_event.dart';
+import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_event.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:toastification/toastification.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
-import '../../../shared/constants/text_styles.dart';
-import '../../../shared/widgets/custom_button.dart';
-import '../../../shared/widgets/custom_text_field.dart';
+import '../../../shared/widgets/custom_app_bar.dart';
+import '../../../shared/widgets/responsive_spacer.dart';
 import '../../../main_navigation/view/screens/main_screen.dart';
+import '../widgets/login_form.dart';
+import '../widgets/login_header.dart';
+import '../widgets/login_footer.dart';
 import 'forgot_password_screen.dart';
 import 'signup_screen.dart';
 
@@ -63,68 +64,43 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.of(context).pushNamed(ForgotPasswordScreen.routeName);
   }
 
+  void _onSignUp(bool isFromOnboarding) {
+    if (isFromOnboarding) {
+      Navigator.of(context).pop(AuthConstants.switchToSignup);
+    } else {
+      Navigator.of(context).pushReplacementNamed(
+        SignUpScreen.routeName,
+        arguments: isFromOnboarding,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    
+    // Extract args without causing full-screen rebuilds on layout changes
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final bool isFromOnboarding =
-        args?['loginRouting'] == LoginRouting.fromOnboarding;
+        args?[AuthConstants.loginRoutingKey] == LoginRouting.fromOnboarding;
 
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(false),
-        ),
-        title: Text(
-          l10n.appTitle,
-          style: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      appBar: CustomAppBar(
+        title: l10n.appTitle,
+        showBackButton: true,
+        onBackPressed: () => Navigator.of(context).pop(false),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              if (state is AuthStateLoading) {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    scrollable: false,
-                    constraints: BoxConstraints(
-                      minHeight: MediaQuery.sizeOf(context).height * 0.25,
-                      maxHeight: MediaQuery.sizeOf(context).height * 0.25,
-                      minWidth: MediaQuery.sizeOf(context).width * 0.75,
-                      maxWidth: MediaQuery.sizeOf(context).width * 0.75,
-                    ),
-                    content: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Center(child: CircularProgressIndicator()),
-                        const SizedBox(height: AppSpacing.md),
-                        Center(child: Text(l10n.loading)),
-                      ],
-                    ),
-                  ),
-                );
-              }
               if (state is AuthStateError) {
-                Navigator.of(context).pop();
-                toastification.show(
-                  autoCloseDuration: const Duration(seconds: 3),
-                  context: context,
-                  type: ToastificationType.error,
-                  style: ToastificationStyle.flatColored,
-                  title: Text(state.message),
+                AppToast.show(
+                  context,
+                  type: AppToastType.error,
+                  title: state.message,
                 );
               }
               if (state is AuthStateSuccess) {
@@ -143,10 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
 
                 if (isFromOnboarding) {
-                  Navigator.of(context).pop();
                   Navigator.of(context).pop(true);
                 } else {
-                  Navigator.of(context).pop();
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     MainScreen.routeName,
                     (route) => false,
@@ -154,125 +128,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               }
             },
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(height: MediaQuery.sizeOf(context).height / 5),
-
-                  // Welcome Header
-                  Text(
-                    l10n.welcomeBack,
-                    style: AppTextStyles.heading2,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Email Input
-                  CustomTextField(
-                    hintText: l10n.email,
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return l10n.emailRequired;
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Password Input
-                  CustomTextField(
-                    hintText: l10n.password,
-                    controller: _passwordController,
-                    isPassword: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return l10n.passwordRequired;
-                      }
-
-                      if (value.length < 6) {
-                        return l10n.passwordTooShort;
-                      }
-                      return null;
-                    },
-                  ),
-
-                  // Forgot Password Link
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: _onForgotPassword,
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.sm,
-                          horizontal: 0,
-                        ),
-                        foregroundColor: AppColors.textSecondary,
-                      ),
-                      child: Text(
-                        l10n.forgotPassword,
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  // Login Button
-                  CustomButton(text: l10n.login, onPressed: _onLogin),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Google Login Button
-                  CustomButton(
-                    text: l10n.loginWithGoogle,
-                    type: CustomButtonType.secondary,
-                    onPressed: _onGoogleLogin,
-                    icon: Icon(
-                      PhosphorIcons.googleLogo(PhosphorIconsStyle.bold),
-                    ),
-                  ),
-
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // Sign Up Link (Footer)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.dontHaveAccount,
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          if (isFromOnboarding) {
-                            Navigator.of(context).pop('switch_to_signup');
-                          } else {
-                            Navigator.of(context).pushReplacementNamed(
-                              SignUpScreen.routeName,
-                              arguments: isFromOnboarding,
-                            );
-                          }
-                        },
-                        child: Text(
-                          l10n.signUp,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
-                            decoration: TextDecoration.underline,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const ResponsiveSpacer(heightFraction: 0.2),
+                const LoginHeader(),
+                LoginForm(
+                  formKey: _formKey,
+                  emailController: _emailController,
+                  passwordController: _passwordController,
+                  onForgotPassword: _onForgotPassword,
+                ),
+                LoginFooter(
+                  onLogin: _onLogin,
+                  onGoogleLogin: _onGoogleLogin,
+                  onSignUp: () => _onSignUp(isFromOnboarding),
+                ),
+              ],
             ),
           ),
         ),
