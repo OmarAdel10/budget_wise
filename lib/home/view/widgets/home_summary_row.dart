@@ -36,7 +36,7 @@ class HomeSummaryRow extends StatelessWidget {
             ),
           ),
           Text(
-            '$currencySymbol ${totalIncome.toStringAsFixed(0)}',
+            totalIncome.toStringAsFixed(0),
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.primaryAccent,
               fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ class HomeSummaryRow extends StatelessWidget {
             ),
           ),
           Text(
-            '$currencySymbol ${totalExpenses.toStringAsFixed(0)}',
+            totalExpenses.toStringAsFixed(0),
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.danger,
               fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ class HomeSummaryRow extends StatelessWidget {
         Expanded(
           child: SummaryCard(
             title: l10n.income,
-            amount: "$currencySymbol ${totalIncome.toStringAsFixed(0)}",
+            amount: totalIncome.toStringAsFixed(0),
             amountColor: AppColors.primaryAccent,
             onTap: () {
               Navigator.of(context).pushNamed(
@@ -88,7 +88,7 @@ class HomeSummaryRow extends StatelessWidget {
         Expanded(
           child: SummaryCard(
             title: l10n.expenses,
-            amount: "$currencySymbol ${totalExpenses.toStringAsFixed(0)}",
+            amount: totalExpenses.toStringAsFixed(0),
             amountColor: AppColors.danger,
             onTap: () {
               Navigator.of(context).pushNamed(

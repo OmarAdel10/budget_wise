@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../constants/text_styles.dart';
@@ -21,9 +22,11 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool hasFixedHeight = isCompact;
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        height: hasFixedHeight ? MediaQuery.sizeOf(context).height * 0.11 : null,
         padding: EdgeInsets.all(isCompact ? AppSpacing.md : AppSpacing.lg),
         decoration: BoxDecoration(
           color: isCompact
@@ -35,14 +38,14 @@ class SummaryCard extends StatelessWidget {
           border: isCompact ? null : Border.all(color: AppColors.borderColor),
         ),
         child: Column(
-          mainAxisAlignment: isCompact
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            AutoSizeText(
               title,
+              maxLines: 1,
+              minFontSize: AppTextStyles.bodySmall.fontSize!,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: isCompact
                     ? AppColors.textSecondary

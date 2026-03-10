@@ -27,7 +27,7 @@ class _HomeFlexibleHeaderState extends State<HomeFlexibleHeader> {
 
   @override
   Widget build(BuildContext context) {
-    final expandedHeight = MediaQuery.sizeOf(context).height * 0.12;
+    final expandedHeight = MediaQuery.sizeOf(context).height * 0.15;
 
     return BlocBuilder<SettingsBloc, SettingsState>(
       buildWhen: (previous, current) =>
@@ -99,11 +99,14 @@ class _HomeFlexibleHeaderState extends State<HomeFlexibleHeader> {
                             curve: Curves.easeInOut,
                           );
                         },
-                        child: HomeSummaryRow(
-                          totalIncome: homeState.model.totalIncome,
-                          totalExpenses: homeState.model.totalExpenses,
-                          currencySymbol: settingsState.currencySymbol,
-                          isCollapsed: true,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: HomeSummaryRow(
+                            totalIncome: homeState.model.totalIncome,
+                            totalExpenses: homeState.model.totalExpenses,
+                            currencySymbol: settingsState.currencySymbol,
+                            isCollapsed: true,
+                          ),
                         ),
                       ),
                     ),
