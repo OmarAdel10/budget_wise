@@ -23,6 +23,11 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/subscriptions/data/repositories/subscription_repository.dart';
+import 'package:budget_wise/subscriptions/view/screens/add_subscription_screen.dart';
+import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
+import 'package:budget_wise/subscriptions/view/screens/subscription_list_screen.dart';
+import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,6 +73,10 @@ void main() async {
           create: (context) =>
               AccountRepository(authRepo: context.read<AuthRepository>()),
         ),
+        RepositoryProvider(
+          create: (context) =>
+              SubscriptionRepository(authRepo: context.read<AuthRepository>()),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -112,6 +121,13 @@ void main() async {
               transactionBloc: context.read<TransactionBloc>(),
               categoryBloc: context.read<CategoryBloc>(),
             )..add(StatisticsEventLoadRequested(DateTime.now())),
+          ),
+          BlocProvider(
+            create: (context) => SubscriptionBloc(
+              subscriptionRepository: context.read<SubscriptionRepository>(),
+              authRepository: context.read<AuthRepository>(),
+              settingsBloc: context.read<SettingsBloc>(),
+            ),
           ),
         ],
         child: MyApp(),
@@ -352,6 +368,40 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: PendingSmsTransactionsScreen(),
+                );
+              case SubscriptionListScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: const Duration(milliseconds: 500),
+                  reverseDuration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: const SubscriptionListScreen(),
+                );
+              case SubscriptionDetailsScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: const Duration(milliseconds: 500),
+                  reverseDuration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: SubscriptionDetailsScreen(
+                  ),
+                );
+              case AddSubscriptionScreen.routeName:
+                return PageTransition(
+                  type: PageTransitionType.bottomToTop,
+                  reverseType: PageTransitionType.topToBottom,
+                  ctx: context,
+                  duration: const Duration(milliseconds: 500),
+                  reverseDuration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: const AddSubscriptionScreen(),
                 );
               default:
                 return null;

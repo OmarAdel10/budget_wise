@@ -851,4 +851,73 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get totalSubscriptions => 'إجمالي الاشتراكات';
+
+  @override
+  String get subscriptions => 'الاشتراكات';
+
+  @override
+  String get noSubscriptions => 'لا يوجد اشتراكات بعد';
+
+  @override
+  String get totalMonthlySpend => 'إجمالي الإنفاق الشهري';
+
+  @override
+  String activeSubscriptions(Object count) {
+    return '$count اشتراك نشط';
+  }
+
+  @override
+  String get overdue => 'متأخر';
+
+  @override
+  String nextBillingDate(Object date) {
+    return 'التالي: $date';
+  }
+
+  @override
+  String get addSubscription => 'إضافة اشتراك';
+
+  @override
+  String get editSubscription => 'تعديل اشتراك';
+
+  @override
+  String get subscriptionDetails => 'تفاصيل الاشتراك';
+
+  @override
+  String get payToRenew => 'ادفع للتجديد';
+
+  @override
+  String get billingCycle => 'دورة الفوترة';
+
+  @override
+  String get reminder => 'تذكير';
+
+  @override
+  String daysBefore(Object count) {
+    return 'قبل $count أيام';
+  }
+
+  @override
+  String get weekly => 'أسبوعي';
+
+  @override
+  String get monthly => 'شهري';
+
+  @override
+  String get quarterly => 'ربع سنوي';
+
+  @override
+  String get halfYearly => 'نصف سنوي';
+
+  @override
+  String get yearly => 'سنوي';
+
+  @override
+  String get deleteSubscription => 'حذف الاشتراك';
+
+  @override
+  String get subscriptionDeleted => 'تم حذف الاشتراك';
+
+  @override
+  String get nextRenewalDate => 'تاريخ التجديد التالي';
 }

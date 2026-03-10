@@ -60,6 +60,14 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           BottomNavigationBarItem(
             icon: Icon(
               widget.currentIndex == 2
+                  ? PhosphorIcons.repeat(PhosphorIconsStyle.fill)
+                  : PhosphorIcons.repeat(),
+            ),
+            label: l10n.subscriptions,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              widget.currentIndex == 3
                   ? PhosphorIcons.piggyBank(PhosphorIconsStyle.fill)
                   : PhosphorIcons.piggyBank(),
             ),
@@ -67,7 +75,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              widget.currentIndex == 3
+              widget.currentIndex == 4
                   ? PhosphorIcons.chartLine(PhosphorIconsStyle.fill)
                   : PhosphorIcons.chartLine(),
             ),
@@ -75,7 +83,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              widget.currentIndex == 4
+              widget.currentIndex == 5
                   ? PhosphorIcons.gear(PhosphorIconsStyle.fill)
                   : PhosphorIcons.gear(),
             ),

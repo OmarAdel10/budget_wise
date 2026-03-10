@@ -1741,6 +1741,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Subscriptions'**
   String get totalSubscriptions;
+
+  /// No description provided for @subscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions'**
+  String get subscriptions;
+
+  /// No description provided for @noSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No subscriptions yet'**
+  String get noSubscriptions;
+
+  /// No description provided for @totalMonthlySpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Monthly Spend'**
+  String get totalMonthlySpend;
+
+  /// No description provided for @activeSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Active Subscriptions'**
+  String activeSubscriptions(Object count);
+
+  /// No description provided for @overdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get overdue;
+
+  /// No description provided for @nextBillingDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {date}'**
+  String nextBillingDate(Object date);
+
+  /// No description provided for @addSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Subscription'**
+  String get addSubscription;
+
+  /// No description provided for @editSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Subscription'**
+  String get editSubscription;
+
+  /// No description provided for @subscriptionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Details'**
+  String get subscriptionDetails;
+
+  /// No description provided for @payToRenew.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay to Renew'**
+  String get payToRenew;
+
+  /// No description provided for @billingCycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing Cycle'**
+  String get billingCycle;
+
+  /// No description provided for @reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder'**
+  String get reminder;
+
+  /// No description provided for @daysBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days before'**
+  String daysBefore(Object count);
+
+  /// No description provided for @weekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get weekly;
+
+  /// No description provided for @monthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get monthly;
+
+  /// No description provided for @quarterly.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly'**
+  String get quarterly;
+
+  /// No description provided for @halfYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Half-Yearly'**
+  String get halfYearly;
+
+  /// No description provided for @yearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get yearly;
+
+  /// No description provided for @deleteSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Subscription'**
+  String get deleteSubscription;
+
+  /// No description provided for @subscriptionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Deleted'**
+  String get subscriptionDeleted;
+
+  /// No description provided for @nextRenewalDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Renewal Date'**
+  String get nextRenewalDate;
 }
 
 class _AppLocalizationsDelegate

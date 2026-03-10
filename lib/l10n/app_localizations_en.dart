@@ -858,4 +858,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalSubscriptions => 'Total Subscriptions';
+
+  @override
+  String get subscriptions => 'Subscriptions';
+
+  @override
+  String get noSubscriptions => 'No subscriptions yet';
+
+  @override
+  String get totalMonthlySpend => 'Total Monthly Spend';
+
+  @override
+  String activeSubscriptions(Object count) {
+    return '$count Active Subscriptions';
+  }
+
+  @override
+  String get overdue => 'Overdue';
+
+  @override
+  String nextBillingDate(Object date) {
+    return 'Next: $date';
+  }
+
+  @override
+  String get addSubscription => 'Add Subscription';
+
+  @override
+  String get editSubscription => 'Edit Subscription';
+
+  @override
+  String get subscriptionDetails => 'Subscription Details';
+
+  @override
+  String get payToRenew => 'Pay to Renew';
+
+  @override
+  String get billingCycle => 'Billing Cycle';
+
+  @override
+  String get reminder => 'Reminder';
+
+  @override
+  String daysBefore(Object count) {
+    return '$count days before';
+  }
+
+  @override
+  String get weekly => 'Weekly';
+
+  @override
+  String get monthly => 'Monthly';
+
+  @override
+  String get quarterly => 'Quarterly';
+
+  @override
+  String get halfYearly => 'Half-Yearly';
+
+  @override
+  String get yearly => 'Yearly';
+
+  @override
+  String get deleteSubscription => 'Delete Subscription';
+
+  @override
+  String get subscriptionDeleted => 'Subscription Deleted';
+
+  @override
+  String get nextRenewalDate => 'Next Renewal Date';
 }
