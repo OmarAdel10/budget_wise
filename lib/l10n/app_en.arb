@@ -280,9 +280,9 @@
   "defaultCurrency": "Default Currency",
   "noRecentTransactionsFound": "No Recent Transactions Found.",
   "noAccountsAvailableForSelectedCurrency": "No Accounts Available For The Selected Currency.",
-  "lowBalanceAlertAmount" : "Low Balance Alert Amount",
+  "lowBalanceAlertAmount": "Low Balance Alert Amount",
   "yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount": "Your account balance is below the specified low balance amount.",
-  "syncing" : "Syncing",
+  "syncing": "Syncing",
   "lastUpdatedAt": "Last Updated At:",
   "lowBalanceWarning": "Low Balance Warning",
   "accountDetails": "Account Details",
@@ -293,6 +293,6 @@
   "confirmPasscode": "Confirm Passcode",
   "passcodeMismatch": "Passcodes do not match",
   "passcodeIncorrect": "Incorrect Passcode",
-  "passcodeSet": "Passcode Set Successfully"
-
+  "passcodeSet": "Passcode Set Successfully",
+  "noSavingsGoalsThisMonth": "There is no Savings Goals this month"
 }

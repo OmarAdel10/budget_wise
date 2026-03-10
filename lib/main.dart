@@ -1,5 +1,7 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
+import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
+import 'package:budget_wise/savings/view_model/savings_bloc.dart';
 import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
@@ -69,6 +71,11 @@ void main() async {
           create: (context) =>
               AccountRepository(authRepo: context.read<AuthRepository>()),
         ),
+        RepositoryProvider(
+          create: (context) => SavingsRepository(
+            authRepo: context.read<AuthRepository>(),
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -81,6 +88,13 @@ void main() async {
             create: (context) => AccountBloc(
               settingsBloc: context.read<SettingsBloc>(),
               accountRepo: context.read<AccountRepository>(),
+              authRepository: context.read<AuthRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => SavingsBloc(
+              settingsBloc: context.read<SettingsBloc>(),
+              savingsRepo: context.read<SavingsRepository>(),
               authRepository: context.read<AuthRepository>(),
             ),
           ),

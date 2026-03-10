@@ -911,4 +911,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passcodeSet => 'Passcode Set Successfully';
+
+  @override
+  String get noSavingsGoalsThisMonth => 'There is no Savings Goals this month';
 }

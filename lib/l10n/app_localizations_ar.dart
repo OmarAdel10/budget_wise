@@ -904,4 +904,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passcodeSet => 'تم تعيين رمز المرور بنجاح';
+
+  @override
+  String get noSavingsGoalsThisMonth => 'لا توجد أهداف ادخار لهذا الشهر';
 }

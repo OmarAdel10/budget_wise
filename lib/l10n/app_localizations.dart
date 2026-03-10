@@ -1843,6 +1843,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passcode Set Successfully'**
   String get passcodeSet;
+
+  /// No description provided for @noSavingsGoalsThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no Savings Goals this month'**
+  String get noSavingsGoalsThisMonth;
 }
 
 class _AppLocalizationsDelegate

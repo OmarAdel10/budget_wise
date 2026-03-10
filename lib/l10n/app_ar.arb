@@ -290,5 +290,6 @@
   "confirmPasscode": "تأكيد رمز المرور",
   "passcodeMismatch": "رموز المرور غير متطابقة",
   "passcodeIncorrect": "رمز المرور غير صحيح",
-  "passcodeSet": "تم تعيين رمز المرور بنجاح"
+  "passcodeSet": "تم تعيين رمز المرور بنجاح",
+  "noSavingsGoalsThisMonth": "لا توجد أهداف ادخار لهذا الشهر"
 }
