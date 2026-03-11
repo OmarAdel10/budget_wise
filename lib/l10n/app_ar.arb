@@ -291,5 +291,7 @@
   "passcodeMismatch": "رموز المرور غير متطابقة",
   "passcodeIncorrect": "رمز المرور غير صحيح",
   "passcodeSet": "تم تعيين رمز المرور بنجاح",
-  "noSavingsGoalsThisMonth": "لا توجد أهداف ادخار لهذا الشهر"
+  "noSavingsGoalsThisMonth": "لا توجد أهداف ادخار لهذا الشهر",
+  "deleteGoal": "حذف الهدف",
+  "savingDeleted": "تم حذف الهدف"
 }

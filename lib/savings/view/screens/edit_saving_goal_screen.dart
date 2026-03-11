@@ -3,41 +3,40 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
 import 'package:budget_wise/savings/view_model/savings_event.dart';
-import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/widgets/currency_prefix.dart';
 import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/widgets/custom_button.dart';
 
-class AddSavingGoalScreen extends StatefulWidget {
-  static const String routeName = '/add-saving-goal';
+class EditSavingGoalScreen extends StatefulWidget {
+  static const String routeName = '/edit-saving-goal';
+  final SavingsModel goal;
 
-  const AddSavingGoalScreen({super.key});
+  const EditSavingGoalScreen({super.key, required this.goal});
 
   @override
-  State<AddSavingGoalScreen> createState() => _AddSavingGoalScreenState();
+  State<EditSavingGoalScreen> createState() => _EditSavingGoalScreenState();
 }
 
-class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
+class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _daysController = TextEditingController();
-  final TextEditingController _constantController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _amountController;
+  late TextEditingController _daysController;
+  late TextEditingController _constantController;
 
   final FocusNode _amountFocusNode = FocusNode();
   final FocusNode _daysFocusNode = FocusNode();
 
-  DateTime _targetDate = DateTime.now().add(const Duration(days: 30));
+  late DateTime _targetDate;
   bool _isByAmount = true;
-  SavingsMethod _selectedMethod = SavingsMethod.defaultPattern;
+  late SavingsMethod _selectedMethod;
 
   final ValueNotifier<String?> _selectedCurrency = ValueNotifier(null);
   final ValueNotifier<int> _selectedColor = ValueNotifier(0xFF4CAF50);
@@ -55,11 +54,19 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedCurrency.value = context
-        .read<SettingsBloc>()
-        .state
-        .model
-        .defaultCurrency;
+    final goal = widget.goal;
+    _nameController = TextEditingController(text: goal.name);
+    _amountController = TextEditingController(
+      text: NumberFormat('#,###.##').format(goal.targetAmount),
+    );
+    _daysController = TextEditingController(text: goal.targetDays.toString());
+    _constantController = TextEditingController(
+      text: goal.constantAmount?.toString() ?? '',
+    );
+    _targetDate = goal.targetDate;
+    _selectedMethod = goal.method;
+    _selectedCurrency.value = goal.currency;
+    _selectedColor.value = goal.colorValue;
 
     _daysFocusNode.addListener(() {
       if (!_daysFocusNode.hasFocus && !_isByAmount) {
@@ -82,7 +89,6 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
     if (_selectedMethod == SavingsMethod.custom) return;
 
     if (_isByAmount) {
-      // Amount -> Days
       final amount =
           double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0;
       if (amount > 0) {
@@ -99,7 +105,6 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         _targetDate = DateTime.now().add(Duration(days: days));
       }
     } else {
-      // Days -> Amount
       final days = int.tryParse(_daysController.text) ?? 0;
       if (days > 0) {
         double amount = 0;
@@ -183,8 +188,8 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primaryBackground,
         elevation: 0,
-        title: Text(l10n.newSavingGoal, style: AppTextStyles.heading2),
-        leading: CloseButton(),
+        title: Text(l10n.edit, style: AppTextStyles.heading2),
+        leading: BackButton(),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -363,7 +368,6 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                             if (picked != null) {
                               setState(() {
                                 _targetDate = picked;
-                                // For custom, update days based on selected date
                                 final diff =
                                     _targetDate
                                         .difference(DateTime.now())
@@ -386,34 +390,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                 ),
 
                 const SizedBox(height: AppSpacing.xl),
-                // Dynamic Info Text
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    border: Border.all(color: AppColors.borderColor),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: AppColors.textSecondary,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          _isByAmount
-                              ? "Enter a Target Amount. We'll automatically calculate the required Number of Days and Target Date based on your method."
-                              : "Enter the Number of Days. We'll automatically calculate the Target Amount and Target Date based on your method.",
-                          style: AppTextStyles.bodySmall,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                CustomButton(text: l10n.createGoal, onPressed: _submit),
+                CustomButton(text: l10n.saveChanges, onPressed: _submit),
               ],
             ),
           ),
@@ -431,8 +408,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
       if (amount <= 0 && _isByAmount) return;
       if (days <= 0 && !_isByAmount) return;
 
-      final model = SavingsModel(
-        id: const Uuid().v4(),
+      final updatedGoal = widget.goal.copyWith(
         name: _nameController.text.trim(),
         targetAmount: amount,
         targetDays: days,
@@ -441,11 +417,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         currency: _selectedCurrency.value!,
         targetDate: _targetDate,
         colorValue: _selectedColor.value,
-        createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      context.read<SavingsBloc>().add(SavingsEventCreateGoal(model: model));
+      context.read<SavingsBloc>().add(SavingsEventEditGoal(model: updatedGoal));
       Navigator.pop(context);
     }
   }

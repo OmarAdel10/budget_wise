@@ -169,12 +169,28 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
             final List<int> updatedDays = List.from(goal.completedDays);
             double newAmount = goal.currentAmount;
 
+            double amountToToggle;
+            switch (goal.method) {
+              case SavingsMethod.defaultPattern:
+                amountToToggle = event.day.toDouble();
+                break;
+              case SavingsMethod.doublePattern:
+                amountToToggle = event.day.toDouble() * 2;
+                break;
+              case SavingsMethod.constant:
+                amountToToggle = goal.constantAmount ?? 0.0;
+                break;
+              case SavingsMethod.custom:
+                amountToToggle = goal.customAmounts[event.day] ?? 0.0;
+                break;
+            }
+
             if (updatedDays.contains(event.day)) {
               updatedDays.remove(event.day);
-              newAmount -= event.day;
+              newAmount -= amountToToggle;
             } else {
               updatedDays.add(event.day);
-              newAmount += event.day;
+              newAmount += amountToToggle;
             }
 
             return goal.copyWith(
@@ -199,6 +215,7 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
                 updatedGoal.id,
                 updatedGoal.currentAmount,
                 updatedGoal.completedDays,
+                updatedGoal.customAmounts,
                 updatedGoal.updatedAt,
               )
               .then((_) => add(SavingsEventMarkSynced(goalId: updatedGoal.id)))
@@ -217,6 +234,78 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
         emit(
           SavingsStateError(
             message: 'Failed to toggle contribution: ${e.toString()}',
+            savingsList: state.savingsList,
+          ),
+        );
+      }
+    });
+
+    on<SavingsEventUpdateCustomAmount>((event, emit) {
+      try {
+        final updatedList = state.savingsList.map((goal) {
+          if (goal.id == event.goalId) {
+            final Map<int, double> updatedCustomAmounts =
+                Map.from(goal.customAmounts);
+            final List<int> updatedDays = List.from(goal.completedDays);
+            double newAmount = goal.currentAmount;
+
+            // Remove old amount if it existed
+            if (updatedCustomAmounts.containsKey(event.day)) {
+              newAmount -= updatedCustomAmounts[event.day]!;
+            }
+
+            updatedCustomAmounts[event.day] = event.amount;
+            newAmount += event.amount;
+
+            // If updating a custom amount with a non-zero value, it's considered completed
+            if (event.amount > 0 && !updatedDays.contains(event.day)) {
+              updatedDays.add(event.day);
+            } else if (event.amount <= 0) {
+              updatedDays.remove(event.day);
+            }
+
+            return goal.copyWith(
+              customAmounts: updatedCustomAmounts,
+              completedDays: updatedDays,
+              currentAmount: newAmount,
+              updatedAt: DateTime.now(),
+              isSynced: false,
+            );
+          }
+          return goal;
+        }).toList();
+
+        final updatedGoal = updatedList.firstWhere(
+          (goal) => goal.id == event.goalId,
+        );
+
+        emit(SavingsStateSuccess(savingsList: updatedList));
+
+        if (settingsBloc.state.model.hasLoggedIn) {
+          savingsRepo
+              .updateContribution(
+                updatedGoal.id,
+                updatedGoal.currentAmount,
+                updatedGoal.completedDays,
+                updatedGoal.customAmounts,
+                updatedGoal.updatedAt,
+              )
+              .then((_) => add(SavingsEventMarkSynced(goalId: updatedGoal.id)))
+              .catchError((e) {
+                log('Cloud sync failed(update custom): ${e.toString()}');
+                emit(
+                  SavingsStateError(
+                    message: 'Cloud sync failed: ${e.toString()}',
+                    savingsList: state.savingsList,
+                  ),
+                );
+              });
+        }
+      } catch (e) {
+        log('Failed to update custom amount: ${e.toString()}');
+        emit(
+          SavingsStateError(
+            message: 'Failed to update custom amount: ${e.toString()}',
             savingsList: state.savingsList,
           ),
         );

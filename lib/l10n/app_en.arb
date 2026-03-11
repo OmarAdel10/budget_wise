@@ -294,5 +294,7 @@
   "passcodeMismatch": "Passcodes do not match",
   "passcodeIncorrect": "Incorrect Passcode",
   "passcodeSet": "Passcode Set Successfully",
-  "noSavingsGoalsThisMonth": "There is no Savings Goals this month"
+  "noSavingsGoalsThisMonth": "There is no Savings Goals this month",
+  "deleteGoal": "Delete Goal",
+  "savingDeleted": "Account Deleted"
 }

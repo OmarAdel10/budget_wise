@@ -89,12 +89,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 },
               )
             : widget.suffixIcon,
-        focusedBorder: widget.activeColor != null
+        focusedBorder: widget.readOnly || !widget.enabled
             ? OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                borderSide: BorderSide(color: widget.activeColor!),
+                borderSide: BorderSide.none,
               )
-            : null,
+            : widget.activeColor != null
+                ? OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    borderSide: BorderSide(color: widget.activeColor!),
+                  )
+                : null,
       ),
     );
   }

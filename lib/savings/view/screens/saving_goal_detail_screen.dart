@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/savings/data/models/savings_model.dart';
-import 'package:budget_wise/savings/view_model/savings_bloc.dart';
+import 'package:budget_wise/savings/view/screens/edit_saving_goal_screen.dart';
+import 'package:budget_wise/savings/view_model/savings_view_model.dart';
 import 'package:budget_wise/savings/view_model/savings_event.dart';
 import 'package:budget_wise/savings/view_model/savings_state.dart';
 import 'package:flutter/material.dart';
@@ -11,34 +12,59 @@ import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 
-class SavingGoalDetailScreen extends StatelessWidget {
-  static const String routeName = '/saving-goal-detail';
+import '../widgets/saving_day_item.dart';
 
+class SavingGoalDetailScreen extends StatefulWidget {
+  static const String routeName = '/saving-goal-detail';
   const SavingGoalDetailScreen({super.key});
 
   @override
+  State<SavingGoalDetailScreen> createState() => _SavingGoalDetailScreenState();
+}
+
+class _SavingGoalDetailScreenState extends State<SavingGoalDetailScreen> {
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _completedHeaderKey = GlobalKey();
+  final GlobalKey _todoHeaderKey = GlobalKey();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _jumpToCompleted() {
+    if (_completedHeaderKey.currentContext != null) {
+      Scrollable.ensureVisible(
+        _completedHeaderKey.currentContext!,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _jumpToTodo() {
+    if (_todoHeaderKey.currentContext != null) {
+      Scrollable.ensureVisible(
+        _todoHeaderKey.currentContext!,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final initialGoal = args?['savingGoal'] as SavingsModel;
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final initialGoal = args['savingGoal'] as SavingsModel;
 
     return BlocBuilder<SavingsBloc, SavingsState>(
-      buildWhen: (previous, current) {
-        final prevGoal = previous.savingsList
-            .where((g) => g.id == initialGoal.id)
-            .firstOrNull;
-        final currGoal = current.savingsList
-            .where((g) => g.id == initialGoal.id)
-            .firstOrNull;
-        return prevGoal != currGoal;
-      },
       builder: (context, state) {
-        final goal =
-            state.savingsList
-                .where((g) => g.id == initialGoal.id)
-                .firstOrNull ??
-            initialGoal;
+        final goal = state.savingsList.firstWhere(
+          (g) => g.id == initialGoal.id,
+          orElse: () => initialGoal,
+        );
 
         final double progress = (goal.currentAmount / goal.targetAmount).clamp(
           0.0,
@@ -46,218 +72,149 @@ class SavingGoalDetailScreen extends StatelessWidget {
         );
         final int percentage = (progress * 100).toInt();
 
-        // Calculate total days needed using quadratic formula: n^2 + n - 2*target = 0
-        // n = (-1 + sqrt(1 + 8 * target)) / 2
-        final int totalDaysNeeded = ((-1 + sqrt(1 + 8 * goal.targetAmount)) / 2)
-            .ceil();
+        // Generate Lists
+        final List<int> allDays = List.generate(goal.targetDays, (i) => i + 1);
+        if (goal.method == SavingsMethod.custom) {
+          final existingDays = goal.customAmounts.keys.toList()..sort();
+          allDays.clear();
+          allDays.addAll(existingDays);
+        }
+
+        final uncompletedDays = allDays
+            .where((d) => !goal.completedDays.contains(d))
+            .toList();
+        final completedDays = allDays
+            .where((d) => goal.completedDays.contains(d))
+            .toList();
 
         return Scaffold(
           backgroundColor: AppColors.primaryBackground,
           appBar: AppBar(
             backgroundColor: AppColors.primaryBackground,
             elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            title: Text(
-              goal.name,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            title: Text(goal.name, style: AppTextStyles.heading3),
             centerTitle: true,
             actions: [
+              IconButton(
+                icon: const Icon(
+                  PhosphorIconsRegular.pencil,
+                  color: AppColors.textPrimary,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    EditSavingGoalScreen.routeName,
+                    arguments: {'savingGoal': goal},
+                  );
+                },
+              ),
               IconButton(
                 icon: Icon(
                   PhosphorIcons.trash(PhosphorIconsStyle.regular),
                   color: AppColors.danger,
                 ),
-                onPressed: () {
-                  _showDeleteDialog(context, goal.id);
-                },
+                onPressed: () => _showDeleteDialog(context, goal.id),
               ),
             ],
           ),
           body: SafeArea(
             child: SingleChildScrollView(
+              controller: _scrollController,
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header Card with Progress
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              l10n.progress,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                            Text(
-                              "$percentage%",
-                              style: AppTextStyles.heading3.copyWith(
-                                color: Color(goal.colorValue),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "${goal.currency}${goal.currentAmount.toInt()}",
-                              style: AppTextStyles.heading2,
-                            ),
-                            const SizedBox(width: AppSpacing.xs),
-                            Text(
-                              "/ ${goal.currency}${goal.targetAmount.toInt()}",
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        // Progress Bar
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            backgroundColor: AppColors.primaryBackground,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(goal.colorValue),
-                            ),
-                            minHeight: 12,
-                          ),
-                        ),
-                      ],
-                    ),
+                  _ProgressHeader(
+                    goal: goal,
+                    progress: progress,
+                    percentage: percentage,
                   ),
                   const SizedBox(height: AppSpacing.xl),
 
-                  // Daily Savings Section
-                  Text(l10n.dailySavings, style: AppTextStyles.heading3),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    l10n.saveSmallAmountsInfo,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  // Daily Savings List
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: totalDaysNeeded,
-                    itemBuilder: (context, index) {
-                      final int dayNum = index + 1;
-                      final double amount = dayNum.toDouble();
-                      final bool isCompleted = goal.completedDays.contains(
-                        dayNum,
-                      );
-
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardBackground,
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radiusMd,
+                  // Uncompleted List
+                  if (uncompletedDays.isNotEmpty) ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Todo Savings",
+                          key: _todoHeaderKey,
+                          style: AppTextStyles.heading3,
+                        ),
+                        if (completedDays.isNotEmpty)
+                          IconButton(
+                            icon: const Icon(
+                              Icons.arrow_downward,
+                              color: AppColors.primaryAccent,
+                            ),
+                            onPressed: _jumpToCompleted,
+                            tooltip: "Jump to Completed",
                           ),
-                          border: isCompleted
-                              ? Border.all(
-                                  color: Color(
-                                    goal.colorValue,
-                                  ).withValues(alpha: 0.5),
-                                )
-                              : null,
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    _DaysList(goal: goal, days: uncompletedDays),
+                  ],
+
+                  // Completed List
+                  if (completedDays.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.xl),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Completed days",
+                          key: _completedHeaderKey,
+                          style: AppTextStyles.heading3.copyWith(
+                            color: AppColors.primaryAccent,
+                          ),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryBackground,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Text(
-                                    "$dayNum",
-                                    style: AppTextStyles.bodyLarge.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.md),
-                                Text(
-                                  "${l10n.day} $dayNum",
-                                  style: AppTextStyles.bodyLarge,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "${goal.currency}${amount.toInt()}",
-                                  style: AppTextStyles.bodyLarge.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.md),
-                                GestureDetector(
-                                  onTap: () {
-                                    context.read<SavingsBloc>().add(
-                                      SavingsEventToggleDayContribution(
-                                        goalId: goal.id,
-                                        day: dayNum,
-                                      ),
-                                    );
-                                  },
-                                  child: Icon(
-                                    isCompleted
-                                        ? PhosphorIcons.checkCircle(
-                                            PhosphorIconsStyle.fill,
-                                          )
-                                        : PhosphorIcons.circle(
-                                            PhosphorIconsStyle.regular,
-                                          ),
-                                    color: isCompleted
-                                        ? Color(goal.colorValue)
-                                        : AppColors.textSecondary,
-                                    size: 28,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_upward,
+                            color: AppColors.primaryAccent,
+                          ),
+                          onPressed: _jumpToTodo,
+                          tooltip: "Jump to Todo",
                         ),
-                      );
-                    },
-                  ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    _DaysList(
+                      goal: goal,
+                      days: completedDays,
+                      isCompleted: true,
+                    ),
+                  ],
+
+                  const SizedBox(height: 80), // Space for FAB
                 ],
               ),
             ),
           ),
+          floatingActionButton: goal.method == SavingsMethod.custom
+              ? FloatingActionButton(
+                  onPressed: () => _addManualEntry(context, goal),
+                  backgroundColor: AppColors.primaryAccent,
+                  child: const Icon(Icons.add, color: Colors.white),
+                )
+              : null,
         );
       },
+    );
+  }
+
+  void _addManualEntry(BuildContext context, SavingsModel goal) {
+    final nextDay =
+        (goal.customAmounts.keys.isEmpty
+            ? 0
+            : goal.customAmounts.keys.reduce(max)) +
+        1;
+    context.read<SavingsBloc>().add(
+      SavingsEventUpdateCustomAmount(
+        goalId: goal.id,
+        day: nextDay,
+        amount: 0.0,
+      ),
     );
   }
 
@@ -267,26 +224,20 @@ class SavingGoalDetailScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.cardBackground,
-        title: Text(l10n.deleteAccount, style: AppTextStyles.heading3),
-        content: Text(
-          l10n.deleteAccountConfirmation,
-          style: AppTextStyles.bodyMedium,
-        ),
+        title: Text(l10n.deleteGoal),
+        content: Text(l10n.deleteAccountConfirmation),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              l10n.back,
-              style: const TextStyle(color: AppColors.textSecondary),
-            ),
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.back),
           ),
           TextButton(
             onPressed: () {
               context.read<SavingsBloc>().add(
                 SavingsEventDeleteGoal(goalId: goalId),
               );
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
+              Navigator.pop(context);
+              Navigator.pop(context);
             },
             child: Text(
               l10n.delete,
@@ -295,6 +246,118 @@ class SavingGoalDetailScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ProgressHeader extends StatelessWidget {
+  final SavingsModel goal;
+  final double progress;
+  final int percentage;
+  const _ProgressHeader({
+    required this.goal,
+    required this.progress,
+    required this.percentage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Overall Progress", style: AppTextStyles.bodyMedium),
+              Text(
+                "$percentage%",
+                style: AppTextStyles.heading3.copyWith(
+                  color: Color(goal.colorValue),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "${goal.currency}${goal.currentAmount.toInt()}",
+                style: AppTextStyles.heading2,
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Text(
+                "/ ${goal.currency}${goal.targetAmount.toInt()}",
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppColors.primaryBackground,
+              valueColor: AlwaysStoppedAnimation<Color>(Color(goal.colorValue)),
+              minHeight: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DaysList extends StatelessWidget {
+  final SavingsModel goal;
+  final List<int> days;
+  final bool isCompleted;
+  const _DaysList({
+    required this.goal,
+    required this.days,
+    this.isCompleted = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: days.length,
+      separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
+      itemBuilder: (context, index) {
+        final dayNum = days[index];
+        double amount = 0;
+
+        switch (goal.method) {
+          case SavingsMethod.defaultPattern:
+            amount = dayNum.toDouble();
+            break;
+          case SavingsMethod.doublePattern:
+            amount = dayNum.toDouble() * 2;
+            break;
+          case SavingsMethod.constant:
+            amount = goal.constantAmount ?? 0.0;
+            break;
+          case SavingsMethod.custom:
+            amount = goal.customAmounts[dayNum] ?? 0.0;
+            break;
+        }
+
+        return SavingDayItem(
+          goal: goal,
+          dayNum: dayNum,
+          amount: amount,
+          isCompleted: isCompleted,
+        );
+      },
     );
   }
 }

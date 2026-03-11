@@ -914,4 +914,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSavingsGoalsThisMonth => 'There is no Savings Goals this month';
+
+  @override
+  String get deleteGoal => 'Delete Goal';
+
+  @override
+  String get savingDeleted => 'Account Deleted';
 }

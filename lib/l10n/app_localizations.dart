@@ -1849,6 +1849,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'There is no Savings Goals this month'**
   String get noSavingsGoalsThisMonth;
+
+  /// No description provided for @deleteGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Goal'**
+  String get deleteGoal;
+
+  /// No description provided for @savingDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Deleted'**
+  String get savingDeleted;
 }
 
 class _AppLocalizationsDelegate

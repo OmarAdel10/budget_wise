@@ -907,4 +907,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noSavingsGoalsThisMonth => 'لا توجد أهداف ادخار لهذا الشهر';
+
+  @override
+  String get deleteGoal => 'حذف الهدف';
+
+  @override
+  String get savingDeleted => 'تم حذف الهدف';
 }

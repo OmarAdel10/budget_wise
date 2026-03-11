@@ -1,6 +1,12 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+enum SavingsMethod {
+  defaultPattern, // $1, $2, $3...
+  constant,       // $X every day
+  doublePattern,  // $2, $4, $6...
+  custom          // Manual entries
+}
 
 class SavingsModel {
   final String id;
@@ -15,6 +21,10 @@ class SavingsModel {
   final DateTime updatedAt;
   final bool isSynced;
   final List<int> completedDays;
+  final SavingsMethod method;
+  final double? constantAmount; // For Constant Method
+  final Map<int, double> customAmounts; // For Custom Method (Day -> Amount)
+  final int targetDays;
 
   SavingsModel({
     this.id = '',
@@ -29,6 +39,10 @@ class SavingsModel {
     required this.updatedAt,
     this.isSynced = false,
     this.completedDays = const [],
+    required this.method,
+    this.constantAmount,
+    this.customAmounts = const {},
+    required this.targetDays,
   });
 
   bool get isCompleted => currentAmount >= targetAmount;
@@ -46,6 +60,10 @@ class SavingsModel {
     DateTime? updatedAt,
     bool? isSynced,
     List<int>? completedDays,
+    SavingsMethod? method,
+    double? constantAmount,
+    Map<int, double>? customAmounts,
+    int? targetDays,
   }) {
     return SavingsModel(
       id: id ?? this.id,
@@ -60,6 +78,10 @@ class SavingsModel {
       updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
       completedDays: completedDays ?? this.completedDays,
+      method: method ?? this.method,
+      constantAmount: constantAmount ?? this.constantAmount,
+      customAmounts: customAmounts ?? this.customAmounts,
+      targetDays: targetDays ?? this.targetDays,
     );
   }
 
@@ -77,6 +99,10 @@ class SavingsModel {
       'updatedAt': updatedAt.toIso8601String(),
       'isSynced': isSynced,
       'completedDays': completedDays,
+      'method': method.name,
+      'constantAmount': constantAmount,
+      'customAmounts': customAmounts.map((k, v) => MapEntry(k.toString(), v)),
+      'targetDays': targetDays,
     };
   }
 
@@ -100,6 +126,16 @@ class SavingsModel {
           : DateTime.parse(map['updatedAt'] as String),
       isSynced: map['isSynced'] as bool,
       completedDays: List<int>.from(map['completedDays'] ?? []),
+      method: SavingsMethod.values.firstWhere(
+        (e) => e.name == map['method'],
+        orElse: () => SavingsMethod.defaultPattern,
+      ),
+      constantAmount: (map['constantAmount'] as num?)?.toDouble(),
+      customAmounts: (map['customAmounts'] as Map<String, dynamic>?)?.map(
+            (k, v) => MapEntry(int.parse(k), (v as num).toDouble()),
+          ) ??
+          {},
+      targetDays: map['targetDays'] as int,
     );
   }
 

@@ -1,7 +1,8 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
+import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
-import 'package:budget_wise/savings/view_model/savings_bloc.dart';
+import 'package:budget_wise/savings/view_model/savings_view_model.dart';
 import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
@@ -44,6 +45,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:budget_wise/savings/view/screens/edit_saving_goal_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -72,9 +75,8 @@ void main() async {
               AccountRepository(authRepo: context.read<AuthRepository>()),
         ),
         RepositoryProvider(
-          create: (context) => SavingsRepository(
-            authRepo: context.read<AuthRepository>(),
-          ),
+          create: (context) =>
+              SavingsRepository(authRepo: context.read<AuthRepository>()),
         ),
       ],
       child: MultiBlocProvider(
@@ -266,6 +268,19 @@ class MyApp extends StatelessWidget {
                   curve: Curves.easeIn,
                   settings: settings,
                   child: SavingGoalDetailScreen(),
+                );
+              case EditSavingGoalScreen.routeName:
+                final args = settings.arguments as Map<String, dynamic>?;
+                final goal = args?['savingGoal'] as SavingsModel;
+                return PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  reverseType: PageTransitionType.leftToRight,
+                  ctx: context,
+                  duration: Duration(milliseconds: 500),
+                  reverseDuration: Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                  settings: settings,
+                  child: EditSavingGoalScreen(goal: goal),
                 );
               case TransactionTypeDetailScreen.routeName:
                 return PageTransition(
