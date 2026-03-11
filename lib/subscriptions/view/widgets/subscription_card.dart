@@ -2,11 +2,10 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
-import 'package:budget_wise/subscriptions/data/models/billing_cycle.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/subscriptions/data/utils/billing_utils.dart';
+import 'package:budget_wise/subscriptions/utils/subscription_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class SubscriptionCard extends StatelessWidget {
   final SubscriptionModel subscription;
@@ -22,24 +21,6 @@ class SubscriptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isOverdue = BillingUtils.isOverdue(subscription.nextBillingDate);
-    final currencyFormat = NumberFormat.simpleCurrency(
-      name: subscription.currency,
-    );
-
-    String getCycleLabel(BillingCycle cycle) {
-      switch (cycle) {
-        case BillingCycle.weekly:
-          return l10n.weekly;
-        case BillingCycle.monthly:
-          return l10n.monthly;
-        case BillingCycle.quarterly:
-          return l10n.quarterly;
-        case BillingCycle.halfYearly:
-          return l10n.halfYearly;
-        case BillingCycle.yearly:
-          return l10n.yearly;
-      }
-    }
 
     return GestureDetector(
       onTap: onTap,
@@ -82,9 +63,9 @@ class SubscriptionCard extends StatelessWidget {
                     isOverdue
                         ? l10n.overdue
                         : l10n.nextBillingDate(
-                            DateFormat(
-                              'MMM dd',
-                            ).format(subscription.nextBillingDate),
+                            SubscriptionFormatter.formatDate(
+                              subscription.nextBillingDate,
+                            ),
                           ),
                     style: AppTextStyles.bodySmall.copyWith(
                       color: isOverdue
@@ -99,14 +80,20 @@ class SubscriptionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  currencyFormat.format(subscription.amount),
+                  SubscriptionFormatter.formatCurrency(
+                    subscription.amount,
+                    subscription.currency,
+                  ),
                   style: AppTextStyles.bodyLarge.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.primaryAccent,
                   ),
                 ),
                 Text(
-                  getCycleLabel(subscription.billingCycle).toUpperCase(),
+                  SubscriptionFormatter.getCycleLabel(
+                    subscription.billingCycle,
+                    l10n,
+                  ).toUpperCase(),
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.textSecondary,
                   ),

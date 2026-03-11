@@ -277,7 +277,6 @@
   "draftDeleted": "Draft Deleted",
   "time": "Time",
   "totalSubscriptions": "Total Subscriptions",
-<<<<<<< HEAD
   "subscriptions": "Subscriptions",
   "noSubscriptions": "No subscriptions yet",
   "totalMonthlySpend": "Total Monthly Spend",
@@ -298,8 +297,7 @@
   "yearly": "Yearly",
   "deleteSubscription": "Delete Subscription",
   "subscriptionDeleted": "Subscription Deleted",
-  "nextRenewalDate": "Next Renewal Date"
-=======
+  "nextRenewalDate": "Next Renewal Date",
   "defaultCurrency": "Default Currency",
   "noRecentTransactionsFound": "No Recent Transactions Found.",
   "noAccountsAvailableForSelectedCurrency": "No Accounts Available For The Selected Currency.",
@@ -317,6 +315,4 @@
   "passcodeMismatch": "Passcodes do not match",
   "passcodeIncorrect": "Incorrect Passcode",
   "passcodeSet": "Passcode Set Successfully"
-
->>>>>>> development
 }

@@ -294,7 +294,7 @@
   "yearly": "سنوي",
   "deleteSubscription": "حذف الاشتراك",
   "subscriptionDeleted": "تم حذف الاشتراك",
-  "nextRenewalDate": "تاريخ التجديد التالي"
+  "nextRenewalDate": "تاريخ التجديد التالي",
   "defaultCurrency": "العملة الافتراضية",
   "noRecentTransactionsFound": "لم يتم العثور على معاملات حديثة.",
   "noAccountsAvailableForSelectedCurrency": "لا توجد حسابات متاحة للعملة المحددة.",
