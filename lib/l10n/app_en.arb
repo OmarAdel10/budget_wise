@@ -296,5 +296,30 @@
   "passcodeSet": "Passcode Set Successfully",
   "noSavingsGoalsThisMonth": "There is no Savings Goals this month",
   "deleteGoal": "Delete Goal",
-  "savingDeleted": "Account Deleted"
+  "savingDeleted": "Account Deleted",
+  "overallProgress": "Overall Progress",
+  "todoSavings": "Todo Savings",
+  "completedDaysLabel": "Completed days",
+  "savingsGoalProgress": "{percentage}%",
+  "@savingsGoalProgress": {
+    "placeholders": {
+      "percentage": {
+        "type": "int"
+      }
+    }
+  },
+  "savingsGoalAmountProgress": "{currency}{current} / {currency}{target}",
+  "@savingsGoalAmountProgress": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      },
+      "current": {
+        "type": "num"
+      },
+      "target": {
+        "type": "num"
+      }
+    }
+  }
 }

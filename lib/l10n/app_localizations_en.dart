@@ -920,4 +920,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get savingDeleted => 'Account Deleted';
+
+  @override
+  String savingsGoalProgress(int percentage) {
+    return '$percentage%';
+  }
+
+  @override
+  String savingsGoalAmountProgress(String currency, num current, num target) {
+    return '$currency$current / $currency$target';
+  }
 }

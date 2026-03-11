@@ -293,5 +293,30 @@
   "passcodeSet": "تم تعيين رمز المرور بنجاح",
   "noSavingsGoalsThisMonth": "لا توجد أهداف ادخار لهذا الشهر",
   "deleteGoal": "حذف الهدف",
-  "savingDeleted": "تم حذف الهدف"
+  "savingDeleted": "تم حذف الهدف",
+  "overallProgress": "التقدم الإجمالي",
+  "todoSavings": "مدخرات قادمة",
+  "completedDaysLabel": "أيام مكتملة",
+  "savingsGoalProgress": "{percentage}%",
+  "@savingsGoalProgress": {
+    "placeholders": {
+      "percentage": {
+        "type": "int"
+      }
+    }
+  },
+  "savingsGoalAmountProgress": "{currency}{current} / {currency}{target}",
+  "@savingsGoalAmountProgress": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      },
+      "current": {
+        "type": "num"
+      },
+      "target": {
+        "type": "num"
+      }
+    }
+  }
 }

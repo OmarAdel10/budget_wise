@@ -1861,6 +1861,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account Deleted'**
   String get savingDeleted;
+
+  /// No description provided for @savingsGoalProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}%'**
+  String savingsGoalProgress(int percentage);
+
+  /// No description provided for @savingsGoalAmountProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{currency}{current} / {currency}{target}'**
+  String savingsGoalAmountProgress(String currency, num current, num target);
 }
 
 class _AppLocalizationsDelegate

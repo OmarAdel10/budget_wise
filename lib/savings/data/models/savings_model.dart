@@ -47,6 +47,46 @@ class SavingsModel {
 
   bool get isCompleted => currentAmount >= targetAmount;
 
+  double getAmountForDay(int dayNum) {
+    switch (method) {
+      case SavingsMethod.defaultPattern:
+        return dayNum.toDouble();
+      case SavingsMethod.doublePattern:
+        return dayNum.toDouble() * 2;
+      case SavingsMethod.constant:
+        return constantAmount ?? 0.0;
+      case SavingsMethod.custom:
+        return customAmounts[dayNum] ?? 0.0;
+    }
+  }
+
+  List<int>? _allDaysCache;
+  List<int> get allDaysList {
+    if (_allDaysCache != null) return _allDaysCache!;
+    if (method == SavingsMethod.custom) {
+      _allDaysCache = customAmounts.keys.toList()..sort();
+    } else {
+      _allDaysCache = List.generate(targetDays, (i) => i + 1);
+    }
+    return _allDaysCache!;
+  }
+
+  List<int>? _uncompletedDaysCache;
+  List<int> get uncompletedDaysList {
+    if (_uncompletedDaysCache != null) return _uncompletedDaysCache!;
+    _uncompletedDaysCache =
+        allDaysList.where((d) => !completedDays.contains(d)).toList();
+    return _uncompletedDaysCache!;
+  }
+
+  List<int>? _completedDaysCache;
+  List<int> get completedDaysList {
+    if (_completedDaysCache != null) return _completedDaysCache!;
+    _completedDaysCache =
+        allDaysList.where((d) => completedDays.contains(d)).toList();
+    return _completedDaysCache!;
+  }
+
   SavingsModel copyWith({
     String? id,
     String? userId,
