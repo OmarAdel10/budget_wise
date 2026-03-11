@@ -55,7 +55,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   @override
   void initState() {
     super.initState();
-    defaultCurrencySymbol = context.select<SettingsBloc, String>((settingsBloc) => settingsBloc.state.currencySymbol);
+    defaultCurrencySymbol = context.read<SettingsBloc>().state.currencySymbol;
     if (_isEditMode) {
       final trans = widget.transactionToEdit!;
       _titleController.text = trans.transactionTitle;

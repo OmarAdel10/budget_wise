@@ -127,12 +127,10 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                     (acc) => acc.id == _accountId,
                     orElse: () => _initialAccount,
                   );
-              return RepaintBoundary(
-                child: AccountBalanceDetailsHeader(
-                  balance: state.currentAccountBalance,
-                  currency: account.currency,
-                  lastUpdatedAt: state.lastAccountUpdatedAt,
-                ),
+              return AccountBalanceDetailsHeader(
+                balance: state.currentAccountBalance,
+                currency: account.currency,
+                lastUpdatedAt: state.lastAccountUpdatedAt,
               );
             },
           ),

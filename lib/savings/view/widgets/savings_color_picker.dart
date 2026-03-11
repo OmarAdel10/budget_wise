@@ -32,6 +32,15 @@ class SavingsColorPicker extends StatelessWidget {
                   border: current == colorOptions[i]
                       ? Border.all(color: Colors.white, width: 3)
                       : null,
+                  boxShadow: current == colorOptions[i]
+                      ? [
+                          BoxShadow(
+                            color: Color(colorOptions[i]).withValues(alpha: 0.4),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          )
+                        ]
+                      : null,
                 ),
                 child: current == colorOptions[i]
                     ? const Icon(Icons.check, color: Colors.white, size: 20)

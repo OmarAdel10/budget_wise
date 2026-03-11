@@ -5,7 +5,6 @@ import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:flutter/material.dart';
 
-
 class IncomeExpenseToggle extends StatelessWidget {
   final ValueNotifier<ToggleOption>? selectionNotifier;
   final ToggleOption? currentSelection;
@@ -16,6 +15,10 @@ class IncomeExpenseToggle extends StatelessWidget {
   final Color? unselectedColor;
   final Color? selectedTextColor;
   final Color? unselectedTextColor;
+  final bool isScaled;
+  final double? scale;
+  final double? scaleX;
+  final double? scaleY;
 
   const IncomeExpenseToggle({
     super.key,
@@ -28,6 +31,10 @@ class IncomeExpenseToggle extends StatelessWidget {
     this.unselectedColor = Colors.transparent,
     this.selectedTextColor = AppColors.textPrimary,
     this.unselectedTextColor = AppColors.textSecondary,
+    this.isScaled = false,
+    this.scale,
+    this.scaleX,
+    this.scaleY,
   });
 
   @override
@@ -55,7 +62,7 @@ class IncomeExpenseToggle extends StatelessWidget {
     AppLocalizations l10n,
     ToggleOption selection,
   ) {
-    return Container(
+    final content = Container(
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -86,6 +93,17 @@ class IncomeExpenseToggle extends StatelessWidget {
         ],
       ),
     );
+
+    if (isScaled) {
+      return Transform.scale(
+        scale: scale,
+        scaleX: scaleX,
+        scaleY: scaleY,
+        child: content,
+      );
+    } else {
+      return content;
+    }
   }
 
   Widget _buildToggleItem(

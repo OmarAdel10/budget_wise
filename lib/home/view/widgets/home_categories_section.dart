@@ -90,7 +90,12 @@ class _HomeCategoriesHeader extends StatelessWidget {
           children: [
             Text(l10n.categories, style: AppTextStyles.heading3),
             const Spacer(),
-            IncomeExpenseToggle(selectionNotifier: showIncomeNotifier),
+            IncomeExpenseToggle(
+              selectionNotifier: showIncomeNotifier,
+              isScaled: true,
+              scaleY: 0.90,
+              scaleX: 0.85,
+            ),
             IconButton(
               tooltip: l10n.addCategory,
               onPressed: () {

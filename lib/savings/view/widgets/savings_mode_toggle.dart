@@ -83,7 +83,7 @@ class _ToggleButton extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: isSelected ? Colors.white : AppColors.textSecondary,
+            color: isSelected ? Colors.black : AppColors.textSecondary,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),

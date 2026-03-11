@@ -32,11 +32,13 @@ class CalculationMethodGrid extends StatelessWidget {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final method = SavingsMethod.values[index];
-              return _MethodCard(
-                method: method,
-                isSelected: selectedMethod == method,
-                onTap: () => onMethodSelected(method),
-                onHelp: () => onHelp(method),
+              return RepaintBoundary(
+                child: _MethodCard(
+                  method: method,
+                  isSelected: selectedMethod == method,
+                  onTap: () => onMethodSelected(method),
+                  onHelp: () => onHelp(method),
+                ),
               );
             },
             childCount: SavingsMethod.values.length,
