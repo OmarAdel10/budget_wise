@@ -1,4 +1,3 @@
-import 'package:budget_wise/shared/constants/app_constants.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +22,6 @@ class CustomTextField extends StatefulWidget {
   final Color? bgColor;
   final FocusNode? focusNode;
   final bool shouldUnfocusOnTapOutside;
-  final bool disableCustomHeight;
 
   const CustomTextField({
     super.key,
@@ -44,7 +42,6 @@ class CustomTextField extends StatefulWidget {
     this.bgColor,
     this.focusNode,
     this.shouldUnfocusOnTapOutside = true,
-    this.disableCustomHeight = false,
   });
 
   @override
@@ -77,9 +74,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
         hintText: widget.hintText,
         hintStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.textSecondary,
-        ),
-        constraints: widget.disableCustomHeight ? null : BoxConstraints(
-          maxHeight: AppConstants.textFieldAndRelatedWidgetsHeight
         ),
         prefixIcon: widget.prefixIcon,
         suffixIcon: widget.isPassword

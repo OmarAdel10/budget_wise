@@ -72,7 +72,7 @@ class SavingsScreen extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pushNamed(
                             SavingGoalDetailScreen.routeName,
-                            arguments: goal.toMap(),
+                            arguments: {'savingGoal': goal},
                           );
                         },
                         child: Container(

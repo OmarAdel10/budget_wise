@@ -47,11 +47,14 @@ class SavingsRepository {
   Future<void> updateContribution(
     String goalId,
     double newAmount,
+    List<int> completedDays,
     DateTime updatedAt,
   ) async {
-    final CollectionReference<SavingsModel> collection = getSavingsCollection();
+    final CollectionReference<SavingsModel> collection =
+        getSavingsCollection();
     await collection.doc(goalId).update({
       'currentAmount': newAmount,
+      'completedDays': completedDays,
       'updatedAt': updatedAt.toIso8601String(),
     });
   }

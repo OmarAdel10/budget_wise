@@ -14,6 +14,7 @@ class SavingsModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isSynced;
+  final List<int> completedDays;
 
   SavingsModel({
     this.id = '',
@@ -27,6 +28,7 @@ class SavingsModel {
     required this.createdAt,
     required this.updatedAt,
     this.isSynced = false,
+    this.completedDays = const [],
   });
 
   bool get isCompleted => currentAmount >= targetAmount;
@@ -43,6 +45,7 @@ class SavingsModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isSynced,
+    List<int>? completedDays,
   }) {
     return SavingsModel(
       id: id ?? this.id,
@@ -56,6 +59,7 @@ class SavingsModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
+      completedDays: completedDays ?? this.completedDays,
     );
   }
 
@@ -72,6 +76,7 @@ class SavingsModel {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'isSynced': isSynced,
+      'completedDays': completedDays,
     };
   }
 
@@ -94,6 +99,7 @@ class SavingsModel {
           ? (map['updatedAt'] as Timestamp).toDate()
           : DateTime.parse(map['updatedAt'] as String),
       isSynced: map['isSynced'] as bool,
+      completedDays: List<int>.from(map['completedDays'] ?? []),
     );
   }
 

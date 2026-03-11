@@ -257,7 +257,6 @@ class MyApp extends StatelessWidget {
                   child: const AddSavingGoalScreen(),
                 );
               case SavingGoalDetailScreen.routeName:
-                final args = settings.arguments as Map<String, dynamic>;
                 return PageTransition(
                   type: PageTransitionType.rightToLeft,
                   reverseType: PageTransitionType.leftToRight,
@@ -266,7 +265,7 @@ class MyApp extends StatelessWidget {
                   reverseDuration: Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
-                  child: SavingGoalDetailScreen(goal: args),
+                  child: SavingGoalDetailScreen(),
                 );
               case TransactionTypeDetailScreen.routeName:
                 return PageTransition(

@@ -162,12 +162,24 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
       }
     });
 
-    on<SavingsEventAddContribution>((event, emit) {
+    on<SavingsEventToggleDayContribution>((event, emit) {
       try {
         final updatedList = state.savingsList.map((goal) {
           if (goal.id == event.goalId) {
+            final List<int> updatedDays = List.from(goal.completedDays);
+            double newAmount = goal.currentAmount;
+
+            if (updatedDays.contains(event.day)) {
+              updatedDays.remove(event.day);
+              newAmount -= event.day;
+            } else {
+              updatedDays.add(event.day);
+              newAmount += event.day;
+            }
+
             return goal.copyWith(
-              currentAmount: goal.currentAmount + event.amount,
+              completedDays: updatedDays,
+              currentAmount: newAmount,
               updatedAt: DateTime.now(),
               isSynced: false,
             );
@@ -186,11 +198,12 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
               .updateContribution(
                 updatedGoal.id,
                 updatedGoal.currentAmount,
+                updatedGoal.completedDays,
                 updatedGoal.updatedAt,
               )
               .then((_) => add(SavingsEventMarkSynced(goalId: updatedGoal.id)))
               .catchError((e) {
-                log('Cloud sync failed(add contribution): ${e.toString()}');
+                log('Cloud sync failed(toggle contribution): ${e.toString()}');
                 emit(
                   SavingsStateError(
                     message: 'Cloud sync failed: ${e.toString()}',
@@ -200,10 +213,10 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
               });
         }
       } catch (e) {
-        log('Failed to add contribution: ${e.toString()}');
+        log('Failed to toggle contribution: ${e.toString()}');
         emit(
           SavingsStateError(
-            message: 'Failed to add contribution: ${e.toString()}',
+            message: 'Failed to toggle contribution: ${e.toString()}',
             savingsList: state.savingsList,
           ),
         );

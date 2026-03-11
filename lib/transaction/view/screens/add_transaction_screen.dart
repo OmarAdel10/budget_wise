@@ -333,7 +333,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       controller: _notesController,
                       maxLines: 4,
                       activeColor: accentColor,
-                      disableCustomHeight: true,
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     CustomButton(

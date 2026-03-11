@@ -36,16 +36,16 @@ class SavingsEventDeleteGoal extends SavingsEvent {
   List<Object?> get props => [goalId];
 }
 
-class SavingsEventAddContribution extends SavingsEvent {
+class SavingsEventToggleDayContribution extends SavingsEvent {
   final String goalId;
-  final double amount;
-  const SavingsEventAddContribution({
+  final int day;
+  const SavingsEventToggleDayContribution({
     required this.goalId,
-    required this.amount,
+    required this.day,
   });
 
   @override
-  List<Object?> get props => [goalId, amount];
+  List<Object?> get props => [goalId, day];
 }
 
 class SavingsEventMarkSynced extends SavingsEvent {
