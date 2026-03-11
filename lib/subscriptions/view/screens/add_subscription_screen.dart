@@ -3,9 +3,7 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
-import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:budget_wise/shared/widgets/custom_button.dart';
-import 'package:budget_wise/shared/widgets/custom_text_field.dart';
 import 'package:budget_wise/shared/widgets/icon_picker_bottom_sheet.dart';
 import 'package:budget_wise/shared/widgets/date_picker_field.dart';
 import 'package:budget_wise/shared/widgets/category_dropdown.dart';
@@ -17,8 +15,8 @@ import 'package:budget_wise/subscriptions/view_model/subscription_event.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_icon_picker.dart';
 import 'package:budget_wise/subscriptions/view/widgets/billing_cycle_selector.dart';
 import 'package:budget_wise/subscriptions/view/widgets/next_billing_preview.dart';
+import 'package:budget_wise/subscriptions/view/widgets/subscription_basic_info_fields.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:toastification/toastification.dart';
@@ -111,7 +109,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
       id: _isEditMode ? widget.subscriptionToEdit!.id : '',
       name: name,
       amount: amount,
-      currency: 'EGP', // Hardcoded for now per project standard
+      currency: l10n.egp,
       billingCycle: billingCycle,
       categoryId: _selectedCategoryIdNotifier.value!,
       icon: _selectedIconNotifier.value,
@@ -159,70 +157,80 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
         title: Text(_isEditMode ? l10n.editSubscription : l10n.addSubscription),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SubscriptionIconPicker(
-              iconNotifier: _selectedIconNotifier,
-              colorNotifier: _selectedColorNotifier,
-              onTap: _showIconPicker,
-            ),
-            const SizedBox(height: AppSpacing.xl),
+      body: CustomScrollView(
+        cacheExtent: 1000,
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                RepaintBoundary(
+                  child: SubscriptionIconPicker(
+                    iconNotifier: _selectedIconNotifier,
+                    colorNotifier: _selectedColorNotifier,
+                    onTap: _showIconPicker,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                
+                RepaintBoundary(
+                  child: SubscriptionBasicInfoFields(
+                    nameController: _nameController,
+                    amountController: _amountController,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
 
-            CustomTextField(
-              hintText: l10n.subscriptionNameHint,
-              controller: _nameController,
-            ),
-            const SizedBox(height: AppSpacing.lg),
+                RepaintBoundary(
+                  child: CategoryDropdown(
+                    selectedCategoryId: _selectedCategoryIdNotifier,
+                    fixedType: TransactionType.expense,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
 
-            CustomTextField(
-              hintText: l10n.amount,
-              controller: _amountController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
-                ThousandsSeparatorInputFormatter(),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
+                RepaintBoundary(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l10n.billingCycle, style: AppTextStyles.bodyMedium),
+                      const SizedBox(height: AppSpacing.sm),
+                      BillingCycleSelector(
+                        billingCycleNotifier: _billingCycleNotifier,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
 
-            CategoryDropdown(
-              selectedCategoryId: _selectedCategoryIdNotifier,
-              fixedType: TransactionType.expense,
-            ),
-            const SizedBox(height: AppSpacing.lg),
+                RepaintBoundary(
+                  child: DatePickerField(
+                    selectedDate: _startDateNotifier,
+                    activeColor: AppColors.primaryAccent,
+                    label: l10n.startDate,
+                    lastDate: DateTime(2100),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
 
-            Text(l10n.billingCycle, style: AppTextStyles.bodyMedium),
-            const SizedBox(height: AppSpacing.sm),
-            BillingCycleSelector(
-              billingCycleNotifier: _billingCycleNotifier,
-            ),
-            const SizedBox(height: AppSpacing.lg),
+                RepaintBoundary(
+                  child: NextBillingPreview(
+                    startDateNotifier: _startDateNotifier,
+                    billingCycleNotifier: _billingCycleNotifier,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
 
-            DatePickerField(
-              selectedDate: _startDateNotifier,
-              activeColor: AppColors.primaryAccent,
-              label: l10n.startDate,
-              lastDate: DateTime(2100),
+                RepaintBoundary(
+                  child: CustomButton(
+                    text: _isEditMode ? l10n.saveChanges : l10n.addSubscription,
+                    onPressed: _onSave,
+                  ),
+                ),
+              ]),
             ),
-            const SizedBox(height: AppSpacing.lg),
-
-            NextBillingPreview(
-              startDateNotifier: _startDateNotifier,
-              billingCycleNotifier: _billingCycleNotifier,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-
-            CustomButton(
-              text: _isEditMode ? l10n.saveChanges : l10n.addSubscription,
-              onPressed: _onSave,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
