@@ -926,6 +926,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionDeleted => 'Subscription Deleted';
 
   @override
+  String get subscriptionNameHint => 'Subscription Name (e.g. Netflix)';
+
+  @override
+  String get startDate => 'Start Date';
+
+  @override
+  String get egp => 'EGP';
+
+  @override
+  String get pleaseFillRequiredFields => 'Please fill all required fields';
+
+  @override
   String get nextRenewalDate => 'Next Renewal Date';
 
   @override  

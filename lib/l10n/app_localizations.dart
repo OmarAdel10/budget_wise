@@ -1862,6 +1862,30 @@ abstract class AppLocalizations {
   /// **'Subscription Deleted'**
   String get subscriptionDeleted;
 
+  /// No description provided for @subscriptionNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Name (e.g. Netflix)'**
+  String get subscriptionNameHint;
+
+  /// No description provided for @startDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get startDate;
+
+  /// No description provided for @egp.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get egp;
+
+  /// No description provided for @pleaseFillRequiredFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all required fields'**
+  String get pleaseFillRequiredFields;
+
   /// No description provided for @nextRenewalDate.
   ///
   /// In en, this message translates to:

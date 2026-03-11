@@ -919,6 +919,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get subscriptionDeleted => 'تم حذف الاشتراك';
 
   @override
+  String get subscriptionNameHint => 'اسم الاشتراك (مثال: نتفليكس)';
+
+  @override
+  String get startDate => 'تاريخ البدء';
+
+  @override
+  String get egp => 'ج.م';
+
+  @override
+  String get pleaseFillRequiredFields => 'يرجى ملء جميع الحقول المطلوبة';
+
+  @override
   String get nextRenewalDate => 'تاريخ التجديد التالي';
 
   @override
