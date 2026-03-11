@@ -1,3 +1,5 @@
+import 'package:budget_wise/shared/widgets/summary_card.dart';
+import 'package:budget_wise/subscriptions/view/widgets/subscription_history_item.dart';
 import 'package:budget_wise/transaction/view_model/transaction_state.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
@@ -66,232 +68,208 @@ class SubscriptionDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Hero Header
-            Center(
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryAccent.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
+                  // Hero Header
+                  Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(AppSpacing.xl),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryAccent.withValues(
+                              alpha: 0.1,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            subscriptionModel.icon,
+                            color: AppColors.primaryAccent,
+                            size: 48,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        Text(
+                          subscriptionModel.name,
+                          style: AppTextStyles.heading2,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          currencyFormat.format(subscriptionModel.amount),
+                          style: AppTextStyles.heading1.copyWith(
+                            color: AppColors.primaryAccent,
+                            fontSize: 36,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Icon(
-                      subscriptionModel.icon,
-                      color: AppColors.primaryAccent,
-                      size: 48,
-                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Info Cards Grid
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SummaryCard(
+                          title: l10n.billingCycle,
+                          amount: getCycleLabel(subscriptionModel.billingCycle),
+                          icon: Icons.calendar_today_outlined,
+                          isCompact: true,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: SummaryCard(
+                          title: l10n.nextRenewalDate,
+                          amount: DateFormat(
+                            'MMM dd, yyyy',
+                          ).format(subscriptionModel.nextBillingDate),
+                          icon: Icons.event_repeat_outlined,
+                          amountColor: isOverdue ? AppColors.danger : null,
+                          isCompact: true,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  Text(subscriptionModel.name, style: AppTextStyles.heading2),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    currencyFormat.format(subscriptionModel.amount),
-                    style: AppTextStyles.heading1.copyWith(
-                      color: AppColors.primaryAccent,
-                      fontSize: 36,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SummaryCard(
+                          title: l10n.reminder,
+                          amount: subscriptionModel.reminderEnabled
+                              ? l10n.daysBefore(
+                                  subscriptionModel.remindBeforeDays,
+                                )
+                              : l10n.off,
+                          icon: Icons.notifications_active_outlined,
+                          isCompact: true,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: SummaryCard(
+                          title: l10n.status,
+                          amount: subscriptionModel.isPaused
+                              ? l10n.paused
+                              : l10n.active,
+                          icon: subscriptionModel.isPaused
+                              ? Icons.pause_circle_outline
+                              : Icons.check_circle_outline,
+                          amountColor: subscriptionModel.isPaused
+                              ? Colors.orange
+                              : AppColors.primaryAccent,
+                          isCompact: true,
+                        ),
+                      ),
+                    ],
                   ),
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Pay Button
+                  if (isOverdue ||
+                      BillingUtils.daysUntil(
+                            subscriptionModel.nextBillingDate,
+                          ) <=
+                          7)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.read<SubscriptionBloc>().add(
+                            SubscriptionPaid(subscriptionModel.id),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(l10n.markedAsPaid)),
+                          );
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryAccent,
+                          foregroundColor: AppColors.textInverse,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.md,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusMd,
+                            ),
+                          ),
+                        ),
+                        child: Text(l10n.payToRenew),
+                      ),
+                    ),
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Payment History Header
+                  Text(l10n.paymentHistory, style: AppTextStyles.heading3),
+                  const SizedBox(height: AppSpacing.md),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.xl),
+          ),
+          BlocBuilder<TransactionBloc, TransactionState>(
+            buildWhen: (previous, current) =>
+                previous.transactionsList.length !=
+                    current.transactionsList.length ||
+                previous.transactionsList != current.transactionsList,
+            builder: (context, state) {
+              final history = state.transactionsList
+                  .where(
+                    (t) =>
+                        t.categoryId == subscriptionModel.categoryId &&
+                        t.transactionTitle.toLowerCase().contains(
+                          subscriptionModel.name.toLowerCase(),
+                        ),
+                  )
+                  .toList();
 
-            // Info Cards Grid
-            Row(
-              children: [
-                _buildInfoCard(
-                  l10n.billingCycle,
-                  getCycleLabel(subscriptionModel.billingCycle),
-                  Icons.calendar_today_outlined,
-                ),
-                const SizedBox(width: AppSpacing.md),
-                _buildInfoCard(
-                  l10n.nextRenewalDate,
-                  DateFormat(
-                    'MMM dd, yyyy',
-                  ).format(subscriptionModel.nextBillingDate),
-                  Icons.event_repeat_outlined,
-                  valueColor: isOverdue ? AppColors.danger : null,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                _buildInfoCard(
-                  l10n.reminder,
-                  subscriptionModel.reminderEnabled
-                      ? l10n.daysBefore(subscriptionModel.remindBeforeDays)
-                      : 'Off',
-                  Icons.notifications_active_outlined,
-                ),
-                const SizedBox(width: AppSpacing.md),
-                _buildInfoCard(
-                  'Status',
-                  subscriptionModel.isPaused ? 'Paused' : 'Active',
-                  subscriptionModel.isPaused
-                      ? Icons.pause_circle_outline
-                      : Icons.check_circle_outline,
-                  valueColor: subscriptionModel.isPaused
-                      ? Colors.orange
-                      : AppColors.primaryAccent,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            // Pay Button
-            if (isOverdue ||
-                BillingUtils.daysUntil(subscriptionModel.nextBillingDate) <= 7)
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<SubscriptionBloc>().add(
-                      SubscriptionPaid(subscriptionModel.id),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Marked as paid!')),
-                    );
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryAccent,
-                    foregroundColor: AppColors.textInverse,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                  ),
-                  child: Text(l10n.payToRenew),
-                ),
-              ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            // Payment History (Filtered from Transactions)
-            Text('Payment History', style: AppTextStyles.heading3),
-            const SizedBox(height: AppSpacing.md),
-            BlocBuilder<TransactionBloc, TransactionState>(
-              builder: (context, state) {
-                final history = state.transactionsList
-                    .where(
-                      (t) =>
-                          t.categoryId == subscriptionModel.categoryId &&
-                          t.transactionTitle.toLowerCase().contains(
-                            subscriptionModel.name.toLowerCase(),
-                          ),
-                    )
-                    .toList();
-
-                if (history.isEmpty) {
-                  return Padding(
+              if (history.isEmpty) {
+                return SliverToBoxAdapter(
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: AppSpacing.lg,
+                      horizontal: AppSpacing.md,
                     ),
                     child: Center(
                       child: Text(
-                        'No payment history found.',
+                        l10n.noPaymentHistory,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.textSecondary,
                         ),
                       ),
                     ),
-                  );
-                }
-
-                return Column(
-                  children: history
-                      .map((t) => _buildHistoryItem(t, currencyFormat))
-                      .toList(),
+                  ),
                 );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+              }
 
-  Widget _buildInfoCard(
-    String label,
-    String value,
-    IconData icon, {
-    Color? valueColor,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(
-            color: AppColors.borderColor.withValues(alpha: 0.3),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 20, color: AppColors.textSecondary),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              value,
-              style: AppTextStyles.bodyMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: valueColor,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHistoryItem(dynamic transaction, NumberFormat formatter) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      padding: const EdgeInsets.all(AppSpacing.sm),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.borderColor.withValues(alpha: 0.2),
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                DateFormat('MMM dd, yyyy').format(transaction.transactionDate),
-                style: AppTextStyles.bodyMedium,
-              ),
-              Text(transaction.accountId ?? '', style: AppTextStyles.bodySmall),
-            ],
-          ),
-          Text(
-            formatter.format(transaction.transactionAmount),
-            style: AppTextStyles.bodyMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+              return SliverPadding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  0,
+                  AppSpacing.md,
+                  AppSpacing.md,
+                ),
+                sliver: RepaintBoundary(
+                  child: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      return SubscriptionHistoryItem(
+                        transaction: history[index],
+                        formatter: currencyFormat,
+                      );
+                    }, childCount: history.length),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -309,13 +287,13 @@ class SubscriptionDetailsScreen extends StatelessWidget {
         backgroundColor: AppColors.cardBackground,
         title: Text(l10n.deleteSubscription, style: AppTextStyles.heading3),
         content: Text(
-          'Are you sure you want to delete this subscription?',
+          l10n.deleteSubscriptionConfirm,
           style: AppTextStyles.bodyMedium,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: AppTextStyles.bodyMedium),
+            child: Text(l10n.cancel, style: AppTextStyles.bodyMedium),
           ),
           TextButton(
             onPressed: () => context.read<SubscriptionBloc>().add(

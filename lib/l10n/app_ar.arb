@@ -315,5 +315,14 @@
   "confirmPasscode": "تأكيد رمز المرور",
   "passcodeMismatch": "رموز المرور غير متطابقة",
   "passcodeIncorrect": "رمز المرور غير صحيح",
-  "passcodeSet": "تم تعيين رمز المرور بنجاح"
+  "passcodeSet": "تم تعيين رمز المرور بنجاح",
+  "status": "الحالة",
+  "off": "إيقاف",
+  "paused": "متوقف مؤقتاً",
+  "active": "نشط",
+  "paymentHistory": "سجل المدفوعات",
+  "noPaymentHistory": "لم يتم العثور على سجل مدفوعات.",
+  "markedAsPaid": "تم التحديد كمدفوع!",
+  "deleteSubscriptionConfirm": "هل أنت متأكد من رغبتك في حذف هذا الاشتراك؟",
+  "cancel": "إلغاء"
 }

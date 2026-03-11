@@ -985,4 +985,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passcodeSet => 'تم تعيين رمز المرور بنجاح';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get off => 'إيقاف';
+
+  @override
+  String get paused => 'متوقف مؤقتاً';
+
+  @override
+  String get active => 'نشط';
+
+  @override
+  String get paymentHistory => 'سجل المدفوعات';
+
+  @override
+  String get noPaymentHistory => 'لم يتم العثور على سجل مدفوعات.';
+
+  @override
+  String get markedAsPaid => 'تم التحديد كمدفوع!';
+
+  @override
+  String get deleteSubscriptionConfirm =>
+      'هل أنت متأكد من رغبتك في حذف هذا الاشتراك؟';
+
+  @override
+  String get cancel => 'إلغاء';
 }

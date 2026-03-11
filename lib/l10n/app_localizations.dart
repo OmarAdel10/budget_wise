@@ -1993,6 +1993,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passcode Set Successfully'**
   String get passcodeSet;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get off;
+
+  /// No description provided for @paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get paused;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @paymentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment History'**
+  String get paymentHistory;
+
+  /// No description provided for @noPaymentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment history found.'**
+  String get noPaymentHistory;
+
+  /// No description provided for @markedAsPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as paid!'**
+  String get markedAsPaid;
+
+  /// No description provided for @deleteSubscriptionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this subscription?'**
+  String get deleteSubscriptionConfirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

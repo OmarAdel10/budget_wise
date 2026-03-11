@@ -8,6 +8,8 @@ class SummaryCard extends StatelessWidget {
   final String title;
   final String amount;
   final Color? amountColor;
+  final IconData? icon;
+  final Color? iconColor;
   final bool isCompact;
   final VoidCallback? onTap;
 
@@ -16,6 +18,8 @@ class SummaryCard extends StatelessWidget {
     required this.title,
     required this.amount,
     this.amountColor,
+    this.icon,
+    this.iconColor,
     this.isCompact = false,
     this.onTap,
   });
@@ -26,7 +30,9 @@ class SummaryCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: hasFixedHeight ? MediaQuery.sizeOf(context).height * 0.11 : null,
+        height: hasFixedHeight
+            ? MediaQuery.sizeOf(context).height * 0.11
+            : null,
         padding: EdgeInsets.all(isCompact ? AppSpacing.md : AppSpacing.lg),
         decoration: BoxDecoration(
           color: isCompact
@@ -42,6 +48,10 @@ class SummaryCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (icon != null) ...[
+              Icon(icon, size: 20, color: iconColor ?? AppColors.textSecondary),
+              const SizedBox(height: AppSpacing.sm),
+            ],
             AutoSizeText(
               title,
               maxLines: 1,

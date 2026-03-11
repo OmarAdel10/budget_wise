@@ -318,5 +318,14 @@
   "confirmPasscode": "Confirm Passcode",
   "passcodeMismatch": "Passcodes do not match",
   "passcodeIncorrect": "Incorrect Passcode",
-  "passcodeSet": "Passcode Set Successfully"
+  "passcodeSet": "Passcode Set Successfully",
+  "status": "Status",
+  "off": "Off",
+  "paused": "Paused",
+  "active": "Active",
+  "paymentHistory": "Payment History",
+  "noPaymentHistory": "No payment history found.",
+  "markedAsPaid": "Marked as paid!",
+  "deleteSubscriptionConfirm": "Are you sure you want to delete this subscription?",
+  "cancel": "Cancel"
 }

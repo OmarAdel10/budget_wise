@@ -940,7 +940,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get nextRenewalDate => 'Next Renewal Date';
 
-  @override  
+  @override
   String get defaultCurrency => 'Default Currency';
 
   @override
@@ -992,4 +992,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passcodeSet => 'Passcode Set Successfully';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get off => 'Off';
+
+  @override
+  String get paused => 'Paused';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get paymentHistory => 'Payment History';
+
+  @override
+  String get noPaymentHistory => 'No payment history found.';
+
+  @override
+  String get markedAsPaid => 'Marked as paid!';
+
+  @override
+  String get deleteSubscriptionConfirm =>
+      'Are you sure you want to delete this subscription?';
+
+  @override
+  String get cancel => 'Cancel';
 }
