@@ -321,5 +321,27 @@
         "type": "num"
       }
     }
-  }
+  },
+  "setByAmount": "Set by Amount",
+  "setByDays": "Set by Days",
+  "numberOfDays": "Number of Days",
+  "calculationMethod": "Calculation Method",
+  "dailySavingAmount": "Daily Saving Amount",
+  "colorPicker": "Color Picker",
+  "methodDefault": "Default",
+  "methodConstant": "Constant",
+  "methodDouble": "2x Default",
+  "methodCustom": "Custom",
+  "methodDefaultTitle": "Default Method",
+  "methodDefaultDesc": "Save an increasing amount every day: Day 1 = $1, Day 2 = $2, etc.",
+  "methodConstantTitle": "Constant Method",
+  "methodConstantDesc": "Save a fixed amount every single day (e.g., $10 every day).",
+  "methodDoubleTitle": "2x Default Method",
+  "methodDoubleDesc": "Double the default pattern: Day 1 = $2, Day 2 = $4, etc.",
+  "methodCustomTitle": "Custom Method",
+  "methodCustomDesc": "Add manual entries whenever you want. Complete flexibility!",
+  "gotIt": "Got it",
+  "enterDays": "Enter Days",
+  "infoEnterAmount": "Enter a Target Amount. We'll automatically calculate the required Number of Days and Target Date based on your method.",
+  "infoEnterDays": "Enter the Number of Days. We'll automatically calculate the Target Amount and Target Date based on your method."
 }

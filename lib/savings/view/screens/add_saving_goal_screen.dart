@@ -4,8 +4,6 @@ import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
 import 'package:budget_wise/savings/view_model/savings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
-import 'package:budget_wise/shared/widgets/currency_prefix.dart';
-import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +13,15 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/widgets/custom_button.dart';
+
+import '../widgets/savings_mode_toggle.dart';
+import '../widgets/goal_name_input.dart';
+import '../widgets/target_amount_input.dart';
+import '../widgets/target_days_input.dart';
+import '../widgets/calculation_method_grid.dart';
+import '../widgets/target_date_display.dart';
+import '../widgets/savings_color_picker.dart';
+import '../widgets/savings_info_section.dart';
 
 class AddSavingGoalScreen extends StatefulWidget {
   static const String routeName = '/add-saving-goal';
@@ -35,9 +42,11 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   final FocusNode _amountFocusNode = FocusNode();
   final FocusNode _daysFocusNode = FocusNode();
 
-  DateTime _targetDate = DateTime.now().add(const Duration(days: 30));
-  bool _isByAmount = true;
-  SavingsMethod _selectedMethod = SavingsMethod.defaultPattern;
+  late final ValueNotifier<DateTime> _targetDateNotifier;
+  late final ValueNotifier<bool> _isByAmountNotifier;
+  late final ValueNotifier<SavingsMethod> _selectedMethodNotifier;
+  late final ValueNotifier<double> _targetAmountNotifier;
+  late final ValueNotifier<int> _targetDaysNotifier;
 
   final ValueNotifier<String?> _selectedCurrency = ValueNotifier(null);
   final ValueNotifier<int> _selectedColor = ValueNotifier(0xFF4CAF50);
@@ -55,6 +64,13 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   @override
   void initState() {
     super.initState();
+    _targetDateNotifier =
+        ValueNotifier(DateTime.now().add(const Duration(days: 30)));
+    _isByAmountNotifier = ValueNotifier(true);
+    _selectedMethodNotifier = ValueNotifier(SavingsMethod.defaultPattern);
+    _targetAmountNotifier = ValueNotifier(0.0);
+    _targetDaysNotifier = ValueNotifier(30);
+
     _selectedCurrency.value = context
         .read<SettingsBloc>()
         .state
@@ -62,7 +78,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         .defaultCurrency;
 
     _daysFocusNode.addListener(() {
-      if (!_daysFocusNode.hasFocus && !_isByAmount) {
+      if (!_daysFocusNode.hasFocus && !_isByAmountNotifier.value) {
         _calculateDateFromDays();
       }
     });
@@ -71,50 +87,51 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   void _calculateDateFromDays() {
     final days = int.tryParse(_daysController.text) ?? 0;
     if (days > 0) {
-      setState(() {
-        _targetDate = DateTime.now().add(Duration(days: days));
-      });
+      _targetDateNotifier.value = DateTime.now().add(Duration(days: days));
       _updateCalculations();
     }
   }
 
   void _updateCalculations() {
-    if (_selectedMethod == SavingsMethod.custom) return;
+    if (_selectedMethodNotifier.value == SavingsMethod.custom) return;
 
-    if (_isByAmount) {
+    if (_isByAmountNotifier.value) {
       // Amount -> Days
       final amount =
           double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0;
+      _targetAmountNotifier.value = amount;
       if (amount > 0) {
         int days = 0;
-        if (_selectedMethod == SavingsMethod.defaultPattern) {
+        if (_selectedMethodNotifier.value == SavingsMethod.defaultPattern) {
           days = ((-1 + sqrt(1 + 8 * amount)) / 2).ceil();
-        } else if (_selectedMethod == SavingsMethod.doublePattern) {
+        } else if (_selectedMethodNotifier.value == SavingsMethod.doublePattern) {
           days = ((-1 + sqrt(1 + 4 * amount)) / 2).ceil();
-        } else if (_selectedMethod == SavingsMethod.constant) {
+        } else if (_selectedMethodNotifier.value == SavingsMethod.constant) {
           final constant = double.tryParse(_constantController.text) ?? 1.0;
           days = (amount / (constant > 0 ? constant : 1.0)).ceil();
         }
         _daysController.text = days.toString();
-        _targetDate = DateTime.now().add(Duration(days: days));
+        _targetDaysNotifier.value = days;
+        _targetDateNotifier.value = DateTime.now().add(Duration(days: days));
       }
     } else {
       // Days -> Amount
       final days = int.tryParse(_daysController.text) ?? 0;
+      _targetDaysNotifier.value = days;
       if (days > 0) {
         double amount = 0;
-        if (_selectedMethod == SavingsMethod.defaultPattern) {
+        if (_selectedMethodNotifier.value == SavingsMethod.defaultPattern) {
           amount = (days * (days + 1)) / 2;
-        } else if (_selectedMethod == SavingsMethod.doublePattern) {
+        } else if (_selectedMethodNotifier.value == SavingsMethod.doublePattern) {
           amount = days * (days + 1);
-        } else if (_selectedMethod == SavingsMethod.constant) {
+        } else if (_selectedMethodNotifier.value == SavingsMethod.constant) {
           final constant = double.tryParse(_constantController.text) ?? 1.0;
           amount = days * constant;
         }
         _amountController.text = NumberFormat('#,###.##').format(amount);
+        _targetAmountNotifier.value = amount;
       }
     }
-    setState(() {});
   }
 
   @override
@@ -127,32 +144,34 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
     _daysFocusNode.dispose();
     _selectedCurrency.dispose();
     _selectedColor.dispose();
+    _targetDateNotifier.dispose();
+    _isByAmountNotifier.dispose();
+    _selectedMethodNotifier.dispose();
+    _targetAmountNotifier.dispose();
+    _targetDaysNotifier.dispose();
     super.dispose();
   }
 
   void _showHelpPopup(SavingsMethod method) {
+    final l10n = AppLocalizations.of(context)!;
     String title = "";
     String description = "";
     switch (method) {
       case SavingsMethod.defaultPattern:
-        title = "Default Method";
-        description =
-            "Save an increasing amount every day: Day 1 = \$1, Day 2 = \$2, etc.";
+        title = l10n.methodDefaultTitle;
+        description = l10n.methodDefaultDesc;
         break;
       case SavingsMethod.constant:
-        title = "Constant Method";
-        description =
-            "Save a fixed amount every single day (e.g., \$10 every day).";
+        title = l10n.methodConstantTitle;
+        description = l10n.methodConstantDesc;
         break;
       case SavingsMethod.doublePattern:
-        title = "2x Default Method";
-        description =
-            "Double the default pattern: Day 1 = \$2, Day 2 = \$4, etc.";
+        title = l10n.methodDoubleTitle;
+        description = l10n.methodDoubleDesc;
         break;
       case SavingsMethod.custom:
-        title = "Custom Method";
-        description =
-            "Add manual entries whenever you want. Complete flexibility!";
+        title = l10n.methodCustomTitle;
+        description = l10n.methodCustomDesc;
         break;
     }
 
@@ -168,7 +187,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Got it"),
+            child: Text(l10n.gotIt),
           ),
         ],
       ),
@@ -190,232 +209,133 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
       body: SafeArea(
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Toggle Amount/Days
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _ToggleButton(
-                          text: "Set by Amount",
-                          isSelected: _isByAmount,
-                          onTap: () {
-                            setState(() => _isByAmount = true);
-                            _amountFocusNode.requestFocus();
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: _ToggleButton(
-                          text: "Set by Days",
-                          isSelected: !_isByAmount,
-                          onTap: () {
-                            setState(() => _isByAmount = false);
-                            _daysFocusNode.requestFocus();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                CustomTextField(
-                  hintText: l10n.goalName,
-                  controller: _nameController,
-                  validator: (v) => v!.isEmpty ? l10n.nameRequired : null,
-                ),
-                const SizedBox(height: AppSpacing.lg),
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // Toggle Amount/Days
+                    SavingsModeToggle(
+                      isByAmountNotifier: _isByAmountNotifier,
+                      amountFocusNode: _amountFocusNode,
+                      daysFocusNode: _daysFocusNode,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    GoalNameInput(controller: _nameController),
+                    const SizedBox(height: AppSpacing.lg),
 
-                // Target Amount Input
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity:
-                      _isByAmount || _selectedMethod == SavingsMethod.custom
-                      ? 1.0
-                      : 0.6,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l10n.targetAmount, style: AppTextStyles.bodyMedium),
-                      const SizedBox(height: AppSpacing.sm),
-                      CustomTextField(
-                        hintText: l10n.enterAmount,
-                        controller: _amountController,
-                        focusNode: _amountFocusNode,
-                        keyboardType: TextInputType.number,
-                        readOnly:
-                            !_isByAmount &&
-                            _selectedMethod != SavingsMethod.custom,
-                        bgColor:
-                            !_isByAmount &&
-                                _selectedMethod != SavingsMethod.custom
-                            ? AppColors.secondaryBackground
-                            : null,
-                        prefixIcon: CurrencyPrefix(
-                          selectedCurrencyNotifier: _selectedCurrency,
-                        ),
-                        inputFormatters: [ThousandsSeparatorInputFormatter()],
-                        onChanged: (_) => _updateCalculations(),
-                      ),
-                    ],
-                  ),
+                    // Target Amount Input
+                    TargetAmountInput(
+                      isByAmountNotifier: _isByAmountNotifier,
+                      selectedMethodNotifier: _selectedMethodNotifier,
+                      controller: _amountController,
+                      focusNode: _amountFocusNode,
+                      selectedCurrencyNotifier: _selectedCurrency,
+                      onChanged: _updateCalculations,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Number of Days Input
+                    TargetDaysInput(
+                      isByAmountNotifier: _isByAmountNotifier,
+                      selectedMethodNotifier: _selectedMethodNotifier,
+                      controller: _daysController,
+                      focusNode: _daysFocusNode,
+                      onChanged: () {
+                        if (!_isByAmountNotifier.value) {
+                          _updateCalculations();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Method Selection Label
+                    Text(l10n.calculationMethod,
+                        style: AppTextStyles.bodyMedium),
+                    const SizedBox(height: AppSpacing.sm),
+                  ]),
                 ),
-                const SizedBox(height: AppSpacing.lg),
+              ),
 
-                // Number of Days Input
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity:
-                      !_isByAmount ||
-                          (_isByAmount &&
-                              _selectedMethod == SavingsMethod.custom)
-                      ? 1.0
-                      : 0.6,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Number of Days", style: AppTextStyles.bodyMedium),
-                      const SizedBox(height: AppSpacing.sm),
-                      CustomTextField(
-                        hintText: "Enter Days",
-                        controller: _daysController,
-                        focusNode: _daysFocusNode,
-                        keyboardType: TextInputType.number,
-                        readOnly:
-                            _isByAmount &&
-                            _selectedMethod != SavingsMethod.custom,
-                        bgColor:
-                            _isByAmount &&
-                                _selectedMethod != SavingsMethod.custom
-                            ? AppColors.secondaryBackground
-                            : null,
-                        onChanged: (_) {
-                          if (!_isByAmount) {
-                            _updateCalculations();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
+              SliverPadding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                sliver: CalculationMethodGrid(
+                  selectedMethodNotifier: _selectedMethodNotifier,
+                  onMethodSelected: (m) {
+                    _selectedMethodNotifier.value = m;
+                    _updateCalculations();
+                  },
+                  onHelp: _showHelpPopup,
                 ),
+              ),
 
-                const SizedBox(height: AppSpacing.lg),
+              SliverPadding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    ListenableBuilder(
+                      listenable: _selectedMethodNotifier,
+                      builder: (context, _) {
+                        final method = _selectedMethodNotifier.value;
+                        if (method != SavingsMethod.constant) {
+                          return const SizedBox.shrink();
+                        }
+                        return Column(
+                          children: [
+                            CustomTextField(
+                              hintText: l10n.dailySavingAmount,
+                              controller: _constantController,
+                              keyboardType: TextInputType.number,
+                              onChanged: (_) => _updateCalculations(),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                          ],
+                        );
+                      },
+                    ),
 
-                // Method Selection
-                Text("Calculation Method", style: AppTextStyles.bodyMedium),
-                const SizedBox(height: AppSpacing.sm),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 2.2,
-                  children: SavingsMethod.values
-                      .map(
-                        (m) => _MethodCard(
-                          method: m,
-                          isSelected: _selectedMethod == m,
-                          onTap: () {
-                            setState(() => _selectedMethod = m);
-                            _updateCalculations();
-                          },
-                          onHelp: () => _showHelpPopup(m),
-                        ),
-                      )
-                      .toList(),
+                    Text(l10n.targetDate, style: AppTextStyles.bodyMedium),
+                    const SizedBox(height: AppSpacing.sm),
+                    TargetDateDisplay(
+                      targetDateNotifier: _targetDateNotifier,
+                      isByAmountNotifier: _isByAmountNotifier,
+                      selectedMethodNotifier: _selectedMethodNotifier,
+                      onPickDate: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _targetDateNotifier.value,
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2100),
+                        );
+                        if (picked != null) {
+                          _targetDateNotifier.value = picked;
+                          final diff =
+                              picked.difference(DateTime.now()).inDays + 1;
+                          _daysController.text = diff.toString();
+                          _targetDaysNotifier.value = diff;
+                        }
+                      },
+                    ),
+
+                    const SizedBox(height: AppSpacing.lg),
+                    Text(l10n.colorPicker, style: AppTextStyles.bodyMedium),
+                    const SizedBox(height: AppSpacing.sm),
+                    SavingsColorPicker(
+                      selectedColorNotifier: _selectedColor,
+                      colorOptions: _colorOptions,
+                    ),
+
+                    const SizedBox(height: AppSpacing.xl),
+                    // Dynamic Info Text
+                    SavingsInfoSection(isByAmountNotifier: _isByAmountNotifier),
+                    const SizedBox(height: AppSpacing.xl),
+                    CustomButton(text: l10n.createGoal, onPressed: _submit),
+                  ]),
                 ),
-
-                if (_selectedMethod == SavingsMethod.constant) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  CustomTextField(
-                    hintText: "Daily Saving Amount",
-                    controller: _constantController,
-                    keyboardType: TextInputType.number,
-                    onChanged: (_) => _updateCalculations(),
-                  ),
-                ],
-
-                const SizedBox(height: AppSpacing.lg),
-                Text(l10n.targetDate, style: AppTextStyles.bodyMedium),
-                const SizedBox(height: AppSpacing.sm),
-                RepaintBoundary(
-                  child: _DateDisplay(
-                    date: _targetDate,
-                    onTap:
-                        _isByAmount && _selectedMethod == SavingsMethod.custom
-                        ? () async {
-                            final picked = await showDatePicker(
-                              context: context,
-                              initialDate: _targetDate,
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(2100),
-                            );
-                            if (picked != null) {
-                              setState(() {
-                                _targetDate = picked;
-                                // For custom, update days based on selected date
-                                final diff =
-                                    _targetDate
-                                        .difference(DateTime.now())
-                                        .inDays +
-                                    1;
-                                _daysController.text = diff.toString();
-                              });
-                            }
-                          }
-                        : null,
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.lg),
-                Text('Color Picker', style: AppTextStyles.bodyMedium),
-                const SizedBox(height: AppSpacing.sm),
-                _ColorPicker(
-                  selectedColor: _selectedColor,
-                  options: _colorOptions,
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-                // Dynamic Info Text
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryBackground,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    border: Border.all(color: AppColors.borderColor),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: AppColors.textSecondary,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          _isByAmount
-                              ? "Enter a Target Amount. We'll automatically calculate the required Number of Days and Target Date based on your method."
-                              : "Enter the Number of Days. We'll automatically calculate the Target Amount and Target Date based on your method.",
-                          style: AppTextStyles.bodySmall,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                CustomButton(text: l10n.createGoal, onPressed: _submit),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -424,22 +344,21 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      final amount =
-          double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0;
-      final days = int.tryParse(_daysController.text) ?? 0;
+      final amount = _targetAmountNotifier.value;
+      final days = _targetDaysNotifier.value;
 
-      if (amount <= 0 && _isByAmount) return;
-      if (days <= 0 && !_isByAmount) return;
+      if (amount <= 0 && _isByAmountNotifier.value) return;
+      if (days <= 0 && !_isByAmountNotifier.value) return;
 
       final model = SavingsModel(
         id: const Uuid().v4(),
         name: _nameController.text.trim(),
         targetAmount: amount,
         targetDays: days,
-        method: _selectedMethod,
+        method: _selectedMethodNotifier.value,
         constantAmount: double.tryParse(_constantController.text),
         currency: _selectedCurrency.value!,
-        targetDate: _targetDate,
+        targetDate: _targetDateNotifier.value,
         colorValue: _selectedColor.value,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
@@ -451,186 +370,3 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   }
 }
 
-class _ToggleButton extends StatelessWidget {
-  final String text;
-  final bool isSelected;
-  final VoidCallback onTap;
-  const _ToggleButton({
-    required this.text,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryAccent : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-        ),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: isSelected ? Colors.white : AppColors.textSecondary,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MethodCard extends StatelessWidget {
-  final SavingsMethod method;
-  final bool isSelected;
-  final VoidCallback onTap;
-  final VoidCallback onHelp;
-  const _MethodCard({
-    required this.method,
-    required this.isSelected,
-    required this.onTap,
-    required this.onHelp,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    String label = "";
-    switch (method) {
-      case SavingsMethod.defaultPattern:
-        label = "Default";
-        break;
-      case SavingsMethod.constant:
-        label = "Constant";
-        break;
-      case SavingsMethod.doublePattern:
-        label = "2x Default";
-        break;
-      case SavingsMethod.custom:
-        label = "Custom";
-        break;
-    }
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primaryAccent.withValues(alpha: 0.1)
-              : AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(
-            color: isSelected ? AppColors.primaryAccent : AppColors.borderColor,
-            width: 2,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Center(
-              child: Text(
-                label,
-                style: AppTextStyles.bodySmall.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Positioned(
-              top: 4,
-              right: 4,
-              child: GestureDetector(
-                onTap: onHelp,
-                child: const Icon(
-                  Icons.help_outline,
-                  size: 16,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _DateDisplay extends StatelessWidget {
-  final DateTime date;
-  final VoidCallback? onTap;
-  const _DateDisplay({required this.date, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      child: RepaintBoundary(
-        child: Opacity(
-          opacity: onTap == null ? 0.6 : 1.0,
-          child: Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.calendar_today,
-                  color: AppColors.textSecondary,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  DateFormat.yMMMd().format(date),
-                  style: AppTextStyles.bodyLarge,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ColorPicker extends StatelessWidget {
-  final ValueNotifier<int> selectedColor;
-  final List<int> options;
-  const _ColorPicker({required this.selectedColor, required this.options});
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<int>(
-      valueListenable: selectedColor,
-      builder: (context, current, _) {
-        return SizedBox(
-          height: 50,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: options.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
-            itemBuilder: (context, i) => GestureDetector(
-              onTap: () => selectedColor.value = options[i],
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Color(options[i]),
-                  shape: BoxShape.circle,
-                  border: current == options[i]
-                      ? Border.all(color: Colors.white, width: 3)
-                      : null,
-                ),
-                child: current == options[i]
-                    ? const Icon(Icons.check, color: Colors.white, size: 20)
-                    : null,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}

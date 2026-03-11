@@ -318,5 +318,27 @@
         "type": "num"
       }
     }
-  }
+  },
+  "setByAmount": "تحديد بالمبلغ",
+  "setByDays": "تحديد بالأيام",
+  "numberOfDays": "عدد الأيام",
+  "calculationMethod": "طريقة الحساب",
+  "dailySavingAmount": "مبلغ الادخار اليومي",
+  "colorPicker": "منتقي الألوان",
+  "methodDefault": "افتراضي",
+  "methodConstant": "ثابت",
+  "methodDouble": "ضعف الافتراضي",
+  "methodCustom": "مخصص",
+  "methodDefaultTitle": "الطريقة الافتراضية",
+  "methodDefaultDesc": "ادخر مبلغاً متزايداً كل يوم: اليوم 1 = 1 وحدة، اليوم 2 = 2 وحدة، وهكذا.",
+  "methodConstantTitle": "طريقة المبلغ الثابت",
+  "methodConstantDesc": "ادخر مبلغاً ثابتاً كل يوم (مثلاً 10 وحدات يومياً).",
+  "methodDoubleTitle": "ضعف الطريقة الافتراضية",
+  "methodDoubleDesc": "ضعف النمط الافتراضي: اليوم 1 = 2 وحدة، اليوم 2 = 4 وحدات، وهكذا.",
+  "methodCustomTitle": "الطريقة المخصصة",
+  "methodCustomDesc": "أضف مدخرات يدوية وقتما تشاء. مرونة كاملة!",
+  "gotIt": "فهمت",
+  "enterDays": "أدخل عدد الأيام",
+  "infoEnterAmount": "أدخل المبلغ المستهدف. سنقوم تلقائياً بحساب عدد الأيام المطلوبة وتاريخ الهدف بناءً على طريقتك.",
+  "infoEnterDays": "أدخل عدد الأيام. سنقوم تلقائياً بحساب المبلغ المستهدف وتاريخ الهدف بناءً على طريقتك."
 }

@@ -915,6 +915,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get savingDeleted => 'تم حذف الهدف';
 
   @override
+  String get overallProgress => 'التقدم الإجمالي';
+
+  @override
+  String get todoSavings => 'مدخرات قادمة';
+
+  @override
+  String get completedDaysLabel => 'أيام مكتملة';
+
+  @override
   String savingsGoalProgress(int percentage) {
     return '$percentage%';
   }
@@ -923,4 +932,75 @@ class AppLocalizationsAr extends AppLocalizations {
   String savingsGoalAmountProgress(String currency, num current, num target) {
     return '$currency$current / $currency$target';
   }
+
+  @override
+  String get setByAmount => 'تحديد بالمبلغ';
+
+  @override
+  String get setByDays => 'تحديد بالأيام';
+
+  @override
+  String get numberOfDays => 'عدد الأيام';
+
+  @override
+  String get calculationMethod => 'طريقة الحساب';
+
+  @override
+  String get dailySavingAmount => 'مبلغ الادخار اليومي';
+
+  @override
+  String get colorPicker => 'منتقي الألوان';
+
+  @override
+  String get methodDefault => 'افتراضي';
+
+  @override
+  String get methodConstant => 'ثابت';
+
+  @override
+  String get methodDouble => 'ضعف الافتراضي';
+
+  @override
+  String get methodCustom => 'مخصص';
+
+  @override
+  String get methodDefaultTitle => 'الطريقة الافتراضية';
+
+  @override
+  String get methodDefaultDesc =>
+      'ادخر مبلغاً متزايداً كل يوم: اليوم 1 = 1 وحدة، اليوم 2 = 2 وحدة، وهكذا.';
+
+  @override
+  String get methodConstantTitle => 'طريقة المبلغ الثابت';
+
+  @override
+  String get methodConstantDesc =>
+      'ادخر مبلغاً ثابتاً كل يوم (مثلاً 10 وحدات يومياً).';
+
+  @override
+  String get methodDoubleTitle => 'ضعف الطريقة الافتراضية';
+
+  @override
+  String get methodDoubleDesc =>
+      'ضعف النمط الافتراضي: اليوم 1 = 2 وحدة، اليوم 2 = 4 وحدات، وهكذا.';
+
+  @override
+  String get methodCustomTitle => 'الطريقة المخصصة';
+
+  @override
+  String get methodCustomDesc => 'أضف مدخرات يدوية وقتما تشاء. مرونة كاملة!';
+
+  @override
+  String get gotIt => 'فهمت';
+
+  @override
+  String get enterDays => 'أدخل عدد الأيام';
+
+  @override
+  String get infoEnterAmount =>
+      'أدخل المبلغ المستهدف. سنقوم تلقائياً بحساب عدد الأيام المطلوبة وتاريخ الهدف بناءً على طريقتك.';
+
+  @override
+  String get infoEnterDays =>
+      'أدخل عدد الأيام. سنقوم تلقائياً بحساب المبلغ المستهدف وتاريخ الهدف بناءً على طريقتك.';
 }

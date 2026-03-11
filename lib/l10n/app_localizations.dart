@@ -1862,6 +1862,24 @@ abstract class AppLocalizations {
   /// **'Account Deleted'**
   String get savingDeleted;
 
+  /// No description provided for @overallProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall Progress'**
+  String get overallProgress;
+
+  /// No description provided for @todoSavings.
+  ///
+  /// In en, this message translates to:
+  /// **'Todo Savings'**
+  String get todoSavings;
+
+  /// No description provided for @completedDaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed days'**
+  String get completedDaysLabel;
+
   /// No description provided for @savingsGoalProgress.
   ///
   /// In en, this message translates to:
@@ -1873,6 +1891,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{currency}{current} / {currency}{target}'**
   String savingsGoalAmountProgress(String currency, num current, num target);
+
+  /// No description provided for @setByAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Set by Amount'**
+  String get setByAmount;
+
+  /// No description provided for @setByDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Set by Days'**
+  String get setByDays;
+
+  /// No description provided for @numberOfDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Days'**
+  String get numberOfDays;
+
+  /// No description provided for @calculationMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculation Method'**
+  String get calculationMethod;
+
+  /// No description provided for @dailySavingAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Saving Amount'**
+  String get dailySavingAmount;
+
+  /// No description provided for @colorPicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Color Picker'**
+  String get colorPicker;
+
+  /// No description provided for @methodDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get methodDefault;
+
+  /// No description provided for @methodConstant.
+  ///
+  /// In en, this message translates to:
+  /// **'Constant'**
+  String get methodConstant;
+
+  /// No description provided for @methodDouble.
+  ///
+  /// In en, this message translates to:
+  /// **'2x Default'**
+  String get methodDouble;
+
+  /// No description provided for @methodCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get methodCustom;
+
+  /// No description provided for @methodDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Method'**
+  String get methodDefaultTitle;
+
+  /// No description provided for @methodDefaultDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Save an increasing amount every day: Day 1 = \$1, Day 2 = \$2, etc.'**
+  String get methodDefaultDesc;
+
+  /// No description provided for @methodConstantTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Constant Method'**
+  String get methodConstantTitle;
+
+  /// No description provided for @methodConstantDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a fixed amount every single day (e.g., \$10 every day).'**
+  String get methodConstantDesc;
+
+  /// No description provided for @methodDoubleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'2x Default Method'**
+  String get methodDoubleTitle;
+
+  /// No description provided for @methodDoubleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Double the default pattern: Day 1 = \$2, Day 2 = \$4, etc.'**
+  String get methodDoubleDesc;
+
+  /// No description provided for @methodCustomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Method'**
+  String get methodCustomTitle;
+
+  /// No description provided for @methodCustomDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Add manual entries whenever you want. Complete flexibility!'**
+  String get methodCustomDesc;
+
+  /// No description provided for @gotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get gotIt;
+
+  /// No description provided for @enterDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Days'**
+  String get enterDays;
+
+  /// No description provided for @infoEnterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a Target Amount. We\'ll automatically calculate the required Number of Days and Target Date based on your method.'**
+  String get infoEnterAmount;
+
+  /// No description provided for @infoEnterDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the Number of Days. We\'ll automatically calculate the Target Amount and Target Date based on your method.'**
+  String get infoEnterDays;
 }
 
 class _AppLocalizationsDelegate

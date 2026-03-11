@@ -922,6 +922,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savingDeleted => 'Account Deleted';
 
   @override
+  String get overallProgress => 'Overall Progress';
+
+  @override
+  String get todoSavings => 'Todo Savings';
+
+  @override
+  String get completedDaysLabel => 'Completed days';
+
+  @override
   String savingsGoalProgress(int percentage) {
     return '$percentage%';
   }
@@ -930,4 +939,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String savingsGoalAmountProgress(String currency, num current, num target) {
     return '$currency$current / $currency$target';
   }
+
+  @override
+  String get setByAmount => 'Set by Amount';
+
+  @override
+  String get setByDays => 'Set by Days';
+
+  @override
+  String get numberOfDays => 'Number of Days';
+
+  @override
+  String get calculationMethod => 'Calculation Method';
+
+  @override
+  String get dailySavingAmount => 'Daily Saving Amount';
+
+  @override
+  String get colorPicker => 'Color Picker';
+
+  @override
+  String get methodDefault => 'Default';
+
+  @override
+  String get methodConstant => 'Constant';
+
+  @override
+  String get methodDouble => '2x Default';
+
+  @override
+  String get methodCustom => 'Custom';
+
+  @override
+  String get methodDefaultTitle => 'Default Method';
+
+  @override
+  String get methodDefaultDesc =>
+      'Save an increasing amount every day: Day 1 = \$1, Day 2 = \$2, etc.';
+
+  @override
+  String get methodConstantTitle => 'Constant Method';
+
+  @override
+  String get methodConstantDesc =>
+      'Save a fixed amount every single day (e.g., \$10 every day).';
+
+  @override
+  String get methodDoubleTitle => '2x Default Method';
+
+  @override
+  String get methodDoubleDesc =>
+      'Double the default pattern: Day 1 = \$2, Day 2 = \$4, etc.';
+
+  @override
+  String get methodCustomTitle => 'Custom Method';
+
+  @override
+  String get methodCustomDesc =>
+      'Add manual entries whenever you want. Complete flexibility!';
+
+  @override
+  String get gotIt => 'Got it';
+
+  @override
+  String get enterDays => 'Enter Days';
+
+  @override
+  String get infoEnterAmount =>
+      'Enter a Target Amount. We\'ll automatically calculate the required Number of Days and Target Date based on your method.';
+
+  @override
+  String get infoEnterDays =>
+      'Enter the Number of Days. We\'ll automatically calculate the Target Amount and Target Date based on your method.';
 }
