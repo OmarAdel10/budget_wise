@@ -95,6 +95,21 @@ class TransactionState extends Equatable {
   factory TransactionState.fromJson(String source) =>
       TransactionState.fromMap(json.decode(source) as Map<String, dynamic>);
 
+  List<TransactionModel> getSubscriptionHistory({
+    required String categoryId,
+    required String name,
+  }) {
+    return transactionsList
+        .where(
+          (t) =>
+              t.categoryId == categoryId &&
+              t.transactionTitle.toLowerCase().contains(
+                    name.toLowerCase(),
+                  ),
+        )
+        .toList();
+  }
+
   @override
   List<Object?> get props => [
     transactionsList,

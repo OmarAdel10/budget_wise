@@ -9,6 +9,8 @@ class SubscriptionHistoryItem extends StatelessWidget {
   final TransactionModel transaction;
   final NumberFormat formatter;
 
+  static final _dateFormat = DateFormat('MMM dd, yyyy');
+
   const SubscriptionHistoryItem({
     super.key,
     required this.transaction,
@@ -34,7 +36,7 @@ class SubscriptionHistoryItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                DateFormat('MMM dd, yyyy').format(transaction.transactionDate),
+                _dateFormat.format(transaction.transactionDate),
                 style: AppTextStyles.bodyMedium,
               ),
               Text(transaction.accountId, style: AppTextStyles.bodySmall),
