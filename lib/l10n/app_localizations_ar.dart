@@ -392,7 +392,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dailyTrend => 'الاتجاه اليومي';
 
   @override
-  String get categoryChart => 'مخطط التصنيفات';
+  String get chart => 'مخطط';
 
   @override
   String get sortHighest => 'الأعلى قيمة';

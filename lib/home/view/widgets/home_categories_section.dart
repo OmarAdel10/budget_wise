@@ -13,38 +13,19 @@ import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:budget_wise/shared/widgets/category_list_item.dart';
-import 'package:budget_wise/shared/widgets/income_expense_toggle.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class HomeCategoriesSection extends StatefulWidget {
-  const HomeCategoriesSection({super.key});
-
-  @override
-  State<HomeCategoriesSection> createState() => _HomeCategoriesSectionState();
-}
-
-class _HomeCategoriesSectionState extends State<HomeCategoriesSection> {
-  late final ValueNotifier<ToggleOption> _showIncomeNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-    _showIncomeNotifier = ValueNotifier<ToggleOption>(ToggleOption.expense);
-  }
-
-  @override
-  void dispose() {
-    _showIncomeNotifier.dispose();
-    super.dispose();
-  }
+class HomeCategoriesSection extends StatelessWidget {
+  final ValueNotifier<ToggleOption> showIncomeNotifier;
+  const HomeCategoriesSection({super.key, required this.showIncomeNotifier});
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ToggleOption>(
-      valueListenable: _showIncomeNotifier,
+      valueListenable: showIncomeNotifier,
       builder: (context, currentSelectedOption, child) {
         return BlocBuilder<HomeBloc, HomeState>(
           buildWhen: (previous, current) =>
@@ -62,7 +43,7 @@ class _HomeCategoriesSectionState extends State<HomeCategoriesSection> {
 
             return SliverMainAxisGroup(
               slivers: [
-                _HomeCategoriesHeader(showIncomeNotifier: _showIncomeNotifier),
+                _HomeCategoriesHeader(showIncomeNotifier: showIncomeNotifier),
                 const SliverToBoxAdapter(
                   child: SizedBox(height: AppSpacing.sm),
                 ),
@@ -93,12 +74,6 @@ class _HomeCategoriesHeader extends StatelessWidget {
           children: [
             Text(l10n.categories, style: AppTextStyles.heading3),
             const Spacer(),
-            IncomeExpenseToggle(
-              selectionNotifier: showIncomeNotifier,
-              isScaled: true,
-              scaleY: 0.90,
-              scaleX: 0.85,
-            ),
             IconButton(
               tooltip: l10n.addCategory,
               onPressed: () {

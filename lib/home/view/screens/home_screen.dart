@@ -1,3 +1,5 @@
+import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
+import 'package:budget_wise/shared/widgets/income_expense_toggle.dart';
 import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
 import 'package:budget_wise/home/view/widgets/home_app_bar.dart';
 import 'package:budget_wise/home/view/widgets/home_categories_section.dart';
@@ -24,16 +26,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   DateTime selectedMonth = DateTime.now();
   final ScrollController _scrollController = ScrollController();
+  late final ValueNotifier<ToggleOption> _showIncomeNotifier;
 
   @override
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(HomeEventLoadAllData(selectedMonth));
+    _showIncomeNotifier = ValueNotifier<ToggleOption>(ToggleOption.expense);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _showIncomeNotifier.dispose();
     super.dispose();
   }
 
@@ -67,8 +72,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: SizedBox(height: AppSpacing.md),
                 ),
                 HomeFlexibleHeader(scrollController: _scrollController),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+                  sliver: SliverToBoxAdapter(
+                    child: Row(
+                      children: [
+                        IncomeExpenseToggle(
+                          selectionNotifier: _showIncomeNotifier,
+                          isSavingsEnabled: false,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const HomeRecentTransactions(),
-                const HomeCategoriesSection(),
+                HomeCategoriesSection(showIncomeNotifier: _showIncomeNotifier),
                 const SliverToBoxAdapter(
                   child: SizedBox(height: AppSpacing.xxl * 2),
                 ),

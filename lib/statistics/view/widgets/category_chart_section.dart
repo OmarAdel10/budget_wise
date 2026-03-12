@@ -1,7 +1,6 @@
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
-import 'package:budget_wise/shared/widgets/income_expense_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -51,15 +50,9 @@ class CategoryChartSection extends StatelessWidget {
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(l10n.categoryChart, style: AppTextStyles.heading3),
-            IncomeExpenseToggle(
-              currentSelection: toggleType,
-              onChanged: onToggle,
-            ),
-          ],
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(l10n.chart, style: AppTextStyles.heading3),
         ),
         SizedBox(
           height: 280,

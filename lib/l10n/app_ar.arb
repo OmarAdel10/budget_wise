@@ -127,7 +127,7 @@
   "noEarningsThisMonth": "لا توجد أرباح لهذا الشهر",
   "noExpensesThisMonth": "لا توجد مصروفات لهذا الشهر",
   "dailyTrend": "الاتجاه اليومي",
-  "categoryChart": "مخطط التصنيفات",
+  "chart": "مخطط",
   "sortHighest": "الأعلى قيمة",
   "sortLowest": "الأقل قيمة",
   "sortAZ": "أ-ي",

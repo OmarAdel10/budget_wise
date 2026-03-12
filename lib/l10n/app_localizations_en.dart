@@ -393,7 +393,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyTrend => 'Daily Trend';
 
   @override
-  String get categoryChart => 'Category Chart';
+  String get chart => 'Chart';
 
   @override
   String get sortHighest => 'Highest Amount';

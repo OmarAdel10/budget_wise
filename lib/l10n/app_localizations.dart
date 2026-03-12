@@ -854,11 +854,11 @@ abstract class AppLocalizations {
   /// **'Daily Trend'**
   String get dailyTrend;
 
-  /// No description provided for @categoryChart.
+  /// No description provided for @chart.
   ///
   /// In en, this message translates to:
-  /// **'Category Chart'**
-  String get categoryChart;
+  /// **'Chart'**
+  String get chart;
 
   /// No description provided for @sortHighest.
   ///

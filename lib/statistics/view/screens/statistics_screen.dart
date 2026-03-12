@@ -1,5 +1,6 @@
 import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
+import 'package:budget_wise/shared/widgets/income_expense_toggle.dart';
 import 'package:budget_wise/statistics/view/widgets/category_chart_section.dart';
 import 'package:budget_wise/statistics/view/widgets/category_list_section.dart';
 import 'package:budget_wise/shared/widgets/month_selector.dart';
@@ -24,16 +25,27 @@ class StatisticsScreen extends StatefulWidget {
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
   late final ValueNotifier<bool> _isTrendExpandedNotifier;
+  late final ValueNotifier<ToggleOption> _toggleOptionNotifier;
 
   @override
   void initState() {
     super.initState();
     _isTrendExpandedNotifier = ValueNotifier<bool>(true);
+    _toggleOptionNotifier = ValueNotifier<ToggleOption>(
+      context.read<StatisticsBloc>().state.model.toggleType,
+    );
+
+    _toggleOptionNotifier.addListener(() {
+      context.read<StatisticsBloc>().add(
+            StatisticsEventToggleType(_toggleOptionNotifier.value),
+          );
+    });
   }
 
   @override
   void dispose() {
     _isTrendExpandedNotifier.dispose();
+    _toggleOptionNotifier.dispose();
     super.dispose();
   }
 
@@ -107,6 +119,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             totalSubscriptions: data.$4,
                           );
                         },
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Row(
+                        children: [
+                          IncomeExpenseToggle(
+                            selectionNotifier: _toggleOptionNotifier,
+                            isSavingsEnabled: true,
+                          ),
+                        ],
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       BlocSelector<

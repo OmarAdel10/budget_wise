@@ -15,10 +15,7 @@ class IncomeExpenseToggle extends StatelessWidget {
   final Color? unselectedColor;
   final Color? selectedTextColor;
   final Color? unselectedTextColor;
-  final bool isScaled;
-  final double? scale;
-  final double? scaleX;
-  final double? scaleY;
+  final bool isSavingsEnabled;
 
   const IncomeExpenseToggle({
     super.key,
@@ -31,17 +28,14 @@ class IncomeExpenseToggle extends StatelessWidget {
     this.unselectedColor = Colors.transparent,
     this.selectedTextColor = AppColors.textPrimary,
     this.unselectedTextColor = AppColors.textSecondary,
-    this.isScaled = false,
-    this.scale,
-    this.scaleX,
-    this.scaleY,
+    this.isSavingsEnabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final Widget content = selectionNotifier != null
+    return selectionNotifier != null
         ? ValueListenableBuilder<ToggleOption>(
             valueListenable: selectionNotifier!,
             builder: (context, selection, child) {
@@ -53,16 +47,6 @@ class IncomeExpenseToggle extends StatelessWidget {
             l10n,
             currentSelection ?? ToggleOption.expense,
           );
-
-    if (isScaled) {
-      return Transform.scale(
-        scale: scale,
-        scaleX: scaleX,
-        scaleY: scaleY,
-        child: content,
-      );
-    }
-    return content;
   }
 
   Widget _buildToggleBody(
@@ -70,44 +54,63 @@ class IncomeExpenseToggle extends StatelessWidget {
     AppLocalizations l10n,
     ToggleOption selection,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildToggleItem(
-            context,
-            text: l10n.income,
-            option: ToggleOption.income,
-            currentSelection: selection,
-            defaultColor: AppColors.income,
-            defaultTextStyle:
-                incomeTextStyle ??
-                AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
-          ),
-          _buildToggleItem(
-            context,
-            text: l10n.expenses,
-            option: ToggleOption.expense,
-            currentSelection: selection,
-            defaultColor: AppColors.expense,
-            defaultTextStyle:
-                expenseTextStyle ??
-                AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
-          ),
-          _buildToggleItem(
-            context,
-            text: l10n.navSavings,
-            option: ToggleOption.savings,
-            currentSelection: selection,
-            defaultColor: AppColors.savings,
-            defaultTextStyle:
-                AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ],
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildToggleItem(
+              context,
+              text: l10n.income,
+              option: ToggleOption.income,
+              currentSelection: selection,
+              defaultColor: AppColors.income,
+              defaultTextStyle:
+                  incomeTextStyle ??
+                  AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            Text('|', style: AppTextStyles.bodyLarge.copyWith(
+              color: AppColors.textSecondary
+            ),),
+            _buildToggleItem(
+              context,
+              text: l10n.expenses,
+              option: ToggleOption.expense,
+              currentSelection: selection,
+              defaultColor: AppColors.expense,
+              defaultTextStyle:
+                  expenseTextStyle ??
+                  AppTextStyles.bodySmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            if (isSavingsEnabled) ...[
+              Text(
+                '|',
+                style: AppTextStyles.bodyLarge.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              _buildToggleItem(
+                context,
+                text: l10n.navSavings,
+                option: ToggleOption.savings,
+                currentSelection: selection,
+                defaultColor: AppColors.savings,
+                defaultTextStyle: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
