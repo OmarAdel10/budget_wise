@@ -1,3 +1,4 @@
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:budget_wise/statistics/view/widgets/category_chart_section.dart';
 import 'package:budget_wise/statistics/view/widgets/category_list_section.dart';
@@ -139,13 +140,16 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 current.model.incomeBreakdown ||
                             previous.model.expenseBreakdown !=
                                 current.model.expenseBreakdown ||
+                            previous.model.savingsBreakdown !=
+                                current.model.savingsBreakdown ||
                             previous.model.toggleType !=
                                 current.model.toggleType,
                         builder: (context, state) {
                           final model = state.model;
                           final hasData =
                               model.incomeBreakdown.isNotEmpty ||
-                              model.expenseBreakdown.isNotEmpty;
+                              model.expenseBreakdown.isNotEmpty ||
+                              model.savingsBreakdown.isNotEmpty;
 
                           if (!hasData) {
                             return Padding(
@@ -168,9 +172,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                               CategoryChartSection(
                                 incomeBreakdown: model.incomeBreakdown,
                                 expenseBreakdown: model.expenseBreakdown,
+                                savingsBreakdown: model.savingsBreakdown,
                                 toggleType: model.toggleType,
                                 totalIncome: model.totalIncome,
                                 totalExpenses: model.totalExpenses,
+                                totalSavings: model.totalSavings,
                                 onToggle: (type) {
                                   statisticsBloc.add(
                                     StatisticsEventToggleType(type),
@@ -200,12 +206,23 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           current.model.incomeBreakdown ||
                       previous.model.expenseBreakdown !=
                           current.model.expenseBreakdown ||
+                      previous.model.savingsBreakdown !=
+                          current.model.savingsBreakdown ||
                       previous.model.toggleType != current.model.toggleType,
                   builder: (context, state) {
                     final model = state.model;
-                    final breakdown = model.toggleType == ToggleOption.income
-                        ? model.incomeBreakdown
-                        : model.expenseBreakdown;
+                    final List<FinancialBreakdownItem> breakdown;
+                    switch (model.toggleType) {
+                      case ToggleOption.income:
+                        breakdown = model.incomeBreakdown;
+                        break;
+                      case ToggleOption.expense:
+                        breakdown = model.expenseBreakdown;
+                        break;
+                      case ToggleOption.savings:
+                        breakdown = model.savingsBreakdown;
+                        break;
+                    }
 
                     if (breakdown.isEmpty) {
                       return const SliverToBoxAdapter(child: SizedBox.shrink());

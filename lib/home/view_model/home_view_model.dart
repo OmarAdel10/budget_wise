@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/home/data/models/home_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/category/data/repositories/category_repository.dart';
@@ -116,9 +117,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             transaction.transactionAmount;
       }
 
-      final List<CategoriesWithSpending> categoriesWithSpendingList =
+      final List<FinancialBreakdownItem> categoriesWithSpendingList =
           allCategories.map((cat) {
-            return CategoriesWithSpending(cat, spendingMap[cat.id] ?? 0.0);
+            return FinancialBreakdownItem(
+              source: cat,
+              sourceType: StatisticsSourceType.category,
+              amount: spendingMap[cat.id] ?? 0.0,
+              percentage: 0.0,
+            );
           }).toList();
 
       emit(

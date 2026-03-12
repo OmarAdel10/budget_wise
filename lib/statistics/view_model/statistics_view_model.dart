@@ -1,4 +1,5 @@
-import 'package:budget_wise/home/data/models/home_model.dart';
+import 'package:budget_wise/savings/view_model/savings_view_model.dart';
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
@@ -10,25 +11,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   final TransactionBloc transactionBloc;
   final CategoryBloc categoryBloc;
+  final SavingsBloc savingsBloc;
 
-  StatisticsBloc({required this.transactionBloc, required this.categoryBloc})
-    : super(
-        StatisticsStateInitial(
-          StatisticsModel(
-            totalIncome: 0,
-            totalExpenses: 0,
-            totalSavings: 0,
-            totalSubscriptions: 0,
-            incomeBreakdown: const [],
-            expenseBreakdown: const [],
-            dailyIncomeTrend: const [],
-            dailyExpenseTrend: const [],
-            sortingType: StatisticsSorting.highestAmount,
-            selectedMonth: DateTime.now(),
-          ),
-        ),
-      ) {
-    // Listen to changes in transactions and categories to update statistics
+  StatisticsBloc({
+    required this.transactionBloc,
+    required this.categoryBloc,
+    required this.savingsBloc,
+  }) : super(
+         StatisticsStateInitial(
+           StatisticsModel(
+             totalIncome: 0,
+             totalExpenses: 0,
+             totalSavings: 0,
+             totalSubscriptions: 0,
+             incomeBreakdown: const [],
+             expenseBreakdown: const [],
+             savingsBreakdown: const [],
+             dailyIncomeTrend: const [],
+             dailyExpenseTrend: const [],
+             sortingType: StatisticsSorting.highestAmount,
+             selectedMonth: DateTime.now(),
+           ),
+         ),
+       ) {
+    // Listen to changes in transactions, categories, and savings to update statistics
     transactionBloc.stream.listen((_) {
       add(StatisticsEventLoadRequested(state.model.selectedMonth));
     });
@@ -37,10 +43,15 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       add(StatisticsEventLoadRequested(state.model.selectedMonth));
     });
 
+    savingsBloc.stream.listen((_) {
+      add(StatisticsEventLoadRequested(state.model.selectedMonth));
+    });
+
     on<StatisticsEventLoadRequested>((event, emit) {
       try {
         final allTransactions = transactionBloc.state.transactionsList;
         final allCategories = categoryBloc.state.categoriesList;
+        final allSavingGoals = savingsBloc.state.savingsList;
 
         double income = 0;
         double expenses = 0;
@@ -85,13 +96,14 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
             .map((cat) {
               final amount = incomeMap[cat.id] ?? 0.0;
               final percentage = income > 0 ? (amount / income) * 100 : 0.0;
-              return CategoriesWithSpending(
-                cat,
-                amount,
+              return FinancialBreakdownItem(
+                source: cat,
+                sourceType: StatisticsSourceType.category,
+                amount: amount,
                 percentage: percentage,
               );
             })
-            .where((element) => element.totalSpending > 0)
+            .where((element) => element.amount > 0)
             .toList();
 
         // Map expense categories with their spending
@@ -100,25 +112,65 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
             .map((cat) {
               final amount = expenseMap[cat.id] ?? 0.0;
               final percentage = expenses > 0 ? (amount / expenses) * 100 : 0.0;
-              return CategoriesWithSpending(
-                cat,
-                amount,
+              return FinancialBreakdownItem(
+                source: cat,
+                sourceType: StatisticsSourceType.category,
+                amount: amount,
                 percentage: percentage,
               );
             })
-            .where((element) => element.totalSpending > 0)
+            .where((element) => element.amount > 0)
             .toList();
 
-        // Sort based on current sorting type
+        // Calculate savings for the selected month
+        double totalSavings = 0;
+        final List<FinancialBreakdownItem> savingsBreakdown = [];
+
+        for (var goal in allSavingGoals) {
+          double goalMonthlySaving = 0;
+          // Calculate how much was saved for this goal in the selected month
+          goal.contributionDates.forEach((dayIndex, date) {
+            if (date.year == event.selectedMonth.year &&
+                date.month == event.selectedMonth.month) {
+              goalMonthlySaving += goal.getAmountForDay(dayIndex);
+            }
+          });
+
+          if (goalMonthlySaving > 0) {
+            totalSavings += goalMonthlySaving;
+
+            savingsBreakdown.add(
+              FinancialBreakdownItem(
+                source: goal,
+                sourceType: StatisticsSourceType.savings,
+                amount: goalMonthlySaving,
+                percentage: 0.0,
+              ),
+            );
+          }
+        }
+
+        // Calculate percentages for savings breakdown
+        for (var i = 0; i < savingsBreakdown.length; i++) {
+          final item = savingsBreakdown[i];
+          final percentage = totalSavings > 0
+              ? (item.amount / totalSavings) * 100
+              : 0.0;
+          savingsBreakdown[i] = item.copyWith(percentage: percentage);
+        }
+
+        // Sort breakdowns based on current sorting type
         _applySorting(incomeBreakdown, state.model.sortingType);
         _applySorting(expenseBreakdown, state.model.sortingType);
+        _applySorting(savingsBreakdown, state.model.sortingType);
 
         final updatedModel = state.model.copyWith(
           totalIncome: income,
           totalExpenses: expenses,
-          totalSavings: 0.0,
+          totalSavings: totalSavings,
           incomeBreakdown: incomeBreakdown,
           expenseBreakdown: expenseBreakdown,
+          savingsBreakdown: savingsBreakdown,
           dailyIncomeTrend: dailyIncomeTrend,
           dailyExpenseTrend: dailyExpenseTrend,
           selectedMonth: event.selectedMonth,
@@ -131,20 +183,25 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     });
 
     on<StatisticsEventSortChanged>((event, emit) {
-      final incomeBreakdown = List<CategoriesWithSpending>.from(
+      final incomeBreakdown = List<FinancialBreakdownItem>.from(
         state.model.incomeBreakdown,
       );
-      final expenseBreakdown = List<CategoriesWithSpending>.from(
+      final expenseBreakdown = List<FinancialBreakdownItem>.from(
         state.model.expenseBreakdown,
+      );
+      final savingsBreakdown = List<FinancialBreakdownItem>.from(
+        state.model.savingsBreakdown,
       );
 
       _applySorting(incomeBreakdown, event.sortingType);
       _applySorting(expenseBreakdown, event.sortingType);
+      _applySorting(savingsBreakdown, event.sortingType);
 
       final updatedModel = state.model.copyWith(
         sortingType: event.sortingType,
         incomeBreakdown: incomeBreakdown,
         expenseBreakdown: expenseBreakdown,
+        savingsBreakdown: savingsBreakdown,
       );
 
       emit(StatisticsStateSuccess(updatedModel));
@@ -157,20 +214,19 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   }
 
   void _applySorting(
-    List<CategoriesWithSpending> breakdown,
+    List<FinancialBreakdownItem> breakdown,
     StatisticsSorting type,
   ) {
     switch (type) {
       case StatisticsSorting.highestAmount:
-        breakdown.sort((a, b) => b.totalSpending.compareTo(a.totalSpending));
+        breakdown.sort((a, b) => b.amount.compareTo(a.amount));
         break;
       case StatisticsSorting.lowestAmount:
-        breakdown.sort((a, b) => a.totalSpending.compareTo(b.totalSpending));
+        breakdown.sort((a, b) => a.amount.compareTo(b.amount));
         break;
       case StatisticsSorting.alphabetical:
         breakdown.sort(
-          (a, b) =>
-              a.category.categoryTitle.compareTo(b.category.categoryTitle),
+          (a, b) => a.source.financialTitle.compareTo(b.source.financialTitle),
         );
         break;
     }

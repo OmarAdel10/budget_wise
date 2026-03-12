@@ -66,4 +66,28 @@ class StatisticsConstants {
     Color(0xFF7B1FA2), // Purple 700
     Color(0xFFE64A19), // Deep Orange 700
   ];
+
+  static const List<Color> savingsColors = [
+    Color(0xFF3F51B5), // Indigo 500
+    Color(0xFF5C6BC0), // Indigo 400
+    Color(0xFF7986CB), // Indigo 300
+    Color(0xFF2196F3), // Blue 500
+    Color(0xFF42A5F5), // Blue 400
+    Color(0xFF64B5F6), // Blue 300
+    Color(0xFF03A9F4), // Light Blue 500
+    Color(0xFF29B6F6), // Light Blue 400
+    Color(0xFF4FC3F7), // Light Blue 300
+    Color(0xFF00BCD4), // Cyan 500
+    Color(0xFF26C6DA), // Cyan 400
+    Color(0xFF4DD0E1), // Cyan 300
+    Color(0xFF673AB7), // Deep Purple 500
+    Color(0xFF7E57C2), // Deep Purple 400
+    Color(0xFF9575CD), // Deep Purple 300
+    Color(0xFF9C27B0), // Purple 500
+    Color(0xFFAB47BC), // Purple 400
+    Color(0xFFBA68C8), // Purple 300
+    Color(0xFF009688), // Teal 500
+    Color(0xFF26A69A), // Teal 400
+    Color(0xFF4DB6AC), // Teal 300
+  ];
 }

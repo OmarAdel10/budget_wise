@@ -47,22 +47,22 @@ class TransactionInfoCard extends StatelessWidget {
           BlocBuilder<HomeBloc, HomeState>(
             buildWhen: (previous, current) {
               final prevCat = previous.model.categories
-                  .where((c) => c.category.id == transaction.categoryId)
+                  .where((c) => c.source.financialId == transaction.categoryId)
                   .firstOrNull;
               final currCat = current.model.categories
-                  .where((c) => c.category.id == transaction.categoryId)
+                  .where((c) => c.source.financialId == transaction.categoryId)
                   .firstOrNull;
               return prevCat != currCat;
             },
             builder: (context, state) {
               final category = state.model.categories
-                  .where((c) => c.category.id == transaction.categoryId)
+                  .where((c) => c.source.financialId == transaction.categoryId)
                   .firstOrNull;
 
               return TransactionDetailItem(
                 icon: PhosphorIcons.listBullets(),
                 label: l10n.category,
-                value: category?.category.categoryTitle ?? l10n.noCategory,
+                value: category?.source.financialTitle ?? l10n.noCategory,
               );
             },
           ),

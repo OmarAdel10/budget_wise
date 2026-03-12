@@ -66,6 +66,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spendingByCategory => 'Spending by Category';
 
   @override
+  String get earningsByCategory => 'Earnings by Category';
+
+  @override
+  String get savingsByCategory => 'Savings by Goal';
+
+  @override
+  String get savingsBreakdown => 'Savings Breakdown';
+
+  @override
   String get profile => 'Profile';
 
   @override
@@ -373,9 +382,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yourExpensesExceedYourIncome => 'Your expenses exceed your income';
-
-  @override
-  String get earningsByCategory => 'Earnings by Category';
 
   @override
   String get noEarningsThisMonth => 'No earnings for this month';

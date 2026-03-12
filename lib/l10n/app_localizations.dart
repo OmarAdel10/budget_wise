@@ -212,6 +212,24 @@ abstract class AppLocalizations {
   /// **'Spending by Category'**
   String get spendingByCategory;
 
+  /// No description provided for @earningsByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Earnings by Category'**
+  String get earningsByCategory;
+
+  /// No description provided for @savingsByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings by Goal'**
+  String get savingsByCategory;
+
+  /// No description provided for @savingsBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings Breakdown'**
+  String get savingsBreakdown;
+
   /// No description provided for @profile.
   ///
   /// In en, this message translates to:
@@ -817,12 +835,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your expenses exceed your income'**
   String get yourExpensesExceedYourIncome;
-
-  /// No description provided for @earningsByCategory.
-  ///
-  /// In en, this message translates to:
-  /// **'Earnings by Category'**
-  String get earningsByCategory;
 
   /// No description provided for @noEarningsThisMonth.
   ///

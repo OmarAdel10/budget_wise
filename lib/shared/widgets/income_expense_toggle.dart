@@ -41,20 +41,28 @@ class IncomeExpenseToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    if (selectionNotifier != null) {
-      return ValueListenableBuilder<ToggleOption>(
-        valueListenable: selectionNotifier!,
-        builder: (context, selection, child) {
-          return _buildToggleBody(context, l10n, selection);
-        },
+    final Widget content = selectionNotifier != null
+        ? ValueListenableBuilder<ToggleOption>(
+            valueListenable: selectionNotifier!,
+            builder: (context, selection, child) {
+              return _buildToggleBody(context, l10n, selection);
+            },
+          )
+        : _buildToggleBody(
+            context,
+            l10n,
+            currentSelection ?? ToggleOption.expense,
+          );
+
+    if (isScaled) {
+      return Transform.scale(
+        scale: scale,
+        scaleX: scaleX,
+        scaleY: scaleY,
+        child: content,
       );
     }
-
-    return _buildToggleBody(
-      context,
-      l10n,
-      currentSelection ?? ToggleOption.expense,
-    );
+    return content;
   }
 
   Widget _buildToggleBody(
@@ -62,7 +70,7 @@ class IncomeExpenseToggle extends StatelessWidget {
     AppLocalizations l10n,
     ToggleOption selection,
   ) {
-    final content = Container(
+    return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -90,20 +98,18 @@ class IncomeExpenseToggle extends StatelessWidget {
                 expenseTextStyle ??
                 AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
           ),
+          _buildToggleItem(
+            context,
+            text: l10n.navSavings,
+            option: ToggleOption.savings,
+            currentSelection: selection,
+            defaultColor: AppColors.savings,
+            defaultTextStyle:
+                AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
-
-    if (isScaled) {
-      return Transform.scale(
-        scale: scale,
-        scaleX: scaleX,
-        scaleY: scaleY,
-        child: content,
-      );
-    } else {
-      return content;
-    }
   }
 
   Widget _buildToggleItem(

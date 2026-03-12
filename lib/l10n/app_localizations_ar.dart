@@ -66,6 +66,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get spendingByCategory => 'الإنفاق حسب التصنيف';
 
   @override
+  String get earningsByCategory => 'الأرباح حسب التصنيف';
+
+  @override
+  String get savingsByCategory => 'الادخار حسب الهدف';
+
+  @override
+  String get savingsBreakdown => 'تفاصيل المدخرات';
+
+  @override
   String get profile => 'الملف الشخصي';
 
   @override
@@ -372,9 +381,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get yourExpensesExceedYourIncome => 'مصروفاتك تتجاوز دخلك';
-
-  @override
-  String get earningsByCategory => 'الأرباح حسب التصنيف';
 
   @override
   String get noEarningsThisMonth => 'لا توجد أرباح لهذا الشهر';

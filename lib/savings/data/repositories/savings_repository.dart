@@ -48,6 +48,7 @@ class SavingsRepository {
     String goalId,
     double newAmount,
     List<int> completedDays,
+    Map<int, DateTime> contributionDates,
     Map<int, double> customAmounts,
     DateTime updatedAt,
   ) async {
@@ -56,6 +57,9 @@ class SavingsRepository {
     await collection.doc(goalId).update({
       'currentAmount': newAmount,
       'completedDays': completedDays,
+      'contributionDates': contributionDates.map(
+        (k, v) => MapEntry(k.toString(), v.toIso8601String()),
+      ),
       'customAmounts': customAmounts.map((k, v) => MapEntry(k.toString(), v)),
       'updatedAt': updatedAt.toIso8601String(),
     });

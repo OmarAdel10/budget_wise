@@ -1,14 +1,17 @@
 import 'dart:convert';
+import 'package:budget_wise/shared/data/models/statistics_representable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 enum SavingsMethod {
   defaultPattern, // $1, $2, $3...
-  constant,       // $X every day
-  doublePattern,  // $2, $4, $6...
-  custom          // Manual entries
+  constant, // $X every day
+  doublePattern, // $2, $4, $6...
+  custom, // Manual entries
 }
 
-class SavingsModel {
+class SavingsModel implements FinancialRepresentable {
   final String id;
   final String userId;
   final String name;
@@ -25,6 +28,7 @@ class SavingsModel {
   final double? constantAmount; // For Constant Method
   final Map<int, double> customAmounts; // For Custom Method (Day -> Amount)
   final int targetDays;
+  final Map<int, DateTime> contributionDates; // Day index -> Date completed
 
   SavingsModel({
     this.id = '',
@@ -39,11 +43,24 @@ class SavingsModel {
     required this.updatedAt,
     this.isSynced = false,
     this.completedDays = const [],
+    this.contributionDates = const {},
     required this.method,
     this.constantAmount,
     this.customAmounts = const {},
     required this.targetDays,
   });
+
+  @override
+  String get financialId => id;
+
+  @override
+  String get financialTitle => name;
+
+  @override
+  IconData get financialIcon => PhosphorIconsBold.tipJar;
+
+  @override
+  Color? get financialColor => Color(colorValue);
 
   bool get isCompleted => currentAmount >= targetAmount;
 
@@ -74,16 +91,18 @@ class SavingsModel {
   List<int>? _uncompletedDaysCache;
   List<int> get uncompletedDaysList {
     if (_uncompletedDaysCache != null) return _uncompletedDaysCache!;
-    _uncompletedDaysCache =
-        allDaysList.where((d) => !completedDays.contains(d)).toList();
+    _uncompletedDaysCache = allDaysList
+        .where((d) => !completedDays.contains(d))
+        .toList();
     return _uncompletedDaysCache!;
   }
 
   List<int>? _completedDaysCache;
   List<int> get completedDaysList {
     if (_completedDaysCache != null) return _completedDaysCache!;
-    _completedDaysCache =
-        allDaysList.where((d) => completedDays.contains(d)).toList();
+    _completedDaysCache = allDaysList
+        .where((d) => completedDays.contains(d))
+        .toList();
     return _completedDaysCache!;
   }
 
@@ -100,6 +119,7 @@ class SavingsModel {
     DateTime? updatedAt,
     bool? isSynced,
     List<int>? completedDays,
+    Map<int, DateTime>? contributionDates,
     SavingsMethod? method,
     double? constantAmount,
     Map<int, double>? customAmounts,
@@ -118,6 +138,7 @@ class SavingsModel {
       updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
       completedDays: completedDays ?? this.completedDays,
+      contributionDates: contributionDates ?? this.contributionDates,
       method: method ?? this.method,
       constantAmount: constantAmount ?? this.constantAmount,
       customAmounts: customAmounts ?? this.customAmounts,
@@ -139,6 +160,9 @@ class SavingsModel {
       'updatedAt': updatedAt.toIso8601String(),
       'isSynced': isSynced,
       'completedDays': completedDays,
+      'contributionDates': contributionDates.map(
+        (k, v) => MapEntry(k.toString(), v.toIso8601String()),
+      ),
       'method': method.name,
       'constantAmount': constantAmount,
       'customAmounts': customAmounts.map((k, v) => MapEntry(k.toString(), v)),
@@ -166,12 +190,21 @@ class SavingsModel {
           : DateTime.parse(map['updatedAt'] as String),
       isSynced: map['isSynced'] as bool,
       completedDays: List<int>.from(map['completedDays'] ?? []),
+      contributionDates:
+          (map['contributionDates'] as Map<String, dynamic>?)?.map(
+            (k, v) => MapEntry(
+              int.parse(k),
+              v is Timestamp ? v.toDate() : DateTime.parse(v as String),
+            ),
+          ) ??
+          {},
       method: SavingsMethod.values.firstWhere(
         (e) => e.name == map['method'],
         orElse: () => SavingsMethod.defaultPattern,
       ),
       constantAmount: (map['constantAmount'] as num?)?.toDouble(),
-      customAmounts: (map['customAmounts'] as Map<String, dynamic>?)?.map(
+      customAmounts:
+          (map['customAmounts'] as Map<String, dynamic>?)?.map(
             (k, v) => MapEntry(int.parse(k), (v as num).toDouble()),
           ) ??
           {},

@@ -1,11 +1,12 @@
+import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/category/view/screens/add_category_screen.dart';
 import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
-import 'package:budget_wise/home/data/models/home_model.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -49,11 +50,13 @@ class _HomeCategoriesSectionState extends State<HomeCategoriesSection> {
           buildWhen: (previous, current) =>
               previous.model.categories != current.model.categories,
           builder: (context, state) {
-            final categoryData = state.model.categories.where((cat) {
+            final categoryData = state.model.categories.where((item) {
+              if (item.source is! CategoryModel) return false;
+              final cat = item.source as CategoryModel;
               if (currentSelectedOption == ToggleOption.income) {
-                return cat.category.type == TransactionType.income;
+                return cat.type == TransactionType.income;
               } else {
-                return cat.category.type == TransactionType.expense;
+                return cat.type == TransactionType.expense;
               }
             }).toList();
 
@@ -117,7 +120,7 @@ class _HomeCategoriesHeader extends StatelessWidget {
 class _HomeCategoriesList extends StatelessWidget {
   const _HomeCategoriesList({required this.categoryData});
 
-  final List<CategoriesWithSpending> categoryData;
+  final List<FinancialBreakdownItem> categoryData;
 
   @override
   Widget build(BuildContext context) {
@@ -125,11 +128,12 @@ class _HomeCategoriesList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       sliver: SliverReorderableList(
         itemBuilder: (context, index) {
-          final categoryitem = categoryData[index];
-          final hasBudget = categoryitem.category.hasBudgetAmount;
-          final budget = categoryitem.category.budgetAmount ?? 0;
-          final spending = categoryitem.totalSpending;
-          final isIncome = categoryitem.category.type == TransactionType.income;
+          final item = categoryData[index];
+          final category = item.source as CategoryModel;
+          final hasBudget = category.hasBudgetAmount;
+          final budget = category.budgetAmount ?? 0;
+          final spending = item.amount;
+          final isIncome = category.type == TransactionType.income;
 
           double? progress;
           if (hasBudget && budget > 0) {
@@ -137,20 +141,20 @@ class _HomeCategoriesList extends StatelessWidget {
           }
 
           return CategoryListItem(
-            key: ValueKey(categoryitem.category.id),
-            name: categoryitem.category.categoryTitle,
+            key: ValueKey(category.id),
+            name: category.categoryTitle,
             amount: spending.toStringAsFixed(0),
             totalBudget: budget.toStringAsFixed(0),
             hasBudgetAmount: hasBudget,
             isIncome: isIncome,
-            icon: categoryitem.category.categoryIcon,
+            icon: category.categoryIcon,
             progress: progress,
             index: index,
-            onDelete: () => _handleDelete(context, categoryitem),
+            onDelete: () => _handleDelete(context, item),
             onTap: () => Navigator.of(context).pushNamed(
               CategoryDetailScreen.routeName,
               arguments: {
-                'categoryId': categoryitem.category.id,
+                'categoryId': category.id,
                 'progress': progress,
               },
             ),
@@ -168,10 +172,11 @@ class _HomeCategoriesList extends StatelessWidget {
 
   void _handleDelete(
     BuildContext context,
-    CategoriesWithSpending categoryitem,
+    FinancialBreakdownItem item,
   ) {
     final l10n = AppLocalizations.of(context)!;
     final catBloc = context.read<CategoryBloc>();
+    final category = item.source as CategoryModel;
 
     AppToast.show(
       context,
@@ -179,7 +184,7 @@ class _HomeCategoriesList extends StatelessWidget {
       title: l10n.categoryDeleted,
       onCompleted: () {
         catBloc.add(
-          CategoryEventDeleteCategory(categoryId: categoryitem.category.id),
+          CategoryEventDeleteCategory(categoryId: category.id),
         );
       },
     );

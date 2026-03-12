@@ -1,17 +1,20 @@
+import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/savings/data/models/savings_model.dart';
+import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:budget_wise/shared/widgets/generic_icon_container.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:budget_wise/home/data/models/home_model.dart';
 import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 
 class CategoryListItem extends StatelessWidget {
-  final CategoriesWithSpending item;
+  final FinancialBreakdownItem item;
   final ToggleOption currentSelection;
 
   const CategoryListItem({
@@ -22,18 +25,40 @@ class CategoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final category = item.category;
-    final isIncome = currentSelection == ToggleOption.income;
-    final color = isIncome ? AppColors.income : AppColors.expense;
+    final source = item.source;
+    final Color color;
+    final String symbol;
+
+    switch (currentSelection) {
+      case ToggleOption.income:
+        color = AppColors.income;
+        symbol = "+";
+        break;
+      case ToggleOption.expense:
+        color = AppColors.expense;
+        symbol = "-";
+        break;
+      case ToggleOption.savings:
+        color = AppColors.savings;
+        symbol = "+";
+        break;
+    }
+
     final percentage = item.percentage;
-    final symbol = isIncome ? "+" : "-";
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pushNamed(
-          CategoryDetailScreen.routeName,
-          arguments: {'categoryId': category.id},
-        );
+        if (source is SavingsModel) {
+          Navigator.of(context).pushNamed(
+            SavingGoalDetailScreen.routeName,
+            arguments: {'savingGoal': source},
+          );
+        } else if (source is CategoryModel) {
+          Navigator.of(context).pushNamed(
+            CategoryDetailScreen.routeName,
+            arguments: {'categoryId': source.id},
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -61,14 +86,14 @@ class CategoryListItem extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.sm),
             GenericIconContainer(
-              icon: category.categoryIcon,
-              color: isIncome ? AppColors.income : AppColors.expense,
+              icon: source.financialIcon,
+              color: source.financialColor ?? color,
               size: 40,
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
-                category.categoryTitle,
+                source.financialTitle,
                 style: AppTextStyles.bodyLarge.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -76,7 +101,7 @@ class CategoryListItem extends StatelessWidget {
               ),
             ),
             Text(
-              '$symbol${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol}${item.totalSpending.toInt()}',
+              '$symbol${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol}${item.amount.toInt()}',
               style: AppTextStyles.bodyLarge.copyWith(color: color),
             ),
             const SizedBox(width: AppSpacing.md),

@@ -1,3 +1,4 @@
+import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/category/view/screens/add_category_screen.dart';
 import 'package:budget_wise/category/view/widgets/category_app_bar_title.dart';
 import 'package:budget_wise/category/view/widgets/category_detail_header.dart';
@@ -60,7 +61,7 @@ class CategoryDetailScreen extends StatelessWidget {
 
     final homeBloc = context.read<HomeBloc>();
     final categoryIndex = homeBloc.state.model.categories.indexWhere(
-      (cat) => cat.category.id == categoryId,
+      (cat) => cat.source.financialId == categoryId,
     );
 
     if (categoryIndex == -1) {
@@ -111,12 +112,12 @@ class CategoryDetailScreen extends StatelessWidget {
                   .state
                   .model
                   .categories
-                  .firstWhere((cat) => cat.category.id == categoryId)
-                  .category;
+                  .firstWhere((cat) => cat.source.financialId == categoryId)
+                  .source;
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) =>
-                      AddCategoryScreen(categoryToEdit: currentCategory),
+                      AddCategoryScreen(categoryToEdit: currentCategory as CategoryModel),
                 ),
               );
             },

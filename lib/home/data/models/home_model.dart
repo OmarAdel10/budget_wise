@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:equatable/equatable.dart';
 
-import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 
 class HomeModel extends Equatable {
@@ -11,7 +11,7 @@ class HomeModel extends Equatable {
   final double totalExpenses;
   final DateTime currentMonth;
   final String? filterAccountId;
-  final List<CategoriesWithSpending> categories;
+  final List<FinancialBreakdownItem> categories;
   final List<TransactionModel> transactions;
 
   const HomeModel({
@@ -38,7 +38,7 @@ class HomeModel extends Equatable {
     double? totalExpenses,
     DateTime? currentMonth,
     String? filterAccountId,
-    List<CategoriesWithSpending>? categories,
+    List<FinancialBreakdownItem>? categories,
     List<TransactionModel>? transactions,
     bool clearFilteredAccountId = false,
   }) {
@@ -73,9 +73,9 @@ class HomeModel extends Equatable {
         map['currentMonth'] as int,
       ),
       filterAccountId: map['filterAccountId'] as String?,
-      categories: List<CategoriesWithSpending>.from(
-        (map['categories'] as List<dynamic>).map<CategoriesWithSpending>(
-          (x) => CategoriesWithSpending.fromMap(x as Map<String, dynamic>),
+      categories: List<FinancialBreakdownItem>.from(
+        (map['categories'] as List<dynamic>).map<FinancialBreakdownItem>(
+          (x) => FinancialBreakdownItem.fromMap(x as Map<String, dynamic>),
         ),
       ),
       transactions: List<TransactionModel>.from(
@@ -90,54 +90,4 @@ class HomeModel extends Equatable {
 
   factory HomeModel.fromJson(String source) =>
       HomeModel.fromMap(json.decode(source) as Map<String, dynamic>);
-}
-
-class CategoriesWithSpending extends Equatable {
-  final CategoryModel category;
-  final double totalSpending;
-  final double percentage;
-
-  const CategoriesWithSpending(
-    this.category,
-    this.totalSpending, {
-    this.percentage = 0.0,
-  });
-
-  @override
-  List<Object?> get props => [category, totalSpending, percentage];
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'category': category.toMap(),
-      'totalSpending': totalSpending,
-      'percentage': percentage,
-    };
-  }
-
-  factory CategoriesWithSpending.fromMap(Map<String, dynamic> map) {
-    return CategoriesWithSpending(
-      CategoryModel.fromMap(map['category'] as Map<String, dynamic>),
-      (map['totalSpending'] as num).toDouble(),
-      percentage: (map['percentage'] as num? ?? 0.0).toDouble(),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory CategoriesWithSpending.fromJson(String source) =>
-      CategoriesWithSpending.fromMap(
-        json.decode(source) as Map<String, dynamic>,
-      );
-
-  CategoriesWithSpending copyWith({
-    CategoryModel? category,
-    double? totalSpending,
-    double? percentage,
-  }) {
-    return CategoriesWithSpending(
-      category ?? this.category,
-      totalSpending ?? this.totalSpending,
-      percentage: percentage ?? this.percentage,
-    );
-  }
 }

@@ -128,6 +128,7 @@ void main() async {
             create: (context) => StatisticsBloc(
               transactionBloc: context.read<TransactionBloc>(),
               categoryBloc: context.read<CategoryBloc>(),
+              savingsBloc: context.read<SavingsBloc>(),
             )..add(StatisticsEventLoadRequested(DateTime.now())),
           ),
         ],

@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:budget_wise/shared/data/models/statistics_representable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 
-class CategoryModel {
+class CategoryModel implements FinancialRepresentable {
   final String id;
   final String userId;
   final String categoryTitle;
@@ -32,6 +33,18 @@ class CategoryModel {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  @override
+  String get financialId => id;
+
+  @override
+  String get financialTitle => categoryTitle;
+
+  @override
+  IconData get financialIcon => categoryIcon;
+
+  @override
+  Color? get financialColor => null;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

@@ -1,4 +1,5 @@
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:budget_wise/shared/widgets/income_expense_toggle.dart';
 import 'package:flutter/material.dart';
@@ -6,35 +7,47 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:budget_wise/home/data/models/home_model.dart';
 import 'package:budget_wise/statistics/data/constants/statistics_constants.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/text_styles.dart';
 
 class CategoryChartSection extends StatelessWidget {
-  final List<CategoriesWithSpending> incomeBreakdown;
-  final List<CategoriesWithSpending> expenseBreakdown;
+  final List<FinancialBreakdownItem> incomeBreakdown;
+  final List<FinancialBreakdownItem> expenseBreakdown;
+  final List<FinancialBreakdownItem> savingsBreakdown;
   final ToggleOption toggleType;
   final Function(ToggleOption) onToggle;
   final double totalIncome;
   final double totalExpenses;
+  final double totalSavings;
 
   const CategoryChartSection({
     super.key,
     required this.incomeBreakdown,
     required this.expenseBreakdown,
+    required this.savingsBreakdown,
     required this.toggleType,
     required this.onToggle,
     required this.totalIncome,
     required this.totalExpenses,
+    required this.totalSavings,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final breakdown = toggleType == ToggleOption.income
-        ? incomeBreakdown
-        : expenseBreakdown;
+    final List<FinancialBreakdownItem> breakdown;
+    switch (toggleType) {
+      case ToggleOption.income:
+        breakdown = incomeBreakdown;
+        break;
+      case ToggleOption.expense:
+        breakdown = expenseBreakdown;
+        break;
+      case ToggleOption.savings:
+        breakdown = savingsBreakdown;
+        break;
+    }
 
     return Column(
       children: [
@@ -67,13 +80,13 @@ class CategoryChartSection extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  item.category.categoryIcon,
+                                  item.source.financialIcon,
                                   size: 14,
                                   color: Colors.white,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  item.category.categoryTitle,
+                                  item.source.financialTitle,
                                   style: AppTextStyles.bodySmall.copyWith(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
@@ -82,7 +95,7 @@ class CategoryChartSection extends StatelessWidget {
                               ],
                             ),
                             Text(
-                              '${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol} ${item.totalSpending.toString()}',
+                              '${NumberFormat.currency(name: context.read<SettingsBloc>().state.model.defaultCurrency).currencySymbol} ${item.amount.toString()}',
                               style: AppTextStyles.bodySmall.copyWith(
                                 fontSize: 10,
                               ),
@@ -99,15 +112,30 @@ class CategoryChartSection extends StatelessWidget {
                     borderWidth: 1,
                   ),
                   series: <CircularSeries>[
-                    PieSeries<CategoriesWithSpending, String>(
+                    PieSeries<FinancialBreakdownItem, String>(
                       radius: '55%',
                       dataSource: breakdown,
-                      xValueMapper: (data, _) => data.category.categoryTitle,
-                      yValueMapper: (data, _) => data.totalSpending,
+                      xValueMapper: (data, _) => data.source.financialTitle,
+                      yValueMapper: (data, _) => data.amount,
                       pointColorMapper: (data, index) {
-                        final colors = toggleType == ToggleOption.income
-                            ? StatisticsConstants.incomeColors
-                            : StatisticsConstants.expenseColors;
+                        //* if the model provides a colors (like Savings), use it!
+                        if (data.source.financialColor != null) {
+                          return data.source.financialColor;
+                        }
+
+                        //* Otherwise fallback to the constants color logic.
+                        final List<Color> colors;
+                        switch (toggleType) {
+                          case ToggleOption.income:
+                            colors = StatisticsConstants.incomeColors;
+                            break;
+                          case ToggleOption.expense:
+                            colors = StatisticsConstants.expenseColors;
+                            break;
+                          case ToggleOption.savings:
+                            colors = StatisticsConstants.savingsColors;
+                            break;
+                        }
                         return colors[index % colors.length];
                       },
                       dataLabelSettings: DataLabelSettings(
@@ -125,7 +153,7 @@ class CategoryChartSection extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                         builder: (data, point, series, index, pointIndex) {
-                          final item = data as CategoriesWithSpending;
+                          final item = data as FinancialBreakdownItem;
                           return SizedBox(
                             width: 80,
                             child: Column(
@@ -136,13 +164,13 @@ class CategoryChartSection extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
-                                      item.category.categoryIcon,
+                                      item.source.financialIcon,
                                       size: 14,
                                       color: Colors.white,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      item.category.categoryTitle,
+                                      item.source.financialTitle,
                                       style: AppTextStyles.bodySmall.copyWith(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,

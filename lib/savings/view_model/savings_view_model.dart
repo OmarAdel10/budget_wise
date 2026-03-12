@@ -167,6 +167,9 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
         final updatedList = state.savingsList.map((goal) {
           if (goal.id == event.goalId) {
             final List<int> updatedDays = List.from(goal.completedDays);
+            final Map<int, DateTime> updatedDates = Map.from(
+              goal.contributionDates,
+            );
             double newAmount = goal.currentAmount;
 
             double amountToToggle;
@@ -187,14 +190,17 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
 
             if (updatedDays.contains(event.day)) {
               updatedDays.remove(event.day);
+              updatedDates.remove(event.day);
               newAmount -= amountToToggle;
             } else {
               updatedDays.add(event.day);
+              updatedDates[event.day] = DateTime.now();
               newAmount += amountToToggle;
             }
 
             return goal.copyWith(
               completedDays: updatedDays,
+              contributionDates: updatedDates,
               currentAmount: newAmount,
               updatedAt: DateTime.now(),
               isSynced: false,
@@ -215,6 +221,7 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
                 updatedGoal.id,
                 updatedGoal.currentAmount,
                 updatedGoal.completedDays,
+                updatedGoal.contributionDates,
                 updatedGoal.customAmounts,
                 updatedGoal.updatedAt,
               )
@@ -247,6 +254,9 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
             final Map<int, double> updatedCustomAmounts =
                 Map.from(goal.customAmounts);
             final List<int> updatedDays = List.from(goal.completedDays);
+            final Map<int, DateTime> updatedDates = Map.from(
+              goal.contributionDates,
+            );
             double newAmount = goal.currentAmount;
 
             // Remove old amount if it existed
@@ -260,13 +270,16 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
             // If updating a custom amount with a non-zero value, it's considered completed
             if (event.amount > 0 && !updatedDays.contains(event.day)) {
               updatedDays.add(event.day);
+              updatedDates[event.day] = DateTime.now();
             } else if (event.amount <= 0) {
               updatedDays.remove(event.day);
+              updatedDates.remove(event.day);
             }
 
             return goal.copyWith(
               customAmounts: updatedCustomAmounts,
               completedDays: updatedDays,
+              contributionDates: updatedDates,
               currentAmount: newAmount,
               updatedAt: DateTime.now(),
               isSynced: false,
@@ -287,6 +300,7 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
                 updatedGoal.id,
                 updatedGoal.currentAmount,
                 updatedGoal.completedDays,
+                updatedGoal.contributionDates,
                 updatedGoal.customAmounts,
                 updatedGoal.updatedAt,
               )

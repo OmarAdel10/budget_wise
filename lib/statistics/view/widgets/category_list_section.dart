@@ -1,7 +1,7 @@
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:budget_wise/home/data/models/home_model.dart';
 import 'package:budget_wise/statistics/data/models/statistics_model.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -33,7 +33,9 @@ class CategoryListHeader extends StatelessWidget {
               child: Text(
                 toggleType == ToggleOption.income
                     ? l10n.earningsByCategory
-                    : l10n.spendingByCategory,
+                    : toggleType == ToggleOption.expense
+                    ? l10n.spendingByCategory
+                    : l10n.savingsByCategory,
                 style: AppTextStyles.heading3,
               ),
             ),
@@ -97,7 +99,7 @@ class CategoryListHeader extends StatelessWidget {
 }
 
 class CategoryListSliver extends StatelessWidget {
-  final List<CategoriesWithSpending> breakdown;
+  final List<FinancialBreakdownItem> breakdown;
   final ToggleOption toggleType;
 
   const CategoryListSliver({
