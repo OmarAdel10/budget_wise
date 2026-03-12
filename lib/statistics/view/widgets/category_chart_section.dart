@@ -14,22 +14,26 @@ class CategoryChartSection extends StatelessWidget {
   final List<FinancialBreakdownItem> incomeBreakdown;
   final List<FinancialBreakdownItem> expenseBreakdown;
   final List<FinancialBreakdownItem> savingsBreakdown;
+  final List<FinancialBreakdownItem> subscriptionBreakdown;
   final ToggleOption toggleType;
   final Function(ToggleOption) onToggle;
   final double totalIncome;
   final double totalExpenses;
   final double totalSavings;
+  final double totalSubscriptions;
 
   const CategoryChartSection({
     super.key,
     required this.incomeBreakdown,
     required this.expenseBreakdown,
     required this.savingsBreakdown,
+    required this.subscriptionBreakdown,
     required this.toggleType,
     required this.onToggle,
     required this.totalIncome,
     required this.totalExpenses,
     required this.totalSavings,
+    required this.totalSubscriptions,
   });
 
   @override
@@ -45,6 +49,9 @@ class CategoryChartSection extends StatelessWidget {
         break;
       case ToggleOption.savings:
         breakdown = savingsBreakdown;
+        break;
+      case ToggleOption.subscription:
+        breakdown = subscriptionBreakdown;
         break;
     }
 
@@ -127,6 +134,9 @@ class CategoryChartSection extends StatelessWidget {
                             break;
                           case ToggleOption.savings:
                             colors = StatisticsConstants.savingsColors;
+                            break;
+                          case ToggleOption.subscription:
+                            colors = StatisticsConstants.subscriptionColors;
                             break;
                         }
                         return colors[index % colors.length];

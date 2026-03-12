@@ -15,7 +15,7 @@ class IncomeExpenseToggle extends StatelessWidget {
   final Color? unselectedColor;
   final Color? selectedTextColor;
   final Color? unselectedTextColor;
-  final bool isSavingsEnabled;
+  final bool isForHome;
 
   const IncomeExpenseToggle({
     super.key,
@@ -28,7 +28,7 @@ class IncomeExpenseToggle extends StatelessWidget {
     this.unselectedColor = Colors.transparent,
     this.selectedTextColor = AppColors.textPrimary,
     this.unselectedTextColor = AppColors.textSecondary,
-    this.isSavingsEnabled = true,
+    this.isForHome = true,
   });
 
   @override
@@ -45,8 +45,17 @@ class IncomeExpenseToggle extends StatelessWidget {
         : _buildToggleBody(
             context,
             l10n,
-            currentSelection ?? ToggleOption.expense,
+            currentSelection ?? ToggleOption.income,
           );
+  }
+
+  Widget _buildSeparator() {
+    return Text(
+      '|',
+      style: AppTextStyles.bodyLarge.copyWith(
+        color: AppColors.textSecondary.withValues(alpha: 0.5),
+      ),
+    );
   }
 
   Widget _buildToggleBody(
@@ -69,44 +78,32 @@ class IncomeExpenseToggle extends StatelessWidget {
               text: l10n.income,
               option: ToggleOption.income,
               currentSelection: selection,
-              defaultColor: AppColors.income,
-              defaultTextStyle:
-                  incomeTextStyle ??
-                  AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              enableExpanded: !isForHome,
             ),
-            Text('|', style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.textSecondary
-            ),),
+            _buildSeparator(),
             _buildToggleItem(
               context,
               text: l10n.expenses,
               option: ToggleOption.expense,
               currentSelection: selection,
-              defaultColor: AppColors.expense,
-              defaultTextStyle:
-                  expenseTextStyle ??
-                  AppTextStyles.bodySmall.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              enableExpanded: !isForHome,
             ),
-            if (isSavingsEnabled) ...[
-              Text(
-                '|',
-                style: AppTextStyles.bodyLarge.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
+            if (!isForHome) ...[
+              _buildSeparator(),
               _buildToggleItem(
                 context,
                 text: l10n.navSavings,
                 option: ToggleOption.savings,
                 currentSelection: selection,
-                defaultColor: AppColors.savings,
-                defaultTextStyle: AppTextStyles.bodySmall.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                enableExpanded: true,
+              ),
+              _buildSeparator(),
+              _buildToggleItem(
+                context,
+                text: l10n.subscriptions,
+                option: ToggleOption.subscription,
+                currentSelection: selection,
+                enableExpanded: true,
               ),
             ],
           ],
@@ -117,11 +114,11 @@ class IncomeExpenseToggle extends StatelessWidget {
 
   Widget _buildToggleItem(
     BuildContext context, {
+    int flex = 1,
     required String text,
     required ToggleOption option,
     required ToggleOption currentSelection,
-    required Color defaultColor,
-    required TextStyle defaultTextStyle,
+    required bool enableExpanded,
   }) {
     final bool isSelected = currentSelection == option;
     final Color itemBackgroundColor = isSelected
@@ -131,7 +128,7 @@ class IncomeExpenseToggle extends StatelessWidget {
         ? selectedTextColor!
         : unselectedTextColor!;
 
-    return GestureDetector(
+    final content = GestureDetector(
       onTap: () {
         if (selectionNotifier != null) {
           selectionNotifier!.value = option;
@@ -140,7 +137,6 @@ class IncomeExpenseToggle extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
@@ -149,9 +145,21 @@ class IncomeExpenseToggle extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: defaultTextStyle.copyWith(color: itemTextColor),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: itemTextColor,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
         ),
       ),
     );
+
+    if (enableExpanded) {
+      return Expanded(flex: flex, child: content);
+    } else {
+      return content;
+    }
   }
 }

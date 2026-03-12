@@ -5,9 +5,10 @@ import 'package:equatable/equatable.dart';
 
 import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/savings/data/models/savings_model.dart';
+import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/shared/data/models/statistics_representable.dart';
 
-enum StatisticsSourceType { category, savings }
+enum StatisticsSourceType { category, savings, subscription }
 
 class FinancialBreakdownItem extends Equatable {
   final FinancialRepresentable source;
@@ -43,6 +44,7 @@ class FinancialBreakdownItem extends Equatable {
     final FinancialRepresentable source = switch (sourceType) {
       StatisticsSourceType.category => CategoryModel.fromMap(sourceData),
       StatisticsSourceType.savings => SavingsModel.fromMap(sourceData),
+      StatisticsSourceType.subscription => SubscriptionModel.fromMap(sourceData),
     };
     return FinancialBreakdownItem(
       source: source,

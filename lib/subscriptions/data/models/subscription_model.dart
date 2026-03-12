@@ -4,9 +4,10 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'package:budget_wise/shared/data/models/statistics_representable.dart';
 import 'package:budget_wise/subscriptions/data/models/billing_cycle.dart';
 
-class SubscriptionModel {
+class SubscriptionModel implements FinancialRepresentable {
   final String id;
   final String userId;
   final String name;
@@ -25,6 +26,18 @@ class SubscriptionModel {
   final bool isSynced;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  @override
+  String get financialId => id;
+
+  @override
+  String get financialTitle => name;
+
+  @override
+  IconData get financialIcon => icon;
+
+  @override
+  Color? get financialColor => null;
 
   SubscriptionModel({
     this.id = '',

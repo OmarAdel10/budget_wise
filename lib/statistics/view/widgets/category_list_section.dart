@@ -35,7 +35,9 @@ class CategoryListHeader extends StatelessWidget {
                     ? l10n.earningsByCategory
                     : toggleType == ToggleOption.expense
                     ? l10n.spendingByCategory
-                    : l10n.savingsByCategory,
+                    : toggleType == ToggleOption.savings
+                    ? l10n.savingsByCategory
+                    : l10n.totalSubscriptions,
                 style: AppTextStyles.heading3,
               ),
             ),

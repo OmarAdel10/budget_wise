@@ -1,1 +1,1 @@
-enum ToggleOption { income, expense, savings }
+enum ToggleOption { income, expense, savings, subscription }

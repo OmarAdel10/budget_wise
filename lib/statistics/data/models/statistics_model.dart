@@ -13,8 +13,11 @@ class StatisticsModel extends Equatable {
   final List<FinancialBreakdownItem> incomeBreakdown;
   final List<FinancialBreakdownItem> expenseBreakdown;
   final List<FinancialBreakdownItem> savingsBreakdown;
+  final List<FinancialBreakdownItem> subscriptionBreakdown;
   final List<double> dailyIncomeTrend;
   final List<double> dailyExpenseTrend;
+  final List<double> dailySavingsTrend;
+  final List<double> dailySubscriptionTrend;
   final StatisticsSorting sortingType;
   final DateTime selectedMonth;
   final ToggleOption toggleType;
@@ -27,28 +30,34 @@ class StatisticsModel extends Equatable {
     required this.incomeBreakdown,
     required this.expenseBreakdown,
     required this.savingsBreakdown,
+    required this.subscriptionBreakdown,
     required this.dailyIncomeTrend,
     required this.dailyExpenseTrend,
+    required this.dailySavingsTrend,
+    required this.dailySubscriptionTrend,
     required this.sortingType,
     required this.selectedMonth,
-    this.toggleType = ToggleOption.expense,
+    this.toggleType = ToggleOption.income,
   });
 
   @override
   List<Object?> get props => [
-    totalIncome,
-    totalExpenses,
-    totalSavings,
-    totalSubscriptions,
-    incomeBreakdown,
-    expenseBreakdown,
-    savingsBreakdown,
-    dailyIncomeTrend,
-    dailyExpenseTrend,
-    sortingType,
-    selectedMonth,
-    toggleType,
-  ];
+        totalIncome,
+        totalExpenses,
+        totalSavings,
+        totalSubscriptions,
+        incomeBreakdown,
+        expenseBreakdown,
+        savingsBreakdown,
+        subscriptionBreakdown,
+        dailyIncomeTrend,
+        dailyExpenseTrend,
+        dailySavingsTrend,
+        dailySubscriptionTrend,
+        sortingType,
+        selectedMonth,
+        toggleType,
+      ];
 
   StatisticsModel copyWith({
     double? totalIncome,
@@ -58,8 +67,11 @@ class StatisticsModel extends Equatable {
     List<FinancialBreakdownItem>? incomeBreakdown,
     List<FinancialBreakdownItem>? expenseBreakdown,
     List<FinancialBreakdownItem>? savingsBreakdown,
+    List<FinancialBreakdownItem>? subscriptionBreakdown,
     List<double>? dailyIncomeTrend,
     List<double>? dailyExpenseTrend,
+    List<double>? dailySavingsTrend,
+    List<double>? dailySubscriptionTrend,
     StatisticsSorting? sortingType,
     DateTime? selectedMonth,
     ToggleOption? toggleType,
@@ -72,8 +84,13 @@ class StatisticsModel extends Equatable {
       incomeBreakdown: incomeBreakdown ?? this.incomeBreakdown,
       expenseBreakdown: expenseBreakdown ?? this.expenseBreakdown,
       savingsBreakdown: savingsBreakdown ?? this.savingsBreakdown,
+      subscriptionBreakdown:
+          subscriptionBreakdown ?? this.subscriptionBreakdown,
       dailyIncomeTrend: dailyIncomeTrend ?? this.dailyIncomeTrend,
       dailyExpenseTrend: dailyExpenseTrend ?? this.dailyExpenseTrend,
+      dailySavingsTrend: dailySavingsTrend ?? this.dailySavingsTrend,
+      dailySubscriptionTrend:
+          dailySubscriptionTrend ?? this.dailySubscriptionTrend,
       sortingType: sortingType ?? this.sortingType,
       selectedMonth: selectedMonth ?? this.selectedMonth,
       toggleType: toggleType ?? this.toggleType,
@@ -89,8 +106,12 @@ class StatisticsModel extends Equatable {
       'incomeBreakdown': incomeBreakdown.map((x) => x.toMap()).toList(),
       'expenseBreakdown': expenseBreakdown.map((x) => x.toMap()).toList(),
       'savingsBreakdown': savingsBreakdown.map((x) => x.toMap()).toList(),
+      'subscriptionBreakdown':
+          subscriptionBreakdown.map((x) => x.toMap()).toList(),
       'dailyIncomeTrend': dailyIncomeTrend,
       'dailyExpenseTrend': dailyExpenseTrend,
+      'dailySavingsTrend': dailySavingsTrend,
+      'dailySubscriptionTrend': dailySubscriptionTrend,
       'sortingType': sortingType.index,
       'selectedMonth': selectedMonth.millisecondsSinceEpoch,
       'toggleType': toggleType.index,
@@ -121,17 +142,29 @@ class StatisticsModel extends Equatable {
             ) ??
             [],
       ),
+      subscriptionBreakdown: List<FinancialBreakdownItem>.from(
+        (map['subscriptionBreakdown'] as List<dynamic>?)?.map<
+              FinancialBreakdownItem
+            >(
+              (x) => FinancialBreakdownItem.fromMap(x as Map<String, dynamic>),
+            ) ??
+            [],
+      ),
       dailyIncomeTrend: List<double>.from(map['dailyIncomeTrend'] as List),
       dailyExpenseTrend: List<double>.from(map['dailyExpenseTrend'] as List),
+      dailySavingsTrend: List<double>.from(map['dailySavingsTrend'] as List),
+      dailySubscriptionTrend:
+          List<double>.from(map['dailySubscriptionTrend'] as List),
       sortingType: StatisticsSorting.values[map['sortingType'] as int],
       selectedMonth: DateTime.fromMillisecondsSinceEpoch(
         map['selectedMonth'] as int,
       ),
       toggleType:
           map['toggleType'] != null &&
-              (map['toggleType'] as num).toInt() < ToggleOption.values.length
-          ? ToggleOption.values[(map['toggleType'] as num).toInt()]
-          : ToggleOption.expense,
+                  (map['toggleType'] as num).toInt() <
+                      ToggleOption.values.length
+              ? ToggleOption.values[(map['toggleType'] as num).toInt()]
+              : ToggleOption.expense,
     );
   }
 

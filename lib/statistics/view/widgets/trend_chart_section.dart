@@ -11,12 +11,16 @@ import '../../../shared/constants/text_styles.dart';
 class TrendChartSection extends StatelessWidget {
   final List<double> dailyIncomeTrend;
   final List<double> dailyExpenseTrend;
+  final List<double> dailySavingsTrend;
+  final List<double> dailySubscriptionTrend;
   final ValueNotifier<bool> isTrendExpandedNotifier;
 
   const TrendChartSection({
     super.key,
     required this.dailyIncomeTrend,
     required this.dailyExpenseTrend,
+    required this.dailySavingsTrend,
+    required this.dailySubscriptionTrend,
     required this.isTrendExpandedNotifier,
   });
 
@@ -154,6 +158,42 @@ class TrendChartSection extends StatelessWidget {
                               color: Colors.white,
                               borderWidth: 2,
                               borderColor: AppColors.expense,
+                            ),
+                            enableTooltip: true,
+                          ),
+                          LineSeries<double, int>(
+                            name: l10n.navSavings,
+                            dataSource: dailySavingsTrend,
+                            xValueMapper: (value, index) => index + 1,
+                            yValueMapper: (value, _) => value,
+                            color: AppColors.savings,
+                            width: 2,
+                            markerSettings: const MarkerSettings(
+                              isVisible: false,
+                              shape: DataMarkerType.circle,
+                              width: 6,
+                              height: 6,
+                              color: Colors.white,
+                              borderWidth: 2,
+                              borderColor: AppColors.savings,
+                            ),
+                            enableTooltip: true,
+                          ),
+                          LineSeries<double, int>(
+                            name: l10n.totalSubscriptions,
+                            dataSource: dailySubscriptionTrend,
+                            xValueMapper: (value, index) => index + 1,
+                            yValueMapper: (value, _) => value,
+                            color: AppColors.subscription,
+                            width: 2,
+                            markerSettings: const MarkerSettings(
+                              isVisible: false,
+                              shape: DataMarkerType.circle,
+                              width: 6,
+                              height: 6,
+                              color: Colors.white,
+                              borderWidth: 2,
+                              borderColor: AppColors.subscription,
                             ),
                             enableTooltip: true,
                           ),

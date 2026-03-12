@@ -90,4 +90,19 @@ class StatisticsConstants {
     Color(0xFF26A69A), // Teal 400
     Color(0xFF4DB6AC), // Teal 300
   ];
+
+  static const List<Color> subscriptionColors = [
+    Color(0xFFAB47BC), // Purple 400
+    Color(0xFF9C27B0), // Purple 500
+    Color(0xFFBA68C8), // Purple 300
+    Color(0xFF7E57C2), // Deep Purple 400
+    Color(0xFF673AB7), // Deep Purple 500
+    Color(0xFF9575CD), // Deep Purple 300
+    Color(0xFFEC407A), // Pink 400
+    Color(0xFFE91E63), // Pink 500
+    Color(0xFFF06292), // Pink 300
+    Color(0xFF5C6BC0), // Indigo 400
+    Color(0xFF3F51B5), // Indigo 500
+    Color(0xFF7986CB), // Indigo 300
+  ];
 }

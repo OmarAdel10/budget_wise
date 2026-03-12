@@ -82,7 +82,7 @@ class SummaryCards extends StatelessWidget {
                 title: l10n.totalSubscriptions,
                 amount:
                     "$currencySymbol ${totalSubscriptions.toStringAsFixed(0)}",
-                amountColor: AppColors.categoryPurple,
+                amountColor: AppColors.subscription,
               ),
             ),
           ],

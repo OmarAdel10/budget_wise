@@ -134,18 +134,19 @@ void main() async {
             ),
           ),
           BlocProvider(
-            create: (context) => StatisticsBloc(
-              transactionBloc: context.read<TransactionBloc>(),
-              categoryBloc: context.read<CategoryBloc>(),
-              savingsBloc: context.read<SavingsBloc>(),
-            )..add(StatisticsEventLoadRequested(DateTime.now())),
-          ),
-          BlocProvider(
             create: (context) => SubscriptionBloc(
               subscriptionRepository: context.read<SubscriptionRepository>(),
               authRepository: context.read<AuthRepository>(),
               settingsBloc: context.read<SettingsBloc>(),
             ),
+          ),
+          BlocProvider(
+            create: (context) => StatisticsBloc(
+              transactionBloc: context.read<TransactionBloc>(),
+              categoryBloc: context.read<CategoryBloc>(),
+              savingsBloc: context.read<SavingsBloc>(),
+              subscriptionBloc: context.read<SubscriptionBloc>(),
+            )..add(StatisticsEventLoadRequested(DateTime.now())),
           ),
         ],
         child: MyApp(),

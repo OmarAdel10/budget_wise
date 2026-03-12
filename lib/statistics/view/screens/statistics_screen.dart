@@ -125,7 +125,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         children: [
                           IncomeExpenseToggle(
                             selectionNotifier: _toggleOptionNotifier,
-                            isSavingsEnabled: true,
+                            isForHome: false,
                           ),
                         ],
                       ),
@@ -133,16 +133,25 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       BlocSelector<
                         StatisticsBloc,
                         StatisticsState,
-                        (List<double>, List<double>)
+                        (
+                          List<double>,
+                          List<double>,
+                          List<double>,
+                          List<double>,
+                        )
                       >(
                         selector: (state) => (
                           state.model.dailyIncomeTrend,
                           state.model.dailyExpenseTrend,
+                          state.model.dailySavingsTrend,
+                          state.model.dailySubscriptionTrend,
                         ),
                         builder: (context, data) {
                           return TrendChartSection(
                             dailyIncomeTrend: data.$1,
                             dailyExpenseTrend: data.$2,
+                            dailySavingsTrend: data.$3,
+                            dailySubscriptionTrend: data.$4,
                             isTrendExpandedNotifier: _isTrendExpandedNotifier,
                           );
                         },
@@ -163,6 +172,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 current.model.expenseBreakdown ||
                             previous.model.savingsBreakdown !=
                                 current.model.savingsBreakdown ||
+                            previous.model.subscriptionBreakdown !=
+                                current.model.subscriptionBreakdown ||
                             previous.model.toggleType !=
                                 current.model.toggleType,
                         builder: (context, state) {
@@ -170,7 +181,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           final hasData =
                               model.incomeBreakdown.isNotEmpty ||
                               model.expenseBreakdown.isNotEmpty ||
-                              model.savingsBreakdown.isNotEmpty;
+                              model.savingsBreakdown.isNotEmpty ||
+                              model.subscriptionBreakdown.isNotEmpty;
 
                           if (!hasData) {
                             return Padding(
@@ -194,10 +206,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 incomeBreakdown: model.incomeBreakdown,
                                 expenseBreakdown: model.expenseBreakdown,
                                 savingsBreakdown: model.savingsBreakdown,
+                                subscriptionBreakdown:
+                                    model.subscriptionBreakdown,
                                 toggleType: model.toggleType,
                                 totalIncome: model.totalIncome,
                                 totalExpenses: model.totalExpenses,
                                 totalSavings: model.totalSavings,
+                                totalSubscriptions: model.totalSubscriptions,
                                 onToggle: (type) {
                                   statisticsBloc.add(
                                     StatisticsEventToggleType(type),
@@ -229,6 +244,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           current.model.expenseBreakdown ||
                       previous.model.savingsBreakdown !=
                           current.model.savingsBreakdown ||
+                      previous.model.subscriptionBreakdown !=
+                          current.model.subscriptionBreakdown ||
                       previous.model.toggleType != current.model.toggleType,
                   builder: (context, state) {
                     final model = state.model;
@@ -242,6 +259,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         break;
                       case ToggleOption.savings:
                         breakdown = model.savingsBreakdown;
+                        break;
+                      case ToggleOption.subscription:
+                        breakdown = model.subscriptionBreakdown;
                         break;
                     }
 

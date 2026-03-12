@@ -1,4 +1,7 @@
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
+import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
+import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
+import 'package:budget_wise/subscriptions/data/models/billing_cycle.dart';
 import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
@@ -12,11 +15,13 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   final TransactionBloc transactionBloc;
   final CategoryBloc categoryBloc;
   final SavingsBloc savingsBloc;
+  final SubscriptionBloc subscriptionBloc;
 
   StatisticsBloc({
     required this.transactionBloc,
     required this.categoryBloc,
     required this.savingsBloc,
+    required this.subscriptionBloc,
   }) : super(
          StatisticsStateInitial(
            StatisticsModel(
@@ -27,8 +32,11 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
              incomeBreakdown: const [],
              expenseBreakdown: const [],
              savingsBreakdown: const [],
+             subscriptionBreakdown: const [],
              dailyIncomeTrend: const [],
              dailyExpenseTrend: const [],
+             dailySavingsTrend: const [],
+             dailySubscriptionTrend: const [],
              sortingType: StatisticsSorting.highestAmount,
              selectedMonth: DateTime.now(),
            ),
@@ -47,11 +55,16 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       add(StatisticsEventLoadRequested(state.model.selectedMonth));
     });
 
+    subscriptionBloc.stream.listen((_) {
+      add(StatisticsEventLoadRequested(state.model.selectedMonth));
+    });
+
     on<StatisticsEventLoadRequested>((event, emit) {
       try {
         final allTransactions = transactionBloc.state.transactionsList;
         final allCategories = categoryBloc.state.categoriesList;
         final allSavingGoals = savingsBloc.state.savingsList;
+        final allSubscriptions = subscriptionBloc.state.subscriptions;
 
         double income = 0;
         double expenses = 0;
@@ -72,6 +85,8 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         ).day;
         final List<double> dailyIncomeTrend = List.filled(daysInMonth, 0.0);
         final List<double> dailyExpenseTrend = List.filled(daysInMonth, 0.0);
+        final List<double> dailySavingsTrend = List.filled(daysInMonth, 0.0);
+        final List<double> dailySubscriptionTrend = List.filled(daysInMonth, 0.0);
 
         for (var transaction in monthTransactions) {
           final day = transaction.transactionDate.day - 1;
@@ -132,7 +147,9 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           goal.contributionDates.forEach((dayIndex, date) {
             if (date.year == event.selectedMonth.year &&
                 date.month == event.selectedMonth.month) {
-              goalMonthlySaving += goal.getAmountForDay(dayIndex);
+              final amount = goal.getAmountForDay(dayIndex);
+              goalMonthlySaving += amount;
+              dailySavingsTrend[date.day - 1] += amount;
             }
           });
 
@@ -159,20 +176,91 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           savingsBreakdown[i] = item.copyWith(percentage: percentage);
         }
 
+        // Calculate subscriptions for the selected month
+        double totalSubscriptions = 0;
+        final List<FinancialBreakdownItem> subscriptionBreakdown = [];
+
+        for (var sub in allSubscriptions) {
+          if (sub.isPaused) continue;
+
+          // Simple approach: show the monthly equivalent cost for all active subscriptions
+          double monthlyAmount = 0;
+          switch (sub.billingCycle) {
+            case BillingCycle.weekly:
+              monthlyAmount = sub.amount * 52 / 12;
+              
+              // Calculate daily trend for weekly subscriptions
+              DateTime current = sub.startDate;
+              DateTime targetMonthStart = DateTime(event.selectedMonth.year, event.selectedMonth.month, 1);
+              int daysDiff = targetMonthStart.difference(current).inDays;
+              if (daysDiff > 0) {
+                int occurrencesToSkip = (daysDiff / 7).ceil();
+                current = current.add(Duration(days: occurrencesToSkip * 7));
+              }
+              while (current.year == event.selectedMonth.year && current.month == event.selectedMonth.month) {
+                dailySubscriptionTrend[current.day - 1] += sub.amount;
+                current = current.add(const Duration(days: 7));
+              }
+              break;
+            case BillingCycle.monthly:
+              monthlyAmount = sub.amount;
+              if (sub.billingDay <= daysInMonth) {
+                dailySubscriptionTrend[sub.billingDay - 1] += sub.amount;
+              }
+              break;
+            case BillingCycle.quarterly:
+              monthlyAmount = sub.amount / 3;
+              _addOccasionalSubToTrend(sub, event.selectedMonth, dailySubscriptionTrend);
+              break;
+            case BillingCycle.halfYearly:
+              monthlyAmount = sub.amount / 6;
+              _addOccasionalSubToTrend(sub, event.selectedMonth, dailySubscriptionTrend);
+              break;
+            case BillingCycle.yearly:
+              monthlyAmount = sub.amount / 12;
+              _addOccasionalSubToTrend(sub, event.selectedMonth, dailySubscriptionTrend);
+              break;
+          }
+
+          totalSubscriptions += monthlyAmount;
+          subscriptionBreakdown.add(
+            FinancialBreakdownItem(
+              source: sub,
+              sourceType: StatisticsSourceType.subscription,
+              amount: monthlyAmount,
+              percentage: 0.0,
+            ),
+          );
+        }
+
+        // Calculate percentages for subscription breakdown
+        for (var i = 0; i < subscriptionBreakdown.length; i++) {
+          final item = subscriptionBreakdown[i];
+          final percentage = totalSubscriptions > 0
+              ? (item.amount / totalSubscriptions) * 100
+              : 0.0;
+          subscriptionBreakdown[i] = item.copyWith(percentage: percentage);
+        }
+
         // Sort breakdowns based on current sorting type
         _applySorting(incomeBreakdown, state.model.sortingType);
         _applySorting(expenseBreakdown, state.model.sortingType);
         _applySorting(savingsBreakdown, state.model.sortingType);
+        _applySorting(subscriptionBreakdown, state.model.sortingType);
 
         final updatedModel = state.model.copyWith(
           totalIncome: income,
           totalExpenses: expenses,
           totalSavings: totalSavings,
+          totalSubscriptions: totalSubscriptions,
           incomeBreakdown: incomeBreakdown,
           expenseBreakdown: expenseBreakdown,
           savingsBreakdown: savingsBreakdown,
+          subscriptionBreakdown: subscriptionBreakdown,
           dailyIncomeTrend: dailyIncomeTrend,
           dailyExpenseTrend: dailyExpenseTrend,
+          dailySavingsTrend: dailySavingsTrend,
+          dailySubscriptionTrend: dailySubscriptionTrend,
           selectedMonth: event.selectedMonth,
         );
 
@@ -192,16 +280,21 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       final savingsBreakdown = List<FinancialBreakdownItem>.from(
         state.model.savingsBreakdown,
       );
+      final subscriptionBreakdown = List<FinancialBreakdownItem>.from(
+        state.model.subscriptionBreakdown,
+      );
 
       _applySorting(incomeBreakdown, event.sortingType);
       _applySorting(expenseBreakdown, event.sortingType);
       _applySorting(savingsBreakdown, event.sortingType);
+      _applySorting(subscriptionBreakdown, event.sortingType);
 
       final updatedModel = state.model.copyWith(
         sortingType: event.sortingType,
         incomeBreakdown: incomeBreakdown,
         expenseBreakdown: expenseBreakdown,
         savingsBreakdown: savingsBreakdown,
+        subscriptionBreakdown: subscriptionBreakdown,
       );
 
       emit(StatisticsStateSuccess(updatedModel));
@@ -211,6 +304,14 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       final updatedModel = state.model.copyWith(toggleType: event.toggleType);
       emit(StatisticsStateSuccess(updatedModel));
     });
+  }
+
+  void _addOccasionalSubToTrend(SubscriptionModel sub, DateTime selectedMonth, List<double> dailySubscriptionTrend) {
+    if (sub.nextBillingDate.year == selectedMonth.year && sub.nextBillingDate.month == selectedMonth.month) {
+      dailySubscriptionTrend[sub.nextBillingDate.day - 1] += sub.amount;
+    } else if (sub.lastPaidDate != null && sub.lastPaidDate!.year == selectedMonth.year && sub.lastPaidDate!.month == selectedMonth.month) {
+      dailySubscriptionTrend[sub.lastPaidDate!.day - 1] += sub.amount;
+    }
   }
 
   void _applySorting(

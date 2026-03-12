@@ -79,7 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         IncomeExpenseToggle(
                           selectionNotifier: _showIncomeNotifier,
-                          isSavingsEnabled: false,
                         ),
                       ],
                     ),

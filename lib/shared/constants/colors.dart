@@ -21,6 +21,7 @@ class AppColors {
   static const Color income = Color(0xFF65B583);
   static const Color expense = Color(0xFFE57373);
   static const Color savings = Color(0xFF81D4FA);
+  static const Color subscription = Color(0xFFCE93D8);
 
   // Categories Colors (Sample)
   static const Color categoryPink = Color(0xFFF48FB1);
