@@ -866,6 +866,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get totalSubscriptions => 'Total Subscriptions';
 
   @override
+  String get subscriptions => 'Subscriptions';
+
+  @override
+  String get noSubscriptions => 'No subscriptions yet';
+
+  @override
+  String get totalMonthlySpend => 'Total Monthly Spend';
+
+  @override
+  String activeSubscriptions(Object count) {
+    return '$count Active Subscriptions';
+  }
+
+  @override
+  String get overdue => 'Overdue';
+
+  @override
+  String nextBillingDate(Object date) {
+    return 'Next: $date';
+  }
+
+  @override
+  String get addSubscription => 'Add Subscription';
+
+  @override
+  String get editSubscription => 'Edit Subscription';
+
+  @override
+  String get subscriptionDetails => 'Subscription Details';
+
+  @override
+  String get payToRenew => 'Pay to Renew';
+
+  @override
+  String get billingCycle => 'Billing Cycle';
+
+  @override
+  String get reminder => 'Reminder';
+
+  @override
+  String daysBefore(Object count) {
+    return '$count days before';
+  }
+
+  @override
+  String get weekly => 'Weekly';
+
+  @override
+  String get monthly => 'Monthly';
+
+  @override
+  String get quarterly => 'Quarterly';
+
+  @override
+  String get halfYearly => 'Half-Yearly';
+
+  @override
+  String get yearly => 'Yearly';
+
+  @override
+  String get deleteSubscription => 'Delete Subscription';
+
+  @override
+  String get subscriptionDeleted => 'Subscription Deleted';
+
+  @override
+  String get subscriptionNameHint => 'Subscription Name (e.g. Netflix)';
+
+  @override
+  String get startDate => 'Start Date';
+
+  @override
+  String get egp => 'EGP';
+
+  @override
+  String get pleaseFillRequiredFields => 'Please fill all required fields';
+
+  @override
+  String get nextRenewalDate => 'Next Renewal Date';
+
+  @override
   String get defaultCurrency => 'Default Currency';
 
   @override
@@ -925,7 +1006,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteGoal => 'Delete Goal';
 
   @override
-  String get savingDeleted => 'Account Deleted';
+  String get savingDeleted => 'Savings Deleted';
 
   @override
   String get overallProgress => 'Overall Progress';
@@ -1017,4 +1098,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get infoEnterDays =>
       'Enter the Number of Days. We\'ll automatically calculate the Target Amount and Target Date based on your method.';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get off => 'Off';
+
+  @override
+  String get paused => 'Paused';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get paymentHistory => 'Payment History';
+
+  @override
+  String get noPaymentHistory => 'No payment history found.';
+
+  @override
+  String get markedAsPaid => 'Marked as paid!';
+
+  @override
+  String get deleteSubscriptionConfirm =>
+      'Are you sure you want to delete this subscription?';
+
+  @override
+  String get cancel => 'Cancel';
 }

@@ -8,17 +8,17 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:budget_wise/transaction/view/widgets/transaction_type_toggle.dart';
-import 'package:budget_wise/transaction/view/widgets/category_dropdown.dart';
+import 'package:budget_wise/shared/widgets/category_dropdown.dart';
 import 'package:budget_wise/transaction/view/widgets/account_dropdown.dart';
-import 'package:budget_wise/transaction/view/widgets/date_picker_field.dart';
+import 'package:budget_wise/shared/widgets/date_picker_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
-import '../../../shared/constants/colors.dart';
-import '../../../shared/constants/spacing.dart';
-import '../../../shared/widgets/custom_text_field.dart';
-import '../../../shared/widgets/custom_button.dart';
+import 'package:budget_wise/shared/constants/colors.dart';
+import 'package:budget_wise/shared/constants/spacing.dart';
+import 'package:budget_wise/shared/widgets/custom_text_field.dart';
+import 'package:budget_wise/shared/widgets/custom_button.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   static const String routeName = '/add-transaction';
@@ -314,7 +314,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     CategoryDropdown(
-                      selectedType: _selectedType,
+                      selectedTypeNotifier: _selectedType,
                       selectedCategoryId: _selectedCategoryId,
                     ),
                     const SizedBox(height: AppSpacing.lg),

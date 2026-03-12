@@ -6,6 +6,7 @@ import 'package:budget_wise/shared/constants/dimensions.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -48,6 +49,12 @@ class SavingsScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Icon(
+                      PhosphorIconsBold.piggyBank,
+                      size: 80,
+                      color: AppColors.textSecondary.withValues(alpha: 0.5),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       l10n.noSavingsGoalsThisMonth,
                       style: AppTextStyles.bodyLarge.copyWith(

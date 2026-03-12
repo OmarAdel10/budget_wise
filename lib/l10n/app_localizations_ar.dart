@@ -859,6 +859,87 @@ class AppLocalizationsAr extends AppLocalizations {
   String get totalSubscriptions => 'إجمالي الاشتراكات';
 
   @override
+  String get subscriptions => 'الاشتراكات';
+
+  @override
+  String get noSubscriptions => 'لا يوجد اشتراكات بعد';
+
+  @override
+  String get totalMonthlySpend => 'إجمالي الإنفاق الشهري';
+
+  @override
+  String activeSubscriptions(Object count) {
+    return '$count اشتراك نشط';
+  }
+
+  @override
+  String get overdue => 'متأخر';
+
+  @override
+  String nextBillingDate(Object date) {
+    return 'التالي: $date';
+  }
+
+  @override
+  String get addSubscription => 'إضافة اشتراك';
+
+  @override
+  String get editSubscription => 'تعديل اشتراك';
+
+  @override
+  String get subscriptionDetails => 'تفاصيل الاشتراك';
+
+  @override
+  String get payToRenew => 'ادفع للتجديد';
+
+  @override
+  String get billingCycle => 'دورة الفوترة';
+
+  @override
+  String get reminder => 'تذكير';
+
+  @override
+  String daysBefore(Object count) {
+    return 'قبل $count أيام';
+  }
+
+  @override
+  String get weekly => 'أسبوعي';
+
+  @override
+  String get monthly => 'شهري';
+
+  @override
+  String get quarterly => 'ربع سنوي';
+
+  @override
+  String get halfYearly => 'نصف سنوي';
+
+  @override
+  String get yearly => 'سنوي';
+
+  @override
+  String get deleteSubscription => 'حذف الاشتراك';
+
+  @override
+  String get subscriptionDeleted => 'تم حذف الاشتراك';
+
+  @override
+  String get subscriptionNameHint => 'اسم الاشتراك (مثال: نتفليكس)';
+
+  @override
+  String get startDate => 'تاريخ البدء';
+
+  @override
+  String get egp => 'ج.م';
+
+  @override
+  String get pleaseFillRequiredFields => 'يرجى ملء جميع الحقول المطلوبة';
+
+  @override
+  String get nextRenewalDate => 'تاريخ التجديد التالي';
+
+  @override
   String get defaultCurrency => 'العملة الافتراضية';
 
   @override
@@ -918,7 +999,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteGoal => 'حذف الهدف';
 
   @override
-  String get savingDeleted => 'تم حذف الهدف';
+  String get savingDeleted => 'تم حذف الادخار';
 
   @override
   String get overallProgress => 'التقدم الإجمالي';
@@ -1009,4 +1090,32 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get infoEnterDays =>
       'أدخل عدد الأيام. سنقوم تلقائياً بحساب المبلغ المستهدف وتاريخ الهدف بناءً على طريقتك.';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get off => 'إيقاف';
+
+  @override
+  String get paused => 'متوقف مؤقتاً';
+
+  @override
+  String get active => 'نشط';
+
+  @override
+  String get paymentHistory => 'سجل المدفوعات';
+
+  @override
+  String get noPaymentHistory => 'لم يتم العثور على سجل مدفوعات.';
+
+  @override
+  String get markedAsPaid => 'تم التحديد كمدفوع!';
+
+  @override
+  String get deleteSubscriptionConfirm =>
+      'هل أنت متأكد من رغبتك في حذف هذا الاشتراك؟';
+
+  @override
+  String get cancel => 'إلغاء';
 }
