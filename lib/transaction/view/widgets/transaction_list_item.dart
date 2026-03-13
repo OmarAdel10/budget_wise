@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
@@ -51,15 +52,19 @@ class TransactionListItem extends StatelessWidget {
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xs,
         ),
-        title: Text(
+        title: AutoSizeText(
           model.transactionTitle,
+          maxLines: 1,
+          minFontSize: AppTextStyles.bodyMedium.fontSize!,
           style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            AutoSizeText(
               "${DateFormat("dd/MM/yyyy").format(model.transactionDate)} • ${accountTitle.isEmpty ? l10n.noAccount : accountTitle}",
+              maxLines: 1,
+              minFontSize: 10,
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -93,10 +98,12 @@ class TransactionListItem extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            AutoSizeText(
               model.type == TransactionType.income
                   ? "+${NumberFormat.currency(name: model.transactionCurrency).currencySymbol}${model.transactionAmount}"
                   : "-${NumberFormat.currency(name: model.transactionCurrency).currencySymbol}${model.transactionAmount}",
+              maxLines: 1,
+              minFontSize: AppTextStyles.bodyMedium.fontSize!,
               style: AppTextStyles.bodyLarge.copyWith(
                 color: model.type == TransactionType.income
                     ? AppColors.primaryAccent
@@ -105,7 +112,10 @@ class TransactionListItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+            const Icon(
+              PhosphorIconsBold.caretRight,
+              color: AppColors.textSecondary,
+            ),
           ],
         ),
         onTap: () {
