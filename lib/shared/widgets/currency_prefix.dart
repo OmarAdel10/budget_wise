@@ -13,11 +13,13 @@ class CurrencyPrefix extends StatelessWidget {
   final ValueNotifier<String?> selectedCurrencyNotifier;
   final bool isSettingsTile;
 
-  const CurrencyPrefix({
+  const CurrencyPrefix({super.key, required this.selectedCurrencyNotifier})
+    : isSettingsTile = false;
+
+  const CurrencyPrefix.settings({
     super.key,
     required this.selectedCurrencyNotifier,
-    this.isSettingsTile = false,
-  });
+  }) : isSettingsTile = true;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class CurrencyPrefix extends StatelessWidget {
       },
       child: Container(
         margin: const EdgeInsets.all(8),
+        padding: isSettingsTile ? const EdgeInsets.symmetric(vertical: AppSpacing.sm) : null,
         width: 80,
         alignment: Alignment.center,
         decoration: BoxDecoration(

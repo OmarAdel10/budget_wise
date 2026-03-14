@@ -1,15 +1,18 @@
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:budget_wise/subscriptions/view/screens/add_subscription_screen.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_card.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_empty_state.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_summary_header.dart';
+import 'package:budget_wise/subscriptions/view_model/subscription_event.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class SubscriptionScreen extends StatelessWidget {
@@ -21,7 +24,19 @@ class SubscriptionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.subscriptions), centerTitle: false),
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryBackground,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Text(
+          l10n.subscriptions,
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: BlocBuilder<SubscriptionBloc, SubscriptionState>(
         buildWhen: (previous, current) =>
             previous.subscriptions != current.subscriptions ||
@@ -43,15 +58,54 @@ class SubscriptionScreen extends StatelessWidget {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final subscription = state.subscriptions[index];
-                    return SubscriptionCard(
-                      subscription: subscription,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          SubscriptionDetailsScreen.routeName,
-                          arguments: {'subscriptionModel': subscription},
-                        );
-                      },
+                    return RepaintBoundary(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                            motion: const StretchMotion(),
+                            extentRatio: 0.25,
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) {
+                                  final subBloc = context.read<SubscriptionBloc>();
+                        
+                                  AppToast.show(
+                                    context,
+                                    type: AppToastType.deleteWithUndo,
+                                    title: l10n.accountDeleted,
+                                    onCompleted: () {
+                                      subBloc.add(
+                                        SubscriptionDeleted(
+                                          id: subscription.id,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                backgroundColor: AppColors.danger,
+                                foregroundColor: Colors.white,
+                                icon: PhosphorIcons.trash(
+                                  PhosphorIconsStyle.bold,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppSpacing.radiusSm,
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: SubscriptionCard(
+                            subscription: subscription,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                SubscriptionDetailsScreen.routeName,
+                                arguments: {'subscriptionModel': subscription},
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     );
                   }, childCount: state.subscriptions.length),
                 ),

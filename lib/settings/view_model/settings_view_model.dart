@@ -11,7 +11,7 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     : super(
         SettingsInitial(
           SettingsModel(),
-          _getCurrencySymbol(SettingsModel().defaultCurrency),
+          _getCurrencyName(SettingsModel().defaultCurrency),
         ),
       ) {
     on<SettingsEventLocalAuth>((event, emit) {
@@ -55,7 +55,7 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       emit(
         SettingsStateSuccess(
           newModel,
-          _getCurrencySymbol(newModel.defaultCurrency),
+          _getCurrencyName(newModel.defaultCurrency),
         ),
       );
     });
@@ -73,8 +73,8 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     });
   }
 
-  static String _getCurrencySymbol(String currencyCode) {
-    return NumberFormat.currency(name: currencyCode).currencySymbol;
+  static String _getCurrencyName(String currencyCode) {
+    return NumberFormat.simpleCurrency(name: currencyCode).currencyName!;
   }
 
   @override
@@ -85,7 +85,7 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       );
       return SettingsStateSuccess(
         model,
-        _getCurrencySymbol(model.defaultCurrency),
+        _getCurrencyName(model.defaultCurrency),
       );
     } catch (e) {
       log('Error During Serialization: $e');

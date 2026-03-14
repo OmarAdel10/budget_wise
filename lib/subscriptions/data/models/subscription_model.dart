@@ -16,11 +16,12 @@ class SubscriptionModel implements FinancialRepresentable {
   final BillingCycle billingCycle;
   final String categoryId;
   final IconData icon;
+  final int iconColorValue;
   final DateTime startDate;
   final int billingDay;
   final DateTime nextBillingDate;
   final DateTime? lastPaidDate;
-  final bool isPaused;
+  final bool inActive;
   final bool reminderEnabled;
   final int remindBeforeDays;
   final bool isSynced;
@@ -48,11 +49,12 @@ class SubscriptionModel implements FinancialRepresentable {
     required this.billingCycle,
     required this.categoryId,
     required this.icon,
+    required this.iconColorValue,
     required this.startDate,
     required this.billingDay,
     required this.nextBillingDate,
     this.lastPaidDate,
-    this.isPaused = false,
+    required this.inActive,
     this.reminderEnabled = true,
     this.remindBeforeDays = 1,
     this.isSynced = false,
@@ -69,11 +71,12 @@ class SubscriptionModel implements FinancialRepresentable {
     BillingCycle? billingCycle,
     String? categoryId,
     IconData? icon,
+    int? iconColorValue,
     DateTime? startDate,
     int? billingDay,
     DateTime? nextBillingDate,
     DateTime? lastPaidDate,
-    bool? isPaused,
+    bool? inActive,
     bool? reminderEnabled,
     int? remindBeforeDays,
     bool? isSynced,
@@ -89,11 +92,12 @@ class SubscriptionModel implements FinancialRepresentable {
       billingCycle: billingCycle ?? this.billingCycle,
       categoryId: categoryId ?? this.categoryId,
       icon: icon ?? this.icon,
+      iconColorValue: iconColorValue ?? this.iconColorValue,
       startDate: startDate ?? this.startDate,
       billingDay: billingDay ?? this.billingDay,
       nextBillingDate: nextBillingDate ?? this.nextBillingDate,
       lastPaidDate: lastPaidDate ?? this.lastPaidDate,
-      isPaused: isPaused ?? this.isPaused,
+      inActive: inActive ?? this.inActive,
       reminderEnabled: reminderEnabled ?? this.reminderEnabled,
       remindBeforeDays: remindBeforeDays ?? this.remindBeforeDays,
       isSynced: isSynced ?? this.isSynced,
@@ -114,11 +118,12 @@ class SubscriptionModel implements FinancialRepresentable {
       'iconCodePoint': icon.codePoint,
       'iconFontFamily': icon.fontFamily,
       'iconFontPackage': icon.fontPackage,
+      'iconColorValue': iconColorValue,
       'startDate': startDate.toIso8601String(),
       'billingDay': billingDay,
       'nextBillingDate': nextBillingDate.toIso8601String(),
       'lastPaidDate': lastPaidDate?.toIso8601String(),
-      'isPaused': isPaused,
+      'inActive': inActive,
       'reminderEnabled': reminderEnabled,
       'remindBeforeDays': remindBeforeDays,
       'isSynced': isSynced,
@@ -143,13 +148,14 @@ class SubscriptionModel implements FinancialRepresentable {
         fontFamily: map['iconFontFamily'] as String?,
         fontPackage: map['iconFontPackage'] as String?,
       ),
+      iconColorValue: map['iconColorValue'] as int,
       startDate: DateTime.parse(map['startDate'] as String),
       billingDay: map['billingDay'] as int,
       nextBillingDate: DateTime.parse(map['nextBillingDate'] as String),
       lastPaidDate: map['lastPaidDate'] != null
           ? DateTime.parse(map['lastPaidDate'] as String)
           : null,
-      isPaused: map['isPaused'] as bool,
+      inActive: map['inActive'] as bool,
       reminderEnabled: map['reminderEnabled'] as bool,
       remindBeforeDays: map['remindBeforeDays'] as int,
       isSynced: map['isSynced'] as bool,

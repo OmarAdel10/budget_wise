@@ -49,17 +49,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   late final ValueNotifier<int> _targetDaysNotifier;
 
   final ValueNotifier<String?> _selectedCurrency = ValueNotifier(null);
-  final ValueNotifier<int> _selectedColor = ValueNotifier(0xFF4CAF50);
-
-  final List<int> _colorOptions = [
-    0xFF4CAF50,
-    0xFF2196F3,
-    0xFFFFC107,
-    0xFFE91E63,
-    0xFF9C27B0,
-    0xFFFF5722,
-    0xFF00BCD4,
-  ];
+  final ValueNotifier<Color> _selectedColor = ValueNotifier(Color(0xFF4CAF50));
 
   @override
   void initState() {
@@ -320,11 +310,8 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                     ),
 
                     const SizedBox(height: AppSpacing.lg),
-                    Text(l10n.colorPicker, style: AppTextStyles.bodyMedium),
-                    const SizedBox(height: AppSpacing.sm),
                     SavingsColorPicker(
                       selectedColorNotifier: _selectedColor,
-                      colorOptions: _colorOptions,
                     ),
 
                     const SizedBox(height: AppSpacing.xl),
@@ -359,7 +346,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         constantAmount: double.tryParse(_constantController.text),
         currency: _selectedCurrency.value!,
         targetDate: _targetDateNotifier.value,
-        colorValue: _selectedColor.value,
+        colorValue: _selectedColor.value.toARGB32(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

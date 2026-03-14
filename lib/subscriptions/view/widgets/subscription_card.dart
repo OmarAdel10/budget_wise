@@ -2,6 +2,7 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/widgets/generic_icon_container.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/subscriptions/data/utils/billing_utils.dart';
 import 'package:budget_wise/subscriptions/utils/subscription_formatter.dart';
@@ -20,87 +21,109 @@ class SubscriptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isOverdue = BillingUtils.isOverdue(subscription.nextBillingDate);
+    final ValueNotifier<bool> isOverdueNotifier = ValueNotifier(
+      BillingUtils.isOverdue(subscription.nextBillingDate),
+    );
+    final isInActive = subscription.inActive;
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: isOverdue
-              ? Border.all(color: AppColors.danger, width: 2)
-              : Border.all(color: AppColors.borderColor.withValues(alpha: 0.5)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
+      child: RepaintBoundary(
+        child: ValueListenableBuilder<bool>(
+          valueListenable: isOverdueNotifier,
+          builder: (context, isOverdue, child) {
+            return Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppColors.primaryAccent.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                color: AppColors.cardBackground,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                border: isOverdue
+                    ? Border.all(color: AppColors.danger, width: 2)
+                    : Border.all(
+                        color: AppColors.borderColor.withValues(alpha: 0.5),
+                      ),
               ),
-              child: Icon(
-                subscription.icon,
-                color: AppColors.primaryAccent,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    subscription.name,
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      fontWeight: FontWeight.bold,
+                  GenericIconContainer(
+                    icon: subscription.icon,
+                    color: Color(subscription.iconColorValue),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          subscription.name,
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          isOverdue
+                              ? l10n.dueToBillingDate(
+                                  SubscriptionFormatter.formatDate(
+                                    subscription.nextBillingDate,
+                                  ),
+                                )
+                              : l10n.nextBillingDate(
+                                  SubscriptionFormatter.formatDate(
+                                    subscription.nextBillingDate,
+                                  ),
+                                ),
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: isOverdue
+                                ? AppColors.danger
+                                : AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    isOverdue
-                        ? l10n.overdue
-                        : l10n.nextBillingDate(
-                            SubscriptionFormatter.formatDate(
-                              subscription.nextBillingDate,
-                            ),
-                          ),
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: isOverdue
-                          ? AppColors.danger
-                          : AppColors.textSecondary,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        SubscriptionFormatter.formatCurrency(
+                          subscription.amount,
+                          subscription.currency,
+                        ),
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: (isInActive && isOverdue)
+                              ? AppColors.danger
+                              : isInActive
+                              ? Colors.orange
+                              : isOverdue
+                              ? AppColors.danger
+                              : AppColors.primaryAccent,
+                        ),
+                      ),
+                      Text(
+                        '${(isInActive && isOverdue)
+                            ? l10n.inActiveAndOverdue
+                            : isInActive
+                            ? l10n.inActive
+                            : isOverdue
+                            ? l10n.overdue
+                            : l10n.active} • ${SubscriptionFormatter.getCycleLabel(subscription.billingCycle, l10n).toUpperCase()}',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: (isInActive && isOverdue)
+                              ? AppColors.danger
+                              : isInActive
+                              ? Colors.orange
+                              : isOverdue
+                              ? AppColors.danger
+                              : AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  SubscriptionFormatter.formatCurrency(
-                    subscription.amount,
-                    subscription.currency,
-                  ),
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryAccent,
-                  ),
-                ),
-                Text(
-                  SubscriptionFormatter.getCycleLabel(
-                    subscription.billingCycle,
-                    l10n,
-                  ).toUpperCase(),
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

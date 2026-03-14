@@ -86,7 +86,10 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         final List<double> dailyIncomeTrend = List.filled(daysInMonth, 0.0);
         final List<double> dailyExpenseTrend = List.filled(daysInMonth, 0.0);
         final List<double> dailySavingsTrend = List.filled(daysInMonth, 0.0);
-        final List<double> dailySubscriptionTrend = List.filled(daysInMonth, 0.0);
+        final List<double> dailySubscriptionTrend = List.filled(
+          daysInMonth,
+          0.0,
+        );
 
         for (var transaction in monthTransactions) {
           final day = transaction.transactionDate.day - 1;
@@ -181,23 +184,28 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         final List<FinancialBreakdownItem> subscriptionBreakdown = [];
 
         for (var sub in allSubscriptions) {
-          if (sub.isPaused) continue;
+          if (sub.inActive) continue;
 
           // Simple approach: show the monthly equivalent cost for all active subscriptions
           double monthlyAmount = 0;
           switch (sub.billingCycle) {
             case BillingCycle.weekly:
               monthlyAmount = sub.amount * 52 / 12;
-              
+
               // Calculate daily trend for weekly subscriptions
               DateTime current = sub.startDate;
-              DateTime targetMonthStart = DateTime(event.selectedMonth.year, event.selectedMonth.month, 1);
+              DateTime targetMonthStart = DateTime(
+                event.selectedMonth.year,
+                event.selectedMonth.month,
+                1,
+              );
               int daysDiff = targetMonthStart.difference(current).inDays;
               if (daysDiff > 0) {
                 int occurrencesToSkip = (daysDiff / 7).ceil();
                 current = current.add(Duration(days: occurrencesToSkip * 7));
               }
-              while (current.year == event.selectedMonth.year && current.month == event.selectedMonth.month) {
+              while (current.year == event.selectedMonth.year &&
+                  current.month == event.selectedMonth.month) {
                 dailySubscriptionTrend[current.day - 1] += sub.amount;
                 current = current.add(const Duration(days: 7));
               }
@@ -210,15 +218,27 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
               break;
             case BillingCycle.quarterly:
               monthlyAmount = sub.amount / 3;
-              _addOccasionalSubToTrend(sub, event.selectedMonth, dailySubscriptionTrend);
+              _addOccasionalSubToTrend(
+                sub,
+                event.selectedMonth,
+                dailySubscriptionTrend,
+              );
               break;
             case BillingCycle.halfYearly:
               monthlyAmount = sub.amount / 6;
-              _addOccasionalSubToTrend(sub, event.selectedMonth, dailySubscriptionTrend);
+              _addOccasionalSubToTrend(
+                sub,
+                event.selectedMonth,
+                dailySubscriptionTrend,
+              );
               break;
             case BillingCycle.yearly:
               monthlyAmount = sub.amount / 12;
-              _addOccasionalSubToTrend(sub, event.selectedMonth, dailySubscriptionTrend);
+              _addOccasionalSubToTrend(
+                sub,
+                event.selectedMonth,
+                dailySubscriptionTrend,
+              );
               break;
           }
 
@@ -306,10 +326,17 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     });
   }
 
-  void _addOccasionalSubToTrend(SubscriptionModel sub, DateTime selectedMonth, List<double> dailySubscriptionTrend) {
-    if (sub.nextBillingDate.year == selectedMonth.year && sub.nextBillingDate.month == selectedMonth.month) {
+  void _addOccasionalSubToTrend(
+    SubscriptionModel sub,
+    DateTime selectedMonth,
+    List<double> dailySubscriptionTrend,
+  ) {
+    if (sub.nextBillingDate.year == selectedMonth.year &&
+        sub.nextBillingDate.month == selectedMonth.month) {
       dailySubscriptionTrend[sub.nextBillingDate.day - 1] += sub.amount;
-    } else if (sub.lastPaidDate != null && sub.lastPaidDate!.year == selectedMonth.year && sub.lastPaidDate!.month == selectedMonth.month) {
+    } else if (sub.lastPaidDate != null &&
+        sub.lastPaidDate!.year == selectedMonth.year &&
+        sub.lastPaidDate!.month == selectedMonth.month) {
       dailySubscriptionTrend[sub.lastPaidDate!.day - 1] += sub.amount;
     }
   }

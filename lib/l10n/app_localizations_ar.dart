@@ -873,11 +873,26 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String inActiveSubscriptions(Object count) {
+    return '$count اشتراك غير نشط';
+  }
+
+  @override
+  String overdueSubscriptions(Object count) {
+    return '$count اشتراك متأخر';
+  }
+
+  @override
   String get overdue => 'متأخر';
 
   @override
   String nextBillingDate(Object date) {
     return 'التالي: $date';
+  }
+
+  @override
+  String dueToBillingDate(Object date) {
+    return 'مستحق في: $date';
   }
 
   @override
@@ -1036,7 +1051,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dailySavingAmount => 'مبلغ الادخار اليومي';
 
   @override
-  String get colorPicker => 'منتقي الألوان';
+  String get selectColor => 'اختر اللون';
 
   @override
   String get methodDefault => 'افتراضي';
@@ -1098,7 +1113,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get off => 'إيقاف';
 
   @override
-  String get paused => 'متوقف مؤقتاً';
+  String get inActive => 'غير نشط';
 
   @override
   String get active => 'نشط';
@@ -1118,4 +1133,38 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancel => 'إلغاء';
+
+  @override
+  String get reminderInfo => 'احصل على إشعار قبل تجديد اشتراكك.';
+
+  @override
+  String get reminderBeforeDays => 'تذكير قبل أيام';
+
+  @override
+  String get subNameCantLeftEmpty => 'لا يمكن ترك اسم الاشتراك فارغاً';
+
+  @override
+  String get amountCantLeftEmpty => 'لا يمكن ترك المبلغ فارغاً';
+
+  @override
+  String get inActiveAndOverdue => 'غير نشط ومتأخر';
+
+  @override
+  String subPaying(String name) {
+    return 'دفع $name';
+  }
+
+  @override
+  String subNote(String name, String date) {
+    return 'اشتراك $name، تم تجديد في $date';
+  }
+
+  @override
+  String get activeStatus => 'الحالة النشطة';
+
+  @override
+  String get trackingStatus => 'تتبع';
+
+  @override
+  String get paused => 'متوقف مؤقتاً';
 }

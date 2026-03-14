@@ -8,6 +8,8 @@ class CustomToggleButton extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
   final Color? activeColor;
+  final bool hasPadding;
+  final bool hasBottomMargin;
 
   const CustomToggleButton({
     super.key,
@@ -15,6 +17,8 @@ class CustomToggleButton extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
     this.activeColor,
+    this.hasPadding = false,
+    this.hasBottomMargin = false,
   });
 
   @override
@@ -24,9 +28,13 @@ class CustomToggleButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        margin: hasBottomMargin ? EdgeInsets.only(bottom: AppSpacing.sm) : null,
+        padding: hasPadding
+            ? const EdgeInsets.symmetric(vertical: AppSpacing.md - 3)
+            : null,
+        duration: const Duration(milliseconds: 100),
         decoration: BoxDecoration(
-          color: isSelected ? effectiveActiveColor : Colors.transparent,
+          color: isSelected ? effectiveActiveColor : AppColors.inputBackground,
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         ),
         child: Center(
@@ -36,7 +44,7 @@ class CustomToggleButton extends StatelessWidget {
               color: isSelected
                   ? AppColors.textInverse
                   : AppColors.textSecondary,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ),

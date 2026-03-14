@@ -45,6 +45,7 @@ class SummaryCards extends StatelessWidget {
                     arguments: {'type': 'income'},
                   );
                 },
+                hasFixedHeight: true,
               ),
             ),
             const SizedBox(width: AppSpacing.md),
@@ -60,6 +61,7 @@ class SummaryCards extends StatelessWidget {
                     arguments: {'type': 'outcome'},
                   );
                 },
+                hasFixedHeight: true,
               ),
             ),
           ],
@@ -73,6 +75,7 @@ class SummaryCards extends StatelessWidget {
                 title: l10n.currentSavings,
                 amount: "$currencySymbol ${totalSavings.toStringAsFixed(0)}",
                 amountColor: AppColors.savings,
+                hasFixedHeight: true,
               ),
             ),
             const SizedBox(width: AppSpacing.md),
@@ -83,6 +86,7 @@ class SummaryCards extends StatelessWidget {
                 amount:
                     "$currencySymbol ${totalSubscriptions.toStringAsFixed(0)}",
                 amountColor: AppColors.subscription,
+                hasFixedHeight: true,
               ),
             ),
           ],

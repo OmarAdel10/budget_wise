@@ -12,6 +12,10 @@ class SummaryCard extends StatelessWidget {
   final Color? iconColor;
   final bool isCompact;
   final VoidCallback? onTap;
+  final bool hasFixedHeight;
+  final bool _subscriptionScreen;
+  final Widget? thirdWidget;
+  final double biggerHeightBy;
 
   const SummaryCard({
     super.key,
@@ -22,16 +26,32 @@ class SummaryCard extends StatelessWidget {
     this.iconColor,
     this.isCompact = false,
     this.onTap,
-  });
+    this.hasFixedHeight = false,
+    this.biggerHeightBy = 0.0,
+  }) : _subscriptionScreen = false,
+       thirdWidget = null;
+
+  const SummaryCard.subscriptions({
+    super.key,
+    required this.title,
+    required this.amount,
+    this.amountColor,
+    this.icon,
+    this.iconColor,
+    this.isCompact = false,
+    this.onTap,
+    required this.thirdWidget,
+  }) : _subscriptionScreen = true,
+       hasFixedHeight = false,
+       biggerHeightBy = 0.0;
 
   @override
   Widget build(BuildContext context) {
-    final bool hasFixedHeight = isCompact;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: hasFixedHeight
-            ? MediaQuery.sizeOf(context).height * 0.11
+            ? MediaQuery.sizeOf(context).height * (0.11 + biggerHeightBy)
             : null,
         padding: EdgeInsets.all(isCompact ? AppSpacing.md : AppSpacing.lg),
         decoration: BoxDecoration(
@@ -45,7 +65,9 @@ class SummaryCard extends StatelessWidget {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: _subscriptionScreen
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
@@ -64,12 +86,18 @@ class SummaryCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            Text(
+            AutoSizeText(
               amount,
+              maxLines: 1,
+              minFontSize: AppTextStyles.bodyLarge.fontSize!,
               style:
                   (isCompact ? AppTextStyles.heading3 : AppTextStyles.heading2)
                       .copyWith(color: amountColor ?? AppColors.textPrimary),
             ),
+            if (_subscriptionScreen) ...[
+              const SizedBox(height: AppSpacing.sm),
+              thirdWidget!,
+            ],
           ],
         ),
       ),

@@ -1778,6 +1778,18 @@ abstract class AppLocalizations {
   /// **'{count} Active Subscriptions'**
   String activeSubscriptions(Object count);
 
+  /// No description provided for @inActiveSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} InActive Subscriptions'**
+  String inActiveSubscriptions(Object count);
+
+  /// No description provided for @overdueSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Overdue Subscriptions'**
+  String overdueSubscriptions(Object count);
+
   /// No description provided for @overdue.
   ///
   /// In en, this message translates to:
@@ -1789,6 +1801,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next: {date}'**
   String nextBillingDate(Object date);
+
+  /// No description provided for @dueToBillingDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Due To: {date}'**
+  String dueToBillingDate(Object date);
 
   /// No description provided for @addSubscription.
   ///
@@ -2084,11 +2102,11 @@ abstract class AppLocalizations {
   /// **'Daily Saving Amount'**
   String get dailySavingAmount;
 
-  /// No description provided for @colorPicker.
+  /// No description provided for @selectColor.
   ///
   /// In en, this message translates to:
-  /// **'Color Picker'**
-  String get colorPicker;
+  /// **'Select Color'**
+  String get selectColor;
 
   /// No description provided for @methodDefault.
   ///
@@ -2198,11 +2216,11 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get off;
 
-  /// No description provided for @paused.
+  /// No description provided for @inActive.
   ///
   /// In en, this message translates to:
-  /// **'Paused'**
-  String get paused;
+  /// **'inActive'**
+  String get inActive;
 
   /// No description provided for @active.
   ///
@@ -2239,6 +2257,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @reminderInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notified before your subscription renews.'**
+  String get reminderInfo;
+
+  /// No description provided for @reminderBeforeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder Before Days'**
+  String get reminderBeforeDays;
+
+  /// No description provided for @subNameCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Name Can\'t Left Empty'**
+  String get subNameCantLeftEmpty;
+
+  /// No description provided for @amountCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Can\'t Left Empty'**
+  String get amountCantLeftEmpty;
+
+  /// No description provided for @inActiveAndOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'inActive & Overdue'**
+  String get inActiveAndOverdue;
+
+  /// No description provided for @subPaying.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} Payment'**
+  String subPaying(String name);
+
+  /// No description provided for @subNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} subscription, renewing on {date}'**
+  String subNote(String name, String date);
+
+  /// No description provided for @activeStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Status'**
+  String get activeStatus;
+
+  /// No description provided for @trackingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking'**
+  String get trackingStatus;
+
+  /// No description provided for @paused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get paused;
 }
 
 class _AppLocalizationsDelegate

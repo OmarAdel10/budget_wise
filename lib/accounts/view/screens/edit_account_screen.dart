@@ -12,7 +12,7 @@ import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:budget_wise/accounts/view/widgets/section_header.dart';
 import 'package:budget_wise/accounts/view/widgets/edit_account_bottom_nav_bar.dart';
-import 'package:budget_wise/accounts/view/widgets/account_settings_card.dart';
+import 'package:budget_wise/shared/widgets/alert_setting_card.dart';
 import 'package:budget_wise/accounts/view/widgets/account_financials_card.dart';
 import 'package:budget_wise/accounts/utils/card_validation_mixin.dart';
 
@@ -184,11 +184,9 @@ class _EditAccountScreenState extends State<EditAccountScreen>
 
                 //* Settings Section
                 SectionHeader(title: l10n.navSettings),
-                AccountSettingsCard(
-                  lowBalanceAlertEnabledNotifier:
-                      lowBalanceAlertEnabledNotifier,
-                  lowBalanceAlertAmountController:
-                      lowBalanceAlertAmountController,
+                AlertSettingCard(
+                  enabledNotifier: lowBalanceAlertEnabledNotifier,
+                  alertAmountController: lowBalanceAlertAmountController,
                 ),
 
                 const SizedBox(height: AppSpacing.lg),
