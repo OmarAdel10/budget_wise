@@ -14,14 +14,11 @@ class SubscriptionFormatter {
   }
 
   static DateFormat _getDateFormat(String pattern) {
-    return _dateCache.putIfAbsent(
-      pattern,
-      () => DateFormat(pattern),
-    );
+    return _dateCache.putIfAbsent(pattern, () => DateFormat(pattern));
   }
 
   static String formatCurrency(double amount, String symbol) {
-    return _getCurrencyFormat(symbol).format(amount);
+    return _getCurrencyFormat(symbol).currencyName! + '${amount.toStringAsFixed(2)}';
   }
 
   static String formatDate(DateTime date, {String pattern = 'MMM dd'}) {

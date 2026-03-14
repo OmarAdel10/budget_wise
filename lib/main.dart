@@ -3,6 +3,7 @@ import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
 import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
+import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
@@ -434,6 +435,8 @@ class MyApp extends StatelessWidget {
                   child: SubscriptionDetailsScreen(),
                 );
               case AddSubscriptionScreen.routeName:
+                final args = settings.arguments as Map<String, dynamic>?;
+                final subModel = args?['subModel'] as SubscriptionModel?;
                 return PageTransition(
                   type: PageTransitionType.bottomToTop,
                   reverseType: PageTransitionType.topToBottom,
@@ -442,7 +445,7 @@ class MyApp extends StatelessWidget {
                   reverseDuration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                   settings: settings,
-                  child: const AddSubscriptionScreen(),
+                  child: AddSubscriptionScreen(subscriptionToEdit: subModel,),
                 );
               default:
                 return null;

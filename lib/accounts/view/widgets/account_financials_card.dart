@@ -1,4 +1,4 @@
-import 'package:budget_wise/accounts/view/widgets/account_balance_input.dart';
+import 'package:budget_wise/shared/widgets/balance_input_with_currency.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:flutter/material.dart';
@@ -25,11 +25,10 @@ class AccountFinancialsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AccountBalanceInput(
+          BalanceInputWithCurrency(
             balanceController: balanceController,
             selectedCurrency: selectedCurrencyNotifier,
             hasPadding: false,
-            isInitialBalanceField: false,
           ),
         ],
       ),

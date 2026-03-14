@@ -1,4 +1,4 @@
-import 'package:budget_wise/accounts/view/widgets/account_balance_input.dart';
+import 'package:budget_wise/shared/widgets/balance_input_with_currency.dart';
 import 'package:budget_wise/accounts/view/widgets/account_type_selection.dart';
 import 'package:budget_wise/accounts/view/widgets/account_name_input.dart';
 import 'package:budget_wise/accounts/view/widgets/account_identity_section.dart';
@@ -53,7 +53,7 @@ class AddAccountPart1 extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.lg),
           //* Initial Balance
-          AccountBalanceInput(
+          BalanceInputWithCurrency(
             balanceController: balanceController,
             selectedCurrency: selectedCurrency,
           ),

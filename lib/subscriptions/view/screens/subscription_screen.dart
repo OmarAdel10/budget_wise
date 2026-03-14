@@ -21,7 +21,19 @@ class SubscriptionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.subscriptions), centerTitle: false),
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryBackground,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Text(
+          l10n.subscriptions,
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: BlocBuilder<SubscriptionBloc, SubscriptionState>(
         buildWhen: (previous, current) =>
             previous.subscriptions != current.subscriptions ||

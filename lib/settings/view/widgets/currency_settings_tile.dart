@@ -15,9 +15,8 @@ class CurrencySettingsTile extends StatelessWidget {
     return SettingsTile(
       icon: PhosphorIconsRegular.currencyBtc,
       title: l10n.defaultCurrency,
-      trailing: CurrencyPrefix(
+      trailing: CurrencyPrefix.settings(
         selectedCurrencyNotifier: selectedCurrencyNotifier,
-        isSettingsTile: true,
       ),
     );
   }

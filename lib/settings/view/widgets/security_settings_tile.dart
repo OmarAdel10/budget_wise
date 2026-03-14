@@ -26,7 +26,7 @@ class SecuritySettingsTile extends StatelessWidget {
           icon: PhosphorIconsRegular.fingerprint,
           title: l10n.security,
           subtitle: l10n.bioMetrics,
-          showDivider: isLocalAuthEnabled,
+          showDivider: true,
           trailing: Switch(
             value: isLocalAuthEnabled,
             onChanged: (value) {

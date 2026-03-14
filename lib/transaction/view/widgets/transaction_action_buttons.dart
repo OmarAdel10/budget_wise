@@ -59,6 +59,7 @@ class TransactionActionButtons extends StatelessWidget {
                       transactionId: transaction.id,
                     ),
                   );
+                  Navigator.of(context).pop();
                 },
               );
             },

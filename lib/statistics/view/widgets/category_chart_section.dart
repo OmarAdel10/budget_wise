@@ -66,6 +66,7 @@ class CategoryChartSection extends StatelessWidget {
           child: breakdown.isEmpty
               ? const SizedBox.shrink()
               : SfCircularChart(
+                  margin: const EdgeInsets.all(10),
                   centerX: '50%',
                   centerY: '50%',
                   tooltipBehavior: TooltipBehavior(
@@ -113,7 +114,7 @@ class CategoryChartSection extends StatelessWidget {
                   ),
                   series: <CircularSeries>[
                     PieSeries<FinancialBreakdownItem, String>(
-                      radius: '55%',
+                      radius: '50%',
                       dataSource: breakdown,
                       xValueMapper: (data, _) => data.source.financialTitle,
                       yValueMapper: (data, _) => data.amount,
@@ -145,7 +146,7 @@ class CategoryChartSection extends StatelessWidget {
                         isVisible: true,
                         labelPosition: ChartDataLabelPosition.outside,
                         showZeroValue: false,
-                        labelIntersectAction: LabelIntersectAction.none,
+                        labelIntersectAction: LabelIntersectAction.shift,
                         connectorLineSettings: const ConnectorLineSettings(
                           length: '20%',
                           type: ConnectorType.curve,
@@ -159,6 +160,7 @@ class CategoryChartSection extends StatelessWidget {
                           final item = data as FinancialBreakdownItem;
                           return SizedBox(
                             width: 80,
+                            height: 45,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,

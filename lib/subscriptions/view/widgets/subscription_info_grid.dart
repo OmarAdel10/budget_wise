@@ -3,20 +3,23 @@ import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/widgets/summary_card.dart';
 import 'package:budget_wise/subscriptions/data/models/billing_cycle.dart';
-import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
+import 'package:budget_wise/subscriptions/view_model/subscription_state.dart';
+import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class SubscriptionInfoGrid extends StatelessWidget {
-  final SubscriptionModel subscriptionModel;
+  final String subscriptionId;
   final AppLocalizations l10n;
-  final bool isOverdue;
+  final ValueNotifier<bool> isOverdueNotifier;
 
   const SubscriptionInfoGrid({
     super.key,
-    required this.subscriptionModel,
+    required this.subscriptionId,
     required this.l10n,
-    required this.isOverdue,
+    required this.isOverdueNotifier,
   });
 
   @override
@@ -26,23 +29,66 @@ class SubscriptionInfoGrid extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: SummaryCard(
-                title: l10n.billingCycle,
-                amount: subscriptionModel.billingCycle.label(l10n),
-                icon: Icons.calendar_today_outlined,
-                isCompact: true,
+              child: RepaintBoundary(
+                child:
+                    BlocSelector<
+                      SubscriptionBloc,
+                      SubscriptionState,
+                      BillingCycle
+                    >(
+                      selector: (state) => state.subscriptions
+                          .firstWhere(
+                            (sub) => sub.id == subscriptionId,
+                            orElse: () => state.subscriptions.first,
+                          )
+                          .billingCycle,
+                      builder: (context, billingCycle) {
+                        return SummaryCard(
+                          title: l10n.billingCycle,
+                          amount: billingCycle.label(l10n),
+                          icon: Icons.calendar_today_outlined,
+                          isCompact: true,
+                          hasFixedHeight: true,
+                          biggerHeightBy: 0.01,
+                        );
+                      },
+                    ),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: SummaryCard(
-                title: l10n.nextRenewalDate,
-                amount: DateFormat(
-                  'MMM dd, yyyy',
-                ).format(subscriptionModel.nextBillingDate),
-                icon: Icons.event_repeat_outlined,
-                amountColor: isOverdue ? AppColors.danger : null,
-                isCompact: true,
+              child: RepaintBoundary(
+                child:
+                    BlocSelector<SubscriptionBloc, SubscriptionState, DateTime>(
+                      selector: (state) => state.subscriptions
+                          .firstWhere(
+                            (sub) => sub.id == subscriptionId,
+                            orElse: () => state.subscriptions.first,
+                          )
+                          .nextBillingDate,
+                      builder: (context, nextBilling) {
+                        return RepaintBoundary(
+                          child: ValueListenableBuilder<bool>(
+                            valueListenable: isOverdueNotifier,
+                            builder: (context, isOverdue, child) {
+                              return SummaryCard(
+                                title: l10n.nextRenewalDate,
+                                amount: DateFormat(
+                                  'MMM dd, yyyy',
+                                ).format(nextBilling),
+                                icon: Icons.event_repeat_outlined,
+                                amountColor: isOverdue
+                                    ? AppColors.danger
+                                    : null,
+                                isCompact: true,
+                                hasFixedHeight: true,
+                                biggerHeightBy: 0.01,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
               ),
             ),
           ],
@@ -51,31 +97,93 @@ class SubscriptionInfoGrid extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: SummaryCard(
-                title: l10n.reminder,
-                amount: subscriptionModel.reminderEnabled
-                    ? l10n.daysBefore(
-                        subscriptionModel.remindBeforeDays,
+              child: RepaintBoundary(
+                child: BlocSelector<SubscriptionBloc, SubscriptionState, bool>(
+                  selector: (state) => state.subscriptions
+                      .firstWhere(
+                        (sub) => sub.id == subscriptionId,
+                        orElse: () => state.subscriptions.first,
                       )
-                    : l10n.off,
-                icon: Icons.notifications_active_outlined,
-                isCompact: true,
+                      .reminderEnabled,
+                  builder: (context, reminderEnabled) {
+                    return RepaintBoundary(
+                      child:
+                          BlocSelector<
+                            SubscriptionBloc,
+                            SubscriptionState,
+                            int
+                          >(
+                            selector: (state) => state.subscriptions
+                                .firstWhere(
+                                  (sub) => sub.id == subscriptionId,
+                                  orElse: () => state.subscriptions.first,
+                                )
+                                .remindBeforeDays,
+                            builder: (context, reminderValue) {
+                              return SummaryCard(
+                                title: l10n.reminder,
+                                amount: reminderEnabled
+                                    ? l10n.daysBefore(reminderValue)
+                                    : l10n.off,
+                                icon: Icons.notifications_active_outlined,
+                                isCompact: true,
+                                hasFixedHeight: true,
+                                biggerHeightBy: 0.01,
+                              );
+                            },
+                          ),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: SummaryCard(
-                title: l10n.status,
-                amount: subscriptionModel.isPaused
-                    ? l10n.paused
-                    : l10n.active,
-                icon: subscriptionModel.isPaused
-                    ? Icons.pause_circle_outline
-                    : Icons.check_circle_outline,
-                amountColor: subscriptionModel.isPaused
-                    ? Colors.orange
-                    : AppColors.primaryAccent,
-                isCompact: true,
+              child: RepaintBoundary(
+                child: BlocSelector<SubscriptionBloc, SubscriptionState, bool>(
+                  selector: (state) => state.subscriptions
+                      .firstWhere(
+                        (sub) => sub.id == subscriptionId,
+                        orElse: () => state.subscriptions.first,
+                      )
+                      .inActive,
+                  builder: (context, isInActive) {
+                    return RepaintBoundary(
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable: isOverdueNotifier,
+                        builder: (context, isOverdue, child) {
+                          return SummaryCard(
+                            title: l10n.status,
+                            amount: (isInActive && isOverdue)
+                                ? l10n.inActiveAndOverdue
+                                : isInActive
+                                ? l10n.inActive
+                                : isOverdue
+                                ? l10n.overdue
+                                : l10n.active,
+                            icon: (isInActive && isOverdue)
+                                ? PhosphorIconsBold.xCircle
+                                : isInActive
+                                ? PhosphorIconsBold.pauseCircle
+                                : isOverdue
+                                ? PhosphorIconsBold.warningCircle
+                                : PhosphorIconsBold.checkCircle,
+                            amountColor: (isInActive && isOverdue)
+                                ? AppColors.danger
+                                : isInActive
+                                ? Colors.orange
+                                : isOverdue
+                                ? AppColors.danger
+                                : AppColors.primaryAccent,
+                            isCompact: true,
+                            hasFixedHeight: true,
+                            biggerHeightBy: 0.01,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],

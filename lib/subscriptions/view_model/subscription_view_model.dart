@@ -11,7 +11,8 @@ import 'package:budget_wise/subscriptions/view_model/subscription_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
 
-class SubscriptionBloc extends HydratedBloc<SubscriptionEvent, SubscriptionState> {
+class SubscriptionBloc
+    extends HydratedBloc<SubscriptionEvent, SubscriptionState> {
   final SubscriptionRepository subscriptionRepository;
   final AuthRepository authRepository;
   final SettingsBloc settingsBloc;
@@ -28,12 +29,15 @@ class SubscriptionBloc extends HydratedBloc<SubscriptionEvent, SubscriptionState
     });
 
     on<SubscriptionsLoadRequested>((event, emit) async {
-      emit(SubscriptionLoading(
-        subscriptions: state.subscriptions,
-        totalMonthlySpend: state.totalMonthlySpend,
-      ));
+      emit(
+        SubscriptionLoading(
+          subscriptions: state.subscriptions,
+          totalMonthlySpend: state.totalMonthlySpend,
+        ),
+      );
       try {
-        final remoteSubscriptions = await subscriptionRepository.fetchAllSubscriptions();
+        final remoteSubscriptions = await subscriptionRepository
+            .fetchAllSubscriptions();
         final localMap = {for (var s in state.subscriptions) s.id: s};
         final updatedList = <SubscriptionModel>[];
 
@@ -48,33 +52,41 @@ class SubscriptionBloc extends HydratedBloc<SubscriptionEvent, SubscriptionState
         }
         updatedList.addAll(localMap.values);
 
-        emit(SubscriptionLoadSuccess(
-          subscriptions: updatedList,
-          totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
-        ));
+        emit(
+          SubscriptionLoadSuccess(
+            subscriptions: updatedList,
+            totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
+          ),
+        );
       } catch (e) {
         log('Failed to load subscriptions: $e');
-        emit(SubscriptionError(
-          subscriptions: state.subscriptions,
-          totalMonthlySpend: state.totalMonthlySpend,
-          message: e.toString(),
-        ));
+        emit(
+          SubscriptionError(
+            subscriptions: state.subscriptions,
+            totalMonthlySpend: state.totalMonthlySpend,
+            message: e.toString(),
+          ),
+        );
       }
     });
 
     on<SubscriptionAdded>((event, emit) async {
-      final user = authRepository.currentUser;
+      final userId = authRepository.currentUser?.uid ?? '';
       final newSubscription = event.subscription.copyWith(
-        id: event.subscription.id.isEmpty ? const Uuid().v4() : event.subscription.id,
-        userId: user?.uid ?? '',
+        id: event.subscription.id.isEmpty
+            ? const Uuid().v4()
+            : event.subscription.id,
+        userId: userId,
         isSynced: false,
       );
 
       final updatedList = [...state.subscriptions, newSubscription];
-      emit(SubscriptionLoadSuccess(
-        subscriptions: updatedList,
-        totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
-      ));
+      emit(
+        SubscriptionLoadSuccess(
+          subscriptions: updatedList,
+          totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
+        ),
+      );
 
       if (settingsBloc.state.model.hasLoggedIn) {
         try {
@@ -87,25 +99,33 @@ class SubscriptionBloc extends HydratedBloc<SubscriptionEvent, SubscriptionState
     });
 
     on<SubscriptionUpdated>((event, emit) async {
-      final updatedList = state.subscriptions.map((s) {
-        return s.id == event.subscription.id ? event.subscription : s;
+      final updatedSubscription = event.subscription.copyWith(isSynced: false);
+      final updatedList = state.subscriptions.map((sub) {
+        return sub.id == updatedSubscription.id ? updatedSubscription : sub;
       }).toList();
 
-      emit(SubscriptionLoadSuccess(
-        subscriptions: updatedList,
-        totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
-      ));
+      emit(
+        SubscriptionLoadSuccess(
+          subscriptions: updatedList,
+          totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
+        ),
+      );
 
-      if (settingsBloc.state.model.hasLoggedIn && !event.subscription.isSynced) {
+      if (settingsBloc.state.model.hasLoggedIn &&
+          !event.subscription.isSynced) {
         try {
-          await subscriptionRepository.updateSubscription(event.subscription);
+          await subscriptionRepository.updateSubscription(updatedSubscription);
           // Recursively update to mark as synced without infinite loop
           final synced = event.subscription.copyWith(isSynced: true);
-          final finalStateList = state.subscriptions.map((s) => s.id == synced.id ? synced : s).toList();
-          emit(SubscriptionLoadSuccess(
-            subscriptions: finalStateList,
-            totalMonthlySpend: _calculateTotalMonthlySpend(finalStateList),
-          ));
+          final finalStateList = state.subscriptions
+              .map((s) => s.id == synced.id ? synced : s)
+              .toList();
+          emit(
+            SubscriptionLoadSuccess(
+              subscriptions: finalStateList,
+              totalMonthlySpend: _calculateTotalMonthlySpend(finalStateList),
+            ),
+          );
         } catch (e) {
           log('Failed to sync updated subscription: $e');
         }
@@ -113,11 +133,15 @@ class SubscriptionBloc extends HydratedBloc<SubscriptionEvent, SubscriptionState
     });
 
     on<SubscriptionDeleted>((event, emit) async {
-      final updatedList = state.subscriptions.where((s) => s.id != event.id).toList();
-      emit(SubscriptionLoadSuccess(
-        subscriptions: updatedList,
-        totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
-      ));
+      final updatedList = state.subscriptions
+          .where((s) => s.id != event.id)
+          .toList();
+      emit(
+        SubscriptionLoadSuccess(
+          subscriptions: updatedList,
+          totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
+        ),
+      );
 
       if (settingsBloc.state.model.hasLoggedIn) {
         try {
@@ -150,7 +174,7 @@ class SubscriptionBloc extends HydratedBloc<SubscriptionEvent, SubscriptionState
   double _calculateTotalMonthlySpend(List<SubscriptionModel> subscriptions) {
     double total = 0.0;
     for (final sub in subscriptions) {
-      if (sub.isPaused) continue;
+      if (sub.inActive) continue;
 
       switch (sub.billingCycle) {
         case BillingCycle.weekly:
@@ -172,7 +196,9 @@ class SubscriptionBloc extends HydratedBloc<SubscriptionEvent, SubscriptionState
   SubscriptionState? fromJson(Map<String, dynamic> json) {
     try {
       final List<dynamic> list = json['subscriptions'];
-      final subscriptions = list.map((e) => SubscriptionModel.fromMap(e)).toList();
+      final subscriptions = list
+          .map((e) => SubscriptionModel.fromMap(e))
+          .toList();
       return SubscriptionLoadSuccess(
         subscriptions: subscriptions,
         totalMonthlySpend: _calculateTotalMonthlySpend(subscriptions),

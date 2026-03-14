@@ -880,11 +880,26 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String inActiveSubscriptions(Object count) {
+    return '$count InActive Subscriptions';
+  }
+
+  @override
+  String overdueSubscriptions(Object count) {
+    return '$count Overdue Subscriptions';
+  }
+
+  @override
   String get overdue => 'Overdue';
 
   @override
   String nextBillingDate(Object date) {
     return 'Next: $date';
+  }
+
+  @override
+  String dueToBillingDate(Object date) {
+    return 'Due To: $date';
   }
 
   @override
@@ -1043,7 +1058,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailySavingAmount => 'Daily Saving Amount';
 
   @override
-  String get colorPicker => 'Color Picker';
+  String get selectColor => 'Select Color';
 
   @override
   String get methodDefault => 'Default';
@@ -1106,7 +1121,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get off => 'Off';
 
   @override
-  String get paused => 'Paused';
+  String get inActive => 'inActive';
 
   @override
   String get active => 'Active';
@@ -1126,4 +1141,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get reminderInfo => 'Get notified before your subscription renews.';
+
+  @override
+  String get reminderBeforeDays => 'Reminder Before Days';
+
+  @override
+  String get subNameCantLeftEmpty => 'Subscription Name Can\'t Left Empty';
+
+  @override
+  String get amountCantLeftEmpty => 'Amount Can\'t Left Empty';
+
+  @override
+  String get inActiveAndOverdue => 'inActive & Overdue';
+
+  @override
+  String subPaying(String name) {
+    return '$name Payment';
+  }
+
+  @override
+  String subNote(String name, String date) {
+    return '$name subscription, renewing on $date';
+  }
+
+  @override
+  String get activeStatus => 'Active Status';
+
+  @override
+  String get trackingStatus => 'Tracking';
+
+  @override
+  String get paused => 'Paused';
 }

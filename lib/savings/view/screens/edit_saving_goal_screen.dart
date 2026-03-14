@@ -47,17 +47,7 @@ class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
   late final ValueNotifier<int> _targetDaysNotifier;
 
   final ValueNotifier<String?> _selectedCurrency = ValueNotifier(null);
-  final ValueNotifier<int> _selectedColor = ValueNotifier(0xFF4CAF50);
-
-  final List<int> _colorOptions = const [
-    0xFF4CAF50,
-    0xFF2196F3,
-    0xFFFFC107,
-    0xFFE91E63,
-    0xFF9C27B0,
-    0xFFFF5722,
-    0xFF00BCD4,
-  ];
+  final ValueNotifier<Color> _selectedColor = ValueNotifier(Color(0xFF4CAF50));
 
   @override
   void initState() {
@@ -79,7 +69,7 @@ class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
     _targetDaysNotifier = ValueNotifier(goal.targetDays);
 
     _selectedCurrency.value = goal.currency;
-    _selectedColor.value = goal.colorValue;
+    _selectedColor.value = Color(goal.colorValue);
 
     _daysFocusNode.addListener(() {
       if (!_daysFocusNode.hasFocus && !_isByAmountNotifier.value) {
@@ -306,11 +296,8 @@ class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
                       },
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    Text(l10n.colorPicker, style: AppTextStyles.bodyMedium),
-                    const SizedBox(height: AppSpacing.sm),
                     SavingsColorPicker(
                       selectedColorNotifier: _selectedColor,
-                      colorOptions: _colorOptions,
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     SavingsInfoSection(isByAmountNotifier: _isByAmountNotifier),
@@ -342,7 +329,7 @@ class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
         constantAmount: double.tryParse(_constantController.text),
         currency: _selectedCurrency.value!,
         targetDate: _targetDateNotifier.value,
-        colorValue: _selectedColor.value,
+        colorValue: _selectedColor.value.toARGB32(),
         updatedAt: DateTime.now(),
       );
 

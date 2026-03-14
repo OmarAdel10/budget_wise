@@ -280,8 +280,10 @@
   "noSubscriptions": "لا يوجد اشتراكات بعد",
   "totalMonthlySpend": "إجمالي الإنفاق الشهري",
   "activeSubscriptions": "{count} اشتراك نشط",
-  "overdue": "متأخر",
+  "inActiveSubscriptions": "{count} اشتراك غير نشط",
+  "overdueSubscriptions": "{count} اشتراك متأخر",
   "nextBillingDate": "التالي: {date}",
+  "dueToBillingDate": "مستحق في: {date}",
   "addSubscription": "إضافة اشتراك",
   "editSubscription": "تعديل اشتراك",
   "subscriptionDetails": "تفاصيل الاشتراك",
@@ -351,7 +353,7 @@
   "numberOfDays": "عدد الأيام",
   "calculationMethod": "طريقة الحساب",
   "dailySavingAmount": "مبلغ الادخار اليومي",
-  "colorPicker": "منتقي الألوان",
+  "selectColor": "اختر اللون",
   "methodDefault": "افتراضي",
   "methodConstant": "ثابت",
   "methodDouble": "ضعف الافتراضي",
@@ -370,11 +372,39 @@
   "infoEnterDays": "أدخل عدد الأيام. سنقوم تلقائياً بحساب المبلغ المستهدف وتاريخ الهدف بناءً على طريقتك.",
   "status": "الحالة",
   "off": "إيقاف",
-  "paused": "متوقف مؤقتاً",
+  "inActive": "غير نشط",
   "active": "نشط",
   "paymentHistory": "سجل المدفوعات",
   "noPaymentHistory": "لم يتم العثور على سجل مدفوعات.",
   "markedAsPaid": "تم التحديد كمدفوع!",
   "deleteSubscriptionConfirm": "هل أنت متأكد من رغبتك في حذف هذا الاشتراك؟",
-  "cancel": "إلغاء"
+  "cancel": "إلغاء",
+  "overdue": "متأخر",
+  "reminderInfo": "احصل على إشعار قبل تجديد اشتراكك.",
+  "reminderBeforeDays": "تذكير قبل أيام",
+  "subNameCantLeftEmpty": "لا يمكن ترك اسم الاشتراك فارغاً",
+  "amountCantLeftEmpty": "لا يمكن ترك المبلغ فارغاً",
+  "inActiveAndOverdue": "غير نشط ومتأخر",
+  "subPaying": "دفع {name}",
+  "@subPaying": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "subNote": "اشتراك {name}، تم تجديد في {date}",
+  "@subNote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "activeStatus": "الحالة النشطة",
+  "trackingStatus": "تتبع",
+  "paused": "متوقف مؤقتاً"
 }

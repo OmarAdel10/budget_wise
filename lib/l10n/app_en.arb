@@ -283,8 +283,11 @@
   "noSubscriptions": "No subscriptions yet",
   "totalMonthlySpend": "Total Monthly Spend",
   "activeSubscriptions": "{count} Active Subscriptions",
+  "inActiveSubscriptions": "{count} InActive Subscriptions",
+  "overdueSubscriptions": "{count} Overdue Subscriptions",
   "overdue": "Overdue",
   "nextBillingDate": "Next: {date}",
+  "dueToBillingDate": "Due To: {date}",
   "addSubscription": "Add Subscription",
   "editSubscription": "Edit Subscription",
   "subscriptionDetails": "Subscription Details",
@@ -354,7 +357,7 @@
   "numberOfDays": "Number of Days",
   "calculationMethod": "Calculation Method",
   "dailySavingAmount": "Daily Saving Amount",
-  "colorPicker": "Color Picker",
+  "selectColor": "Select Color",
   "methodDefault": "Default",
   "methodConstant": "Constant",
   "methodDouble": "2x Default",
@@ -373,11 +376,38 @@
   "infoEnterDays": "Enter the Number of Days. We'll automatically calculate the Target Amount and Target Date based on your method.",
   "status": "Status",
   "off": "Off",
-  "paused": "Paused",
+  "inActive": "inActive",
   "active": "Active",
   "paymentHistory": "Payment History",
   "noPaymentHistory": "No payment history found.",
   "markedAsPaid": "Marked as paid!",
   "deleteSubscriptionConfirm": "Are you sure you want to delete this subscription?",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "reminderInfo": "Get notified before your subscription renews.",
+  "reminderBeforeDays": "Reminder Before Days",
+  "subNameCantLeftEmpty": "Subscription Name Can't Left Empty",
+  "amountCantLeftEmpty": "Amount Can't Left Empty",
+  "inActiveAndOverdue": "inActive & Overdue",
+  "subPaying": "{name} Payment",
+  "@subPaying": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "subNote": "{name} subscription, renewing on {date}",
+  "@subNote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "activeStatus": "Active Status",
+  "trackingStatus": "Tracking",
+  "paused": "Paused"
 }

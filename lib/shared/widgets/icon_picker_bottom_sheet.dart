@@ -1,4 +1,5 @@
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/savings/view/widgets/savings_color_picker.dart';
 import 'package:budget_wise/shared/utils/icon_all.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -8,8 +9,17 @@ import '../constants/text_styles.dart';
 
 class IconPickerBottomSheet extends StatelessWidget {
   final Function(IconData) onIconSelected;
+  final bool hasColorPalete;
+  final ValueNotifier<Color>? selectedColorNotifier;
 
-  const IconPickerBottomSheet({super.key, required this.onIconSelected});
+  const IconPickerBottomSheet({super.key, required this.onIconSelected})
+    : selectedColorNotifier = null, hasColorPalete = false;
+
+  const IconPickerBottomSheet.hasColorPalete({
+    super.key,
+    required this.selectedColorNotifier,
+    required this.onIconSelected,
+  }) : hasColorPalete = true;
 
   static final List<IconData> _availableIcons = PhosphorIcons()
       .allRegularIcons();
@@ -39,6 +49,12 @@ class IconPickerBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
+          if (hasColorPalete && selectedColorNotifier != null) ...[
+            SavingsColorPicker(
+              selectedColorNotifier: selectedColorNotifier!,
+            ),
+          const SizedBox(height: AppSpacing.lg),
+          ],
           Text(
             AppLocalizations.of(context)!.selectIcon,
             style: AppTextStyles.heading3,

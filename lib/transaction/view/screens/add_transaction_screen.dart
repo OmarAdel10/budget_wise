@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:budget_wise/shared/widgets/currency_prefix.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view/widgets/transaction_title_suggestions.dart';
@@ -50,7 +49,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   bool get _isEditMode => widget.transactionToEdit != null;
   late final String defaultCurrencySymbol;
-
 
   @override
   void initState() {
@@ -109,14 +107,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   void _onTitleFocusChanged() {
-    log('_titleFocusNode.hasFocus: ${_titleFocusNode.hasFocus}');
-    log(
-      '_titleController.text.isNotEmpty: ${_titleController.text.isNotEmpty}',
-    );
-    log(
-      '_titleSuggestionsNotifier.value.isNotEmpty: ${_titleSuggestionsNotifier.value.isNotEmpty}',
-    );
-
     if (!_titleFocusNode.hasFocus) {
       _showSuggestionsNotifier.value = false;
     }
@@ -205,6 +195,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
+
       context.read<TransactionBloc>().add(
         TransactionEventCreateTransaction(newTransaction),
       );
@@ -220,10 +211,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primaryBackground,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: CloseButton(onPressed: () => Navigator.of(context).pop(),),
         title: Text(
           _isEditMode ? l10n.editTransaction : l10n.addTransactionTitle,
           style: const TextStyle(
