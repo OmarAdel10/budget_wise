@@ -44,7 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // State for new pages
   double _incomeAmount = 0.0;
   String? _incomeCategoryTitle;
-  String? _selectedCurrency;
+  String? _selectedIncomeCurrency;
   List<CategoryModel> _selectedCategories = [];
 
   @override
@@ -137,7 +137,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       );
     } else {
       // Final Validation (Category Selection - Page 4)
-      if (_selectedCategories.length < 4) {
+      if (_selectedCategories.length < 3) {
         AppToast.show(
           context,
           type: AppToastType.error,
@@ -168,7 +168,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
       initialBalance: 0.0,
       balance: 0.0,
-      currency: 'EGP',
+      currency: _selectedIncomeCurrency ?? 'EGP',
     );
     context.read<AccountBloc>().add(
       AccountEventCreateAccount(model: accountModel),
@@ -218,7 +218,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       final transaction = TransactionModel(
         type: TransactionType.income,
         transactionAmount: _incomeAmount,
-        transactionCurrency: _selectedCurrency ?? 'EGP',
+        transactionCurrency: _selectedIncomeCurrency ?? 'EGP',
         transactionTitle: '${l10n.income} ${date.format(DateTime.now())}',
         transactionDate: DateTime.now(),
         categoryId: incomeCategoryId,
@@ -232,7 +232,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
       context.read<SettingsBloc>().add(
         SettingsEventUpdateDefaultCurrency(
-          newDefaultCurrency: _selectedCurrency ?? 'EGP',
+          newDefaultCurrency: _selectedIncomeCurrency ?? 'EGP',
         ),
       );
     }
@@ -313,7 +313,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       setState(() {
                         _incomeAmount = amount;
                         _incomeCategoryTitle = categoryTitle;
-                        _selectedCurrency = selectedCurrency;
+                        _selectedIncomeCurrency = selectedCurrency;
                       });
                     },
                   ),
