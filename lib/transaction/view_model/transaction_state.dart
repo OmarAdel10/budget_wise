@@ -10,6 +10,7 @@ class TransactionState extends Equatable {
   final DateTime? lastAccountUpdatedAt;
   final String? selectedAccountId;
   final List<SmsDraftModel> pendingSmsTransactions;
+  final bool isProcessingBackgroundDrafts;
   final String? errorMessage;
 
   const TransactionState({
@@ -19,6 +20,7 @@ class TransactionState extends Equatable {
     this.lastAccountUpdatedAt,
     this.selectedAccountId,
     this.pendingSmsTransactions = const [],
+    this.isProcessingBackgroundDrafts = false,
     this.errorMessage,
   });
 
@@ -31,6 +33,7 @@ class TransactionState extends Equatable {
     DateTime? lastAccountUpdatedAt,
     String? selectedAccountId,
     List<SmsDraftModel>? pendingSmsTransactions,
+    bool? isProcessingBackgroundDrafts,
     String? errorMessage,
   }) {
     return TransactionState(
@@ -42,6 +45,8 @@ class TransactionState extends Equatable {
       selectedAccountId: selectedAccountId ?? this.selectedAccountId,
       pendingSmsTransactions:
           pendingSmsTransactions ?? this.pendingSmsTransactions,
+      isProcessingBackgroundDrafts:
+          isProcessingBackgroundDrafts ?? this.isProcessingBackgroundDrafts,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -118,6 +123,7 @@ class TransactionState extends Equatable {
     lastAccountUpdatedAt,
     selectedAccountId,
     pendingSmsTransactions,
+    isProcessingBackgroundDrafts,
     errorMessage,
   ];
 }

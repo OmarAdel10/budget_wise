@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:another_telephony/telephony.dart'; // Changed import
+import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart'; // New import
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
@@ -59,6 +61,25 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _performInitialSync();
     _startPeriodicCheck();
     _initSmsService();
+    // Sequencing: Load drafts first, then check for notification launch
+    _checkBackgroundSmsDrafts().then((_) {
+      _handleLaunchNotification();
+    });
+  }
+
+  Future<void> _handleLaunchNotification() async {
+    final notificationAppLaunchDetails = await NotificationRepository
+        .notifications
+        .getNotificationAppLaunchDetails();
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+      final payload =
+          notificationAppLaunchDetails?.notificationResponse?.payload;
+      if (payload == 'sms_draft_confirm') {
+        if (mounted) {
+          Navigator.pushNamed(context, PendingSmsTransactionsScreen.routeName);
+        }
+      }
+    }
   }
 
   @override
@@ -92,6 +113,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         );
       }
 
+      _checkBackgroundSmsDrafts(); // Check for drafts saved by background isolate
       _initSmsService(); // Re-initialize SMS service on resume to ensure listener is active
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
@@ -103,19 +125,49 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _checkBackgroundSmsDrafts() async {
+    context.read<TransactionBloc>().add(
+      const TransactionEventLoadBackgroundDrafts(),
+    );
+
+    // Safety Gate: Wait for the BLoC to finish processing if we are in a launch/resume context
+    int attempts = 0;
+    while (mounted &&
+        context.read<TransactionBloc>().state.isProcessingBackgroundDrafts &&
+        attempts < 10) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      attempts++;
+    }
+  }
+
   Future<void> _initSmsService() async {
     final bool result = await _smsService.requestPermissions();
     if (result) {
       _smsService.listenForSms(
-        onNewMessage: (SmsMessage message) {
-          // This callback runs in the foreground isolate
-
+        onNewMessage: (SmsMessage message) async {
+          //* This callback runs in the foreground isolate
+          log("Foreground SMS received from: ${message.address}");
           final SmsDraftModel? smsDraft = _smsService.processMessage(
             message: message,
             accounts: context.read<AccountBloc>().state.accountsList,
           );
 
           if (smsDraft != null) {
+            final String amountStr =
+                "${smsDraft.extractedAmount?.toStringAsFixed(2)} ${smsDraft.extractedCurrency}";
+            final String merchantStr =
+                smsDraft.extractedMerchant ?? "Unknown Merchant";
+            await NotificationRepository.instantNotification(
+              id: smsDraft.timestamp.millisecondsSinceEpoch ~/ 1000,
+              channelId: 'sms_transactions',
+              channelName: 'SMS Transactions',
+              channelDescription:
+                  'Notifications for detected bank SMS transactions',
+              title: 'New Transaction Detected',
+              body: 'Detected $amountStr at $merchantStr. Tap to confirm.',
+              payload:
+                  'sms_draft_confirm', // Used for navigation logic in the main app
+            );
             context.read<TransactionBloc>().add(
               TransactionEventAddSmsDraft(smsDraft: smsDraft),
             );

@@ -110,6 +110,13 @@ class TransactionEventUpdateSmsDraft extends TransactionEvent {
   List<Object?> get props => [updatedDraft];
 }
 
+class TransactionEventLoadBackgroundDrafts extends TransactionEvent {
+  const TransactionEventLoadBackgroundDrafts();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TransactionEventSelectAccount extends TransactionEvent {
   final String? accountId;
 

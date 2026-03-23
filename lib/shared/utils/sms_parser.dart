@@ -107,7 +107,7 @@ class SmsParser {
       extractedCardLastFour: cardLastFour,
       transactionType: type,
       matchedAccountId: null,
-      timestamp: DateTime.now(),
+      timestamp: messageDate ?? DateTime.now(),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:budget_wise/accounts/data/models/account_model.dart';
@@ -7,6 +8,7 @@ import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
@@ -18,6 +20,9 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
     required this.accountRepo,
     required this.authRepository,
   }) : super(AccountStateInitial(accountsList: [], netWorth: 0)) {
+    // Initial sync of loaded accounts to SharedPreferences
+    _syncToSharedPreferences(state.accountsList);
+
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const AccountEventFetchAll());
@@ -54,6 +59,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         emit(
           AccountStateSuccess(accountsList: updatedList, netWorth: netWorth),
         );
+        _syncToSharedPreferences(updatedList);
       } catch (e) {
         log('Failed to fetch accounts: ${e.toString()}');
         emit(
@@ -89,6 +95,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
             netWorth: state.netWorth + newAccount.initialBalance,
           ),
         );
+        _syncToSharedPreferences(updatedList);
         if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo
               .addAccount(newAccount)
@@ -138,6 +145,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
             netWorth: state.netWorth + balanceDelta,
           ),
         );
+        _syncToSharedPreferences(updatedList);
 
         if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo
@@ -185,6 +193,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
             netWorth: state.netWorth,
           ),
         );
+        _syncToSharedPreferences(updatedList);
 
         if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo
@@ -229,6 +238,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
             netWorth: state.netWorth - accountToDelete.balance,
           ),
         );
+        _syncToSharedPreferences(updatedList);
 
         if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo.deleteAccount(event.accountId).catchError((e) {
@@ -269,6 +279,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
             netWorth: state.netWorth,
           ),
         );
+        _syncToSharedPreferences(updatedList);
       } catch (e) {
         log('Failed to mark account synced: ${e.toString()}');
         emit(
@@ -344,6 +355,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
             netWorth: state.netWorth + event.amountDelta,
           ),
         );
+        _syncToSharedPreferences(updatedList);
 
         if (settingsBloc.state.model.hasLoggedIn) {
           accountRepo
@@ -406,6 +418,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
                 log('Failed to sync account ${account.id} on login: $e');
               });
         }
+        _syncToSharedPreferences(state.accountsList);
       } catch (e) {
         emit(
           AccountStateError(
@@ -433,6 +446,7 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
                 log('Failed to sync account ${account.id}: $e');
               });
         }
+        _syncToSharedPreferences(state.accountsList);
       } catch (e) {
         emit(
           AccountStateError(
@@ -443,6 +457,18 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         );
       }
     });
+  }
+
+  void _syncToSharedPreferences(List<AccountModel> accounts) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String encoded = json.encode(
+        accounts.map((acc) => acc.toMap()).toList(),
+      );
+      await prefs.setString('cached_accounts_for_sms', encoded);
+    } catch (e) {
+      log('Failed to sync accounts to SharedPreferences: $e');
+    }
   }
 
   @override
@@ -457,6 +483,10 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
       final List<AccountModel> accountsList = list
           .map((e) => AccountModel.fromMap(e))
           .toList();
+
+      // Ensure SharedPreferences is updated after loading from Hydrated storage
+      _syncToSharedPreferences(accountsList);
+
       return AccountStateSuccess(
         accountsList: accountsList,
         netWorth: netWorth,

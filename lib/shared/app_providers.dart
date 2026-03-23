@@ -13,6 +13,7 @@ import 'package:budget_wise/statistics/view_model/statistics_view_model.dart';
 import 'package:budget_wise/subscriptions/data/repositories/subscription_repository.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
+import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,7 +71,7 @@ class AppProviders {
             accountBloc: context.read<AccountBloc>(),
             transactionRepository: context.read<TransactionRepository>(),
             authRepository: context.read<AuthRepository>(),
-          ),
+          )..add(const TransactionEventLoadBackgroundDrafts()),
         ),
         BlocProvider(
           create: (context) => CategoryBloc(

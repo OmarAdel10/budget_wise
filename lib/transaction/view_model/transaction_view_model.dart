@@ -7,8 +7,11 @@ import 'package:budget_wise/transaction/data/repositories/transaction_repository
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
 
 class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
   final SettingsBloc settingsBloc;
@@ -341,6 +344,19 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     });
 
     on<TransactionEventAddSmsDraft>((event, emit) {
+      // Check for duplicates based on sender, body, and timestamp
+      final bool isDuplicate = state.pendingSmsTransactions.any(
+        (existing) =>
+            existing.sender == event.smsDraft.sender &&
+            existing.body == event.smsDraft.body &&
+            existing.timestamp == event.smsDraft.timestamp,
+      );
+
+      if (isDuplicate) {
+        log("Duplicate SMS draft ignored: ${event.smsDraft.sender}");
+        return;
+      }
+
       final newDraft = event.smsDraft.copyWith(
         id: (event.smsDraft.id.isEmpty) ? const Uuid().v4() : event.smsDraft.id,
       );
@@ -386,6 +402,46 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         currentState: state,
       );
       emit(newState.copyWith(selectedAccountId: event.accountId));
+    });
+
+    on<TransactionEventLoadBackgroundDrafts>((event, emit) async {
+      emit(state.copyWith(isProcessingBackgroundDrafts: true));
+      try {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final List<String>? draftsJson =
+            prefs.getStringList('pending_background_drafts');
+
+        if (draftsJson != null && draftsJson.isNotEmpty) {
+          await prefs.remove('pending_background_drafts');
+
+          final List<SmsDraftModel> newDrafts =
+              draftsJson
+                  .map((jsonStr) => SmsDraftModel.fromJson(jsonStr))
+                  .toList();
+
+          // Merge with existing pending transactions, avoiding duplicates
+          final currentPending = List<SmsDraftModel>.from(
+            state.pendingSmsTransactions,
+          );
+          for (final draft in newDrafts) {
+            if (!currentPending.any((existing) => existing.id == draft.id)) {
+              currentPending.insert(0, draft);
+            }
+          }
+
+          emit(
+            state.copyWith(
+              pendingSmsTransactions: currentPending,
+              isProcessingBackgroundDrafts: false,
+            ),
+          );
+        } else {
+          emit(state.copyWith(isProcessingBackgroundDrafts: false));
+        }
+      } catch (e) {
+        debugPrint("Error loading background drafts in BLoC: $e");
+        emit(state.copyWith(isProcessingBackgroundDrafts: false));
+      }
     });
   }
 

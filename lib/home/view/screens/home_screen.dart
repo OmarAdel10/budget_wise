@@ -1,3 +1,4 @@
+// import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:budget_wise/shared/widgets/income_expense_toggle.dart';
 import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
@@ -73,7 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 HomeFlexibleHeader(scrollController: _scrollController),
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.sm,
+                  ),
                   sliver: SliverToBoxAdapter(
                     child: Row(
                       children: [
@@ -97,8 +101,9 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: "home_fab",
         tooltip: l10n.addTransactionTitle,
-        onPressed: () =>
-            Navigator.of(context).pushNamed(AddTransactionScreen.routeName),
+        onPressed: () {
+          Navigator.of(context).pushNamed(AddTransactionScreen.routeName);
+        },
         backgroundColor: AppColors.primaryAccent,
         child: Icon(
           PhosphorIcons.plus(PhosphorIconsStyle.bold),
