@@ -77,7 +77,7 @@ class SubscriptionDetailsScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(PhosphorIconsBold.trash, color: AppColors.danger),
             onPressed: () =>
-                _showDeleteDialog(context, l10n, subscriptionModel.id),
+                _showDeleteDialog(context, l10n, subscriptionModel),
           ),
         ],
       ),
