@@ -865,6 +865,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noSubscriptions => 'لا يوجد اشتراكات بعد';
 
   @override
+  String get thisSubscriptionNotAvailable => 'هذا الاشتراك غير متوفر';
+
+  @override
   String get totalMonthlySpend => 'إجمالي الإنفاق الشهري';
 
   @override
@@ -1167,4 +1170,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paused => 'متوقف مؤقتاً';
+
+  @override
+  String get subscriptionCreatedSuccessfully => 'تم إنشاء الاشتراك بنجاح!';
+
+  @override
+  String get subscriptionUpdatedSuccessfully => 'تم تحديث الاشتراك بنجاح!';
 }

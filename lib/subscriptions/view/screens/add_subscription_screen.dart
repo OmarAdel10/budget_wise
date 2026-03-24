@@ -1,3 +1,4 @@
+import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/savings/view/widgets/savings_color_picker.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:budget_wise/shared/widgets/alert_setting_card.dart';
@@ -103,12 +104,112 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
     super.dispose();
   }
 
+  Future<void> schecduleNotifcationInitialization({
+    required SubscriptionModel subscription,
+  }) async {
+    final int baseId = subscription.createdAt.millisecondsSinceEpoch ~/ 1000;
+    for (int i = 0; i <= 31; i++) {
+      await NotificationRepository.cancelNotificationById(baseId + i);
+    }
+    if (subscription.reminderEnabled) {
+      for (int i = 0; i <= subscription.remindBeforeDays; i++) {
+        final date = subscription.nextBillingDate.subtract(Duration(days: i));
+        if (date.isBefore(DateTime.now())) continue;
+        await NotificationRepository.scheduledNotification(
+          channelId: 'subscription_transactions',
+          channelName: 'Subscription Reminder',
+          channelDescription: 'Notifications for Subscriptions Due Date',
+          id: baseId + i,
+          title: '${subscription.name} Reminder',
+          body: i == 0
+              ? 'Your payment for ${subscription.name} is due today!'
+              : 'You still have $i day(s) left to pay ${subscription.amount}${subscription.currency} for ${subscription.name}',
+          payload: 'subscription_${subscription.id}',
+          scheduledDate: date,
+        );
+      }
+    } else {
+      if (subscription.nextBillingDate.isAfter(DateTime.now())) {
+        await NotificationRepository.scheduledNotification(
+          channelId: 'subscription_transactions',
+          channelName: 'Subscription Reminder',
+          channelDescription: 'Notifications for Subscriptions Due Date',
+          id: baseId,
+          title: '${subscription.name} Reminder',
+          body: 'Your payment for ${subscription.name} is due today!',
+          payload: 'subscription_${subscription.id}',
+          scheduledDate: subscription.nextBillingDate,        );
+      }
+    }
+  }
+
+  void _onUpdateSubscription({
+    required String name,
+    required double amount,
+    required BillingCycle cycle,
+    required DateTime startDate,
+    required DateTime nextBilling,
+    required int reminderBeforeDaysCount,
+  }) async {
+    final updatedSub = widget.subscriptionToEdit!.copyWith(
+      name: name,
+      amount: amount,
+      currency: _selectedCurrency.value,
+      categoryId: _selectedCategoryIdNotifier.value,
+      icon: _selectedIconNotifier.value,
+      iconColorValue: _selectedColorNotifier.value.toARGB32(),
+      billingCycle: cycle,
+      startDate: startDate,
+      billingDay: startDate.day,
+      nextBillingDate: nextBilling,
+      reminderEnabled: reminderEnabledNotifier.value,
+      remindBeforeDays: reminderBeforeDaysCount,
+      inActive: !inActiveStatusNotifier.value,
+      updatedAt: DateTime.now(),
+    );
+    context.read<SubscriptionBloc>().add(SubscriptionUpdated(updatedSub));
+    if (!updatedSub.inActive) {
+      await schecduleNotifcationInitialization(subscription: updatedSub);
+    }
+  }
+
+  void _onSaveNewSubscription({
+    required String name,
+    required double amount,
+    required BillingCycle cycle,
+    required DateTime startDate,
+    required DateTime nextBilling,
+    required int reminderBeforeDaysCount,
+  }) async {
+    final newSub = SubscriptionModel(
+      name: name,
+      amount: amount,
+      currency: _selectedCurrency.value,
+      billingCycle: cycle,
+      categoryId: _selectedCategoryIdNotifier.value!,
+      icon: _selectedIconNotifier.value,
+      iconColorValue: _selectedColorNotifier.value.toARGB32(),
+      startDate: startDate,
+      billingDay: startDate.day,
+      nextBillingDate: nextBilling,
+      reminderEnabled: reminderEnabledNotifier.value,
+      remindBeforeDays: reminderBeforeDaysCount,
+      inActive: !inActiveStatusNotifier.value,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    context.read<SubscriptionBloc>().add(SubscriptionAdded(newSub));
+    if (!newSub.inActive) {
+      await schecduleNotifcationInitialization(subscription: newSub);
+    }
+  }
+
   void _onSave() {
     final name = _nameController.text.trim();
     final amountText = _amountController.text.replaceAll(',', '').trim();
     final amount = double.tryParse(amountText);
     final l10n = AppLocalizations.of(context)!;
-    final remindBeforeDays = int.tryParse(reminderController.text) ?? 1;
+    final reminderBeforeDaysCount = int.tryParse(reminderController.text) ?? 1;
     final startDate = _startDateNotifier.value;
     final billingCycle = _billingCycleNotifier.value;
     final nextBilling = BillingUtils.calculateNextBillingDate(
@@ -130,43 +231,34 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
 
     if (_formKey.currentState!.validate()) {
       if (_isEditMode) {
-        final updatedSub = widget.subscriptionToEdit!.copyWith(
+        _onUpdateSubscription(
           name: name,
           amount: amount,
-          currency: _selectedCurrency.value,
-          categoryId: _selectedCategoryIdNotifier.value,
-          icon: _selectedIconNotifier.value,
-          iconColorValue: _selectedColorNotifier.value.toARGB32(),
-          billingCycle: billingCycle,
+          cycle: billingCycle,
           startDate: startDate,
-          billingDay: startDate.day,
-          nextBillingDate: nextBilling,
-          reminderEnabled: reminderEnabledNotifier.value,
-          remindBeforeDays: remindBeforeDays,
-          inActive: !inActiveStatusNotifier.value,
-          updatedAt: DateTime.now(),
+          nextBilling: nextBilling,
+          reminderBeforeDaysCount: reminderBeforeDaysCount,
         );
-        context.read<SubscriptionBloc>().add(SubscriptionUpdated(updatedSub));
       } else {
-        final newSub = SubscriptionModel(
+        _onSaveNewSubscription(
           name: name,
           amount: amount,
-          currency: _selectedCurrency.value,
-          billingCycle: billingCycle,
-          categoryId: _selectedCategoryIdNotifier.value!,
-          icon: _selectedIconNotifier.value,
-          iconColorValue: _selectedColorNotifier.value.toARGB32(),
+          cycle: billingCycle,
           startDate: startDate,
-          billingDay: startDate.day,
-          nextBillingDate: nextBilling,
-          inActive: !inActiveStatusNotifier.value,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
+          nextBilling: nextBilling,
+          reminderBeforeDaysCount: reminderBeforeDaysCount,
         );
-        context.read<SubscriptionBloc>().add(SubscriptionAdded(newSub));
       }
 
       Navigator.pop(context);
+
+      AppToast.show(
+        context,
+        title: _isEditMode
+            ? l10n.subscriptionUpdatedSuccessfully
+            : l10n.subscriptionCreatedSuccessfully,
+        type: AppToastType.success,
+      );
     }
   }
 

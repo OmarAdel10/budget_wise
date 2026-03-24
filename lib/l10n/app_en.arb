@@ -281,6 +281,7 @@
   "totalSubscriptions": "Total Subscriptions",
   "subscriptions": "Subscriptions",
   "noSubscriptions": "No subscriptions yet",
+  "thisSubscriptionNotAvailable": "This subscription is not available",
   "totalMonthlySpend": "Total Monthly Spend",
   "activeSubscriptions": "{count} Active Subscriptions",
   "inActiveSubscriptions": "{count} InActive Subscriptions",
@@ -409,5 +410,7 @@
   },
   "activeStatus": "Active Status",
   "trackingStatus": "Tracking",
-  "paused": "Paused"
+  "paused": "Paused",
+  "subscriptionCreatedSuccessfully": "Subscription created successfully!",
+  "subscriptionUpdatedSuccessfully": "Subscription updated successfully!"
 }

@@ -872,6 +872,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSubscriptions => 'No subscriptions yet';
 
   @override
+  String get thisSubscriptionNotAvailable =>
+      'This subscription is not available';
+
+  @override
   String get totalMonthlySpend => 'Total Monthly Spend';
 
   @override
@@ -1175,4 +1179,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paused => 'Paused';
+
+  @override
+  String get subscriptionCreatedSuccessfully =>
+      'Subscription created successfully!';
+
+  @override
+  String get subscriptionUpdatedSuccessfully =>
+      'Subscription updated successfully!';
 }

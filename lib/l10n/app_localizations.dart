@@ -1766,6 +1766,12 @@ abstract class AppLocalizations {
   /// **'No subscriptions yet'**
   String get noSubscriptions;
 
+  /// No description provided for @thisSubscriptionNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This subscription is not available'**
+  String get thisSubscriptionNotAvailable;
+
   /// No description provided for @totalMonthlySpend.
   ///
   /// In en, this message translates to:
@@ -2317,6 +2323,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paused'**
   String get paused;
+
+  /// No description provided for @subscriptionCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription created successfully!'**
+  String get subscriptionCreatedSuccessfully;
+
+  /// No description provided for @subscriptionUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription updated successfully!'**
+  String get subscriptionUpdatedSuccessfully;
 }
 
 class _AppLocalizationsDelegate

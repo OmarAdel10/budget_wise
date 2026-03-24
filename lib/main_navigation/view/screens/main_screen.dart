@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:another_telephony/telephony.dart'; // Changed import
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
+import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart'; // New import
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
@@ -77,6 +78,15 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       if (payload == 'sms_draft_confirm') {
         if (mounted) {
           Navigator.pushNamed(context, PendingSmsTransactionsScreen.routeName);
+        }
+      } else if (payload!.startsWith('subscription_')) {
+        final subId = payload.replaceFirst('subscription_', '');
+        if (mounted) {
+          Navigator.pushNamed(
+            context,
+            SubscriptionDetailsScreen.routeName,
+            arguments: subId,
+          );
         }
       }
     }

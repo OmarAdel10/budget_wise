@@ -278,6 +278,7 @@
   "totalSubscriptions": "إجمالي الاشتراكات",
   "subscriptions": "الاشتراكات",
   "noSubscriptions": "لا يوجد اشتراكات بعد",
+  "thisSubscriptionNotAvailable": "هذا الاشتراك غير متوفر",
   "totalMonthlySpend": "إجمالي الإنفاق الشهري",
   "activeSubscriptions": "{count} اشتراك نشط",
   "inActiveSubscriptions": "{count} اشتراك غير نشط",
@@ -406,5 +407,7 @@
   },
   "activeStatus": "الحالة النشطة",
   "trackingStatus": "تتبع",
-  "paused": "متوقف مؤقتاً"
+  "paused": "متوقف مؤقتاً",
+  "subscriptionCreatedSuccessfully": "تم إنشاء الاشتراك بنجاح!",
+  "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!"
 }

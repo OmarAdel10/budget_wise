@@ -67,7 +67,7 @@ class CategoryListItem extends StatelessWidget {
         } else if (source is SubscriptionModel) {
           Navigator.of(context).pushNamed(
             SubscriptionDetailsScreen.routeName,
-            arguments: {'subscriptionModel': source},
+            arguments: source.id,
           );
         }
       },

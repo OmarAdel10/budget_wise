@@ -3,6 +3,7 @@ import 'package:another_telephony/telephony.dart';
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/shared/utils/sms_parser.dart';
@@ -52,7 +53,9 @@ void onBackgroundMessage(SmsMessage message) async {
     // 2. Parse the message
     final SmsParser parser = SmsParser();
     final List<String> senderIds = accounts
-        .where((acc) => acc.smsSenderIds != null && acc.smsSenderIds!.isNotEmpty)
+        .where(
+          (acc) => acc.smsSenderIds != null && acc.smsSenderIds!.isNotEmpty,
+        )
         .expand((acc) => acc.smsSenderIds!)
         .toSet()
         .toList();
@@ -86,8 +89,12 @@ void onBackgroundMessage(SmsMessage message) async {
           account.smsSenderIds != null &&
           account.smsSenderIds!.any(
             (id) =>
-                (message.address ?? '').toUpperCase().contains(id.toUpperCase()) ||
-                id.toUpperCase().contains((message.address ?? '').toUpperCase()),
+                (message.address ?? '').toUpperCase().contains(
+                  id.toUpperCase(),
+                ) ||
+                id.toUpperCase().contains(
+                  (message.address ?? '').toUpperCase(),
+                ),
           );
 
       if (hasMatchingSenderId) {
@@ -110,7 +117,8 @@ void onBackgroundMessage(SmsMessage message) async {
     // 5. Trigger Notification
     final String amountStr =
         "${finalDraft.extractedAmount?.toStringAsFixed(2)} ${finalDraft.extractedCurrency}";
-    final String merchantStr = finalDraft.extractedMerchant ?? "Unknown Merchant";
+    final String merchantStr =
+        finalDraft.extractedMerchant ?? "Unknown Merchant";
 
     await NotificationRepository.instantNotification(
       id: finalDraft.timestamp.millisecondsSinceEpoch ~/ 1000,
@@ -118,22 +126,14 @@ void onBackgroundMessage(SmsMessage message) async {
       channelName: 'SMS Transactions',
       channelDescription: 'Notifications for detected bank SMS transactions',
       title: 'New Transaction Detected',
-      body: 'Detected $amountStr at $merchantStr. Tap to confirm.',
+      body:
+          'Detected $amountStr ${smsDraft.transactionType == TransactionType.income ? 'from' : 'at'} $merchantStr. Tap to confirm.',
       payload: 'sms_draft_confirm',
     );
 
     debugPrint("Background SMS processed and draft saved: ${finalDraft.id}");
   } catch (e) {
     debugPrint("Error in background SMS handler: $e");
-    // Show a debug notification on error during development
-    await NotificationRepository.instantNotification(
-      id: 999999,
-      channelId: 'debug_errors',
-      channelName: 'Debug Errors',
-      channelDescription: 'Internal background SMS errors',
-      title: 'SMS Background Error',
-      body: 'Error: ${e.toString()}',
-    );
   }
 }
 

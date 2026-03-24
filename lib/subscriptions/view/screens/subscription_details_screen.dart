@@ -1,3 +1,5 @@
+import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
+import 'package:budget_wise/shared/widgets/custom_button.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_hero_header.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_info_grid.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_pay_action.dart';
@@ -26,10 +28,22 @@ class SubscriptionDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final subscriptionModel = args?['subscriptionModel'] as SubscriptionModel;
     final l10n = AppLocalizations.of(context)!;
+    final subscriptionId = ModalRoute.of(context)?.settings.arguments as String;
+    final subscriptionModel = context
+        .select<SubscriptionBloc, SubscriptionModel?>(
+          (bloc) => bloc.state.subscriptions
+              .where((sub) => sub.id == subscriptionId)
+              .firstOrNull,
+        );
+
+    if (subscriptionModel == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showNotFoundDialog(context);
+      });
+      return const Scaffold();
+    }
+
     final ValueNotifier<bool> isOverdueNotifier = ValueNotifier(
       BillingUtils.isOverdue(subscriptionModel.nextBillingDate),
     );
@@ -148,10 +162,44 @@ class SubscriptionDetailsScreen extends StatelessWidget {
     );
   }
 
+  void _showNotFoundDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.cardBackground,
+        title: Text(l10n.notAvailable, style: AppTextStyles.heading3),
+        content: Text(
+          l10n.thisSubscriptionNotAvailable,
+          style: AppTextStyles.bodyMedium,
+        ),
+        actions: [
+          CustomButton(
+            text: l10n.back,
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _deleteScheduledNotificationsForThisSubscription(
+    SubscriptionModel model,
+  ) async {
+    final baseId = model.createdAt.millisecondsSinceEpoch ~/ 1000;
+    for (int i = 0; i <= 31; i++) {
+      await NotificationRepository.cancelNotificationById(baseId + i);
+    }
+  }
+
   void _showDeleteDialog(
     BuildContext context,
     AppLocalizations l10n,
-    String subscriptionId,
+    SubscriptionModel subscriptionModel,
   ) {
     showDialog(
       context: context,
@@ -172,9 +220,11 @@ class SubscriptionDetailsScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
-
+                _deleteScheduledNotificationsForThisSubscription(
+                  subscriptionModel,
+                );
                 context.read<SubscriptionBloc>().add(
-                  SubscriptionDeleted(id: subscriptionId),
+                  SubscriptionDeleted(id: subscriptionModel.id),
                 );
               },
               child: Text(

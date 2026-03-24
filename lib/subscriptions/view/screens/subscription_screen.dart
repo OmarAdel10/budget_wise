@@ -100,7 +100,7 @@ class SubscriptionScreen extends StatelessWidget {
                               Navigator.pushNamed(
                                 context,
                                 SubscriptionDetailsScreen.routeName,
-                                arguments: {'subscriptionModel': subscription},
+                                arguments: subscription.id,
                               );
                             },
                           ),
