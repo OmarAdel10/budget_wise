@@ -15,6 +15,7 @@ class SubscriptionModel implements FinancialRepresentable {
   final String currency;
   final BillingCycle billingCycle;
   final String categoryId;
+  final String accountId;
   final IconData icon;
   final int iconColorValue;
   final DateTime startDate;
@@ -48,6 +49,7 @@ class SubscriptionModel implements FinancialRepresentable {
     required this.currency,
     required this.billingCycle,
     required this.categoryId,
+    required this.accountId,
     required this.icon,
     required this.iconColorValue,
     required this.startDate,
@@ -70,6 +72,7 @@ class SubscriptionModel implements FinancialRepresentable {
     String? currency,
     BillingCycle? billingCycle,
     String? categoryId,
+    String? accountId,
     IconData? icon,
     int? iconColorValue,
     DateTime? startDate,
@@ -91,6 +94,7 @@ class SubscriptionModel implements FinancialRepresentable {
       currency: currency ?? this.currency,
       billingCycle: billingCycle ?? this.billingCycle,
       categoryId: categoryId ?? this.categoryId,
+      accountId: accountId ?? this.accountId,
       icon: icon ?? this.icon,
       iconColorValue: iconColorValue ?? this.iconColorValue,
       startDate: startDate ?? this.startDate,
@@ -115,6 +119,7 @@ class SubscriptionModel implements FinancialRepresentable {
       'currency': currency,
       'billingCycle': billingCycle.name,
       'categoryId': categoryId,
+      'accountId': accountId,
       'iconCodePoint': icon.codePoint,
       'iconFontFamily': icon.fontFamily,
       'iconFontPackage': icon.fontPackage,
@@ -143,6 +148,7 @@ class SubscriptionModel implements FinancialRepresentable {
         (e) => e.name == map['billingCycle'],
       ),
       categoryId: map['categoryId'] as String,
+      accountId: map['accountId'] as String? ?? '',
       icon: IconData(
         map['iconCodePoint'] as int,
         fontFamily: map['iconFontFamily'] as String?,

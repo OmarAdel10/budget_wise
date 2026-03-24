@@ -1,6 +1,7 @@
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/savings/view/widgets/savings_color_picker.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
+import 'package:budget_wise/shared/widgets/account_dropdown.dart';
 import 'package:budget_wise/shared/widgets/alert_setting_card.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
@@ -45,6 +46,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
   late final ValueNotifier<DateTime> _startDateNotifier;
   late final ValueNotifier<BillingCycle> _billingCycleNotifier;
   late final ValueNotifier<String?> _selectedCategoryIdNotifier;
+  late final ValueNotifier<String?> _selectedAccountIdNotifier;
   late final ValueNotifier<IconData> _selectedIconNotifier;
   late final ValueNotifier<Color> _selectedColorNotifier;
   late final ValueNotifier<String> _selectedCurrency;
@@ -63,6 +65,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
       _startDateNotifier = ValueNotifier(sub.startDate);
       _billingCycleNotifier = ValueNotifier(sub.billingCycle);
       _selectedCategoryIdNotifier = ValueNotifier(sub.categoryId);
+      _selectedAccountIdNotifier = ValueNotifier(sub.accountId);
       _selectedIconNotifier = ValueNotifier(sub.icon);
       _selectedColorNotifier = ValueNotifier(Color(sub.iconColorValue));
       _selectedCurrency = ValueNotifier(sub.currency);
@@ -73,6 +76,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
       _startDateNotifier = ValueNotifier(DateTime.now());
       _billingCycleNotifier = ValueNotifier(BillingCycle.monthly);
       _selectedCategoryIdNotifier = ValueNotifier(null);
+      _selectedAccountIdNotifier = ValueNotifier(null);
       _selectedIconNotifier = ValueNotifier(
         PhosphorIcons.repeat(PhosphorIconsStyle.fill),
       );
@@ -95,6 +99,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
     _startDateNotifier.dispose();
     _billingCycleNotifier.dispose();
     _selectedCategoryIdNotifier.dispose();
+    _selectedAccountIdNotifier.dispose();
     _selectedIconNotifier.dispose();
     _selectedColorNotifier.dispose();
     _selectedCurrency.dispose();
@@ -138,7 +143,8 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
           title: '${subscription.name} Reminder',
           body: 'Your payment for ${subscription.name} is due today!',
           payload: 'subscription_${subscription.id}',
-          scheduledDate: subscription.nextBillingDate,        );
+          scheduledDate: subscription.nextBillingDate,
+        );
       }
     }
   }
@@ -156,6 +162,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
       amount: amount,
       currency: _selectedCurrency.value,
       categoryId: _selectedCategoryIdNotifier.value,
+      accountId: _selectedAccountIdNotifier.value,
       icon: _selectedIconNotifier.value,
       iconColorValue: _selectedColorNotifier.value.toARGB32(),
       billingCycle: cycle,
@@ -187,6 +194,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
       currency: _selectedCurrency.value,
       billingCycle: cycle,
       categoryId: _selectedCategoryIdNotifier.value!,
+      accountId: _selectedAccountIdNotifier.value!,
       icon: _selectedIconNotifier.value,
       iconColorValue: _selectedColorNotifier.value.toARGB32(),
       startDate: startDate,
@@ -220,7 +228,8 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
 
     if (name.isEmpty ||
         amount == null ||
-        _selectedCategoryIdNotifier.value == null) {
+        _selectedCategoryIdNotifier.value == null ||
+        _selectedAccountIdNotifier.value == null) {
       AppToast.show(
         context,
         title: l10n.pleaseFillRequiredFields,
@@ -320,6 +329,13 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                     child: CategoryDropdown(
                       selectedCategoryId: _selectedCategoryIdNotifier,
                       fixedType: TransactionType.expense,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  RepaintBoundary(
+                    child: AccountDropdown(
+                      selectedAccountId: _selectedAccountIdNotifier,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
