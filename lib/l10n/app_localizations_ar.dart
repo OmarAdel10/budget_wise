@@ -1220,4 +1220,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get estimatedConversion => 'تحويل تقديري';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get allNotifications => 'كل الإشعارات';
+
+  @override
+  String get smsDraftNotifications => 'إشعارات مسودات الرسائل';
+
+  @override
+  String get subscriptionNotifications => 'إشعارات الاشتراكات';
+
+  @override
+  String get savingsNotifications => 'إشعارات المدخرات';
+
+  @override
+  String get disableNotificationsWarningTitle => 'إيقاف الإشعارات؟';
+
+  @override
+  String get disableAllNotificationsWarningDesc =>
+      'إذا قمت بإيقاف جميع الإشعارات، ستفوتك تحديثات مهمة حول معاملاتك واشتراكاتك ومدخراتك. هل أنت متأكد أنك تريد الاستمرار؟';
+
+  @override
+  String get disableSmsNotificationsWarningDesc =>
+      'إذا قمت بإيقاف إشعارات الرسائل القصيرة، فلن يتم إعلامك عند اكتشاف معاملة بنكية جديدة، رغم أنها ستظل تُحفظ كمسودة. الاستمرار؟';
+
+  @override
+  String get disableSubNotificationsWarningDesc =>
+      'إذا قمت بإيقاف إشعارات الاشتراكات، فلن تتلقى تذكيرات بالمدفوعات القادمة. الاستمرار؟';
+
+  @override
+  String get disableSavingsNotificationsWarningDesc =>
+      'إذا قمت بإيقاف إشعارات المدخرات، فلن تتلقى تحديثات حول أهداف مدخراتك. الاستمرار؟';
+
+  @override
+  String get continueAction => 'متابعة';
 }

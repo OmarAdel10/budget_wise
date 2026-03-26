@@ -13,6 +13,10 @@ class SettingsModel extends Equatable {
   final String? passcode;
   final bool useBiometrics;
   final double bankMargin;
+  final bool allNotificationsEnabled;
+  final bool smsNotificationsEnabled;
+  final bool subscriptionNotificationsEnabled;
+  final bool savingsNotificationsEnabled;
 
   const SettingsModel({
     this.localAuthEnabled = false,
@@ -24,6 +28,10 @@ class SettingsModel extends Equatable {
     this.passcode,
     this.useBiometrics = true,
     this.bankMargin = 0.0,
+    this.allNotificationsEnabled = true,
+    this.smsNotificationsEnabled = true,
+    this.subscriptionNotificationsEnabled = true,
+    this.savingsNotificationsEnabled = true,
   });
 
   bool get isPasscodeSet => passcode != null && passcode!.length == 4;
@@ -39,6 +47,10 @@ class SettingsModel extends Equatable {
     String? passcode,
     bool? useBiometrics,
     double? bankMargin,
+    bool? allNotificationsEnabled,
+    bool? smsNotificationsEnabled,
+    bool? subscriptionNotificationsEnabled,
+    bool? savingsNotificationsEnabled,
   }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
@@ -52,6 +64,15 @@ class SettingsModel extends Equatable {
       passcode: passcode ?? this.passcode,
       useBiometrics: useBiometrics ?? this.useBiometrics,
       bankMargin: bankMargin ?? this.bankMargin,
+      allNotificationsEnabled:
+          allNotificationsEnabled ?? this.allNotificationsEnabled,
+      smsNotificationsEnabled:
+          smsNotificationsEnabled ?? this.smsNotificationsEnabled,
+      subscriptionNotificationsEnabled:
+          subscriptionNotificationsEnabled ??
+          this.subscriptionNotificationsEnabled,
+      savingsNotificationsEnabled:
+          savingsNotificationsEnabled ?? this.savingsNotificationsEnabled,
     );
   }
 
@@ -67,6 +88,10 @@ class SettingsModel extends Equatable {
       'passcode': passcode,
       'useBiometrics': useBiometrics,
       'bankMargin': bankMargin,
+      'allNotificationsEnabled': allNotificationsEnabled,
+      'smsNotificationsEnabled': smsNotificationsEnabled,
+      'subscriptionNotificationsEnabled': subscriptionNotificationsEnabled,
+      'savingsNotificationsEnabled': savingsNotificationsEnabled,
     };
   }
 
@@ -84,6 +109,12 @@ class SettingsModel extends Equatable {
       passcode: map['passcode'] as String?,
       useBiometrics: map['useBiometrics'] as bool? ?? true,
       bankMargin: (map['bankMargin'] as num?)?.toDouble() ?? 0.0,
+      allNotificationsEnabled: map['allNotificationsEnabled'] as bool? ?? true,
+      smsNotificationsEnabled: map['smsNotificationsEnabled'] as bool? ?? true,
+      subscriptionNotificationsEnabled:
+          map['subscriptionNotificationsEnabled'] as bool? ?? true,
+      savingsNotificationsEnabled:
+          map['savingsNotificationsEnabled'] as bool? ?? true,
     );
   }
 
@@ -103,5 +134,17 @@ class SettingsModel extends Equatable {
     passcode,
     useBiometrics,
     bankMargin,
-  ];
+        localAuthEnabled,
+        language,
+        isOnboardingCompleted,
+        hasLoggedIn,
+        lastForegroundActivityDateTime,
+        defaultCurrency,
+        passcode,
+        useBiometrics,
+        allNotificationsEnabled,
+        smsNotificationsEnabled,
+        subscriptionNotificationsEnabled,
+        savingsNotificationsEnabled,
+      ];
 }

@@ -12,7 +12,7 @@ import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/settings/view/widgets/bank_margin_tile.dart';
 import 'package:budget_wise/settings/view/widgets/currency_settings_tile.dart';
 import 'package:budget_wise/settings/view/widgets/language_settings_tile.dart';
-
+import 'package:budget_wise/settings/view/widgets/notification_settings_tile.dart';
 import 'package:budget_wise/settings/view/widgets/profile_header_section.dart';
 import 'package:budget_wise/settings/view/widgets/security_settings_tile.dart';
 import 'package:flutter/material.dart';
@@ -138,6 +138,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     child: Column(
                       children: [
+                        const NotificationSettingsTile(),
+                        const Divider(
+                          color: AppColors.borderColor,
+                          indent: 15,
+                          endIndent: 15,
+                        ),
                         const SecuritySettingsTile(),
                         const LanguageSettingsTile(),
                         CurrencySettingsTile(

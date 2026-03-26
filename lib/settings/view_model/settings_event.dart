@@ -47,3 +47,19 @@ class SettingsEventBankMarginChanged extends SettingsEvent {
   final double bankMargin;
   const SettingsEventBankMarginChanged(this.bankMargin);
 }
+
+class SettingsEventToggleAllNotifications extends SettingsEvent {
+  const SettingsEventToggleAllNotifications();
+}
+
+class SettingsEventToggleSmsNotifications extends SettingsEvent {
+  const SettingsEventToggleSmsNotifications();
+}
+
+class SettingsEventToggleSubscriptionNotifications extends SettingsEvent {
+  const SettingsEventToggleSubscriptionNotifications();
+}
+
+class SettingsEventToggleSavingsNotifications extends SettingsEvent {
+  const SettingsEventToggleSavingsNotifications();
+}

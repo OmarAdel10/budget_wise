@@ -120,16 +120,21 @@ void onBackgroundMessage(SmsMessage message) async {
     final String merchantStr =
         finalDraft.extractedMerchant ?? "Unknown Merchant";
 
-    await NotificationRepository.instantNotification(
-      id: finalDraft.timestamp.millisecondsSinceEpoch ~/ 1000,
-      channelId: 'sms_transactions',
-      channelName: 'SMS Transactions',
-      channelDescription: 'Notifications for detected bank SMS transactions',
-      title: 'New Transaction Detected',
-      body:
-          'Detected $amountStr ${smsDraft.transactionType == TransactionType.income ? 'from' : 'at'} $merchantStr. Tap to confirm.',
-      payload: 'sms_draft_confirm',
-    );
+    final bool allEnabled = prefs.getBool('all_notifications_enabled') ?? true;
+    final bool smsEnabled = prefs.getBool('sms_notifications_enabled') ?? true;
+
+    if (allEnabled && smsEnabled) {
+      await NotificationRepository.instantNotification(
+        id: finalDraft.timestamp.millisecondsSinceEpoch ~/ 1000,
+        channelId: 'sms_transactions',
+        channelName: 'SMS Transactions',
+        channelDescription: 'Notifications for detected bank SMS transactions',
+        title: 'New Transaction Detected',
+        body:
+            'Detected $amountStr ${smsDraft.transactionType == TransactionType.income ? 'from' : 'at'} $merchantStr. Tap to confirm.',
+        payload: 'sms_draft_confirm',
+      );
+    }
 
     debugPrint("Background SMS processed and draft saved: ${finalDraft.id}");
   } catch (e) {

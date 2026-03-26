@@ -2419,6 +2419,71 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Estimated Conversion'**
   String get estimatedConversion;
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @allNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'All Notifications'**
+  String get allNotifications;
+
+  /// No description provided for @smsDraftNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS Draft Notifications'**
+  String get smsDraftNotifications;
+
+  /// No description provided for @subscriptionNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Notifications'**
+  String get subscriptionNotifications;
+
+  /// No description provided for @savingsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings Notifications'**
+  String get savingsNotifications;
+
+  /// No description provided for @disableNotificationsWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Notifications?'**
+  String get disableNotificationsWarningTitle;
+
+  /// No description provided for @disableAllNotificationsWarningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'If you disable all notifications, you will miss important updates about your transactions, subscriptions, and savings. Are you sure you want to continue?'**
+  String get disableAllNotificationsWarningDesc;
+
+  /// No description provided for @disableSmsNotificationsWarningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'If you disable SMS notifications, you won\'t be notified when a new bank transaction is detected, though it will still be saved as a draft. Continue?'**
+  String get disableSmsNotificationsWarningDesc;
+
+  /// No description provided for @disableSubNotificationsWarningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'If you disable Subscription notifications, you won\'t receive reminders for upcoming payments. Continue?'**
+  String get disableSubNotificationsWarningDesc;
+
+  /// No description provided for @disableSavingsNotificationsWarningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'If you disable Savings notifications, you won\'t receive updates about your savings goals. Continue?'**
+  String get disableSavingsNotificationsWarningDesc;
+
+  /// No description provided for @continueAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueAction;
 }
 
 class _AppLocalizationsDelegate

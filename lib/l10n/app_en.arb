@@ -437,4 +437,15 @@
   "conversionEstimate": "Conversion Estimate",
   "manualConversion": "Manual Conversion",
   "estimatedConversion": "Estimated Conversion"
+  "notifications": "Notifications",
+  "allNotifications": "All Notifications",
+  "smsDraftNotifications": "SMS Draft Notifications",
+  "subscriptionNotifications": "Subscription Notifications",
+  "savingsNotifications": "Savings Notifications",
+  "disableNotificationsWarningTitle": "Disable Notifications?",
+  "disableAllNotificationsWarningDesc": "If you disable all notifications, you will miss important updates about your transactions, subscriptions, and savings. Are you sure you want to continue?",
+  "disableSmsNotificationsWarningDesc": "If you disable SMS notifications, you won't be notified when a new bank transaction is detected, though it will still be saved as a draft. Continue?",
+  "disableSubNotificationsWarningDesc": "If you disable Subscription notifications, you won't receive reminders for upcoming payments. Continue?",
+  "disableSavingsNotificationsWarningDesc": "If you disable Savings notifications, you won't receive updates about your savings goals. Continue?",
+  "continueAction": "Continue"
 }

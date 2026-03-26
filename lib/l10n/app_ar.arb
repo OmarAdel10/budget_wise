@@ -431,4 +431,15 @@
   "conversionEstimate": "تقدير التحويل",
   "manualConversion": "تحويل يدوي",
   "estimatedConversion": "تحويل تقديري"
+  "notifications": "الإشعارات",
+  "allNotifications": "كل الإشعارات",
+  "smsDraftNotifications": "إشعارات مسودات الرسائل",
+  "subscriptionNotifications": "إشعارات الاشتراكات",
+  "savingsNotifications": "إشعارات المدخرات",
+  "disableNotificationsWarningTitle": "إيقاف الإشعارات؟",
+  "disableAllNotificationsWarningDesc": "إذا قمت بإيقاف جميع الإشعارات، ستفوتك تحديثات مهمة حول معاملاتك واشتراكاتك ومدخراتك. هل أنت متأكد أنك تريد الاستمرار؟",
+  "disableSmsNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات الرسائل القصيرة، فلن يتم إعلامك عند اكتشاف معاملة بنكية جديدة، رغم أنها ستظل تُحفظ كمسودة. الاستمرار؟",
+  "disableSubNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات الاشتراكات، فلن تتلقى تذكيرات بالمدفوعات القادمة. الاستمرار؟",
+  "disableSavingsNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات المدخرات، فلن تتلقى تحديثات حول أهداف مدخراتك. الاستمرار؟",
+  "continueAction": "متابعة"
 }
