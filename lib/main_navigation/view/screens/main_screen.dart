@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:budget_wise/shared/utils/sms_service.dart'; // New import
 import 'dart:developer'; // New import
+import 'package:shared_preferences/shared_preferences.dart'; // New import
 import '../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../home/view/screens/home_screen.dart';
 import '../../../accounts/view/screens/accounts_screen.dart';
@@ -167,17 +168,24 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                 "${smsDraft.extractedAmount?.toStringAsFixed(2)} ${smsDraft.extractedCurrency}";
             final String merchantStr =
                 smsDraft.extractedMerchant ?? "Unknown Merchant";
-            await NotificationRepository.instantNotification(
-              id: smsDraft.timestamp.millisecondsSinceEpoch ~/ 1000,
-              channelId: 'sms_transactions',
-              channelName: 'SMS Transactions',
-              channelDescription:
-                  'Notifications for detected bank SMS transactions',
-              title: 'New Transaction Detected',
-              body: 'Detected $amountStr at $merchantStr. Tap to confirm.',
-              payload:
-                  'sms_draft_confirm', // Used for navigation logic in the main app
-            );
+
+            final SharedPreferences prefs = await SharedPreferences.getInstance();
+            final bool allEnabled = prefs.getBool('all_notifications_enabled') ?? true;
+            final bool smsEnabled = prefs.getBool('sms_notifications_enabled') ?? true;
+
+            if (allEnabled && smsEnabled) {
+              await NotificationRepository.instantNotification(
+                id: smsDraft.timestamp.millisecondsSinceEpoch ~/ 1000,
+                channelId: 'sms_transactions',
+                channelName: 'SMS Transactions',
+                channelDescription:
+                    'Notifications for detected bank SMS transactions',
+                title: 'New Transaction Detected',
+                body: 'Detected $amountStr at $merchantStr. Tap to confirm.',
+                payload:
+                    'sms_draft_confirm', // Used for navigation logic in the main app
+              );
+            }
             context.read<TransactionBloc>().add(
               TransactionEventAddSmsDraft(smsDraft: smsDraft),
             );

@@ -42,3 +42,19 @@ class SettingsEventUpdatePasscode extends SettingsEvent {
 class SettingsEventToggleBiometrics extends SettingsEvent {
   const SettingsEventToggleBiometrics();
 }
+
+class SettingsEventToggleAllNotifications extends SettingsEvent {
+  const SettingsEventToggleAllNotifications();
+}
+
+class SettingsEventToggleSmsNotifications extends SettingsEvent {
+  const SettingsEventToggleSmsNotifications();
+}
+
+class SettingsEventToggleSubscriptionNotifications extends SettingsEvent {
+  const SettingsEventToggleSubscriptionNotifications();
+}
+
+class SettingsEventToggleSavingsNotifications extends SettingsEvent {
+  const SettingsEventToggleSavingsNotifications();
+}

@@ -1187,4 +1187,41 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subscriptionUpdatedSuccessfully =>
       'Subscription updated successfully!';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get allNotifications => 'All Notifications';
+
+  @override
+  String get smsDraftNotifications => 'SMS Draft Notifications';
+
+  @override
+  String get subscriptionNotifications => 'Subscription Notifications';
+
+  @override
+  String get savingsNotifications => 'Savings Notifications';
+
+  @override
+  String get disableNotificationsWarningTitle => 'Disable Notifications?';
+
+  @override
+  String get disableAllNotificationsWarningDesc =>
+      'If you disable all notifications, you will miss important updates about your transactions, subscriptions, and savings. Are you sure you want to continue?';
+
+  @override
+  String get disableSmsNotificationsWarningDesc =>
+      'If you disable SMS notifications, you won\'t be notified when a new bank transaction is detected, though it will still be saved as a draft. Continue?';
+
+  @override
+  String get disableSubNotificationsWarningDesc =>
+      'If you disable Subscription notifications, you won\'t receive reminders for upcoming payments. Continue?';
+
+  @override
+  String get disableSavingsNotificationsWarningDesc =>
+      'If you disable Savings notifications, you won\'t receive updates about your savings goals. Continue?';
+
+  @override
+  String get continueAction => 'Continue';
 }

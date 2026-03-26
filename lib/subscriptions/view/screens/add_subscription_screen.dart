@@ -25,6 +25,7 @@ import 'package:budget_wise/subscriptions/view/widgets/subscription_basic_info_f
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddSubscriptionScreen extends StatefulWidget {
   static const String routeName = '/add-subscription';
@@ -116,6 +117,15 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
     for (int i = 0; i <= 31; i++) {
       await NotificationRepository.cancelNotificationById(baseId + i);
     }
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool allEnabled = prefs.getBool('all_notifications_enabled') ?? true;
+    final bool subEnabled = prefs.getBool('subscription_notifications_enabled') ?? true;
+
+    if (!allEnabled || !subEnabled) {
+      return; // Do not schedule if notifications are disabled
+    }
+
     if (subscription.reminderEnabled) {
       for (int i = 0; i <= subscription.remindBeforeDays; i++) {
         final date = subscription.nextBillingDate.subtract(Duration(days: i));
