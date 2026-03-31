@@ -1187,4 +1187,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get subscriptionUpdatedSuccessfully =>
       'Subscription updated successfully!';
+
+  @override
+  String get budgetExceeded => 'Budget Exceeded';
+
+  @override
+  String budgetExceededDescription(String category) {
+    return 'Your spending in $category has exceeded your monthly budget limit. Click save again if you want to register it anyway.';
+  }
+
+  @override
+  String get saveAnyway => 'Save Anyway';
+
+  @override
+  String get confirmAnyway => 'Confirm Anyway';
 }

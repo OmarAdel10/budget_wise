@@ -10,6 +10,7 @@ import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -42,10 +43,21 @@ class _DraftTransactionCardItemState extends State<DraftTransactionCardItem> {
     null,
   );
 
+  final ValueNotifier<bool> _isBudgetWarningShown = ValueNotifier(false);
+
   @override
   void initState() {
     super.initState();
     _initializeAccount();
+
+    _selectedAccountNotifier.addListener(_resetBudgetWarning);
+    _selectedCategoryNotifier.addListener(_resetBudgetWarning);
+  }
+
+  void _resetBudgetWarning() {
+    if (_isBudgetWarningShown.value) {
+      _isBudgetWarningShown.value = false;
+    }
   }
 
   void _initializeAccount() {
@@ -60,6 +72,45 @@ class _DraftTransactionCardItemState extends State<DraftTransactionCardItem> {
     } else {
       _selectedAccountNotifier.value = null;
     }
+  }
+
+  void _onConfirmTap(
+    AccountModel selectedAccount,
+    CategoryModel selectedCategory,
+  ) {
+    // Check Category Budget Limit
+    if (selectedCategory.hasBudgetAmount &&
+        widget.draft.transactionType == TransactionType.expense) {
+      final amount = widget.draft.extractedAmount ?? 0.0;
+      final date = widget.draft.extractedDate ?? DateTime.now();
+
+      final currentSpending = context
+          .read<TransactionBloc>()
+          .state
+          .getCategorySpending(
+            categoryId: selectedCategory.id,
+            month: date.month,
+            year: date.year,
+          );
+
+      if (currentSpending + amount > (selectedCategory.budgetAmount ?? 0)) {
+        if (!_isBudgetWarningShown.value) {
+          _isBudgetWarningShown.value = true;
+          final l10n = AppLocalizations.of(context)!;
+          AppToast.show(
+            context,
+            type: AppToastType.warning,
+            title: l10n.budgetExceeded,
+            description: l10n.budgetExceededDescription(
+              selectedCategory.categoryTitle,
+            ),
+          );
+          return;
+        }
+      }
+    }
+
+    widget.onConfirm(selectedAccount, selectedCategory);
   }
 
   @override
@@ -294,41 +345,52 @@ class _DraftTransactionCardItemState extends State<DraftTransactionCardItem> {
                         return ValueListenableBuilder<CategoryModel?>(
                           valueListenable: _selectedCategoryNotifier,
                           builder: (context, selectedCategory, child) {
-                            return Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed:
-                                    (selectedAccount != null &&
-                                        selectedCategory != null)
-                                    ? () => widget.onConfirm(
-                                        selectedAccount,
-                                        selectedCategory,
-                                      )
-                                    : null,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primaryAccent,
-                                  foregroundColor: AppColors.textInverse,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      AppSpacing.radiusMd,
+                            return ValueListenableBuilder<bool>(
+                              valueListenable: _isBudgetWarningShown,
+                              builder: (context, isWarningShown, child) {
+                                return Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed:
+                                        (selectedAccount != null &&
+                                            selectedCategory != null)
+                                        ? () => _onConfirmTap(
+                                            selectedAccount,
+                                            selectedCategory,
+                                          )
+                                        : null,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primaryAccent,
+                                      foregroundColor: AppColors.textInverse,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          AppSpacing.radiusMd,
+                                        ),
+                                      ),
+                                    ),
+                                    icon: Icon(
+                                      isWarningShown
+                                          ? PhosphorIcons.warningCircle(
+                                              PhosphorIconsStyle.bold,
+                                            )
+                                          : PhosphorIcons.checkCircle(
+                                              PhosphorIconsStyle.bold,
+                                            ),
+                                      size: 18,
+                                      color: AppColors.textInverse,
+                                    ),
+                                    label: Text(
+                                      isWarningShown
+                                          ? l10n.confirmAnyway
+                                          : l10n.confirm,
+                                      style: AppTextStyles.button,
                                     ),
                                   ),
-                                ),
-                                icon: Icon(
-                                  PhosphorIcons.checkCircle(
-                                    PhosphorIconsStyle.bold,
-                                  ),
-                                  size: 18,
-                                  color: AppColors.textInverse,
-                                ),
-                                label: Text(
-                                  l10n.confirm,
-                                  style: AppTextStyles.button,
-                                ),
-                              ),
+                                );
+                              },
                             );
                           },
                         );

@@ -412,5 +412,16 @@
   "trackingStatus": "Tracking",
   "paused": "Paused",
   "subscriptionCreatedSuccessfully": "Subscription created successfully!",
-  "subscriptionUpdatedSuccessfully": "Subscription updated successfully!"
+  "subscriptionUpdatedSuccessfully": "Subscription updated successfully!",
+  "budgetExceeded": "Budget Exceeded",
+  "budgetExceededDescription": "Your spending in {category} has exceeded your monthly budget limit. Click save again if you want to register it anyway.",
+  "@budgetExceededDescription": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "saveAnyway": "Save Anyway",
+  "confirmAnyway": "Confirm Anyway"
 }

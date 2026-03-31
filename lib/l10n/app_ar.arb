@@ -409,5 +409,16 @@
   "trackingStatus": "تتبع",
   "paused": "متوقف مؤقتاً",
   "subscriptionCreatedSuccessfully": "تم إنشاء الاشتراك بنجاح!",
-  "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!"
+  "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!",
+  "budgetExceeded": "تجاوز الميزانية",
+  "budgetExceededDescription": "تجاوز إنفاقك في {category} حد الميزانية الشهري الخاص بك. اضغط على حفظ مرة أخرى إذا كنت تريد تسجيل العملية على أي حال.",
+  "@budgetExceededDescription": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "saveAnyway": "حفظ على أي حال",
+  "confirmAnyway": "تأكيد على أي حال"
 }
