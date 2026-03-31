@@ -206,12 +206,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         : _convertedAmount;
 
     // Check Category Budget Limit
-    final selectedCategory =
-        context.read<CategoryBloc>().state.categoriesList.firstWhere(
-          (c) => c.id == _selectedCategoryId.value,
-        );
+    final selectedCategory = context
+        .read<CategoryBloc>()
+        .state
+        .categoriesList
+        .where((c) => c.id == _selectedCategoryId.value)
+        .firstOrNull;
 
-    if (selectedCategory.hasBudgetAmount &&
+    if (selectedCategory != null &&
+        selectedCategory.hasBudgetAmount &&
         _selectedType.value == TransactionType.expense) {
       final currentSpending = context
           .read<TransactionBloc>()
