@@ -411,7 +411,6 @@
   "bankMargin": "هامش البنك (%)",
   "bankMarginInfo": "يضاف إلى أسعار التحويل",
   "subscriptionCreatedSuccessfully": "تم إنشاء الاشتراك بنجاح!",
-
   "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!",
   "retry": "إعادة المحاولة",
   "invalidAmount": "يرجى إدخال مبلغ صالح",
@@ -419,5 +418,16 @@
   "manualOverride": "تعديل يدوي",
   "conversionEstimate": "تقدير التحويل",
   "manualConversion": "تحويل يدوي",
-  "estimatedConversion": "تحويل تقديري"
+  "estimatedConversion": "تحويل تقديري",
+  "budgetExceeded": "تجاوز الميزانية",
+  "budgetExceededDescription": "تجاوز إنفاقك في {category} حد الميزانية الشهري الخاص بك. اضغط على حفظ مرة أخرى إذا كنت تريد تسجيل العملية على أي حال.",
+  "@budgetExceededDescription": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "saveAnyway": "حفظ على أي حال",
+  "confirmAnyway": "تأكيد على أي حال"
 }

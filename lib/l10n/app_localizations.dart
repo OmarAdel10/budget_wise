@@ -2389,6 +2389,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Estimated Conversion'**
   String get estimatedConversion;
+
+  /// No description provided for @budgetExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Exceeded'**
+  String get budgetExceeded;
+
+  /// No description provided for @budgetExceededDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your spending in {category} has exceeded your monthly budget limit. Click save again if you want to register it anyway.'**
+  String budgetExceededDescription(String category);
+
+  /// No description provided for @saveAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Anyway'**
+  String get saveAnyway;
+
+  /// No description provided for @confirmAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Anyway'**
+  String get confirmAnyway;
 }
 
 class _AppLocalizationsDelegate

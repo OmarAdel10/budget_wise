@@ -1203,4 +1203,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get estimatedConversion => 'تحويل تقديري';
+
+  @override
+  String get budgetExceeded => 'تجاوز الميزانية';
+
+  @override
+  String budgetExceededDescription(String category) {
+    return 'تجاوز إنفاقك في $category حد الميزانية الشهري الخاص بك. اضغط على حفظ مرة أخرى إذا كنت تريد تسجيل العملية على أي حال.';
+  }
+
+  @override
+  String get saveAnyway => 'حفظ على أي حال';
+
+  @override
+  String get confirmAnyway => 'تأكيد على أي حال';
 }

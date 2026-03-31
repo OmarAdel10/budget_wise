@@ -2,11 +2,10 @@ import 'package:budget_wise/shared/widgets/currency_prefix.dart';
 import 'package:budget_wise/currency_conversions/view/currency_conversion_preview.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
-
 import 'package:budget_wise/transaction/view/widgets/transaction_title_suggestions.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
-
+import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/utils/thousands_formatter.dart';
@@ -50,7 +49,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   );
   final ValueNotifier<bool> _showSuggestionsNotifier = ValueNotifier(false);
   final FocusNode _titleFocusNode = FocusNode();
-
+  final ValueNotifier<bool> _isBudgetWarningShown = ValueNotifier(false);
   double _convertedAmount = 0.0;
   bool get _isEditMode => widget.transactionToEdit != null;
   late final String defaultCurrencySymbol;
@@ -91,6 +90,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           .accountsList
           .firstWhere((a) => a.id == _selectedAccountId.value);
       _selectedCurrency.value = account.currency;
+
+    // Reset budget warning on changes
+    _titleController.addListener(_resetBudgetWarning);
+    _amountController.addListener(_resetBudgetWarning);
+    _selectedDate.addListener(_resetBudgetWarning);
+    _selectedCategoryId.addListener(_resetBudgetWarning);
+    _selectedType.addListener(_resetBudgetWarning);
+  }
+
+  void _resetBudgetWarning() {
+    if (_isBudgetWarningShown.value) {
+      _isBudgetWarningShown.value = false;
     }
   }
 
@@ -193,6 +204,40 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         (_selectedCurrency.value == selectedAccount.currency)
         ? amount
         : _convertedAmount;
+
+    // Check Category Budget Limit
+    final selectedCategory =
+        context.read<CategoryBloc>().state.categoriesList.firstWhere(
+          (c) => c.id == _selectedCategoryId.value,
+        );
+
+    if (selectedCategory.hasBudgetAmount &&
+        _selectedType.value == TransactionType.expense) {
+      final currentSpending = context
+          .read<TransactionBloc>()
+          .state
+          .getCategorySpending(
+            categoryId: selectedCategory.id,
+            month: _selectedDate.value.month,
+            year: _selectedDate.value.year,
+            excludeTransactionId: widget.transactionToEdit?.id,
+          );
+
+      if (currentSpending + amount > (selectedCategory.budgetAmount ?? 0)) {
+        if (!_isBudgetWarningShown.value) {
+          _isBudgetWarningShown.value = true;
+          AppToast.show(
+            context,
+            type: AppToastType.warning,
+            title: l10n.budgetExceeded,
+            description: l10n.budgetExceededDescription(
+              selectedCategory.categoryTitle,
+            ),
+          );
+          return;
+        }
+      }
+    }
 
     if (_isEditMode) {
       final updatedTransaction = widget.transactionToEdit!.copyWith(
@@ -407,10 +452,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       activeColor: accentColor,
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    CustomButton(
-                      text: _isEditMode ? l10n.saveChanges : typeLabel,
-                      onPressed: _onSave,
-                      color: accentColor,
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _isBudgetWarningShown,
+                      builder: (context, isWarningShown, child) {
+                        return CustomButton(
+                          text: isWarningShown
+                              ? l10n.saveAnyway
+                              : (_isEditMode ? l10n.saveChanges : typeLabel),
+                          onPressed: _onSave,
+                          color: accentColor,
+                        );
+                      },
                     ),
                   ],
                 ),

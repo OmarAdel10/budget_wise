@@ -115,6 +115,24 @@ class TransactionState extends Equatable {
         .toList();
   }
 
+  double getCategorySpending({
+    required String categoryId,
+    required int month,
+    required int year,
+    String? excludeTransactionId,
+  }) {
+    return transactionsList
+        .where(
+          (t) =>
+              t.categoryId == categoryId &&
+              t.type == TransactionType.expense &&
+              t.transactionDate.month == month &&
+              t.transactionDate.year == year &&
+              (excludeTransactionId == null || t.id != excludeTransactionId),
+        )
+        .fold(0.0, (sum, t) => sum + t.transactionAmount);
+  }
+
   @override
   List<Object?> get props => [
     transactionsList,

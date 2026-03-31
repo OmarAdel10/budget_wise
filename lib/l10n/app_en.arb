@@ -414,7 +414,6 @@
   "bankMargin": "Bank Margin (%)",
   "bankMarginInfo": "Added to conversion rates",
   "subscriptionCreatedSuccessfully": "Subscription created successfully!",
-
   "subscriptionUpdatedSuccessfully": "Subscription updated successfully!",
   "retry": "Retry",
   "invalidAmount": "Please enter a valid amount",
@@ -423,4 +422,16 @@
   "conversionEstimate": "Conversion Estimate",
   "manualConversion": "Manual Conversion",
   "estimatedConversion": "Estimated Conversion"
+  "subscriptionUpdatedSuccessfully": "Subscription updated successfully!",
+  "budgetExceeded": "Budget Exceeded",
+  "budgetExceededDescription": "Your spending in {category} has exceeded your monthly budget limit. Click save again if you want to register it anyway.",
+  "@budgetExceededDescription": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "saveAnyway": "Save Anyway",
+  "confirmAnyway": "Confirm Anyway"
 }
