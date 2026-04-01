@@ -12,6 +12,7 @@ class SettingsModel extends Equatable {
   final String defaultCurrency;
   final String? passcode;
   final bool useBiometrics;
+  final double bankMargin;
 
   const SettingsModel({
     this.localAuthEnabled = false,
@@ -22,6 +23,7 @@ class SettingsModel extends Equatable {
     this.defaultCurrency = 'EGP',
     this.passcode,
     this.useBiometrics = true,
+    this.bankMargin = 0.0,
   });
 
   bool get isPasscodeSet => passcode != null && passcode!.length == 4;
@@ -36,6 +38,7 @@ class SettingsModel extends Equatable {
     String? defaultCurrency,
     String? passcode,
     bool? useBiometrics,
+    double? bankMargin,
   }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
@@ -48,6 +51,7 @@ class SettingsModel extends Equatable {
       defaultCurrency: defaultCurrency ?? this.defaultCurrency,
       passcode: passcode ?? this.passcode,
       useBiometrics: useBiometrics ?? this.useBiometrics,
+      bankMargin: bankMargin ?? this.bankMargin,
     );
   }
 
@@ -57,11 +61,12 @@ class SettingsModel extends Equatable {
       'language': language,
       'isOnboardingCompleted': isOnboardingCompleted,
       'hasLoggedIn': hasLoggedIn,
-      'lastForegroundActivityDateTime':
-          lastForegroundActivityDateTime?.toIso8601String(),
+      'lastForegroundActivityDateTime': lastForegroundActivityDateTime
+          ?.toIso8601String(),
       'defaultCurrency': defaultCurrency,
       'passcode': passcode,
       'useBiometrics': useBiometrics,
+      'bankMargin': bankMargin,
     };
   }
 
@@ -73,11 +78,12 @@ class SettingsModel extends Equatable {
       hasLoggedIn: map['hasLoggedIn'] as bool,
       lastForegroundActivityDateTime:
           map['lastForegroundActivityDateTime'] != null
-              ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
-              : null,
+          ? DateTime.parse(map['lastForegroundActivityDateTime'] as String)
+          : null,
       defaultCurrency: map['defaultCurrency'] as String,
       passcode: map['passcode'] as String?,
       useBiometrics: map['useBiometrics'] as bool? ?? true,
+      bankMargin: (map['bankMargin'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -88,13 +94,14 @@ class SettingsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        localAuthEnabled,
-        language,
-        isOnboardingCompleted,
-        hasLoggedIn,
-        lastForegroundActivityDateTime,
-        defaultCurrency,
-        passcode,
-        useBiometrics,
-      ];
+    localAuthEnabled,
+    language,
+    isOnboardingCompleted,
+    hasLoggedIn,
+    lastForegroundActivityDateTime,
+    defaultCurrency,
+    passcode,
+    useBiometrics,
+    bankMargin,
+  ];
 }

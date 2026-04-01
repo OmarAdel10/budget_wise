@@ -1,12 +1,6 @@
 import 'package:budget_wise/l10n/app_localizations.dart';
 
-enum BillingCycle {
-  weekly,
-  monthly,
-  quarterly,
-  halfYearly,
-  yearly,
-}
+enum BillingCycle { weekly, monthly, quarterly, halfYearly, yearly }
 
 extension BillingCycleExtension on BillingCycle {
   String label(AppLocalizations l10n) {

@@ -411,6 +411,16 @@
   "activeStatus": "Active Status",
   "trackingStatus": "Tracking",
   "paused": "Paused",
+  "bankMargin": "Bank Margin (%)",
+  "bankMarginInfo": "Added to conversion rates",
   "subscriptionCreatedSuccessfully": "Subscription created successfully!",
-  "subscriptionUpdatedSuccessfully": "Subscription updated successfully!"
+
+  "subscriptionUpdatedSuccessfully": "Subscription updated successfully!",
+  "retry": "Retry",
+  "invalidAmount": "Please enter a valid amount",
+  "conversionError": "Could not load exchange rates",
+  "manualOverride": "Manual Override",
+  "conversionEstimate": "Conversion Estimate",
+  "manualConversion": "Manual Conversion",
+  "estimatedConversion": "Estimated Conversion"
 }

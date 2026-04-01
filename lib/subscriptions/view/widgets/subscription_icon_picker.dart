@@ -32,11 +32,7 @@ class SubscriptionIconPicker extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: color),
                     ),
-                    child: Icon(
-                      icon,
-                      size: 40,
-                      color: color,
-                    ),
+                    child: Icon(icon, size: 40, color: color),
                   );
                 },
               );

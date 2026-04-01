@@ -15,7 +15,12 @@ abstract class SubscriptionState extends Equatable {
   });
 
   @override
-  List<Object?> get props => [subscriptions, totalMonthlySpend, isLoading, errorMessage];
+  List<Object?> get props => [
+    subscriptions,
+    totalMonthlySpend,
+    isLoading,
+    errorMessage,
+  ];
 }
 
 class SubscriptionInitial extends SubscriptionState {

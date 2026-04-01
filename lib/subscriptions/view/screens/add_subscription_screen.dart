@@ -1,3 +1,5 @@
+import 'package:budget_wise/currency_conversions/view/currency_conversion_preview.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/savings/view/widgets/savings_color_picker.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
@@ -337,6 +339,56 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                     child: AccountDropdown(
                       selectedAccountId: _selectedAccountIdNotifier,
                     ),
+                  ),
+                  ValueListenableBuilder<String?>(
+                    valueListenable: _selectedAccountIdNotifier,
+                    builder: (context, accountId, _) {
+                      return ValueListenableBuilder<String>(
+                        valueListenable: _selectedCurrency,
+                        builder: (context, currency, _) {
+                          if (accountId == null) {
+                            return const SizedBox.shrink();
+                          }
+
+                          final account = context
+                              .read<AccountBloc>()
+                              .state
+                              .accountsList
+                              .firstWhere((a) => a.id == accountId);
+
+                          if (account.currency == currency) {
+                            return const SizedBox.shrink();
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.only(top: AppSpacing.lg),
+                            child: ListenableBuilder(
+                              listenable: _amountController,
+                              builder: (context, _) {
+                                final amount =
+                                    double.tryParse(
+                                      _amountController.text.replaceAll(
+                                        ',',
+                                        '',
+                                      ),
+                                    ) ??
+                                    0.0;
+                                return CurrencyConversionPreview(
+                                  amount: amount,
+                                  fromCurrency: currency,
+                                  toCurrency: account.currency,
+                                  onConvertedAmountChanged: (val) {
+                                    // Subscription doesn't store converted amount long-term,
+                                    // but we can pass it to the 'mark as paid' logic later.
+                                    // For now, it provides visual confirmation.
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                   const SizedBox(height: AppSpacing.lg),
 

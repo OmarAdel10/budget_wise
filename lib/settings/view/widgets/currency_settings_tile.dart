@@ -6,7 +6,10 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CurrencySettingsTile extends StatelessWidget {
   final ValueNotifier<String?> selectedCurrencyNotifier;
-  const CurrencySettingsTile({super.key, required this.selectedCurrencyNotifier});
+  const CurrencySettingsTile({
+    super.key,
+    required this.selectedCurrencyNotifier,
+  });
 
   @override
   Widget build(BuildContext context) {

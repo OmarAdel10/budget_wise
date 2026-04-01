@@ -408,6 +408,16 @@
   "activeStatus": "الحالة النشطة",
   "trackingStatus": "تتبع",
   "paused": "متوقف مؤقتاً",
+  "bankMargin": "هامش البنك (%)",
+  "bankMarginInfo": "يضاف إلى أسعار التحويل",
   "subscriptionCreatedSuccessfully": "تم إنشاء الاشتراك بنجاح!",
-  "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!"
+
+  "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!",
+  "retry": "إعادة المحاولة",
+  "invalidAmount": "يرجى إدخال مبلغ صالح",
+  "conversionError": "تعذر تحميل أسعار الصرف",
+  "manualOverride": "تعديل يدوي",
+  "conversionEstimate": "تقدير التحويل",
+  "manualConversion": "تحويل يدوي",
+  "estimatedConversion": "تحويل تقديري"
 }

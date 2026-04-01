@@ -99,10 +99,9 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
             ValueListenableBuilder<PasscodeSetupState>(
               valueListenable: _passcodeController,
               builder: (context, state, _) {
-                final currentInputLength =
-                    state.isConfirming
-                        ? state.confirmPasscode.length
-                        : state.passcode.length;
+                final currentInputLength = state.isConfirming
+                    ? state.confirmPasscode.length
+                    : state.passcode.length;
 
                 return Column(
                   children: [

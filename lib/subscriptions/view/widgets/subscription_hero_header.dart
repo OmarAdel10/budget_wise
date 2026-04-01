@@ -81,23 +81,27 @@ class SubscriptionHeroHeader extends StatelessWidget {
                   .amount,
               builder: (context, amount) {
                 return RepaintBoundary(
-                  child: BlocSelector<SubscriptionBloc, SubscriptionState, String>(
-                    selector: (state) => state.subscriptions
-                        .firstWhere(
-                          (sub) => sub.id == subscriptionId,
-                          orElse: () => state.subscriptions.first,
-                        )
-                        .currency,
-                    builder: (context, currency) {
-                      return Text(
-                        SubscriptionFormatter.formatCurrency(amount, currency),
-                        style: AppTextStyles.heading1.copyWith(
-                          color: AppColors.primaryAccent,
-                          fontSize: 36,
-                        ),
-                      );
-                    },
-                  ),
+                  child:
+                      BlocSelector<SubscriptionBloc, SubscriptionState, String>(
+                        selector: (state) => state.subscriptions
+                            .firstWhere(
+                              (sub) => sub.id == subscriptionId,
+                              orElse: () => state.subscriptions.first,
+                            )
+                            .currency,
+                        builder: (context, currency) {
+                          return Text(
+                            SubscriptionFormatter.formatCurrency(
+                              amount,
+                              currency,
+                            ),
+                            style: AppTextStyles.heading1.copyWith(
+                              color: AppColors.primaryAccent,
+                              fontSize: 36,
+                            ),
+                          );
+                        },
+                      ),
                 );
               },
             ),

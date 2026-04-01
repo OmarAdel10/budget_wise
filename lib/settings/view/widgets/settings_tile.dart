@@ -36,7 +36,11 @@ class SettingsTile extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      PhosphorIcon(icon, color: AppColors.textPrimary, size: 24),
+                      PhosphorIcon(
+                        icon,
+                        color: AppColors.textPrimary,
+                        size: 24,
+                      ),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Column(

@@ -2324,6 +2324,18 @@ abstract class AppLocalizations {
   /// **'Paused'**
   String get paused;
 
+  /// No description provided for @bankMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Margin (%)'**
+  String get bankMargin;
+
+  /// No description provided for @bankMarginInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to conversion rates'**
+  String get bankMarginInfo;
+
   /// No description provided for @subscriptionCreatedSuccessfully.
   ///
   /// In en, this message translates to:
@@ -2335,6 +2347,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Subscription updated successfully!'**
   String get subscriptionUpdatedSuccessfully;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @invalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get invalidAmount;
+
+  /// No description provided for @conversionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load exchange rates'**
+  String get conversionError;
+
+  /// No description provided for @manualOverride.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Override'**
+  String get manualOverride;
+
+  /// No description provided for @conversionEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversion Estimate'**
+  String get conversionEstimate;
+
+  /// No description provided for @manualConversion.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Conversion'**
+  String get manualConversion;
+
+  /// No description provided for @estimatedConversion.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Conversion'**
+  String get estimatedConversion;
 }
 
 class _AppLocalizationsDelegate

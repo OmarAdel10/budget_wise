@@ -1,3 +1,4 @@
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -36,8 +37,10 @@ class SubscriptionDeleted extends SubscriptionEvent {
 
 class SubscriptionPaid extends SubscriptionEvent {
   final String id;
-  const SubscriptionPaid(this.id);
+  final double? convertedAmount;
+  final AppLocalizations l10n;
+  const SubscriptionPaid(this.id, {this.convertedAmount, required this.l10n});
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [id, convertedAmount, l10n];
 }

@@ -40,7 +40,9 @@ class BillingUtils {
     int lastDayOfTargetMonth = DateTime(year, month + 1, 0).day;
 
     // Snap to the last day if originalDay doesn't exist in target month
-    int day = originalDay > lastDayOfTargetMonth ? lastDayOfTargetMonth : originalDay;
+    int day = originalDay > lastDayOfTargetMonth
+        ? lastDayOfTargetMonth
+        : originalDay;
 
     return DateTime(year, month, day, from.hour, from.minute, from.second);
   }

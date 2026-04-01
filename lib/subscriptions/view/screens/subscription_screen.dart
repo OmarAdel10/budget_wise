@@ -68,8 +68,9 @@ class SubscriptionScreen extends StatelessWidget {
                             children: [
                               SlidableAction(
                                 onPressed: (context) {
-                                  final subBloc = context.read<SubscriptionBloc>();
-                        
+                                  final subBloc = context
+                                      .read<SubscriptionBloc>();
+
                                   AppToast.show(
                                     context,
                                     type: AppToastType.deleteWithUndo,

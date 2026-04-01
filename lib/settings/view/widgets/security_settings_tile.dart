@@ -50,9 +50,9 @@ class SecuritySettingsTile extends StatelessWidget {
                   icon: PhosphorIconsRegular.key,
                   title: isPasscodeSet ? l10n.changePasscode : l10n.setPasscode,
                   onTap: () {
-                    Navigator.of(context).pushNamed(
-                      PasscodeSetupScreen.routeName,
-                    );
+                    Navigator.of(
+                      context,
+                    ).pushNamed(PasscodeSetupScreen.routeName);
                   },
                   showDivider: isPasscodeSet,
                 ),
@@ -63,10 +63,9 @@ class SecuritySettingsTile extends StatelessWidget {
                     showDivider: false,
                     trailing: Switch(
                       value: model.useBiometrics,
-                      onChanged: (value) =>
-                        context
-                            .read<SettingsBloc>()
-                            .add(const SettingsEventToggleBiometrics()),
+                      onChanged: (value) => context.read<SettingsBloc>().add(
+                        const SettingsEventToggleBiometrics(),
+                      ),
                       activeThumbColor: AppColors.primaryAccent,
                       activeTrackColor: AppColors.primaryAccent.withValues(
                         alpha: 0.3,
