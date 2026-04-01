@@ -8,20 +8,28 @@ sealed class TransactionEvent extends Equatable {
 
 class TransactionEventCreateTransaction extends TransactionEvent {
   final TransactionModel transaction;
+  final double? convertedAmount;
 
-  const TransactionEventCreateTransaction(this.transaction);
+  const TransactionEventCreateTransaction(
+    this.transaction, {
+    this.convertedAmount,
+  });
 
   @override
-  List<Object?> get props => [transaction];
+  List<Object?> get props => [transaction, convertedAmount];
 }
 
 class TransactionEventUpdateTransaction extends TransactionEvent {
   final TransactionModel transaction;
+  final double? convertedAmount;
 
-  const TransactionEventUpdateTransaction(this.transaction);
+  const TransactionEventUpdateTransaction(
+    this.transaction, {
+    this.convertedAmount,
+  });
 
   @override
-  List<Object?> get props => [transaction];
+  List<Object?> get props => [transaction, convertedAmount];
 }
 
 class TransactionEventMarkSynced extends TransactionEvent {

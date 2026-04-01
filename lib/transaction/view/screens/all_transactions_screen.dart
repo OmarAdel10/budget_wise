@@ -29,7 +29,9 @@ class AllTransactionsScreen extends StatelessWidget {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
-          context.read<HomeBloc>().add(const HomeEventChangeAccountFilter(null));
+          context.read<HomeBloc>().add(
+            const HomeEventChangeAccountFilter(null),
+          );
         }
       },
       child: Scaffold(
@@ -61,24 +63,26 @@ class AllTransactionsScreen extends StatelessWidget {
                   child: MonthSelector(
                     selectedMonth: state.model.currentMonth,
                     onPrevious: () => context.read<HomeBloc>().add(
-                          HomeEventChangeMonth(
-                            DateTime(
-                              state.model.currentMonth.year,
-                              state.model.currentMonth.month - 1,
-                            ),
-                          ),
+                      HomeEventChangeMonth(
+                        DateTime(
+                          state.model.currentMonth.year,
+                          state.model.currentMonth.month - 1,
                         ),
+                      ),
+                    ),
                     onNext: () => context.read<HomeBloc>().add(
-                          HomeEventChangeMonth(
-                            DateTime(
-                              state.model.currentMonth.year,
-                              state.model.currentMonth.month + 1,
-                            ),
-                          ),
+                      HomeEventChangeMonth(
+                        DateTime(
+                          state.model.currentMonth.year,
+                          state.model.currentMonth.month + 1,
                         ),
+                      ),
+                    ),
                   ),
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.md),
+                ),
                 SliverToBoxAdapter(
                   child: RepaintBoundary(
                     child: TransactionSummaryHeader(
@@ -88,14 +92,20 @@ class AllTransactionsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.lg),
+                ),
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
                   sliver: TransactionListView.sliver(
                     transactions: state.model.transactions,
                   ),
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.xxl),
+                ),
               ],
             );
           },

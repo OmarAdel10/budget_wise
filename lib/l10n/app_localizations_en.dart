@@ -1181,6 +1181,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paused => 'Paused';
 
   @override
+  String get bankMargin => 'Bank Margin (%)';
+
+  @override
+  String get bankMarginInfo => 'Added to conversion rates';
+
+  @override
   String get subscriptionCreatedSuccessfully =>
       'Subscription created successfully!';
 
@@ -1201,4 +1207,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmAnyway => 'Confirm Anyway';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get invalidAmount => 'Please enter a valid amount';
+
+  @override
+  String get conversionError => 'Could not load exchange rates';
+
+  @override
+  String get manualOverride => 'Manual Override';
+
+  @override
+  String get conversionEstimate => 'Conversion Estimate';
+
+  @override
+  String get manualConversion => 'Manual Conversion';
+
+  @override
+  String get estimatedConversion => 'Estimated Conversion';
 }

@@ -71,6 +71,11 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       );
       emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
+
+    on<SettingsEventBankMarginChanged>((event, emit) {
+      final newModel = state.model.copyWith(bankMargin: event.bankMargin);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
   }
 
   static String _getCurrencyName(String currencyCode) {

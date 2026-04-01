@@ -1,5 +1,10 @@
 import 'dart:developer';
 
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_event.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/subscriptions/data/models/billing_cycle.dart';
@@ -9,6 +14,7 @@ import 'package:budget_wise/subscriptions/data/utils/billing_utils.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_event.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class SubscriptionBloc
@@ -16,11 +22,15 @@ class SubscriptionBloc
   final SubscriptionRepository subscriptionRepository;
   final AuthRepository authRepository;
   final SettingsBloc settingsBloc;
+  final AccountBloc accountBloc;
+  final TransactionBloc transactionBloc;
 
   SubscriptionBloc({
     required this.subscriptionRepository,
     required this.authRepository,
     required this.settingsBloc,
+    required this.accountBloc,
+    required this.transactionBloc,
   }) : super(const SubscriptionInitial()) {
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
@@ -168,6 +178,33 @@ class SubscriptionBloc
       );
 
       add(SubscriptionUpdated(updatedSub));
+
+      // 1. Create a transaction for this payment
+      final transaction = TransactionModel(
+        id: const Uuid().v4(),
+        userId: authRepository.currentUser?.uid ?? '',
+        transactionTitle: '${sub.name} Payment',
+        transactionAmount: sub.amount,
+        transactionCurrency: sub.currency,
+        categoryId: sub.categoryId,
+        accountId: sub.accountId,
+        transactionDate: DateTime.now(),
+        type: TransactionType.expense,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        transactionNotes: event.l10n.subNote(
+          sub.name,
+          DateFormat('EEEE, dd MMMM yyyy').format(DateTime.now()),
+        ),
+      );
+
+      // 2. Add transaction and update account balance
+      transactionBloc.add(
+        TransactionEventCreateTransaction(
+          transaction,
+          convertedAmount: event.convertedAmount,
+        ),
+      );
     });
   }
 

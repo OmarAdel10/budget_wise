@@ -34,7 +34,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
-  int _currentIndex = 0;
+  final ValueNotifier<int> _currentIndexNotifier = ValueNotifier(0);
   DateTime _lastSyncTime = DateTime.now();
   final Duration _syncInterval = const Duration(minutes: 15);
   Timer? _periodicCheckTimer;
@@ -49,10 +49,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     const SettingsScreen(),
   ];
 
-  void _onTabSelected(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+  void _onTabSelected(int newIndex) {
+    _currentIndexNotifier.value = newIndex;
   }
 
   @override
@@ -96,6 +94,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _stopPeriodicCheck();
+    _currentIndexNotifier.dispose();
     super.dispose();
   }
 
@@ -178,6 +177,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
               payload:
                   'sms_draft_confirm', // Used for navigation logic in the main app
             );
+            if (!mounted) return;
             context.read<TransactionBloc>().add(
               TransactionEventAddSmsDraft(smsDraft: smsDraft),
             );
@@ -237,9 +237,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      body: ValueListenableBuilder<int>(
+        valueListenable: _currentIndexNotifier,
+        builder: (context, currentIndex, child) {
+          return IndexedStack(index: currentIndex, children: _screens);
+        },
+      ),
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
+        currentIndexNotifier: _currentIndexNotifier,
         onTap: _onTabSelected,
       ),
     );

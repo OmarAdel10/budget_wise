@@ -15,9 +15,11 @@ import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:budget_wise/shared/app_providers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
   await Future.wait([
     Firebase.initializeApp(),
     NotificationRepository.notificationInit(),
@@ -31,7 +33,7 @@ void main() async {
   // Early registration of the background SMS handler to ensure it works even when killed.
   SmsService().initializeBackgroundHandler();
 
-  runApp(AppProviders.initProviders(BudgetWise()));
+  runApp(AppProviders.initProviders(const BudgetWise(), prefs));
 }
 
 class BudgetWise extends StatelessWidget {

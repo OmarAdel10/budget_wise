@@ -22,7 +22,8 @@ class SubscriptionSummaryHeader extends StatelessWidget {
     );
 
     final activeCount = context.select<SubscriptionBloc, int>(
-      (bloc) => bloc.state.subscriptions.where((sub) => sub.inActive == false).length,
+      (bloc) =>
+          bloc.state.subscriptions.where((sub) => sub.inActive == false).length,
     );
 
     final inActiveCount = context.select<SubscriptionBloc, int>(

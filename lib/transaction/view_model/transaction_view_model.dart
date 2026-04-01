@@ -43,12 +43,17 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
 
         final updatedList = [newTransaction, ...state.transactionsList];
 
-        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(
+          emit,
+          state.copyWith(transactionsList: updatedList, errorMessage: null),
+        );
 
         // Update Account Balance
+        final amountForAccount =
+            event.convertedAmount ?? newTransaction.transactionAmount;
         final amountDelta = newTransaction.type == TransactionType.income
-            ? newTransaction.transactionAmount
-            : -newTransaction.transactionAmount;
+            ? amountForAccount
+            : -amountForAccount;
         if (newTransaction.accountId.isNotEmpty) {
           accountBloc.add(
             AccountEventUpdateBalance(
@@ -94,7 +99,10 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
               : transaction;
         }).toList();
 
-        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(
+          emit,
+          state.copyWith(transactionsList: updatedList, errorMessage: null),
+        );
 
         // Update Account Balance
         if (oldTransaction.accountId == updatedTransaction.accountId) {
@@ -122,10 +130,13 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
               oldTransaction.type == TransactionType.income
               ? -oldTransaction.transactionAmount
               : oldTransaction.transactionAmount;
+
+          final newAmountForAccount =
+              event.convertedAmount ?? updatedTransaction.transactionAmount;
           final newAmountDelta =
               updatedTransaction.type == TransactionType.income
-              ? updatedTransaction.transactionAmount
-              : -updatedTransaction.transactionAmount;
+              ? newAmountForAccount
+              : -newAmountForAccount;
 
           if (oldTransaction.accountId.isNotEmpty &&
               updatedTransaction.accountId.isNotEmpty) {
@@ -178,7 +189,10 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           }
           return transaction;
         }).toList();
-        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(
+          emit,
+          state.copyWith(transactionsList: updatedList, errorMessage: null),
+        );
       } catch (e) {
         emit(
           state.copyWith(
@@ -219,7 +233,10 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           (a, b) => b.transactionDate.compareTo(a.transactionDate),
         );
 
-        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(
+          emit,
+          state.copyWith(transactionsList: updatedList, errorMessage: null),
+        );
       } catch (e) {
         emit(
           state.copyWith(
@@ -239,7 +256,10 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             .where((transaction) => transaction.id != event.transactionId)
             .toList();
 
-        _emitUpdatedState(emit, state.copyWith(transactionsList: updatedList, errorMessage: null));
+        _emitUpdatedState(
+          emit,
+          state.copyWith(transactionsList: updatedList, errorMessage: null),
+        );
 
         // Reverse Account Balance
         final reversalDelta = transactionToDelete.type == TransactionType.income
@@ -408,16 +428,16 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       emit(state.copyWith(isProcessingBackgroundDrafts: true));
       try {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        final List<String>? draftsJson =
-            prefs.getStringList('pending_background_drafts');
+        final List<String>? draftsJson = prefs.getStringList(
+          'pending_background_drafts',
+        );
 
         if (draftsJson != null && draftsJson.isNotEmpty) {
           await prefs.remove('pending_background_drafts');
 
-          final List<SmsDraftModel> newDrafts =
-              draftsJson
-                  .map((jsonStr) => SmsDraftModel.fromJson(jsonStr))
-                  .toList();
+          final List<SmsDraftModel> newDrafts = draftsJson
+              .map((jsonStr) => SmsDraftModel.fromJson(jsonStr))
+              .toList();
 
           // Merge with existing pending transactions, avoiding duplicates
           final currentPending = List<SmsDraftModel>.from(
@@ -457,8 +477,9 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       );
     }
 
-    final accountTransactions =
-        transactions.where((t) => t.accountId == accountId).toList();
+    final accountTransactions = transactions
+        .where((t) => t.accountId == accountId)
+        .toList();
 
     final recent = accountTransactions.take(5).toList();
 
@@ -483,7 +504,10 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     );
   }
 
-  void _emitUpdatedState(Emitter<TransactionState> emit, TransactionState newState) {
+  void _emitUpdatedState(
+    Emitter<TransactionState> emit,
+    TransactionState newState,
+  ) {
     final stateWithDetails = _calculateAccountDetails(
       accountId: newState.selectedAccountId,
       transactions: newState.transactionsList,

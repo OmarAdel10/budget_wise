@@ -42,3 +42,8 @@ class SettingsEventUpdatePasscode extends SettingsEvent {
 class SettingsEventToggleBiometrics extends SettingsEvent {
   const SettingsEventToggleBiometrics();
 }
+
+class SettingsEventBankMarginChanged extends SettingsEvent {
+  final double bankMargin;
+  const SettingsEventBankMarginChanged(this.bankMargin);
+}

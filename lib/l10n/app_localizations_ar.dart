@@ -1172,6 +1172,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paused => 'متوقف مؤقتاً';
 
   @override
+  String get bankMargin => 'هامش البنك (%)';
+
+  @override
+  String get bankMarginInfo => 'يضاف إلى أسعار التحويل';
+
+  @override
   String get subscriptionCreatedSuccessfully => 'تم إنشاء الاشتراك بنجاح!';
 
   @override
@@ -1190,4 +1196,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get confirmAnyway => 'تأكيد على أي حال';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get invalidAmount => 'يرجى إدخال مبلغ صالح';
+
+  @override
+  String get conversionError => 'تعذر تحميل أسعار الصرف';
+
+  @override
+  String get manualOverride => 'تعديل يدوي';
+
+  @override
+  String get conversionEstimate => 'تقدير التحويل';
+
+  @override
+  String get manualConversion => 'تحويل يدوي';
+
+  @override
+  String get estimatedConversion => 'تحويل تقديري';
 }

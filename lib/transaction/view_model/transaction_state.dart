@@ -74,12 +74,14 @@ class TransactionState extends Equatable {
       ),
       recentTransactions: map['recentTransactions'] != null
           ? List<TransactionModel>.from(
-              (map['recentTransactions'] as List<dynamic>).map<TransactionModel>(
-                (x) => TransactionModel.fromMap(x as Map<String, dynamic>),
-              ),
+              (map['recentTransactions'] as List<dynamic>)
+                  .map<TransactionModel>(
+                    (x) => TransactionModel.fromMap(x as Map<String, dynamic>),
+                  ),
             )
           : const [],
-      currentAccountBalance: (map['currentAccountBalance'] as num?)?.toDouble() ?? 0.0,
+      currentAccountBalance:
+          (map['currentAccountBalance'] as num?)?.toDouble() ?? 0.0,
       lastAccountUpdatedAt: map['lastAccountUpdatedAt'] != null
           ? DateTime.parse(map['lastAccountUpdatedAt'] as String)
           : null,
@@ -108,9 +110,7 @@ class TransactionState extends Equatable {
         .where(
           (t) =>
               t.categoryId == categoryId &&
-              t.transactionTitle.toLowerCase().contains(
-                    name.toLowerCase(),
-                  ),
+              t.transactionTitle.toLowerCase().contains(name.toLowerCase()),
         )
         .toList();
   }

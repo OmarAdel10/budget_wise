@@ -4,6 +4,8 @@ import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/category/data/repositories/category_repository.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/currency_conversions/data/repositories/currency_repository.dart';
+import 'package:budget_wise/currency_conversions/view_model/currency_bloc.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
@@ -17,9 +19,13 @@ import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppProviders {
-  static Widget initProviders(Widget app) => MultiRepositoryProvider(
+  static Widget initProviders(
+    Widget app,
+    SharedPreferences prefs,
+  ) => MultiRepositoryProvider(
     providers: [
       RepositoryProvider(create: (context) => AuthRepository()),
       RepositoryProvider(
@@ -43,6 +49,7 @@ class AppProviders {
         create: (context) =>
             SubscriptionRepository(authRepo: context.read<AuthRepository>()),
       ),
+      RepositoryProvider(create: (context) => CurrencyRepository(prefs)),
     ],
     child: MultiBlocProvider(
       providers: [
@@ -94,7 +101,22 @@ class AppProviders {
             subscriptionRepository: context.read<SubscriptionRepository>(),
             authRepository: context.read<AuthRepository>(),
             settingsBloc: context.read<SettingsBloc>(),
+            accountBloc: context.read<AccountBloc>(),
+            transactionBloc: context.read<TransactionBloc>(),
           ),
+        ),
+
+        BlocProvider(
+          create: (context) =>
+              CurrencyBloc(context.read<CurrencyRepository>())..add(
+                CurrencyLoadRequested(
+                  baseCurrency: context
+                      .read<SettingsBloc>()
+                      .state
+                      .model
+                      .defaultCurrency,
+                ),
+              ),
         ),
         BlocProvider(
           create: (context) => StatisticsBloc(

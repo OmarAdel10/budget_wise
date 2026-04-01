@@ -1,4 +1,6 @@
 import 'package:budget_wise/shared/widgets/currency_prefix.dart';
+import 'package:budget_wise/currency_conversions/view/currency_conversion_preview.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view/widgets/transaction_title_suggestions.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
@@ -47,9 +49,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   );
   final ValueNotifier<bool> _showSuggestionsNotifier = ValueNotifier(false);
   final FocusNode _titleFocusNode = FocusNode();
-
   final ValueNotifier<bool> _isBudgetWarningShown = ValueNotifier(false);
-
+  double _convertedAmount = 0.0;
   bool get _isEditMode => widget.transactionToEdit != null;
   late final String defaultCurrencySymbol;
 
@@ -90,6 +91,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   void _resetBudgetWarning() {
     if (_isBudgetWarningShown.value) {
       _isBudgetWarningShown.value = false;
+    _selectedAccountId.addListener(_onAccountChanged);
+  }
+
+  void _onAccountChanged() {
+    if (_selectedAccountId.value != null) {
+      final account = context
+          .read<AccountBloc>()
+          .state
+          .accountsList
+          .firstWhere((a) => a.id == _selectedAccountId.value);
+      _selectedCurrency.value = account.currency;
     }
   }
 
@@ -219,6 +231,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       }
     }
 
+    final selectedAccount = context
+        .read<AccountBloc>()
+        .state
+        .accountsList
+        .firstWhere((a) => a.id == _selectedAccountId.value);
+
+    final finalAmountForAccount =
+        (_selectedCurrency.value == selectedAccount.currency)
+        ? amount
+        : _convertedAmount;
+
     if (_isEditMode) {
       final updatedTransaction = widget.transactionToEdit!.copyWith(
         type: _selectedType.value,
@@ -233,7 +256,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         updatedAt: DateTime.now(),
       );
       context.read<TransactionBloc>().add(
-        TransactionEventUpdateTransaction(updatedTransaction),
+        TransactionEventUpdateTransaction(
+          updatedTransaction,
+          convertedAmount: finalAmountForAccount,
+        ),
       );
     } else {
       final newTransaction = TransactionModel(
@@ -250,7 +276,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       );
 
       context.read<TransactionBloc>().add(
-        TransactionEventCreateTransaction(newTransaction),
+        TransactionEventCreateTransaction(
+          newTransaction,
+          convertedAmount: finalAmountForAccount,
+        ),
       );
     }
     Navigator.of(context).pop();
@@ -362,6 +391,56 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     AccountDropdown(
                       selectedAccountId: _selectedAccountId,
                       selectedCurrency: _selectedCurrency,
+                    ),
+                    ValueListenableBuilder<String?>(
+                      valueListenable: _selectedAccountId,
+                      builder: (context, accountId, _) {
+                        return ValueListenableBuilder<String?>(
+                          valueListenable: _selectedCurrency,
+                          builder: (context, currency, _) {
+                            if (accountId == null || currency == null) {
+                              return const SizedBox.shrink();
+                            }
+
+                            final account = context
+                                .read<AccountBloc>()
+                                .state
+                                .accountsList
+                                .firstWhere((a) => a.id == accountId);
+
+                            if (account.currency == currency) {
+                              return const SizedBox.shrink();
+                            }
+
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.lg,
+                              ),
+                              child: ListenableBuilder(
+                                listenable: _amountController,
+                                builder: (context, _) {
+                                  final amount =
+                                      double.tryParse(
+                                        _amountController.text.replaceAll(
+                                          ',',
+                                          '',
+                                        ),
+                                      ) ??
+                                      0.0;
+                                  return CurrencyConversionPreview(
+                                    amount: amount,
+                                    fromCurrency: currency,
+                                    toCurrency: account.currency,
+                                    onConvertedAmountChanged: (val) {
+                                      _convertedAmount = val;
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     DatePickerField(
