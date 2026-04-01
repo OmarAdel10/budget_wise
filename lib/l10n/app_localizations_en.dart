@@ -1228,4 +1228,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmAnyway => 'Confirm Anyway';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get invalidAmount => 'Please enter a valid amount';
+
+  @override
+  String get conversionError => 'Could not load exchange rates';
+
+  @override
+  String get manualOverride => 'Manual Override';
+
+  @override
+  String get conversionEstimate => 'Conversion Estimate';
+
+  @override
+  String get manualConversion => 'Manual Conversion';
+
+  @override
+  String get estimatedConversion => 'Estimated Conversion';
 }

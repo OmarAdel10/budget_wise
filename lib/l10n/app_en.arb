@@ -433,5 +433,12 @@
     }
   },
   "saveAnyway": "Save Anyway",
-  "confirmAnyway": "Confirm Anyway"
+  "confirmAnyway": "Confirm Anyway",
+  "retry": "Retry",
+  "invalidAmount": "Please enter a valid amount",
+  "conversionError": "Could not load exchange rates",
+  "manualOverride": "Manual Override",
+  "conversionEstimate": "Conversion Estimate",
+  "manualConversion": "Manual Conversion",
+  "estimatedConversion": "Estimated Conversion"
 }

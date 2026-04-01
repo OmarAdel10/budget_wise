@@ -1217,4 +1217,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get confirmAnyway => 'تأكيد على أي حال';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get invalidAmount => 'يرجى إدخال مبلغ صالح';
+
+  @override
+  String get conversionError => 'تعذر تحميل أسعار الصرف';
+
+  @override
+  String get manualOverride => 'تعديل يدوي';
+
+  @override
+  String get conversionEstimate => 'تقدير التحويل';
+
+  @override
+  String get manualConversion => 'تحويل يدوي';
+
+  @override
+  String get estimatedConversion => 'تحويل تقديري';
 }

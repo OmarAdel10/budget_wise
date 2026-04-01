@@ -2413,6 +2413,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm Anyway'**
   String get confirmAnyway;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @invalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get invalidAmount;
+
+  /// No description provided for @conversionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load exchange rates'**
+  String get conversionError;
+
+  /// No description provided for @manualOverride.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Override'**
+  String get manualOverride;
+
+  /// No description provided for @conversionEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversion Estimate'**
+  String get conversionEstimate;
+
+  /// No description provided for @manualConversion.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Conversion'**
+  String get manualConversion;
+
+  /// No description provided for @estimatedConversion.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Conversion'**
+  String get estimatedConversion;
 }
 
 class _AppLocalizationsDelegate

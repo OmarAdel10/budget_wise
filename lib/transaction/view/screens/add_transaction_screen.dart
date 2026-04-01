@@ -102,6 +102,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   void _resetBudgetWarning() {
     if (_isBudgetWarningShown.value) {
       _isBudgetWarningShown.value = false;
+    _selectedAccountId.addListener(_onAccountChanged);
+  }
+
+  void _onAccountChanged() {
+    if (_selectedAccountId.value != null) {
+      final account = context
+          .read<AccountBloc>()
+          .state
+          .accountsList
+          .firstWhere((a) => a.id == _selectedAccountId.value);
+      _selectedCurrency.value = account.currency;
     }
   }
 
@@ -241,6 +252,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         }
       }
     }
+
+    final selectedAccount = context
+        .read<AccountBloc>()
+        .state
+        .accountsList
+        .firstWhere((a) => a.id == _selectedAccountId.value);
+
+    final finalAmountForAccount =
+        (_selectedCurrency.value == selectedAccount.currency)
+        ? amount
+        : _convertedAmount;
 
     if (_isEditMode) {
       final updatedTransaction = widget.transactionToEdit!.copyWith(
