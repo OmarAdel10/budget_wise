@@ -1,23 +1,24 @@
 import 'dart:developer';
-
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/settings/data/models/settings_model.dart';
+import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
-  SettingsBloc()
+  final SettingsRepository settingsRepository;
+
+  SettingsBloc({required this.settingsRepository})
     : super(
         SettingsInitial(
           SettingsModel(),
           _getCurrencyName(SettingsModel().defaultCurrency),
         ),
       ) {
-    // Initial sync of notification settings to SharedPreferences
-    _syncNotificationSettingsToPrefs(state.model);
+    // Initial sync of notification settings to Repository/Snapshots
+    settingsRepository.saveNotificationSettings(state.model);
 
     on<SettingsEventLocalAuth>((event, emit) {
       final newModel = state.model.copyWith(
@@ -89,7 +90,7 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       if (!newModel.allNotificationsEnabled) {
         NotificationRepository.notifications.cancelAll();
       }
-      _syncNotificationSettingsToPrefs(newModel);
+      settingsRepository.saveNotificationSettings(newModel);
       emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
@@ -97,7 +98,13 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       final newModel = state.model.copyWith(
         smsNotificationsEnabled: !state.model.smsNotificationsEnabled,
       );
-      _syncNotificationSettingsToPrefs(newModel);
+      if (!newModel.smsNotificationsEnabled) {
+        NotificationRepository.cancelNotificationsInRange(
+          NotificationRepository.SMS_RANGE_START,
+          NotificationRepository.SMS_RANGE_END,
+        );
+      }
+      settingsRepository.saveNotificationSettings(newModel);
       emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
@@ -107,10 +114,12 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
             !state.model.subscriptionNotificationsEnabled,
       );
       if (!newModel.subscriptionNotificationsEnabled) {
-        // Just cancel all for now if disabled, they can be rescheduled when turned back on
-        NotificationRepository.notifications.cancelAll();
+        NotificationRepository.cancelNotificationsInRange(
+          NotificationRepository.SUBS_RANGE_START,
+          NotificationRepository.SUBS_RANGE_END,
+        );
       }
-      _syncNotificationSettingsToPrefs(newModel);
+      settingsRepository.saveNotificationSettings(newModel);
       emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
@@ -118,33 +127,15 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       final newModel = state.model.copyWith(
         savingsNotificationsEnabled: !state.model.savingsNotificationsEnabled,
       );
-      _syncNotificationSettingsToPrefs(newModel);
+      if (!newModel.savingsNotificationsEnabled) {
+        NotificationRepository.cancelNotificationsInRange(
+          NotificationRepository.SAVINGS_RANGE_START,
+          NotificationRepository.SAVINGS_RANGE_END,
+        );
+      }
+      settingsRepository.saveNotificationSettings(newModel);
       emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
-  }
-
-  void _syncNotificationSettingsToPrefs(SettingsModel model) async {
-    try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(
-        'all_notifications_enabled',
-        model.allNotificationsEnabled,
-      );
-      await prefs.setBool(
-        'sms_notifications_enabled',
-        model.smsNotificationsEnabled,
-      );
-      await prefs.setBool(
-        'subscription_notifications_enabled',
-        model.subscriptionNotificationsEnabled,
-      );
-      await prefs.setBool(
-        'savings_notifications_enabled',
-        model.savingsNotificationsEnabled,
-      );
-    } catch (e) {
-      log('Failed to sync notification settings to SharedPreferences: $e');
-    }
   }
 
   static String _getCurrencyName(String currencyCode) {
@@ -157,8 +148,8 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       final model = SettingsModel.fromMap(
         json['settingsModel'] as Map<String, dynamic>,
       );
-      // Ensure SharedPreferences is updated after loading from Hydrated storage
-      _syncNotificationSettingsToPrefs(model);
+      // Ensure snapshots are updated after loading from Hydrated storage
+      settingsRepository.saveNotificationSettings(model);
       return SettingsStateSuccess(
         model,
         _getCurrencyName(model.defaultCurrency),

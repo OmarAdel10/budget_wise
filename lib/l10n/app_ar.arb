@@ -441,5 +441,8 @@
   "disableSmsNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات الرسائل القصيرة، فلن يتم إعلامك عند اكتشاف معاملة بنكية جديدة، رغم أنها ستظل تُحفظ كمسودة. الاستمرار؟",
   "disableSubNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات الاشتراكات، فلن تتلقى تذكيرات بالمدفوعات القادمة. الاستمرار؟",
   "disableSavingsNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات المدخرات، فلن تتلقى تحديثات حول أهداف مدخراتك. الاستمرار؟",
-  "continueAction": "متابعة"
+  "continueAction": "متابعة",
+  "insufficientFundsForSaving": "لا يوجد رصيد كافٍ في الحساب المصدر لإتمام عملية الادخار لهذا اليوم.",
+  "updateAccountBalance": "تحديث رصيد الحساب",
+  "savingsGoalCompleted": "تهانينا! لقد وصلت إلى 100% من هدفك: {goalName}!"
 }

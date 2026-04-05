@@ -1268,4 +1268,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get continueAction => 'Continue';
+
+  @override
+  String get insufficientFundsForSaving =>
+      'Insufficient funds in the source account to complete this saving day.';
+
+  @override
+  String get updateAccountBalance => 'Update Account Balance';
+
+  @override
+  String savingsGoalCompleted(Object goalName) {
+    return 'Congratulations! You\'ve reached 100% of your goal: $goalName!';
+  }
 }

@@ -9,6 +9,7 @@ import 'package:budget_wise/currency_conversions/view_model/currency_bloc.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
+import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/statistics/view_model/statistics_event.dart';
 import 'package:budget_wise/statistics/view_model/statistics_view_model.dart';
@@ -38,12 +39,17 @@ class AppProviders {
             CategoryRepository(authRepository: context.read<AuthRepository>()),
       ),
       RepositoryProvider(
-        create: (context) =>
-            AccountRepository(authRepo: context.read<AuthRepository>()),
+        create: (context) => AccountRepository(
+          authRepo: context.read<AuthRepository>(),
+        ),
       ),
+      RepositoryProvider(create: (context) => SettingsRepository()),
       RepositoryProvider(
-        create: (context) =>
-            SavingsRepository(authRepo: context.read<AuthRepository>()),
+        create: (context) => SavingsRepository(
+          authRepo: context.read<AuthRepository>(),
+          accountRepo: context.read<AccountRepository>(),
+          transactionRepo: context.read<TransactionRepository>(),
+        ),
       ),
       RepositoryProvider(
         create: (context) =>
@@ -57,12 +63,17 @@ class AppProviders {
           create: (context) =>
               AuthBloc(authRepository: context.read<AuthRepository>()),
         ),
-        BlocProvider(create: (context) => SettingsBloc()),
+        BlocProvider(
+          create: (context) => SettingsBloc(
+            settingsRepository: context.read<SettingsRepository>(),
+          ),
+        ),
         BlocProvider(
           create: (context) => AccountBloc(
             settingsBloc: context.read<SettingsBloc>(),
             accountRepo: context.read<AccountRepository>(),
             authRepository: context.read<AuthRepository>(),
+            settingsRepository: context.read<SettingsRepository>(),
           ),
         ),
         BlocProvider(
@@ -70,6 +81,8 @@ class AppProviders {
             settingsBloc: context.read<SettingsBloc>(),
             savingsRepo: context.read<SavingsRepository>(),
             authRepository: context.read<AuthRepository>(),
+            accountBloc: context.read<AccountBloc>(),
+            settingsRepository: context.read<SettingsRepository>(),
           ),
         ),
         BlocProvider(

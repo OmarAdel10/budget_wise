@@ -18,7 +18,7 @@ class SubscriptionFormatter {
   }
 
   static String formatCurrency(double amount, String symbol) {
-    return '${_getCurrencyFormat(symbol).currencyName} ${amount.toStringAsFixed(2)}';
+    return '${_getCurrencyFormat(symbol).currencyName!} ${amount.toStringAsFixed(2)}';
   }
 
   static String formatDate(DateTime date, {String pattern = 'MMM dd'}) {

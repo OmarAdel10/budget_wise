@@ -5,7 +5,7 @@ import 'package:budget_wise/accounts/data/models/card_brand.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-enum AccountType { cash, card }
+enum AccountType { cash, card, saving }
 
 class AccountModel {
   final String id;

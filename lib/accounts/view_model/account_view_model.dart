@@ -1,26 +1,27 @@
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
+import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
   final SettingsBloc settingsBloc;
   final AccountRepository accountRepo;
   final AuthRepository authRepository;
+  final SettingsRepository settingsRepository;
+
   AccountBloc({
     required this.settingsBloc,
     required this.accountRepo,
     required this.authRepository,
+    required this.settingsRepository,
   }) : super(AccountStateInitial(accountsList: [], netWorth: 0)) {
-    // Initial sync of loaded accounts to SharedPreferences
+    // Initial sync of loaded accounts to Snapshot
     _syncToSharedPreferences(state.accountsList);
 
     authRepository.authStateChanges.listen((user) {
@@ -461,13 +462,11 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
 
   void _syncToSharedPreferences(List<AccountModel> accounts) async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String encoded = json.encode(
-        accounts.map((acc) => acc.toMap()).toList(),
-      );
-      await prefs.setString('cached_accounts_for_sms', encoded);
+      final List<Map<String, dynamic>> mapList =
+          accounts.map((acc) => acc.toMap()).toList();
+      await settingsRepository.syncAccountsSnapshot(mapList);
     } catch (e) {
-      log('Failed to sync accounts to SharedPreferences: $e');
+      log('Failed to sync accounts to Repository: $e');
     }
   }
 

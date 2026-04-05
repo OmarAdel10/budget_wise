@@ -29,6 +29,8 @@ class SavingsModel implements FinancialRepresentable {
   final Map<int, double> customAmounts; // For Custom Method (Day -> Amount)
   final int targetDays;
   final Map<int, DateTime> contributionDates; // Day index -> Date completed
+  final String sourceAccountId;
+  final String savingAccountId;
 
   SavingsModel({
     this.id = '',
@@ -48,6 +50,8 @@ class SavingsModel implements FinancialRepresentable {
     this.constantAmount,
     this.customAmounts = const {},
     required this.targetDays,
+    this.sourceAccountId = '',
+    this.savingAccountId = '',
   });
 
   @override
@@ -63,6 +67,18 @@ class SavingsModel implements FinancialRepresentable {
   Color? get financialColor => Color(colorValue);
 
   bool get isCompleted => currentAmount >= targetAmount;
+
+  bool get isBehindSchedule {
+    if (isCompleted) return false;
+    final now = DateTime.now();
+    final totalDays = targetDate.difference(createdAt).inDays;
+    final elapsedDays = now.difference(createdAt).inDays;
+    
+    if (totalDays <= 0 || elapsedDays <= 0) return false;
+    
+    final expectedAmount = (elapsedDays / totalDays) * targetAmount;
+    return currentAmount < (expectedAmount * 0.8);
+  }
 
   double getAmountForDay(int dayNum) {
     switch (method) {
@@ -124,6 +140,8 @@ class SavingsModel implements FinancialRepresentable {
     double? constantAmount,
     Map<int, double>? customAmounts,
     int? targetDays,
+    String? sourceAccountId,
+    String? savingAccountId,
   }) {
     return SavingsModel(
       id: id ?? this.id,
@@ -143,6 +161,8 @@ class SavingsModel implements FinancialRepresentable {
       constantAmount: constantAmount ?? this.constantAmount,
       customAmounts: customAmounts ?? this.customAmounts,
       targetDays: targetDays ?? this.targetDays,
+      sourceAccountId: sourceAccountId ?? this.sourceAccountId,
+      savingAccountId: savingAccountId ?? this.savingAccountId,
     );
   }
 
@@ -167,6 +187,8 @@ class SavingsModel implements FinancialRepresentable {
       'constantAmount': constantAmount,
       'customAmounts': customAmounts.map((k, v) => MapEntry(k.toString(), v)),
       'targetDays': targetDays,
+      'sourceAccountId': sourceAccountId,
+      'savingAccountId': savingAccountId,
     };
   }
 
@@ -209,6 +231,8 @@ class SavingsModel implements FinancialRepresentable {
           ) ??
           {},
       targetDays: map['targetDays'] as int,
+      sourceAccountId: map['sourceAccountId'] as String? ?? '',
+      savingAccountId: map['savingAccountId'] as String? ?? '',
     );
   }
 

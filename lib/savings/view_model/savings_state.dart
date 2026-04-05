@@ -14,7 +14,17 @@ class SavingsStateInitial extends SavingsState {
 }
 
 class SavingsStateSuccess extends SavingsState {
-  const SavingsStateSuccess({required super.savingsList});
+  final bool showCompletionToast;
+  final String? completedGoalName;
+
+  const SavingsStateSuccess({
+    required super.savingsList,
+    this.showCompletionToast = false,
+    this.completedGoalName,
+  });
+
+  @override
+  List<Object?> get props => [savingsList, showCompletionToast, completedGoalName];
 }
 
 class SavingsStateLoading extends SavingsState {

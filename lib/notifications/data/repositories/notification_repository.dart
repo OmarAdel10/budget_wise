@@ -12,25 +12,47 @@ class NotificationRepository {
   static final FlutterLocalNotificationsPlugin notifications =
       FlutterLocalNotificationsPlugin();
 
+  // Notification ID Ranges
+  static const int SAVINGS_RANGE_START = 1000;
+  static const int SAVINGS_RANGE_END = 1999;
+  static const int SUBS_RANGE_START = 2000;
+  static const int SUBS_RANGE_END = 2999;
+  static const int SMS_RANGE_START = 3000;
+  static const int SMS_RANGE_END = 3999;
+
   @pragma('vm:entry-point')
   static void onReciveTap(NotificationResponse notificationResponse) {
     log('ID: ${notificationResponse.id}');
     log('PAYLOAD: ${notificationResponse.payload}');
 
-    if (notificationResponse.payload == 'sms_draft_confirm') {
+    final payload = notificationResponse.payload;
+    if (payload == null) return;
+
+    if (payload == 'sms_draft_confirm') {
       BudgetWise.navigatorKey.currentState?.pushNamed(
         PendingSmsTransactionsScreen.routeName,
       );
-    } else if (notificationResponse.payload?.startsWith('subscription_') ??
-        false) {
-      final subId = notificationResponse.payload!.replaceFirst(
-        'subscription_',
-        '',
-      );
+    } else if (payload == 'nav_savings') {
+      BudgetWise.navigatorKey.currentState?.pushNamed('/savings');
+    } else if (payload.startsWith('subscription_')) {
+      final subId = payload.replaceFirst('subscription_', '');
       BudgetWise.navigatorKey.currentState?.pushNamed(
         SubscriptionDetailsScreen.routeName,
         arguments: subId,
       );
+    } else if (payload.startsWith('add_transaction_with_context|')) {
+      final parts = payload.split('|');
+      if (parts.length >= 3) {
+        final accountId = parts[1];
+        final amount = parts[2];
+        BudgetWise.navigatorKey.currentState?.pushNamed(
+          '/add-transaction',
+          arguments: {
+            'initialAccountId': accountId,
+            'initialAmount': double.tryParse(amount),
+          },
+        );
+      }
     }
   }
 
@@ -40,11 +62,7 @@ class NotificationRepository {
     if (_isInitialized) return;
 
     try {
-      await notifications
-          .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >()
-          ?.requestNotificationsPermission();
+      await requestPermissions();
 
       const AndroidInitializationSettings androidInit =
           AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -65,6 +83,24 @@ class NotificationRepository {
     } catch (e) {
       log('Notification initialization failed: $e');
     }
+  }
+
+  static Future<bool> isPermissionGranted() async {
+    final androidGranted = await notifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()
+            ?.areNotificationsEnabled() ??
+        false;
+    return androidGranted;
+  }
+
+  static Future<void> requestPermissions() async {
+    await notifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.requestNotificationsPermission();
   }
 
   static void showNotificationStack() async {
@@ -170,6 +206,19 @@ class NotificationRepository {
       await notifications.cancel(id: id);
     } catch (e) {
       log('Error canceling notification $id: $e');
+    }
+  }
+
+  static Future<void> cancelNotificationsInRange(int start, int end) async {
+    try {
+      final pendingRequests = await notifications.pendingNotificationRequests();
+      for (final request in pendingRequests) {
+        if (request.id >= start && request.id <= end) {
+          await notifications.cancel(id: request.id);
+        }
+      }
+    } catch (e) {
+      log('Error canceling notifications in range $start-$end: $e');
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/settings/view/widgets/settings_tile.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
@@ -22,40 +23,64 @@ class NotificationSettingsTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            backgroundColor: AppColors.cardBackground,
-            title: Text(title, style: AppTextStyles.heading3),
-            content: Text(content, style: AppTextStyles.bodyMedium),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(l10n.cancel, style: AppTextStyles.bodyMedium),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  onContinue();
-                },
-                child: Text(
-                  l10n.continueAction,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.danger,
-                  ),
-                ),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.cardBackground,
+        title: Text(title, style: AppTextStyles.heading3),
+        content: Text(content, style: AppTextStyles.bodyMedium),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel, style: AppTextStyles.bodyMedium),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              onContinue();
+            },
+            child: Text(
+              l10n.continueAction,
+              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.danger),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  void _handleToggle(
+  void _showPermissionDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.cardBackground,
+        title: const Text('Permission Required'),
+        content: const Text(
+          'Notification permissions are disabled in system settings. Please enable them to receive alerts.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              // Note: Opening settings usually requires a package like app_settings
+              Navigator.pop(context);
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleToggle(
     BuildContext context,
     bool currentValue,
     SettingsEvent toggleEvent,
     String warningTitle,
     String warningContent,
-  ) {
+  ) async {
     if (currentValue) {
       // Trying to disable -> Show warning
       _showDisableWarningDialog(
@@ -65,8 +90,17 @@ class NotificationSettingsTile extends StatelessWidget {
         () => context.read<SettingsBloc>().add(toggleEvent),
       );
     } else {
-      // Trying to enable -> Dispatch directly
-      context.read<SettingsBloc>().add(toggleEvent);
+      // Trying to enable -> Check OS permissions first
+      final granted = await NotificationRepository.isPermissionGranted();
+      if (!granted) {
+        if (context.mounted) {
+          _showPermissionDialog(context);
+        }
+        return;
+      }
+      if (context.mounted) {
+        context.read<SettingsBloc>().add(toggleEvent);
+      }
     }
   }
 
@@ -79,24 +113,40 @@ class NotificationSettingsTile extends StatelessWidget {
         final model = state.model;
         final allEnabled = model.allNotificationsEnabled;
 
+        // Build dynamic summary
+        List<String> activeServices = [];
+        if (model.smsNotificationsEnabled) activeServices.add('SMS');
+        if (model.subscriptionNotificationsEnabled) {
+          activeServices.add(l10n.subscriptions);
+        }
+        if (model.savingsNotificationsEnabled) {
+          activeServices.add(l10n.navSavings);
+        }
+
+        String subtitle = allEnabled
+            ? (activeServices.isEmpty
+                ? 'No services active'
+                : 'Active: ${activeServices.join(", ")}')
+            : 'All alerts are currently silenced';
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SettingsTile(
               icon: PhosphorIconsRegular.bellRinging,
               title: l10n.allNotifications,
+              subtitle: subtitle,
               showDivider: true,
               trailing: CupertinoSwitch(
                 value: allEnabled,
                 activeTrackColor: AppColors.primaryAccent,
-                onChanged:
-                    (_) => _handleToggle(
-                      context,
-                      allEnabled,
-                      const SettingsEventToggleAllNotifications(),
-                      l10n.disableNotificationsWarningTitle,
-                      l10n.disableAllNotificationsWarningDesc,
-                    ),
+                onChanged: (_) => _handleToggle(
+                  context,
+                  allEnabled,
+                  const SettingsEventToggleAllNotifications(),
+                  l10n.disableNotificationsWarningTitle,
+                  l10n.disableAllNotificationsWarningDesc,
+                ),
               ),
             ),
             IgnorePointer(
@@ -112,14 +162,13 @@ class NotificationSettingsTile extends StatelessWidget {
                       trailing: CupertinoSwitch(
                         value: model.smsNotificationsEnabled,
                         activeTrackColor: AppColors.primaryAccent,
-                        onChanged:
-                            (_) => _handleToggle(
-                              context,
-                              model.smsNotificationsEnabled,
-                              const SettingsEventToggleSmsNotifications(),
-                              l10n.disableNotificationsWarningTitle,
-                              l10n.disableSmsNotificationsWarningDesc,
-                            ),
+                        onChanged: (_) => _handleToggle(
+                          context,
+                          model.smsNotificationsEnabled,
+                          const SettingsEventToggleSmsNotifications(),
+                          l10n.disableNotificationsWarningTitle,
+                          l10n.disableSmsNotificationsWarningDesc,
+                        ),
                       ),
                     ),
                     SettingsTile(
@@ -129,14 +178,13 @@ class NotificationSettingsTile extends StatelessWidget {
                       trailing: CupertinoSwitch(
                         value: model.subscriptionNotificationsEnabled,
                         activeTrackColor: AppColors.primaryAccent,
-                        onChanged:
-                            (_) => _handleToggle(
-                              context,
-                              model.subscriptionNotificationsEnabled,
-                              const SettingsEventToggleSubscriptionNotifications(),
-                              l10n.disableNotificationsWarningTitle,
-                              l10n.disableSubNotificationsWarningDesc,
-                            ),
+                        onChanged: (_) => _handleToggle(
+                          context,
+                          model.subscriptionNotificationsEnabled,
+                          const SettingsEventToggleSubscriptionNotifications(),
+                          l10n.disableNotificationsWarningTitle,
+                          l10n.disableSubNotificationsWarningDesc,
+                        ),
                       ),
                     ),
                     SettingsTile(
@@ -146,14 +194,13 @@ class NotificationSettingsTile extends StatelessWidget {
                       trailing: CupertinoSwitch(
                         value: model.savingsNotificationsEnabled,
                         activeTrackColor: AppColors.primaryAccent,
-                        onChanged:
-                            (_) => _handleToggle(
-                              context,
-                              model.savingsNotificationsEnabled,
-                              const SettingsEventToggleSavingsNotifications(),
-                              l10n.disableNotificationsWarningTitle,
-                              l10n.disableSavingsNotificationsWarningDesc,
-                            ),
+                        onChanged: (_) => _handleToggle(
+                          context,
+                          model.savingsNotificationsEnabled,
+                          const SettingsEventToggleSavingsNotifications(),
+                          l10n.disableNotificationsWarningTitle,
+                          l10n.disableSavingsNotificationsWarningDesc,
+                        ),
                       ),
                     ),
                   ],

@@ -17,6 +17,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
+
 class SubscriptionBloc
     extends HydratedBloc<SubscriptionEvent, SubscriptionState> {
   final SubscriptionRepository subscriptionRepository;
@@ -38,6 +40,19 @@ class SubscriptionBloc
       }
     });
 
+    settingsBloc.stream.listen((settingsState) {
+      final isEnabled = settingsState.model.allNotificationsEnabled &&
+          settingsState.model.subscriptionNotificationsEnabled;
+      if (isEnabled) {
+        // Reschedule all when re-enabled
+        for (var sub in state.subscriptions) {
+          _scheduleNotification(sub);
+        }
+      } else {
+        // Handled by SettingsBloc range cancellation
+      }
+    });
+
     on<SubscriptionsLoadRequested>((event, emit) async {
       emit(
         SubscriptionLoading(
@@ -55,6 +70,7 @@ class SubscriptionBloc
           final local = localMap[remote.id];
           if (local == null || remote.updatedAt.isAfter(local.updatedAt)) {
             updatedList.add(remote);
+            _scheduleNotification(remote);
           } else {
             updatedList.add(local);
           }
@@ -91,6 +107,7 @@ class SubscriptionBloc
       );
 
       final updatedList = [...state.subscriptions, newSubscription];
+      _scheduleNotification(newSubscription);
       emit(
         SubscriptionLoadSuccess(
           subscriptions: updatedList,
@@ -113,6 +130,9 @@ class SubscriptionBloc
       final updatedList = state.subscriptions.map((sub) {
         return sub.id == updatedSubscription.id ? updatedSubscription : sub;
       }).toList();
+
+      _cancelNotification(updatedSubscription.id);
+      _scheduleNotification(updatedSubscription);
 
       emit(
         SubscriptionLoadSuccess(
@@ -143,6 +163,7 @@ class SubscriptionBloc
     });
 
     on<SubscriptionDeleted>((event, emit) async {
+      _cancelNotification(event.id);
       final updatedList = state.subscriptions
           .where((s) => s.id != event.id)
           .toList();
@@ -206,6 +227,30 @@ class SubscriptionBloc
         ),
       );
     });
+  }
+
+  void _scheduleNotification(SubscriptionModel sub) async {
+    final isEnabled = settingsBloc.state.model.allNotificationsEnabled &&
+        settingsBloc.state.model.subscriptionNotificationsEnabled;
+    if (!isEnabled || sub.inActive) return;
+
+    final id = NotificationRepository.SUBS_RANGE_START + sub.id.hashCode.abs() % 1000;
+    
+    await NotificationRepository.scheduledNotification(
+      channelId: 'subscription_alerts',
+      channelName: 'Subscription Reminders',
+      channelDescription: 'Alerts for upcoming subscriptions',
+      id: id,
+      title: 'Upcoming Subscription',
+      body: 'Your ${sub.name} subscription of ${sub.amount} is due tomorrow!',
+      scheduledDate: sub.nextBillingDate.subtract(const Duration(days: 1)),
+      payload: 'subscription_${sub.id}',
+    );
+  }
+
+  void _cancelNotification(String subId) async {
+    final id = NotificationRepository.SUBS_RANGE_START + subId.hashCode.abs() % 1000;
+    await NotificationRepository.cancelNotificationById(id);
   }
 
   double _calculateTotalMonthlySpend(List<SubscriptionModel> subscriptions) {
