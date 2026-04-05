@@ -2401,6 +2401,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get continueAction;
+
+  /// No description provided for @insufficientFundsForSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient funds in the source account to complete this saving day.'**
+  String get insufficientFundsForSaving;
+
+  /// No description provided for @updateAccountBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Account Balance'**
+  String get updateAccountBalance;
+
+  /// No description provided for @savingsGoalCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations! You\'ve reached 100% of your goal: {goalName}!'**
+  String savingsGoalCompleted(Object goalName);
 }
 
 class _AppLocalizationsDelegate

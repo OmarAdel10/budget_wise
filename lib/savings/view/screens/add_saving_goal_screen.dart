@@ -4,6 +4,7 @@ import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
 import 'package:budget_wise/savings/view_model/savings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/widgets/custom_button.dart';
+import '../../../shared/widgets/account_dropdown.dart';
 
 import '../widgets/savings_mode_toggle.dart';
 import '../widgets/goal_name_input.dart';
@@ -47,6 +49,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   late final ValueNotifier<SavingsMethod> _selectedMethodNotifier;
   late final ValueNotifier<double> _targetAmountNotifier;
   late final ValueNotifier<int> _targetDaysNotifier;
+  late final ValueNotifier<String?> _selectedSourceAccountIdNotifier;
 
   final ValueNotifier<String?> _selectedCurrency = ValueNotifier(null);
   final ValueNotifier<Color> _selectedColor = ValueNotifier(Color(0xFF4CAF50));
@@ -60,6 +63,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
     _selectedMethodNotifier = ValueNotifier(SavingsMethod.defaultPattern);
     _targetAmountNotifier = ValueNotifier(0.0);
     _targetDaysNotifier = ValueNotifier(30);
+    _selectedSourceAccountIdNotifier = ValueNotifier(null);
 
     _selectedCurrency.value = context
         .read<SettingsBloc>()
@@ -139,6 +143,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
     _selectedMethodNotifier.dispose();
     _targetAmountNotifier.dispose();
     _targetDaysNotifier.dispose();
+    _selectedSourceAccountIdNotifier.dispose();
     super.dispose();
   }
 
@@ -213,6 +218,12 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     GoalNameInput(controller: _nameController),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Source Account Dropdown
+                    AccountDropdown(
+                      selectedAccountId: _selectedSourceAccountIdNotifier,
+                    ),
                     const SizedBox(height: AppSpacing.lg),
 
                     // Target Amount Input
@@ -333,9 +344,19 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
     if (_formKey.currentState!.validate()) {
       final amount = _targetAmountNotifier.value;
       final days = _targetDaysNotifier.value;
+      final l10n = AppLocalizations.of(context)!;
 
       if (amount <= 0 && _isByAmountNotifier.value) return;
       if (days <= 0 && !_isByAmountNotifier.value) return;
+
+      if (_selectedSourceAccountIdNotifier.value == null) {
+        AppToast.show(
+          context,
+          type: AppToastType.error,
+          title: l10n.selectAccount,
+        );
+        return;
+      }
 
       final model = SavingsModel(
         id: const Uuid().v4(),
@@ -349,6 +370,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         colorValue: _selectedColor.value.toARGB32(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
+        sourceAccountId: _selectedSourceAccountIdNotifier.value!,
       );
 
       context.read<SavingsBloc>().add(SavingsEventCreateGoal(model: model));

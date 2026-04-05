@@ -23,8 +23,15 @@ class AddTransactionScreen extends StatefulWidget {
   static const String routeName = '/add-transaction';
 
   final TransactionModel? transactionToEdit;
+  final String? initialAccountId;
+  final double? initialAmount;
 
-  const AddTransactionScreen({super.key, this.transactionToEdit});
+  const AddTransactionScreen({
+    super.key,
+    this.transactionToEdit,
+    this.initialAccountId,
+    this.initialAmount,
+  });
 
   @override
   State<AddTransactionScreen> createState() => _AddTransactionScreenState();
@@ -68,10 +75,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       _selectedDate = ValueNotifier(DateTime.now());
       _selectedType = ValueNotifier(TransactionType.expense);
       _selectedCategoryId = ValueNotifier(null);
-      _selectedAccountId = ValueNotifier(null);
+      _selectedAccountId = ValueNotifier(widget.initialAccountId);
       _selectedCurrency = ValueNotifier(
         context.read<SettingsBloc>().state.model.defaultCurrency,
       );
+      if (widget.initialAmount != null) {
+        _amountController.text = widget.initialAmount!.toStringAsFixed(2);
+      }
     }
     _titleController.addListener(_onTitleChanged);
     _titleFocusNode.addListener(_onTitleFocusChanged);

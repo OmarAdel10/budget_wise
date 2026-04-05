@@ -1213,4 +1213,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get continueAction => 'متابعة';
+
+  @override
+  String get insufficientFundsForSaving =>
+      'لا يوجد رصيد كافٍ في الحساب المصدر لإتمام عملية الادخار لهذا اليوم.';
+
+  @override
+  String get updateAccountBalance => 'تحديث رصيد الحساب';
+
+  @override
+  String savingsGoalCompleted(Object goalName) {
+    return 'تهانينا! لقد وصلت إلى 100% من هدفك: $goalName!';
+  }
 }

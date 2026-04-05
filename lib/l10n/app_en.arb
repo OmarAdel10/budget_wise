@@ -423,5 +423,8 @@
   "disableSmsNotificationsWarningDesc": "If you disable SMS notifications, you won't be notified when a new bank transaction is detected, though it will still be saved as a draft. Continue?",
   "disableSubNotificationsWarningDesc": "If you disable Subscription notifications, you won't receive reminders for upcoming payments. Continue?",
   "disableSavingsNotificationsWarningDesc": "If you disable Savings notifications, you won't receive updates about your savings goals. Continue?",
-  "continueAction": "Continue"
-}
+  "continueAction": "Continue",
+  "insufficientFundsForSaving": "Insufficient funds in the source account to complete this saving day.",
+  "updateAccountBalance": "Update Account Balance",
+  "savingsGoalCompleted": "Congratulations! You've reached 100% of your goal: {goalName}!"
+  }

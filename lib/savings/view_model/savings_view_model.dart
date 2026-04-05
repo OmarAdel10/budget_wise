@@ -1,9 +1,13 @@
 import 'dart:developer';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
 import 'package:budget_wise/savings/view_model/savings_event.dart';
 import 'package:budget_wise/savings/view_model/savings_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
+import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -12,15 +16,34 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
   final SettingsBloc settingsBloc;
   final SavingsRepository savingsRepo;
   final AuthRepository authRepository;
+  final AccountBloc accountBloc;
+  final SettingsRepository settingsRepository;
 
   SavingsBloc({
     required this.settingsBloc,
     required this.savingsRepo,
     required this.authRepository,
+    required this.accountBloc,
+    required this.settingsRepository,
   }) : super(const SavingsStateInitial(savingsList: [])) {
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const SavingsEventFetchAll());
+      }
+    });
+
+    settingsBloc.stream.listen((settingsState) {
+      final isEnabled =
+          settingsState.model.allNotificationsEnabled &&
+          settingsState.model.savingsNotificationsEnabled;
+      if (isEnabled) {
+        for (var goal in state.savingsList) {
+          _scheduleNotifications(goal);
+        }
+      } else {
+        for (var goal in state.savingsList) {
+          _cancelNotifications(goal);
+        }
       }
     });
 
@@ -37,9 +60,11 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
 
           if (localItem == null) {
             updatedList.add(remoteItem);
+            _scheduleNotifications(remoteItem);
           } else {
             if (remoteItem.updatedAt.isAfter(localItem.updatedAt)) {
               updatedList.add(remoteItem);
+              _scheduleNotifications(remoteItem);
             } else {
               updatedList.add(localItem);
             }
@@ -48,6 +73,7 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
         }
         updatedList.addAll(localGoalsMap.values);
 
+        _syncToSharedPreferences(updatedList);
         emit(SavingsStateSuccess(savingsList: updatedList));
       } catch (e) {
         log('Failed to fetch saving goals: ${e.toString()}');
@@ -60,7 +86,7 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
       }
     });
 
-    on<SavingsEventCreateGoal>((event, emit) {
+    on<SavingsEventCreateGoal>((event, emit) async {
       final user = authRepository.currentUser;
       try {
         final newGoal = event.model.copyWith(
@@ -69,22 +95,14 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
           isSynced: false,
         );
 
-        final updatedList = [...state.savingsList, newGoal];
-        emit(SavingsStateSuccess(savingsList: updatedList));
-
         if (settingsBloc.state.model.hasLoggedIn) {
-          savingsRepo
-              .addSavingGoal(newGoal)
-              .then((_) => add(SavingsEventMarkSynced(goalId: newGoal.id)))
-              .catchError((e) {
-                log('Cloud sync failed(create goal): ${e.toString()}');
-                emit(
-                  SavingsStateError(
-                    message: 'Cloud sync failed: ${e.toString()}',
-                    savingsList: state.savingsList,
-                  ),
-                );
-              });
+          await savingsRepo.createGoalWithAccount(newGoal);
+          add(const SavingsEventFetchAll());
+        } else {
+          final updatedList = [...state.savingsList, newGoal];
+          _scheduleNotifications(newGoal);
+          _syncToSharedPreferences(updatedList);
+          emit(SavingsStateSuccess(savingsList: updatedList));
         }
       } catch (e) {
         log('Failed to create saving goal: ${e.toString()}');
@@ -106,6 +124,11 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
         final updatedList = state.savingsList
             .map((goal) => goal.id == updatedGoal.id ? updatedGoal : goal)
             .toList();
+
+        _cancelNotifications(updatedGoal);
+        _scheduleNotifications(updatedGoal);
+
+        _syncToSharedPreferences(updatedList);
         emit(SavingsStateSuccess(savingsList: updatedList));
 
         if (settingsBloc.state.model.hasLoggedIn) {
@@ -135,9 +158,13 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
 
     on<SavingsEventDeleteGoal>((event, emit) {
       try {
+        final goal = state.savingsList.firstWhere((g) => g.id == event.goalId);
+        _cancelNotifications(goal);
+
         final updatedList = state.savingsList
             .where((goal) => goal.id != event.goalId)
             .toList();
+        _syncToSharedPreferences(updatedList);
         emit(SavingsStateSuccess(savingsList: updatedList));
 
         if (settingsBloc.state.model.hasLoggedIn) {
@@ -162,79 +189,51 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
       }
     });
 
-    on<SavingsEventToggleDayContribution>((event, emit) {
+    on<SavingsEventToggleDayContribution>((event, emit) async {
       try {
-        final updatedList = state.savingsList.map((goal) {
-          if (goal.id == event.goalId) {
-            final List<int> updatedDays = List.from(goal.completedDays);
-            final Map<int, DateTime> updatedDates = Map.from(
-              goal.contributionDates,
+        final goal = state.savingsList.firstWhere((g) => g.id == event.goalId);
+        final bool isCompleting = !goal.completedDays.contains(event.day);
+        final bool wasCompletedBefore = goal.isCompleted;
+
+        if (isCompleting) {
+          final amount = goal.getAmountForDay(event.day);
+          final sourceAccount = accountBloc.state.accountsList.firstWhere(
+            (a) => a.id == goal.sourceAccountId,
+          );
+          final savingAccount = accountBloc.state.accountsList.firstWhere(
+            (a) => a.id == goal.savingAccountId,
+          );
+
+          if (sourceAccount.balance < amount) {
+            emit(
+              SavingsStateError(
+                message: 'insufficient_funds',
+                savingsList: state.savingsList,
+              ),
             );
-            double newAmount = goal.currentAmount;
-
-            double amountToToggle;
-            switch (goal.method) {
-              case SavingsMethod.defaultPattern:
-                amountToToggle = event.day.toDouble();
-                break;
-              case SavingsMethod.doublePattern:
-                amountToToggle = event.day.toDouble() * 2;
-                break;
-              case SavingsMethod.constant:
-                amountToToggle = goal.constantAmount ?? 0.0;
-                break;
-              case SavingsMethod.custom:
-                amountToToggle = goal.customAmounts[event.day] ?? 0.0;
-                break;
-            }
-
-            if (updatedDays.contains(event.day)) {
-              updatedDays.remove(event.day);
-              updatedDates.remove(event.day);
-              newAmount -= amountToToggle;
-            } else {
-              updatedDays.add(event.day);
-              updatedDates[event.day] = DateTime.now();
-              newAmount += amountToToggle;
-            }
-
-            return goal.copyWith(
-              completedDays: updatedDays,
-              contributionDates: updatedDates,
-              currentAmount: newAmount,
-              updatedAt: DateTime.now(),
-              isSynced: false,
-            );
+            return;
           }
-          return goal;
-        }).toList();
 
-        final updatedGoal = updatedList.firstWhere(
-          (goal) => goal.id == event.goalId,
-        );
+          if (settingsBloc.state.model.hasLoggedIn) {
+            await savingsRepo.processContribution(
+              goal: goal,
+              day: event.day,
+              amount: amount,
+              sourceAccount: sourceAccount,
+              savingAccount: savingAccount,
+            );
+            accountBloc.add(const AccountEventFetchAll());
+            
+            final remoteGoals = await savingsRepo.fetchAllSavingGoals();
+            final updatedGoal = remoteGoals.firstWhere((g) => g.id == goal.id);
+            final bool nowCompleted = updatedGoal.isCompleted;
 
-        emit(SavingsStateSuccess(savingsList: updatedList));
-
-        if (settingsBloc.state.model.hasLoggedIn) {
-          savingsRepo
-              .updateContribution(
-                updatedGoal.id,
-                updatedGoal.currentAmount,
-                updatedGoal.completedDays,
-                updatedGoal.contributionDates,
-                updatedGoal.customAmounts,
-                updatedGoal.updatedAt,
-              )
-              .then((_) => add(SavingsEventMarkSynced(goalId: updatedGoal.id)))
-              .catchError((e) {
-                log('Cloud sync failed(toggle contribution): ${e.toString()}');
-                emit(
-                  SavingsStateError(
-                    message: 'Cloud sync failed: ${e.toString()}',
-                    savingsList: state.savingsList,
-                  ),
-                );
-              });
+            emit(SavingsStateSuccess(
+              savingsList: remoteGoals,
+              showCompletionToast: !wasCompletedBefore && nowCompleted,
+              completedGoalName: updatedGoal.name,
+            ));
+          }
         }
       } catch (e) {
         log('Failed to toggle contribution: ${e.toString()}');
@@ -249,17 +248,20 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
 
     on<SavingsEventUpdateCustomAmount>((event, emit) {
       try {
+        final goal = state.savingsList.firstWhere((g) => g.id == event.goalId);
+        final bool wasCompletedBefore = goal.isCompleted;
+
         final updatedList = state.savingsList.map((goal) {
           if (goal.id == event.goalId) {
-            final Map<int, double> updatedCustomAmounts =
-                Map.from(goal.customAmounts);
+            final Map<int, double> updatedCustomAmounts = Map.from(
+              goal.customAmounts,
+            );
             final List<int> updatedDays = List.from(goal.completedDays);
             final Map<int, DateTime> updatedDates = Map.from(
               goal.contributionDates,
             );
             double newAmount = goal.currentAmount;
 
-            // Remove old amount if it existed
             if (updatedCustomAmounts.containsKey(event.day)) {
               newAmount -= updatedCustomAmounts[event.day]!;
             }
@@ -267,7 +269,6 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
             updatedCustomAmounts[event.day] = event.amount;
             newAmount += event.amount;
 
-            // If updating a custom amount with a non-zero value, it's considered completed
             if (event.amount > 0 && !updatedDays.contains(event.day)) {
               updatedDays.add(event.day);
               updatedDates[event.day] = DateTime.now();
@@ -291,8 +292,14 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
         final updatedGoal = updatedList.firstWhere(
           (goal) => goal.id == event.goalId,
         );
+        final bool nowCompleted = updatedGoal.isCompleted;
 
-        emit(SavingsStateSuccess(savingsList: updatedList));
+        _syncToSharedPreferences(updatedList);
+        emit(SavingsStateSuccess(
+          savingsList: updatedList,
+          showCompletionToast: !wasCompletedBefore && nowCompleted,
+          completedGoalName: updatedGoal.name,
+        ));
 
         if (settingsBloc.state.model.hasLoggedIn) {
           savingsRepo
@@ -333,6 +340,7 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
                 goal.id == event.goalId ? goal.copyWith(isSynced: true) : goal,
           )
           .toList();
+      _syncToSharedPreferences(updatedList);
       emit(SavingsStateSuccess(savingsList: updatedList));
     });
 
@@ -356,6 +364,7 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
               (e) => log('Failed to sync goal ${goal.id} on login: $e'),
             );
       }
+      _syncToSharedPreferences(state.savingsList);
     });
 
     on<SavingsEventCheckAndSyncPending>((event, emit) async {
@@ -371,7 +380,70 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
             .then((_) => add(SavingsEventMarkSynced(goalId: goal.id)))
             .catchError((e) => log('Failed to sync goal ${goal.id}: $e'));
       }
+      _syncToSharedPreferences(state.savingsList);
     });
+  }
+
+  void _syncToSharedPreferences(List<SavingsModel> savings) async {
+    try {
+      final List<Map<String, dynamic>> mapList =
+          savings.map((s) => s.toMap()).toList();
+      await settingsRepository.syncSavingsSnapshot(mapList);
+    } catch (e) {
+      log('Failed to sync savings to Repository: $e');
+    }
+  }
+
+  void _scheduleNotifications(SavingsModel goal) async {
+    final isEnabled =
+        settingsBloc.state.model.allNotificationsEnabled &&
+        settingsBloc.state.model.savingsNotificationsEnabled;
+    if (!isEnabled) return;
+
+    final baseId = goal.id.hashCode.abs();
+
+    // 1. Mid-day reminder (2:00 PM) for the next 7 days
+    final now = DateTime.now();
+    for (int i = 0; i < 7; i++) {
+      final date = now.add(Duration(days: i));
+      final scheduledDate = DateTime(date.year, date.month, date.day, 14, 0);
+
+      if (scheduledDate.isAfter(now)) {
+        await NotificationRepository.scheduledNotification(
+          channelId: 'saving_alerts',
+          channelName: 'Savings Alerts',
+          channelDescription: 'Alerts for savings goals',
+          id: baseId + i,
+          title: 'Daily Saving Reminder',
+          body: "Don't forget to save for your '${goal.name}' goal today!",
+          scheduledDate: scheduledDate,
+          payload: 'saving_goal_${goal.id}',
+        );
+      }
+    }
+
+    // 2. Deadline reminder
+    if (goal.targetDate.isAfter(now)) {
+      await NotificationRepository.scheduledNotification(
+        channelId: 'saving_alerts',
+        channelName: 'Savings Alerts',
+        channelDescription: 'Alerts for savings goals',
+        id: baseId + 100,
+        title: 'Savings Goal Deadline',
+        body:
+            "Today is the deadline for your '${goal.name}' goal. Check your progress!",
+        scheduledDate: goal.targetDate,
+        payload: 'saving_goal_${goal.id}',
+      );
+    }
+  }
+
+  void _cancelNotifications(SavingsModel goal) async {
+    final baseId = goal.id.hashCode.abs();
+    for (int i = 0; i < 7; i++) {
+      await NotificationRepository.cancelNotificationById(baseId + i);
+    }
+    await NotificationRepository.cancelNotificationById(baseId + 100);
   }
 
   @override
@@ -384,6 +456,10 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
       final List<SavingsModel> savingsList = list
           .map((e) => SavingsModel.fromMap(e))
           .toList();
+
+      // Mirror to Snapshot on load
+      _syncToSharedPreferences(savingsList);
+
       return SavingsStateSuccess(savingsList: savingsList);
     } catch (e) {
       log('Error During Savings Serialization: $e');

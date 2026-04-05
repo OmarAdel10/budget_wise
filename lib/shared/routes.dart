@@ -111,6 +111,7 @@ class Routes {
           child: CategoryDetailScreen(),
         );
       case AddTransactionScreen.routeName:
+        final args = settings.arguments as Map<String, dynamic>?;
         return PageTransition(
           type: PageTransitionType.bottomToTop,
           reverseType: PageTransitionType.topToBottom,
@@ -119,7 +120,10 @@ class Routes {
           reverseDuration: Duration(milliseconds: 500),
           curve: Curves.easeIn,
           settings: settings,
-          child: const AddTransactionScreen(),
+          child: AddTransactionScreen(
+            initialAccountId: args?['initialAccountId'] as String?,
+            initialAmount: args?['initialAmount'] as double?,
+          ),
         );
       case AddSavingGoalScreen.routeName:
         return PageTransition(

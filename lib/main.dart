@@ -5,6 +5,7 @@ import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/utils/background_tasks.dart';
 import 'package:budget_wise/shared/utils/sms_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,10 @@ void main() async {
       (await getApplicationDocumentsDirectory()).path,
     ),
   );
+
+  // Background Tasks
+  BackgroundTasks.initialize();
+  BackgroundTasks.scheduleTasks();
 
   // Early registration of the background SMS handler to ensure it works even when killed.
   SmsService().initializeBackgroundHandler();
