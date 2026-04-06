@@ -90,6 +90,7 @@ class AppProviders {
             settingsBloc: context.read<SettingsBloc>(),
             accountBloc: context.read<AccountBloc>(),
             transactionRepository: context.read<TransactionRepository>(),
+            categoryRepository: context.read<CategoryRepository>(),
             authRepository: context.read<AuthRepository>(),
           )..add(const TransactionEventLoadBackgroundDrafts()),
         ),
