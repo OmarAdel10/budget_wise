@@ -80,4 +80,9 @@ class CategoryRepository {
         getCategoriesCollection();
     await collection.doc(categoryId).delete();
   }
+
+  Future<CategoryModel?> fetchCategoryById(String categoryId) async {
+    final doc = await getCategoriesCollection().doc(categoryId).get();
+    return doc.data();
+  }
 }
