@@ -18,6 +18,7 @@ import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const String routeName = '/home-screen';
   const HomeScreen({super.key});
 
   @override

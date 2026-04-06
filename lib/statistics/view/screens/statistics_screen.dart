@@ -17,6 +17,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 
 class StatisticsScreen extends StatefulWidget {
+  static const String routeName = '/stats-screen';
   const StatisticsScreen({super.key});
 
   @override

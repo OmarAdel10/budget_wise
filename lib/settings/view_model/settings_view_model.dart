@@ -100,8 +100,8 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       );
       if (!newModel.smsNotificationsEnabled) {
         NotificationRepository.cancelNotificationsInRange(
-          NotificationRepository.SMS_RANGE_START,
-          NotificationRepository.SMS_RANGE_END,
+          NotificationRepository.smsRangeStart,
+          NotificationRepository.smsRangeEnd,
         );
       }
       settingsRepository.saveNotificationSettings(newModel);
@@ -115,8 +115,8 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       );
       if (!newModel.subscriptionNotificationsEnabled) {
         NotificationRepository.cancelNotificationsInRange(
-          NotificationRepository.SUBS_RANGE_START,
-          NotificationRepository.SUBS_RANGE_END,
+          NotificationRepository.subsRangeStart,
+          NotificationRepository.subsRangeEnd,
         );
       }
       settingsRepository.saveNotificationSettings(newModel);
@@ -129,8 +129,8 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       );
       if (!newModel.savingsNotificationsEnabled) {
         NotificationRepository.cancelNotificationsInRange(
-          NotificationRepository.SAVINGS_RANGE_START,
-          NotificationRepository.SAVINGS_RANGE_END,
+          NotificationRepository.savingsRangeStart,
+          NotificationRepository.savingsRangeEnd,
         );
       }
       settingsRepository.saveNotificationSettings(newModel);

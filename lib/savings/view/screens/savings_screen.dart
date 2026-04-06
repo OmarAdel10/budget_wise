@@ -16,6 +16,7 @@ import 'add_saving_goal_screen.dart';
 import 'saving_goal_detail_screen.dart';
 
 class SavingsScreen extends StatelessWidget {
+  static const String routeName = '/savings-screen';
   const SavingsScreen({super.key});
 
   @override

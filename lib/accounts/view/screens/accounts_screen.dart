@@ -8,6 +8,7 @@ import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AccountsScreen extends StatelessWidget {
+  static const String routeName = '/accounts-screen';
   const AccountsScreen({super.key});
 
   @override
