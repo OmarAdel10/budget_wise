@@ -31,7 +31,8 @@ class SubscriptionBloc
     });
 
     settingsBloc.stream.listen((settingsState) {
-      final isEnabled = settingsState.model.allNotificationsEnabled &&
+      final isEnabled =
+          settingsState.model.allNotificationsEnabled &&
           settingsState.model.subscriptionNotificationsEnabled;
       if (isEnabled) {
         // Reschedule all when re-enabled
@@ -193,12 +194,14 @@ class SubscriptionBloc
   }
 
   void _scheduleNotification(SubscriptionModel sub) async {
-    final isEnabled = settingsBloc.state.model.allNotificationsEnabled &&
+    final isEnabled =
+        settingsBloc.state.model.allNotificationsEnabled &&
         settingsBloc.state.model.subscriptionNotificationsEnabled;
     if (!isEnabled || sub.inActive) return;
 
-    final id = NotificationRepository.SUBS_RANGE_START + sub.id.hashCode.abs() % 1000;
-    
+    final id =
+        NotificationRepository.subsRangeStart + sub.id.hashCode.abs() % 1000;
+
     await NotificationRepository.scheduledNotification(
       channelId: 'subscription_alerts',
       channelName: 'Subscription Reminders',
@@ -212,7 +215,8 @@ class SubscriptionBloc
   }
 
   void _cancelNotification(String subId) async {
-    final id = NotificationRepository.SUBS_RANGE_START + subId.hashCode.abs() % 1000;
+    final id =
+        NotificationRepository.subsRangeStart + subId.hashCode.abs() % 1000;
     await NotificationRepository.cancelNotificationById(id);
   }
 

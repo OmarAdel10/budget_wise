@@ -1,5 +1,6 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
+import 'package:budget_wise/accounts/view/screens/accounts_screen.dart';
 import 'package:budget_wise/accounts/view/screens/add_account_screen.dart';
 import 'package:budget_wise/accounts/view/screens/edit_account_screen.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
@@ -9,14 +10,18 @@ import 'package:budget_wise/auth/view/screens/login_screen.dart';
 import 'package:budget_wise/auth/view/screens/signup_screen.dart';
 import 'package:budget_wise/category/view/screens/add_category_screen.dart';
 import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
+import 'package:budget_wise/home/view/screens/home_screen.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
 import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/view/screens/add_saving_goal_screen.dart';
 import 'package:budget_wise/savings/view/screens/edit_saving_goal_screen.dart';
 import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
+import 'package:budget_wise/savings/view/screens/savings_screen.dart';
 import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
 import 'package:budget_wise/settings/view/screens/passcode_setup_screen.dart';
+import 'package:budget_wise/settings/view/screens/settings_screen.dart';
+import 'package:budget_wise/statistics/view/screens/statistics_screen.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/subscriptions/view/screens/add_subscription_screen.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
@@ -34,7 +39,21 @@ class Routes {
   static Route<dynamic>? Function(RouteSettings)? onGenerateRoutes(
     BuildContext context,
   ) => (settings) {
+    //* Main Screens Routes
+    return mainScreensRoutes(context, settings) ??
+        //* Add Screens Routes
+        addScreensRoutes(context, settings) ??
+        //* Details Screens Routes
+        detailsScreensRoutes(context, settings) ??
+        //* Edit Screens Routes
+        editScreensRoutes(context, settings);
+  };
+  static Route<dynamic>? mainScreensRoutes(
+    BuildContext context,
+    RouteSettings settings,
+  ) {
     switch (settings.name) {
+      //* Main Screens Routes
       case OnboardingScreen.routeName:
         return PageTransition(
           type: PageTransitionType.fade,
@@ -79,6 +98,26 @@ class Routes {
           settings: settings,
           child: const ForgotPasswordScreen(),
         );
+      case LocalAuthScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          ctx: context,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const LocalAuthScreen(),
+        );
+      case PasscodeSetupScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const PasscodeSetupScreen(),
+        );
       case MainScreen.routeName:
         return PageTransition(
           type: PageTransitionType.fade,
@@ -88,6 +127,104 @@ class Routes {
           settings: settings,
           child: const MainScreen(),
         );
+      case HomeScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const HomeScreen(),
+        );
+      case AllTransactionsScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const AllTransactionsScreen(),
+        );
+      case PendingSmsTransactionsScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: Duration(milliseconds: 500),
+          reverseDuration: Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: PendingSmsTransactionsScreen(),
+        );
+      case SubscriptionScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const SubscriptionScreen(),
+        );
+      case SavingsScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const SavingsScreen(),
+        );
+      case AccountsScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const AccountsScreen(),
+        );
+      case SettingsScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const SettingsScreen(),
+        );
+      case StatisticsScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const StatisticsScreen(),
+        );
+      default:
+        return null;
+    }
+  }
+
+  static Route<dynamic>? addScreensRoutes(
+    BuildContext context,
+    RouteSettings settings,
+  ) {
+    switch (settings.name) {
       case AddCategoryScreen.routeName:
         return PageTransition(
           type: PageTransitionType.bottomToTop,
@@ -98,17 +235,6 @@ class Routes {
           curve: Curves.easeIn,
           settings: settings,
           child: const AddCategoryScreen(),
-        );
-      case CategoryDetailScreen.routeName:
-        return PageTransition(
-          type: PageTransitionType.rightToLeft,
-          reverseType: PageTransitionType.leftToRight,
-          ctx: context,
-          duration: Duration(milliseconds: 500),
-          reverseDuration: Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: CategoryDetailScreen(),
         );
       case AddTransactionScreen.routeName:
         final args = settings.arguments as Map<String, dynamic>?;
@@ -136,6 +262,51 @@ class Routes {
           settings: settings,
           child: const AddSavingGoalScreen(),
         );
+      case AddAccountScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.bottomToTop,
+          reverseType: PageTransitionType.topToBottom,
+          ctx: context,
+          duration: Duration(milliseconds: 500),
+          reverseDuration: Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const AddAccountScreen(),
+        );
+      case AddSubscriptionScreen.routeName:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final subModel = args?['subModel'] as SubscriptionModel?;
+        return PageTransition(
+          type: PageTransitionType.bottomToTop,
+          reverseType: PageTransitionType.topToBottom,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: AddSubscriptionScreen(subscriptionToEdit: subModel),
+        );
+      default:
+        return null;
+    }
+  }
+
+  static Route<dynamic>? detailsScreensRoutes(
+    BuildContext context,
+    RouteSettings settings,
+  ) {
+    switch (settings.name) {
+      case CategoryDetailScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: Duration(milliseconds: 500),
+          reverseDuration: Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: CategoryDetailScreen(),
+        );
       case SavingGoalDetailScreen.routeName:
         return PageTransition(
           type: PageTransitionType.rightToLeft,
@@ -146,19 +317,6 @@ class Routes {
           curve: Curves.easeIn,
           settings: settings,
           child: SavingGoalDetailScreen(),
-        );
-      case EditSavingGoalScreen.routeName:
-        final args = settings.arguments as Map<String, dynamic>?;
-        final goal = args?['savingGoal'] as SavingsModel;
-        return PageTransition(
-          type: PageTransitionType.rightToLeft,
-          reverseType: PageTransitionType.leftToRight,
-          ctx: context,
-          duration: Duration(milliseconds: 500),
-          reverseDuration: Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: EditSavingGoalScreen(goal: goal),
         );
       case TransactionTypeDetailScreen.routeName:
         return PageTransition(
@@ -182,7 +340,18 @@ class Routes {
           settings: settings,
           child: TransactionDetailScreen(),
         );
-      case AllTransactionsScreen.routeName:
+      case AccountDetailScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: Duration(milliseconds: 500),
+          reverseDuration: Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const AccountDetailScreen(),
+        );
+      case SubscriptionDetailsScreen.routeName:
         return PageTransition(
           type: PageTransitionType.rightToLeft,
           reverseType: PageTransitionType.leftToRight,
@@ -191,16 +360,42 @@ class Routes {
           reverseDuration: const Duration(milliseconds: 500),
           curve: Curves.easeIn,
           settings: settings,
-          child: const AllTransactionsScreen(),
+          child: SubscriptionDetailsScreen(),
         );
-      case LocalAuthScreen.routeName:
+      default:
+        return null;
+    }
+  }
+
+  static Route<dynamic>? editScreensRoutes(
+    BuildContext context,
+    RouteSettings settings,
+  ) {
+    switch (settings.name) {
+      case EditSavingGoalScreen.routeName:
+        final args = settings.arguments as Map<String, dynamic>?;
+        final goal = args?['savingGoal'] as SavingsModel;
         return PageTransition(
-          type: PageTransitionType.fade,
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
           ctx: context,
           duration: Duration(milliseconds: 500),
+          reverseDuration: Duration(milliseconds: 500),
           curve: Curves.easeIn,
           settings: settings,
-          child: const LocalAuthScreen(),
+          child: EditSavingGoalScreen(goal: goal),
+        );
+      case EditAccountScreen.routeName:
+        final account = settings.arguments as AccountModel;
+        return PageTransition(
+          type: PageTransitionType.rightToLeft,
+          reverseType: PageTransitionType.leftToRight,
+          ctx: context,
+          duration: Duration(milliseconds: 500),
+          reverseDuration: Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: EditAccountScreen(account: account),
         );
       case EditProfileScreen.routeName:
         return PageTransition(
@@ -215,99 +410,8 @@ class Routes {
             authRepository: context.read<AuthRepository>(),
           ),
         );
-      case AddAccountScreen.routeName:
-        return PageTransition(
-          type: PageTransitionType.bottomToTop,
-          reverseType: PageTransitionType.topToBottom,
-          ctx: context,
-          duration: Duration(milliseconds: 500),
-          reverseDuration: Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: const AddAccountScreen(),
-        );
-      case AccountDetailScreen.routeName:
-        return PageTransition(
-          type: PageTransitionType.rightToLeft,
-          reverseType: PageTransitionType.leftToRight,
-          ctx: context,
-          duration: Duration(milliseconds: 500),
-          reverseDuration: Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: const AccountDetailScreen(),
-        );
-      case EditAccountScreen.routeName:
-        final account = settings.arguments as AccountModel;
-        return PageTransition(
-          type: PageTransitionType.rightToLeft,
-          reverseType: PageTransitionType.leftToRight,
-          ctx: context,
-          duration: Duration(milliseconds: 500),
-          reverseDuration: Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: EditAccountScreen(account: account),
-        );
-      case PendingSmsTransactionsScreen.routeName:
-        return PageTransition(
-          type: PageTransitionType.rightToLeft,
-          reverseType: PageTransitionType.leftToRight,
-          ctx: context,
-          duration: Duration(milliseconds: 500),
-          reverseDuration: Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: PendingSmsTransactionsScreen(),
-        );
-      case PasscodeSetupScreen.routeName:
-        return PageTransition(
-          type: PageTransitionType.rightToLeft,
-          reverseType: PageTransitionType.leftToRight,
-          ctx: context,
-          duration: const Duration(milliseconds: 500),
-          reverseDuration: const Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: const PasscodeSetupScreen(),
-        );
-      case SubscriptionScreen.routeName:
-        return PageTransition(
-          type: PageTransitionType.rightToLeft,
-          reverseType: PageTransitionType.leftToRight,
-          ctx: context,
-          duration: const Duration(milliseconds: 500),
-          reverseDuration: const Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: const SubscriptionScreen(),
-        );
-      case SubscriptionDetailsScreen.routeName:
-        return PageTransition(
-          type: PageTransitionType.rightToLeft,
-          reverseType: PageTransitionType.leftToRight,
-          ctx: context,
-          duration: const Duration(milliseconds: 500),
-          reverseDuration: const Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: SubscriptionDetailsScreen(),
-        );
-      case AddSubscriptionScreen.routeName:
-        final args = settings.arguments as Map<String, dynamic>?;
-        final subModel = args?['subModel'] as SubscriptionModel?;
-        return PageTransition(
-          type: PageTransitionType.bottomToTop,
-          reverseType: PageTransitionType.topToBottom,
-          ctx: context,
-          duration: const Duration(milliseconds: 500),
-          reverseDuration: const Duration(milliseconds: 500),
-          curve: Curves.easeIn,
-          settings: settings,
-          child: AddSubscriptionScreen(subscriptionToEdit: subModel),
-        );
       default:
         return null;
     }
-  };
+  }
 }

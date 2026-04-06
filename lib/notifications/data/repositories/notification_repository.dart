@@ -1,8 +1,12 @@
 import 'dart:developer';
+import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
+import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/main.dart';
+import 'package:budget_wise/savings/view/screens/savings_screen.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
+import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
+import 'package:budget_wise/transaction/view/screens/all_transactions_screen.dart';
 import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
-// import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -13,12 +17,18 @@ class NotificationRepository {
       FlutterLocalNotificationsPlugin();
 
   // Notification ID Ranges
-  static const int SAVINGS_RANGE_START = 1000;
-  static const int SAVINGS_RANGE_END = 1999;
-  static const int SUBS_RANGE_START = 2000;
-  static const int SUBS_RANGE_END = 2999;
-  static const int SMS_RANGE_START = 3000;
-  static const int SMS_RANGE_END = 3999;
+  static const int savingsRangeStart = 1000;
+  static const int savingsRangeEnd = 1999;
+  static const int subsRangeStart = 2000;
+  static const int subsRangeEnd = 2999;
+  static const int smsRangeStart = 3000;
+  static const int smsRangeEnd = 3999;
+  static const int accountsRangeStart = 4000;
+  static const int accountsRangeEnd = 4999;
+  static const int categoriesRangeStart = 5000;
+  static const int categoriesRangeEnd = 5999;
+  static const int transactionsRangeStart = 6000;
+  static const int transationsRangeEnd = 6999;
 
   @pragma('vm:entry-point')
   static void onReciveTap(NotificationResponse notificationResponse) {
@@ -33,7 +43,7 @@ class NotificationRepository {
         PendingSmsTransactionsScreen.routeName,
       );
     } else if (payload == 'nav_savings') {
-      BudgetWise.navigatorKey.currentState?.pushNamed('/savings');
+      BudgetWise.navigatorKey.currentState?.pushNamed(SavingsScreen.routeName);
     } else if (payload.startsWith('subscription_')) {
       final subId = payload.replaceFirst('subscription_', '');
       BudgetWise.navigatorKey.currentState?.pushNamed(
@@ -46,13 +56,25 @@ class NotificationRepository {
         final accountId = parts[1];
         final amount = parts[2];
         BudgetWise.navigatorKey.currentState?.pushNamed(
-          '/add-transaction',
+          AddTransactionScreen.routeName,
           arguments: {
             'initialAccountId': accountId,
             'initialAmount': double.tryParse(amount),
           },
         );
       }
+    } else if (payload.startsWith('nav_account_')) {
+      BudgetWise.navigatorKey.currentState?.pushNamed(
+        AccountDetailScreen.routeName,
+      );
+    } else if (payload.startsWith('nav_category_')) {
+      BudgetWise.navigatorKey.currentState?.pushNamed(
+        CategoryDetailScreen.routeName,
+      );
+    } else if (payload == 'nav_transactions') {
+      BudgetWise.navigatorKey.currentState?.pushNamed(
+        AllTransactionsScreen.routeName,
+      );
     }
   }
 
@@ -86,7 +108,8 @@ class NotificationRepository {
   }
 
   static Future<bool> isPermissionGranted() async {
-    final androidGranted = await notifications
+    final androidGranted =
+        await notifications
             .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin
             >()
@@ -198,6 +221,59 @@ class NotificationRepository {
       );
     } catch (e) {
       log('Scheduled Notification error $e');
+    }
+  }
+
+  static Future<void> scheduleDailyNotification({
+    required String channelId,
+    required String channelName,
+    required String channelDescription,
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledDate,
+    String? payload,
+  }) async {
+    try {
+      if (!_isInitialized) await notificationInit();
+
+      final NotificationDetails details = NotificationDetails(
+        android: AndroidNotificationDetails(
+          channelId,
+          channelName,
+          channelDescription: channelDescription,
+          channelShowBadge: true,
+          importance: Importance.max,
+          priority: Priority.max,
+        ),
+      );
+
+      tz.initializeTimeZones();
+      final TimezoneInfo currentTimeZone =
+          await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(currentTimeZone.identifier));
+      final tz.TZDateTime tzScheduledDate = tz.TZDateTime(
+        tz.local,
+        scheduledDate.year,
+        scheduledDate.month,
+        scheduledDate.day,
+        scheduledDate.hour,
+        scheduledDate.minute,
+        scheduledDate.second,
+      );
+
+      await notifications.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: tzScheduledDate,
+        notificationDetails: details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: payload ?? 'Daily Schedule For $title',
+      );
+    } catch (e) {
+      log('Daily Scheduled Notification error $e');
     }
   }
 

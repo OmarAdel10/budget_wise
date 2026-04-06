@@ -17,6 +17,7 @@ import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 
 class StatisticsScreen extends StatefulWidget {
+  static const String routeName = '/stats-screen';
   const StatisticsScreen({super.key});
 
   @override
@@ -37,8 +38,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     _toggleOptionNotifier.addListener(() {
       context.read<StatisticsBloc>().add(
-            StatisticsEventToggleType(_toggleOptionNotifier.value),
-          );
+        StatisticsEventToggleType(_toggleOptionNotifier.value),
+      );
     });
   }
 
@@ -133,12 +134,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       BlocSelector<
                         StatisticsBloc,
                         StatisticsState,
-                        (
-                          List<double>,
-                          List<double>,
-                          List<double>,
-                          List<double>,
-                        )
+                        (List<double>, List<double>, List<double>, List<double>)
                       >(
                         selector: (state) => (
                           state.model.dailyIncomeTrend,

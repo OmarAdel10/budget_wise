@@ -24,6 +24,7 @@ import '../../../shared/constants/text_styles.dart';
 import '../../../auth/view/screens/login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
+  static const String routeName = '/settings-screen';
   const SettingsScreen({super.key});
 
   @override
