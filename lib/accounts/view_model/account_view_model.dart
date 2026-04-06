@@ -6,6 +6,7 @@ import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
 
@@ -336,6 +337,10 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
 
     on<AccountEventUpdateBalance>((event, emit) {
       try {
+        final oldAccount = state.accountsList.firstWhere(
+          (account) => account.id == event.accountId,
+        );
+
         final updatedList = state.accountsList.map((account) {
           if (account.id == event.accountId) {
             return account.copyWith(
@@ -349,6 +354,24 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         final updatedAccount = updatedList.firstWhere(
           (account) => account.id == event.accountId,
         );
+
+        // Low Balance Alert logic
+        if (updatedAccount.lowBalanceAlertEnabled) {
+          if (oldAccount.balance > updatedAccount.lowBalanceAlertAmount &&
+              updatedAccount.balance <= updatedAccount.lowBalanceAlertAmount) {
+            NotificationRepository.instantNotification(
+              channelId: 'low_balance_alerts',
+              channelName: 'Low Balance Alerts',
+              channelDescription: 'Alerts when account balance is low',
+              id: NotificationRepository.accountsRangeStart +
+                  updatedAccount.id.hashCode.abs() % 1000,
+              title: 'Low Balance Warning',
+              body:
+                  'Your account ${updatedAccount.title} balance has dropped below your threshold.',
+              payload: 'nav_account_${updatedAccount.id}',
+            );
+          }
+        }
 
         emit(
           AccountStateSuccess(
