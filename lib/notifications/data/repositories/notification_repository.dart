@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/main.dart';
 import 'package:budget_wise/savings/view/screens/savings_screen.dart';
@@ -7,6 +8,7 @@ import 'package:budget_wise/subscriptions/view/screens/subscription_details_scre
 import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
 import 'package:budget_wise/transaction/view/screens/all_transactions_screen.dart';
 import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -64,12 +66,27 @@ class NotificationRepository {
         );
       }
     } else if (payload.startsWith('nav_account_')) {
-      BudgetWise.navigatorKey.currentState?.pushNamed(
-        AccountDetailScreen.routeName,
-      );
+      final accountId = payload.replaceFirst('nav_account_', '');
+      final context = BudgetWise.navigatorKey.currentContext;
+      if (context != null) {
+        try {
+          final accountBloc = context.read<AccountBloc>();
+          final account = accountBloc.state.accountsList.firstWhere(
+            (a) => a.id == accountId,
+          );
+          BudgetWise.navigatorKey.currentState?.pushNamed(
+            AccountDetailScreen.routeName,
+            arguments: account,
+          );
+        } catch (e) {
+          log('Error navigating to account detail: $e');
+        }
+      }
     } else if (payload.startsWith('nav_category_')) {
+      final categoryId = payload.replaceFirst('nav_category_', '');
       BudgetWise.navigatorKey.currentState?.pushNamed(
         CategoryDetailScreen.routeName,
+        arguments: {'categoryId': categoryId},
       );
     } else if (payload == 'nav_transactions') {
       BudgetWise.navigatorKey.currentState?.pushNamed(
