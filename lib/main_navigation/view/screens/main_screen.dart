@@ -67,6 +67,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _checkBackgroundSmsDrafts().then((_) {
       _handleLaunchNotification();
     });
+    _scheduleDailyReminder();
   }
 
   Future<void> _handleLaunchNotification() async {
@@ -91,6 +92,33 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         }
       }
     }
+  }
+
+  void _scheduleDailyReminder() {
+    final now = DateTime.now();
+    DateTime scheduledDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      20, // 8 PM daily reminder
+      0,
+    );
+
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
+    NotificationRepository.scheduleDailyNotification(
+      channelId: 'daily_reminders',
+      channelName: 'Daily Reminders',
+      channelDescription: 'Daily reminder to log transactions',
+      id: NotificationRepository.transactionsRangeStart,
+      title: 'Time to Log Your Transactions',
+      body:
+          'Don\'t forget to log your daily expenses to keep your budget on track!',
+      scheduledDate: scheduledDate,
+      payload: 'nav_transactions',
+    );
   }
 
   @override
@@ -186,6 +214,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                     'sms_draft_confirm', // Used for navigation logic in the main app
               );
             }
+            if (!mounted) return;
             context.read<TransactionBloc>().add(
               TransactionEventAddSmsDraft(smsDraft: smsDraft),
             );
