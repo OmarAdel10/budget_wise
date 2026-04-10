@@ -1,6 +1,8 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view/widgets/draft_transaction_card_item.dart';
@@ -61,6 +63,13 @@ class PendingSmsListView extends StatelessWidget {
       TransactionEventConfirmSmsDraft(
         smsDraftId: draft.id,
         transaction: newTransaction,
+        toastCallback: () {
+          AppToast.show(
+            context,
+            title: AppLocalizations.of(context)!.budgetLimitExceeded,
+            type: AppToastType.warning,
+          );
+        },
       ),
     );
   }

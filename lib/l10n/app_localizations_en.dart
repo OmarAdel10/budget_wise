@@ -1204,6 +1204,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get savingsNotifications => 'Savings Notifications';
 
   @override
+  String get categoryBudgetNotifications => 'Category Budget Notifications';
+
+  @override
   String get disableNotificationsWarningTitle => 'Disable Notifications?';
 
   @override
@@ -1223,6 +1226,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'If you disable Savings notifications, you won\'t receive updates about your savings goals. Continue?';
 
   @override
+  String get disableCategoryBudgetNotificationsWarningDesc =>
+      'If you disable Category Budget notifications, you won\'t receive alerts when you\'re approaching or have exceeded your category budgets. Continue?';
+
+  @override
   String get continueAction => 'Continue';
 
   @override
@@ -1236,4 +1243,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String savingsGoalCompleted(Object goalName) {
     return 'Congratulations! You\'ve reached 100% of your goal: $goalName!';
   }
+
+  @override
+  String categoryBudgetExceeded(Object categoryName) {
+    return 'You\'ve exceeded your budget for $categoryName!';
+  }
+
+  @override
+  String categoryBudgetApproaching(Object categoryName) {
+    return 'You\'re approaching your budget limit for $categoryName!';
+  }
+
+  @override
+  String get dailyReminderNotifications => 'Daily Reminder Notifications';
+
+  @override
+  String get disableDailyReminderNotificationsWarningDesc =>
+      'If you disable Daily Reminder notifications, you won\'t receive reminders for your daily savings. Continue?';
+
+  @override
+  String get budgetLimitExceeded => 'Budget Limit Exceeded';
 }

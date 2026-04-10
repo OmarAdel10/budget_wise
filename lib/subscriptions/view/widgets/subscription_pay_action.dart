@@ -67,6 +67,13 @@ class SubscriptionPayAction extends StatelessWidget {
                       context.read<TransactionBloc>().add(
                         TransactionEventCreateTransaction(
                           transactionFromSubscriptionPaying,
+                          toastCallback: () {
+                            AppToast.show(
+                              context,
+                              title: l10n.budgetLimitExceeded,
+                              type: AppToastType.warning,
+                            );
+                          },
                         ),
                       );
                       AppToast.show(

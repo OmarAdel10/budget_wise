@@ -2366,6 +2366,12 @@ abstract class AppLocalizations {
   /// **'Savings Notifications'**
   String get savingsNotifications;
 
+  /// No description provided for @categoryBudgetNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Budget Notifications'**
+  String get categoryBudgetNotifications;
+
   /// No description provided for @disableNotificationsWarningTitle.
   ///
   /// In en, this message translates to:
@@ -2396,6 +2402,12 @@ abstract class AppLocalizations {
   /// **'If you disable Savings notifications, you won\'t receive updates about your savings goals. Continue?'**
   String get disableSavingsNotificationsWarningDesc;
 
+  /// No description provided for @disableCategoryBudgetNotificationsWarningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'If you disable Category Budget notifications, you won\'t receive alerts when you\'re approaching or have exceeded your category budgets. Continue?'**
+  String get disableCategoryBudgetNotificationsWarningDesc;
+
   /// No description provided for @continueAction.
   ///
   /// In en, this message translates to:
@@ -2419,6 +2431,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Congratulations! You\'ve reached 100% of your goal: {goalName}!'**
   String savingsGoalCompleted(Object goalName);
+
+  /// No description provided for @categoryBudgetExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve exceeded your budget for {categoryName}!'**
+  String categoryBudgetExceeded(Object categoryName);
+
+  /// No description provided for @categoryBudgetApproaching.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re approaching your budget limit for {categoryName}!'**
+  String categoryBudgetApproaching(Object categoryName);
+
+  /// No description provided for @dailyReminderNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Reminder Notifications'**
+  String get dailyReminderNotifications;
+
+  /// No description provided for @disableDailyReminderNotificationsWarningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'If you disable Daily Reminder notifications, you won\'t receive reminders for your daily savings. Continue?'**
+  String get disableDailyReminderNotificationsWarningDesc;
+
+  /// No description provided for @budgetLimitExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Limit Exceeded'**
+  String get budgetLimitExceeded;
 }
 
 class _AppLocalizationsDelegate

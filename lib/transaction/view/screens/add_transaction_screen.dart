@@ -1,3 +1,4 @@
+import 'package:budget_wise/main.dart';
 import 'package:budget_wise/shared/widgets/currency_prefix.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view/widgets/transaction_title_suggestions.dart';
@@ -190,7 +191,16 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         updatedAt: DateTime.now(),
       );
       context.read<TransactionBloc>().add(
-        TransactionEventUpdateTransaction(updatedTransaction),
+        TransactionEventUpdateTransaction(
+          updatedTransaction,
+          toastCallback: () {
+            AppToast.show(
+              context,
+              title: l10n.budgetLimitExceeded,
+              type: AppToastType.warning,
+            );
+          },
+        ),
       );
     } else {
       final newTransaction = TransactionModel(
@@ -207,7 +217,20 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       );
 
       context.read<TransactionBloc>().add(
-        TransactionEventCreateTransaction(newTransaction),
+        TransactionEventCreateTransaction(
+          newTransaction,
+          toastCallback: () {
+            final ctx = BudgetWise.navigatorKey.currentContext;
+            if (ctx != null) {
+              final l10n = AppLocalizations.of(ctx)!;
+              AppToast.show(
+                ctx,
+                title: l10n.budgetLimitExceeded,
+                type: AppToastType.warning,
+              );
+            }
+          },
+        ),
       );
     }
     Navigator.of(context).pop();
@@ -221,7 +244,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.primaryBackground,
         elevation: 0,
-        leading: CloseButton(onPressed: () => Navigator.of(context).pop(),),
+        leading: CloseButton(onPressed: () => Navigator.of(context).pop()),
         title: Text(
           _isEditMode ? l10n.editTransaction : l10n.addTransactionTitle,
           style: const TextStyle(

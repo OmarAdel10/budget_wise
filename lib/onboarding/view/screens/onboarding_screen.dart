@@ -227,7 +227,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         updatedAt: DateTime.now(),
       );
       context.read<TransactionBloc>().add(
-        TransactionEventCreateTransaction(transaction),
+        TransactionEventCreateTransaction(transaction, toastCallback: () {}),
       );
 
       context.read<SettingsBloc>().add(

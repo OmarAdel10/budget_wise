@@ -59,6 +59,14 @@ class SettingsEventToggleSavingsNotifications extends SettingsEvent {
   const SettingsEventToggleSavingsNotifications();
 }
 
+class SettingsEventToggleCategoryBudgetNotifications extends SettingsEvent {
+  const SettingsEventToggleCategoryBudgetNotifications();
+}
+
+class SettingsEventToggleDailyReminderNotifications extends SettingsEvent {
+  const SettingsEventToggleDailyReminderNotifications();
+}
+
 class SettingsEventSyncAccountsSnapshot extends SettingsEvent {
   final List<Map<String, dynamic>> accounts;
   const SettingsEventSyncAccountsSnapshot(this.accounts);
