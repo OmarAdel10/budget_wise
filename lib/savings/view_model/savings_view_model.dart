@@ -7,8 +7,8 @@ import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
 import 'package:budget_wise/savings/view_model/savings_event.dart';
 import 'package:budget_wise/savings/view_model/savings_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
 
@@ -17,14 +17,12 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
   final SavingsRepository savingsRepo;
   final AuthRepository authRepository;
   final AccountBloc accountBloc;
-  final SettingsRepository settingsRepository;
 
   SavingsBloc({
     required this.settingsBloc,
     required this.savingsRepo,
     required this.authRepository,
     required this.accountBloc,
-    required this.settingsRepository,
   }) : super(const SavingsStateInitial(savingsList: [])) {
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
@@ -384,14 +382,10 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
     });
   }
 
-  void _syncToSharedPreferences(List<SavingsModel> savings) async {
-    try {
-      final List<Map<String, dynamic>> mapList =
-          savings.map((s) => s.toMap()).toList();
-      await settingsRepository.syncSavingsSnapshot(mapList);
-    } catch (e) {
-      log('Failed to sync savings to Repository: $e');
-    }
+  void _syncToSharedPreferences(List<SavingsModel> savings) {
+    final List<Map<String, dynamic>> mapList =
+        savings.map((s) => s.toMap()).toList();
+    settingsBloc.add(SettingsEventSyncSavingsSnapshot(mapList));
   }
 
   void _scheduleNotifications(SavingsModel goal) async {

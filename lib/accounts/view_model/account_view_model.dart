@@ -4,8 +4,8 @@ import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -14,13 +14,11 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
   final SettingsBloc settingsBloc;
   final AccountRepository accountRepo;
   final AuthRepository authRepository;
-  final SettingsRepository settingsRepository;
 
   AccountBloc({
     required this.settingsBloc,
     required this.accountRepo,
     required this.authRepository,
-    required this.settingsRepository,
   }) : super(AccountStateInitial(accountsList: [], netWorth: 0)) {
     // Initial sync of loaded accounts to Snapshot
     _syncToSharedPreferences(state.accountsList);
@@ -483,14 +481,10 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
     });
   }
 
-  void _syncToSharedPreferences(List<AccountModel> accounts) async {
-    try {
-      final List<Map<String, dynamic>> mapList =
-          accounts.map((acc) => acc.toMap()).toList();
-      await settingsRepository.syncAccountsSnapshot(mapList);
-    } catch (e) {
-      log('Failed to sync accounts to Repository: $e');
-    }
+  void _syncToSharedPreferences(List<AccountModel> accounts) {
+    final List<Map<String, dynamic>> mapList =
+        accounts.map((acc) => acc.toMap()).toList();
+    settingsBloc.add(SettingsEventSyncAccountsSnapshot(mapList));
   }
 
   @override

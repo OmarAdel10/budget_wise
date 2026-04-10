@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
-import 'package:budget_wise/category/data/repositories/category_repository.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_state.dart';
@@ -18,15 +18,15 @@ import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
 class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
   final SettingsBloc settingsBloc;
   final AccountBloc accountBloc;
+  final CategoryBloc categoryBloc;
   final TransactionRepository transactionRepository;
-  final CategoryRepository categoryRepository;
   final AuthRepository authRepository;
 
   TransactionBloc({
     required this.settingsBloc,
     required this.accountBloc,
+    required this.categoryBloc,
     required this.transactionRepository,
-    required this.categoryRepository,
     required this.authRepository,
   }) : super(TransactionState.initial()) {
     authRepository.authStateChanges.listen((user) {
@@ -60,44 +60,6 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
               amountDelta: amountDelta,
             ),
           );
-        }
-
-        // Budget Warning Alert logic
-        try {
-          final category = await categoryRepository.fetchCategoryById(
-            newTransaction.categoryId,
-          );
-          if (category != null &&
-              category.hasBudgetAmount &&
-              category.budgetAmount != null) {
-            final now = DateTime.now();
-            final categoryTotal = updatedList
-                .where(
-                  (t) =>
-                      t.categoryId == newTransaction.categoryId &&
-                      t.type == TransactionType.expense &&
-                      t.transactionDate.month == now.month &&
-                      t.transactionDate.year == now.year,
-                )
-                .fold(0.0, (sum, t) => sum + t.transactionAmount);
-
-            if (categoryTotal >= category.budgetAmount!) {
-              NotificationRepository.instantNotification(
-                channelId: 'budget_warnings',
-                channelName: 'Budget Warnings',
-                channelDescription: 'Alerts when category budget is exceeded',
-                id:
-                    NotificationRepository.categoriesRangeStart +
-                    category.id.hashCode.abs() % 1000,
-                title: 'Budget Exceeded',
-                body:
-                    'You have exceeded your budget for ${category.categoryTitle}.',
-                payload: 'nav_category_${category.id}',
-              );
-            }
-          }
-        } catch (e) {
-          log('Failed to check budget warning: $e');
         }
 
         if (settingsBloc.state.model.hasLoggedIn &&
@@ -541,14 +503,15 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     emit(stateWithDetails);
   }
 
-  Future<void> _checkBudgetLimit(
+  void _checkBudgetLimit(
     TransactionModel transaction,
     List<TransactionModel> updatedList,
-  ) async {
+  ) {
     try {
-      final category = await categoryRepository.fetchCategoryById(
-        transaction.categoryId,
-      );
+      final category = categoryBloc.state.categoriesList
+          .where((c) => c.id == transaction.categoryId)
+          .firstOrNull;
+
       if (category != null &&
           category.hasBudgetAmount &&
           category.budgetAmount != null) {
