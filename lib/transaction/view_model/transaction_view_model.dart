@@ -5,7 +5,6 @@ import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
-import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
@@ -86,7 +85,11 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         }
 
         // Budget Warning Alert logic
-        _checkBudgetLimit(newTransaction, updatedList);
+        _checkBudgetLimit(
+          transaction: newTransaction,
+          updatedList: updatedList,
+          toastCallback: event.toastCallback,
+        );
       } catch (e) {
         emit(
           state.copyWith(errorMessage: 'Local storage failed: ${e.toString()}'),
@@ -184,7 +187,11 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         }
 
         // Budget Warning Alert logic
-        _checkBudgetLimit(updatedTransaction, updatedList);
+        _checkBudgetLimit(
+          transaction: updatedTransaction,
+          updatedList: updatedList,
+          toastCallback: event.toastCallback,
+        );
       } catch (e) {
         emit(
           state.copyWith(errorMessage: 'Local update failed: ${e.toString()}'),
@@ -409,7 +416,12 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       );
 
       // Delegate creation to TransactionEventCreateTransaction
-      add(TransactionEventCreateTransaction(event.transaction));
+      add(
+        TransactionEventCreateTransaction(
+          event.transaction,
+          toastCallback: event.toastCallback,
+        ),
+      );
     });
 
     on<TransactionEventDeclineSmsDraft>((event, emit) {
@@ -527,10 +539,11 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     emit(stateWithDetails);
   }
 
-  void _checkBudgetLimit(
-    TransactionModel transaction,
-    List<TransactionModel> updatedList,
-  ) {
+  void _checkBudgetLimit({
+    required TransactionModel transaction,
+    required List<TransactionModel> updatedList,
+    required VoidCallback toastCallback,
+  }) {
     try {
       final category = categoryBloc.state.categoriesList
           .where((c) => c.id == transaction.categoryId)
@@ -550,19 +563,11 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             )
             .fold(0.0, (sum, t) => sum + t.transactionAmount);
 
-        if (categoryTotal >= category.budgetAmount!) {
-          NotificationRepository.instantNotification(
-            channelId: 'budget_warnings',
-            channelName: 'Budget Warnings',
-            channelDescription: 'Alerts when category budget is exceeded',
-            id:
-                NotificationRepository.categoriesRangeStart +
-                category.id.hashCode.abs() % 1000,
-            title: 'Budget Exceeded',
-            body:
-                'You have exceeded your budget for ${category.categoryTitle}.',
-            payload: 'nav_category_${category.id}',
-          );
+        if (settingsBloc.state.model.allNotificationsEnabled &&
+            settingsBloc.state.model.categoryBudgetNotificationsEnabled) {
+          if (categoryTotal >= category.budgetAmount!) {
+            toastCallback();
+          }
         }
       }
     } catch (e) {

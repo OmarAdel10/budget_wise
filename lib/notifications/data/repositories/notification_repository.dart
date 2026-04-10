@@ -30,7 +30,9 @@ class NotificationRepository {
   static const int categoriesRangeStart = 5000;
   static const int categoriesRangeEnd = 5999;
   static const int transactionsRangeStart = 6000;
-  static const int transationsRangeEnd = 6999;
+  static const int transactionsRangeEnd = 6999;
+  static const int dailyReminderRangeStart = 7000;
+  static const int dailyReminderRangeEnd = 7999;
 
   @pragma('vm:entry-point')
   static void onReciveTap(NotificationResponse notificationResponse) {

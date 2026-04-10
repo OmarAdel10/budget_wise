@@ -1,3 +1,4 @@
+import 'package:budget_wise/main.dart';
 import 'package:budget_wise/shared/widgets/currency_prefix.dart';
 import 'package:budget_wise/currency_conversions/view/currency_conversion_preview.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
@@ -268,6 +269,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         TransactionEventUpdateTransaction(
           updatedTransaction,
           convertedAmount: finalAmountForAccount,
+          toastCallback: () {
+            AppToast.show(
+              context,
+              title: l10n.budgetLimitExceeded,
+              type: AppToastType.warning,
+            );
+          },
         ),
       );
     } else {
@@ -288,6 +296,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         TransactionEventCreateTransaction(
           newTransaction,
           convertedAmount: finalAmountForAccount,
+          toastCallback: () {
+            final ctx = BudgetWise.navigatorKey.currentContext;
+            if (ctx != null) {
+              final l10n = AppLocalizations.of(ctx)!;
+              AppToast.show(
+                ctx,
+                title: l10n.budgetLimitExceeded,
+                type: AppToastType.warning,
+              );
+            }
+          },
         ),
       );
     }

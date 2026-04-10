@@ -137,6 +137,36 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
 
+    on<SettingsEventToggleCategoryBudgetNotifications>((event, emit) {
+      final newModel = state.model.copyWith(
+        categoryBudgetNotificationsEnabled:
+            !state.model.categoryBudgetNotificationsEnabled,
+      );
+      if (!newModel.categoryBudgetNotificationsEnabled) {
+        NotificationRepository.cancelNotificationsInRange(
+          NotificationRepository.categoriesRangeStart,
+          NotificationRepository.categoriesRangeEnd,
+        );
+      }
+      settingsRepository.saveNotificationSettings(newModel);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
+
+    on<SettingsEventToggleDailyReminderNotifications>((event, emit) {
+      final newModel = state.model.copyWith(
+        dailyReminderNotificationsEnabled:
+            !state.model.dailyReminderNotificationsEnabled,
+      );
+      if (!newModel.dailyReminderNotificationsEnabled) {
+        NotificationRepository.cancelNotificationsInRange(
+          NotificationRepository.dailyReminderRangeStart,
+          NotificationRepository.dailyReminderRangeEnd,
+        );
+      }
+      settingsRepository.saveNotificationSettings(newModel);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
+
     on<SettingsEventSyncAccountsSnapshot>((event, emit) async {
       await settingsRepository.syncAccountsSnapshot(event.accounts);
     });

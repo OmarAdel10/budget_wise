@@ -1,4 +1,5 @@
-import 'package:budget_wise/transaction/data/models/sms_draft_model.dart'; // New import
+import 'dart:ui';
+import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -9,27 +10,31 @@ sealed class TransactionEvent extends Equatable {
 class TransactionEventCreateTransaction extends TransactionEvent {
   final TransactionModel transaction;
   final double? convertedAmount;
+  final VoidCallback toastCallback;
 
   const TransactionEventCreateTransaction(
     this.transaction, {
-    this.convertedAmount,
+    this.convertedAmount
+    required this.toastCallback,
   });
 
   @override
-  List<Object?> get props => [transaction, convertedAmount];
+  List<Object?> get props => [transaction, convertedAmount, toastCallback];
 }
 
 class TransactionEventUpdateTransaction extends TransactionEvent {
   final TransactionModel transaction;
   final double? convertedAmount;
+  final VoidCallback toastCallback;
 
   const TransactionEventUpdateTransaction(
     this.transaction, {
-    this.convertedAmount,
+    this.convertedAmount
+    required this.toastCallback,
   });
 
   @override
-  List<Object?> get props => [transaction, convertedAmount];
+  List<Object?> get props => [transaction, convertedAmount, toastCallback];
 }
 
 class TransactionEventMarkSynced extends TransactionEvent {
@@ -87,17 +92,18 @@ class TransactionEventAddSmsDraft extends TransactionEvent {
 }
 
 class TransactionEventConfirmSmsDraft extends TransactionEvent {
-  final String
-  smsDraftId; // Assuming SmsDraftModel will have an ID or use index
-  final TransactionModel transaction; // The confirmed transaction
+  final String smsDraftId;
+  final TransactionModel transaction;
+  final VoidCallback toastCallback;
 
   const TransactionEventConfirmSmsDraft({
     required this.smsDraftId,
     required this.transaction,
+    required this.toastCallback,
   });
 
   @override
-  List<Object?> get props => [smsDraftId, transaction];
+  List<Object?> get props => [smsDraftId, transaction, toastCallback];
 }
 
 class TransactionEventDeclineSmsDraft extends TransactionEvent {

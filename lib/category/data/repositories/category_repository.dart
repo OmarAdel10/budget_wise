@@ -35,21 +35,6 @@ class CategoryRepository {
     }
   }
 
-  // Future<List<CategoryModel>> getAllCategories() async {
-  //   final CollectionReference<CategoryModel> collection =
-  //       getCategoriesCollection();
-  //   final user = authRepository.currentUser;
-  //   if (user != null) {
-  //     final querySnapShot = await collection
-  //         .where('userId', isEqualTo: user.uid)
-  //         .where('type', isEqualTo: 'expense')
-  //         .orderBy('index')
-  //         .get();
-  //     return querySnapShot.docs.map((doc) => doc.data()).toList();
-  //   }
-  //   return [];
-  // }
-
   Future<List<CategoryModel>> fetchAllCategories() async {
     final CollectionReference<CategoryModel> collection =
         getCategoriesCollection();
@@ -81,8 +66,4 @@ class CategoryRepository {
     await collection.doc(categoryId).delete();
   }
 
-  Future<CategoryModel?> fetchCategoryById(String categoryId) async {
-    final doc = await getCategoriesCollection().doc(categoryId).get();
-    return doc.data();
-  }
 }

@@ -17,6 +17,8 @@ class SettingsModel extends Equatable {
   final bool smsNotificationsEnabled;
   final bool subscriptionNotificationsEnabled;
   final bool savingsNotificationsEnabled;
+  final bool categoryBudgetNotificationsEnabled;
+  final bool dailyReminderNotificationsEnabled;
 
   const SettingsModel({
     this.localAuthEnabled = false,
@@ -32,6 +34,8 @@ class SettingsModel extends Equatable {
     this.smsNotificationsEnabled = true,
     this.subscriptionNotificationsEnabled = true,
     this.savingsNotificationsEnabled = true,
+    this.categoryBudgetNotificationsEnabled = true,
+    this.dailyReminderNotificationsEnabled = true,
   });
 
   bool get isPasscodeSet => passcode != null && passcode!.length == 4;
@@ -51,6 +55,8 @@ class SettingsModel extends Equatable {
     bool? smsNotificationsEnabled,
     bool? subscriptionNotificationsEnabled,
     bool? savingsNotificationsEnabled,
+    bool? categoryBudgetNotificationsEnabled,
+    bool? dailyReminderNotificationsEnabled,
   }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
@@ -73,6 +79,12 @@ class SettingsModel extends Equatable {
           this.subscriptionNotificationsEnabled,
       savingsNotificationsEnabled:
           savingsNotificationsEnabled ?? this.savingsNotificationsEnabled,
+      categoryBudgetNotificationsEnabled:
+          categoryBudgetNotificationsEnabled ??
+          this.categoryBudgetNotificationsEnabled,
+      dailyReminderNotificationsEnabled:
+          dailyReminderNotificationsEnabled ??
+          this.dailyReminderNotificationsEnabled,
     );
   }
 
@@ -92,6 +104,8 @@ class SettingsModel extends Equatable {
       'smsNotificationsEnabled': smsNotificationsEnabled,
       'subscriptionNotificationsEnabled': subscriptionNotificationsEnabled,
       'savingsNotificationsEnabled': savingsNotificationsEnabled,
+      'categoryBudgetNotificationsEnabled': categoryBudgetNotificationsEnabled,
+      'dailyReminderNotificationsEnabled': dailyReminderNotificationsEnabled,
     };
   }
 
@@ -115,6 +129,10 @@ class SettingsModel extends Equatable {
           map['subscriptionNotificationsEnabled'] as bool? ?? true,
       savingsNotificationsEnabled:
           map['savingsNotificationsEnabled'] as bool? ?? true,
+      categoryBudgetNotificationsEnabled:
+          map['categoryBudgetNotificationsEnabled'] as bool? ?? true,
+      dailyReminderNotificationsEnabled:
+          map['dailyReminderNotificationsEnabled'] as bool? ?? true,
     );
   }
 
@@ -146,5 +164,7 @@ class SettingsModel extends Equatable {
         smsNotificationsEnabled,
         subscriptionNotificationsEnabled,
         savingsNotificationsEnabled,
+        categoryBudgetNotificationsEnabled,
+        dailyReminderNotificationsEnabled,
       ];
 }

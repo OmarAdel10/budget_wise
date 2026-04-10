@@ -7,6 +7,8 @@ import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dar
 import 'package:budget_wise/subscriptions/view_model/subscription_event.dart';
 import 'package:budget_wise/currency_conversions/view/currency_conversion_preview.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_event.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -68,6 +70,19 @@ class _SubscriptionPayActionState extends State<SubscriptionPayAction> {
                           widget.subscriptionModel.id,
                           convertedAmount: _convertedAmount,
                           l10n: widget.l10n,
+                        ),
+                      );
+
+                      context.read<TransactionBloc>().add(
+                        TransactionEventCreateTransaction(
+                          transactionFromSubscriptionPaying,
+                          toastCallback: () {
+                            AppToast.show(
+                              context,
+                              title: l10n.budgetLimitExceeded,
+                              type: AppToastType.warning,
+                            );
+                          },
                         ),
                       );
 

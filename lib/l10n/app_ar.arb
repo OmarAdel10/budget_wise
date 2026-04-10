@@ -436,13 +436,20 @@
   "smsDraftNotifications": "إشعارات مسودات الرسائل",
   "subscriptionNotifications": "إشعارات الاشتراكات",
   "savingsNotifications": "إشعارات المدخرات",
+  "categoryBudgetNotifications": "إشعارات ميزانية الفئات",
   "disableNotificationsWarningTitle": "إيقاف الإشعارات؟",
   "disableAllNotificationsWarningDesc": "إذا قمت بإيقاف جميع الإشعارات، ستفوتك تحديثات مهمة حول معاملاتك واشتراكاتك ومدخراتك. هل أنت متأكد أنك تريد الاستمرار؟",
   "disableSmsNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات الرسائل القصيرة، فلن يتم إعلامك عند اكتشاف معاملة بنكية جديدة، رغم أنها ستظل تُحفظ كمسودة. الاستمرار؟",
   "disableSubNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات الاشتراكات، فلن تتلقى تذكيرات بالمدفوعات القادمة. الاستمرار؟",
   "disableSavingsNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات المدخرات، فلن تتلقى تحديثات حول أهداف مدخراتك. الاستمرار؟",
+  "disableCategoryBudgetNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات ميزانية الفئات، فلن تتلقى تنبيهات عند الاقتراب من تجاوز ميزانية الفئة. الاستمرار؟",
   "continueAction": "متابعة",
   "insufficientFundsForSaving": "لا يوجد رصيد كافٍ في الحساب المصدر لإتمام عملية الادخار لهذا اليوم.",
   "updateAccountBalance": "تحديث رصيد الحساب",
-  "savingsGoalCompleted": "تهانينا! لقد وصلت إلى 100% من هدفك: {goalName}!"
+  "savingsGoalCompleted": "تهانينا! لقد وصلت إلى 100% من هدفك: {goalName}!",
+  "categoryBudgetExceeded": "لقد تجاوزت ميزانية فئة {categoryName}!",
+  "categoryBudgetApproaching": "لقد اقتربت من تجاوز ميزانية فئة {categoryName}!",
+  "dailyReminderNotifications": "إشعارات التذكير اليومي",
+  "disableDailyReminderNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات التذكير اليومي، فلن تتلقى تذكيرات بالمدخرات اليومية. هل أنت متأكد أنك تريد الاستمرار؟",
+  "budgetLimitExceeded": "تجاوز الحد الأقصى للميزانية"
 }

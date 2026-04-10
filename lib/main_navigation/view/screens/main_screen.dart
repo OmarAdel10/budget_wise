@@ -65,7 +65,14 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _checkBackgroundSmsDrafts().then((_) {
       _handleLaunchNotification();
     });
-    _scheduleDailyReminder();
+    if (context.read<SettingsBloc>().state.model.allNotificationsEnabled &&
+        context
+            .read<SettingsBloc>()
+            .state
+            .model
+            .dailyReminderNotificationsEnabled) {
+      _scheduleDailyReminder();
+    }
   }
 
   Future<void> _handleLaunchNotification() async {
@@ -110,7 +117,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       channelId: 'daily_reminders',
       channelName: 'Daily Reminders',
       channelDescription: 'Daily reminder to log transactions',
-      id: NotificationRepository.transactionsRangeStart,
+      id: NotificationRepository.dailyReminderRangeStart,
       title: 'Time to Log Your Transactions',
       body:
           'Don\'t forget to log your daily expenses to keep your budget on track!',
@@ -196,9 +203,12 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             final String merchantStr =
                 smsDraft.extractedMerchant ?? "Unknown Merchant";
 
-            final SharedPreferences prefs = await SharedPreferences.getInstance();
-            final bool allEnabled = prefs.getBool('all_notifications_enabled') ?? true;
-            final bool smsEnabled = prefs.getBool('sms_notifications_enabled') ?? true;
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            final bool allEnabled =
+                prefs.getBool('all_notifications_enabled') ?? true;
+            final bool smsEnabled =
+                prefs.getBool('sms_notifications_enabled') ?? true;
 
             if (allEnabled && smsEnabled) {
               await NotificationRepository.instantNotification(

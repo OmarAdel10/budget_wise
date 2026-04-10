@@ -1237,6 +1237,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get savingsNotifications => 'إشعارات المدخرات';
 
   @override
+  String get categoryBudgetNotifications => 'إشعارات ميزانية الفئات';
+
+  @override
   String get disableNotificationsWarningTitle => 'إيقاف الإشعارات؟';
 
   @override
@@ -1256,6 +1259,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'إذا قمت بإيقاف إشعارات المدخرات، فلن تتلقى تحديثات حول أهداف مدخراتك. الاستمرار؟';
 
   @override
+  String get disableCategoryBudgetNotificationsWarningDesc =>
+      'إذا قمت بإيقاف إشعارات ميزانية الفئات، فلن تتلقى تنبيهات عند الاقتراب من تجاوز ميزانية الفئة. الاستمرار؟';
+
+  @override
   String get continueAction => 'متابعة';
 
   @override
@@ -1269,4 +1276,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String savingsGoalCompleted(Object goalName) {
     return 'تهانينا! لقد وصلت إلى 100% من هدفك: $goalName!';
   }
+
+  @override
+  String categoryBudgetExceeded(Object categoryName) {
+    return 'لقد تجاوزت ميزانية فئة $categoryName!';
+  }
+
+  @override
+  String categoryBudgetApproaching(Object categoryName) {
+    return 'لقد اقتربت من تجاوز ميزانية فئة $categoryName!';
+  }
+
+  @override
+  String get dailyReminderNotifications => 'إشعارات التذكير اليومي';
+
+  @override
+  String get disableDailyReminderNotificationsWarningDesc =>
+      'إذا قمت بإيقاف إشعارات التذكير اليومي، فلن تتلقى تذكيرات بالمدخرات اليومية. هل أنت متأكد أنك تريد الاستمرار؟';
+
+  @override
+  String get budgetLimitExceeded => 'تجاوز الحد الأقصى للميزانية';
 }

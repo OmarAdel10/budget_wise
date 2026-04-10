@@ -190,7 +190,7 @@ class NotificationSettingsTile extends StatelessWidget {
                     SettingsTile(
                       icon: PhosphorIconsRegular.piggyBank,
                       title: l10n.savingsNotifications,
-                      showDivider: false,
+                      showDivider: true,
                       trailing: CupertinoSwitch(
                         value: model.savingsNotificationsEnabled,
                         activeTrackColor: AppColors.primaryAccent,
@@ -200,6 +200,38 @@ class NotificationSettingsTile extends StatelessWidget {
                           const SettingsEventToggleSavingsNotifications(),
                           l10n.disableNotificationsWarningTitle,
                           l10n.disableSavingsNotificationsWarningDesc,
+                        ),
+                      ),
+                    ),
+                    SettingsTile(
+                      icon: PhosphorIconsRegular.trendUp,
+                      title: l10n.categoryBudgetNotifications,
+                      showDivider: true,
+                      trailing: CupertinoSwitch(
+                        value: model.categoryBudgetNotificationsEnabled,
+                        activeTrackColor: AppColors.primaryAccent,
+                        onChanged: (_) => _handleToggle(
+                          context,
+                          model.categoryBudgetNotificationsEnabled,
+                          const SettingsEventToggleCategoryBudgetNotifications(),
+                          l10n.disableNotificationsWarningTitle,
+                          l10n.disableCategoryBudgetNotificationsWarningDesc,
+                        ),
+                      ),
+                    ),
+                    SettingsTile(
+                      icon: PhosphorIconsRegular.clock,
+                      title: l10n.dailyReminderNotifications,
+                      showDivider: false,
+                      trailing: CupertinoSwitch(
+                        value: model.dailyReminderNotificationsEnabled,
+                        activeTrackColor: AppColors.primaryAccent,
+                        onChanged: (_) => _handleToggle(
+                          context,
+                          model.dailyReminderNotificationsEnabled,
+                          const SettingsEventToggleDailyReminderNotifications(),
+                          l10n.disableNotificationsWarningTitle,
+                          l10n.disableDailyReminderNotificationsWarningDesc,
                         ),
                       ),
                     ),
