@@ -60,39 +60,20 @@ class AppProviders {
     child: MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              AuthBloc(authRepository: context.read<AuthRepository>()),
-        ),
-        BlocProvider(
           create: (context) => SettingsBloc(
             settingsRepository: context.read<SettingsRepository>(),
           ),
+        ),
+        BlocProvider(
+          create: (context) =>
+              AuthBloc(authRepository: context.read<AuthRepository>()),
         ),
         BlocProvider(
           create: (context) => AccountBloc(
             settingsBloc: context.read<SettingsBloc>(),
             accountRepo: context.read<AccountRepository>(),
             authRepository: context.read<AuthRepository>(),
-            settingsRepository: context.read<SettingsRepository>(),
           ),
-        ),
-        BlocProvider(
-          create: (context) => SavingsBloc(
-            settingsBloc: context.read<SettingsBloc>(),
-            savingsRepo: context.read<SavingsRepository>(),
-            authRepository: context.read<AuthRepository>(),
-            accountBloc: context.read<AccountBloc>(),
-            settingsRepository: context.read<SettingsRepository>(),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => TransactionBloc(
-            settingsBloc: context.read<SettingsBloc>(),
-            accountBloc: context.read<AccountBloc>(),
-            transactionRepository: context.read<TransactionRepository>(),
-            categoryRepository: context.read<CategoryRepository>(),
-            authRepository: context.read<AuthRepository>(),
-          )..add(const TransactionEventLoadBackgroundDrafts()),
         ),
         BlocProvider(
           create: (context) => CategoryBloc(
@@ -102,13 +83,21 @@ class AppProviders {
           ),
         ),
         BlocProvider(
-          create: (context) => HomeBloc(
-            categoryBloc: context.read<CategoryBloc>(),
+          create: (context) => SavingsBloc(
             settingsBloc: context.read<SettingsBloc>(),
-            transactionBloc: context.read<TransactionBloc>(),
-            categoryRepository: context.read<CategoryRepository>(),
-            transactionRepository: context.read<TransactionRepository>(),
+            savingsRepo: context.read<SavingsRepository>(),
+            authRepository: context.read<AuthRepository>(),
+            accountBloc: context.read<AccountBloc>(),
           ),
+        ),
+        BlocProvider(
+          create: (context) => TransactionBloc(
+            settingsBloc: context.read<SettingsBloc>(),
+            accountBloc: context.read<AccountBloc>(),
+            categoryBloc: context.read<CategoryBloc>(),
+            transactionRepository: context.read<TransactionRepository>(),
+            authRepository: context.read<AuthRepository>(),
+          )..add(const TransactionEventLoadBackgroundDrafts()),
         ),
         BlocProvider(
           create: (context) => SubscriptionBloc(
@@ -131,6 +120,13 @@ class AppProviders {
                       .defaultCurrency,
                 ),
               ),
+        ),
+        BlocProvider(
+          create: (context) => HomeBloc(
+            categoryBloc: context.read<CategoryBloc>(),
+            settingsBloc: context.read<SettingsBloc>(),
+            transactionBloc: context.read<TransactionBloc>(),
+          ),
         ),
         BlocProvider(
           create: (context) => StatisticsBloc(
