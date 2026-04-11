@@ -11,6 +11,7 @@ import 'package:budget_wise/category/view/screens/add_category_screen.dart';
 import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
+import 'package:budget_wise/onboarding/view/screens/splash_screen.dart';
 import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/view/screens/add_saving_goal_screen.dart';
 import 'package:budget_wise/savings/view/screens/edit_saving_goal_screen.dart';
@@ -35,6 +36,17 @@ class Routes {
     BuildContext context,
   ) => (settings) {
     switch (settings.name) {
+      case SplashScreen.routeName:
+        return PageTransition(
+          type: PageTransitionType.fade,
+          reverseType: PageTransitionType.fade,
+          ctx: context,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+          settings: settings,
+          child: const SplashScreen(),
+        );
       case OnboardingScreen.routeName:
         return PageTransition(
           type: PageTransitionType.fade,
