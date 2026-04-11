@@ -1263,4 +1263,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get budgetLimitExceeded => 'Budget Limit Exceeded';
+
+  @override
+  String get notificationSettings => 'Notification Settings';
+
+  @override
+  String get sms => 'SMS';
+
+  @override
+  String get daily => 'Daily';
+
+  @override
+  String get categoryBudget => 'Category Budget';
+
+  @override
+  String get noServicesActive => 'No services active';
+
+  @override
+  String get allAlertsActive => 'All alerts are currently active';
+
+  @override
+  String activeServicesLabel(String services) {
+    return 'Active: $services';
+  }
+
+  @override
+  String get allAlertsSilenced => 'All alerts are currently silenced';
+
+  @override
+  String get madeByOmarAdel => 'Made By Omar Adel';
 }

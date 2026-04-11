@@ -138,12 +138,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     child: Column(
                       children: [
-                        const NotificationSettingsTile(),
-                        const Divider(
-                          color: AppColors.borderColor,
-                          indent: 15,
-                          endIndent: 15,
-                        ),
                         const SecuritySettingsTile(),
                         const LanguageSettingsTile(),
                         CurrencySettingsTile(
@@ -151,6 +145,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  // Notification Settings Section
+                  Text(
+                    l10n.notificationSettings,
+                    style: AppTextStyles.heading3,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                    child: Column(children: [const NotificationSettingsTile()]),
                   ),
                   const SizedBox(height: AppSpacing.xl),
 
@@ -207,6 +216,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        Align(
+                          alignment: AlignmentGeometry.bottomEnd,
+                          child: Text(
+                            l10n.madeByOmarAdel,
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
                         ),
                       ],
                     ),
