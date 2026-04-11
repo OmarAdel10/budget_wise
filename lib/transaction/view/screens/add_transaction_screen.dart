@@ -86,12 +86,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     _selectedDate.addListener(_resetBudgetWarning);
     _selectedCategoryId.addListener(_resetBudgetWarning);
     _selectedType.addListener(_resetBudgetWarning);
+    _selectedAccountId.addListener(_onAccountChanged);
   }
 
   void _resetBudgetWarning() {
     if (_isBudgetWarningShown.value) {
       _isBudgetWarningShown.value = false;
-    _selectedAccountId.addListener(_onAccountChanged);
+    }
   }
 
   void _onAccountChanged() {

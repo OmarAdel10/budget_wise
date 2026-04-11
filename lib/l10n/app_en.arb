@@ -4,6 +4,10 @@
   "@appTitle": {
     "description": "The title of the application"
   },
+  "splashTagline": "Wealth in Focus",
+  "@splashTagline": {
+    "description": "The tagline shown on the splash screen"
+  },
   "navHome": "Home",
   "navSavings": "Savings",
   "navAccounts": "Accounts",
@@ -414,6 +418,7 @@
   "bankMargin": "Bank Margin (%)",
   "bankMarginInfo": "Added to conversion rates",
   "subscriptionCreatedSuccessfully": "Subscription created successfully!",
+  "subscriptionUpdatedSuccessfully": "Subscription updated successfully!",
   "budgetExceeded": "Budget Exceeded",
   "budgetExceededDescription": "Your spending in {category} has exceeded your monthly budget limit. Click save again if you want to register it anyway.",
   "@budgetExceededDescription": {

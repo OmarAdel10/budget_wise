@@ -1,0 +1,53 @@
+<h2>Final Showdown: Green vs. Teal</h2>
+<p class="subtitle">Both colors work beautifully with the app icon. Here's a closer look at the "feel" of each.</p>
+
+<div class="split">
+  <div class="mockup" data-choice="green" onclick="toggleSelect(this)">
+    <div class="mockup-header">Option A: Deep Savings Green (#0B241C)</div>
+    <div class="mockup-body" style="background: #0B241C; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+      <div style="animation: scaleIn 1.5s ease-out forwards; text-align: center;">
+        <img src="/files/app_icon.png" alt="Icon" style="width: 110px; height: 110px; border-radius: 22px; box-shadow: 0 15px 45px rgba(0,0,0,0.7);">
+        <h1 style="color: #FFFFFF; font-family: 'Inter', sans-serif; margin-top: 24px; font-size: 26px; letter-spacing: 1px; font-weight: 600;">BudgetWise</h1>
+        <p style="color: #13EC80; font-family: 'Inter', sans-serif; margin-top: 8px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase;">Growth & Savings</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <p><strong>The Vibe:</strong> Traditional, organic, and stable. It evokes the feeling of a secure bank or a lush, growing garden. Very appropriate for a savings-focused app.</p>
+    </div>
+  </div>
+  <div class="mockup" data-choice="teal" onclick="toggleSelect(this)">
+    <div class="mockup-header">Option B: Comforting Teal (#132E2B)</div>
+    <div class="mockup-body" style="background: #132E2B; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+      <div style="animation: scaleIn 1.5s ease-out forwards; text-align: center;">
+        <img src="/files/app_icon.png" alt="Icon" style="width: 110px; height: 110px; border-radius: 22px; box-shadow: 0 15px 45px rgba(0,0,0,0.7);">
+        <h1 style="color: #FFFFFF; font-family: 'Inter', sans-serif; margin-top: 24px; font-size: 26px; letter-spacing: 1px; font-weight: 600;">BudgetWise</h1>
+        <p style="color: #13EC80; font-family: 'Inter', sans-serif; margin-top: 8px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase;">Calm & Premium</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <p><strong>The Vibe:</strong> Modern, sophisticated, and digital. It's a "cool" dark color that feels very premium and high-tech, while remaining extremely comfortable for night-time viewing.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+</style>
+
+<div class="options">
+  <div class="option" data-choice="green" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Select Deep Savings Green</h3>
+    </div>
+  </div>
+  <div class="option" data-choice="teal" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Select Comforting Teal</h3>
+    </div>
+  </div>
+</div>

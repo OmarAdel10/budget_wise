@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'BudgetWise';
 
   @override
+  String get splashTagline => 'Wealth in Focus';
+
+  @override
   String get navHome => 'Home';
 
   @override

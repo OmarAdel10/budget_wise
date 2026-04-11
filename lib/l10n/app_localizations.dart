@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'BudgetWise'**
   String get appTitle;
 
+  /// The tagline shown on the splash screen
+  ///
+  /// In en, this message translates to:
+  /// **'Wealth in Focus'**
+  String get splashTagline;
+
   /// No description provided for @navHome.
   ///
   /// In en, this message translates to:

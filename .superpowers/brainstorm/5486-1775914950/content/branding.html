@@ -1,0 +1,42 @@
+<h2>Splash Screen: Animated Logo</h2>
+<p class="subtitle">A minimalist splash screen featuring the app icon on a dark background.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Splash Screen Preview</div>
+  <div class="mockup-body" style="background: #0D0D0D; display: flex; align-items: center; justify-content: center; min-height: 400px; overflow: hidden;">
+    <div style="animation: scaleIn 1.5s ease-out forwards; text-align: center;">
+      <img src="/assets/images/app_icon.png" alt="App Icon" style="width: 120px; height: 120px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      <div id="branding" style="margin-top: 24px; opacity: 0; animation: fadeIn 1s ease-out 1s forwards;">
+        <h1 style="color: #FFFFFF; font-family: 'Inter', sans-serif; font-size: 24px; letter-spacing: 1px;">BudgetWise</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes scaleIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<div class="options">
+  <div class="option" data-choice="icon-only" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Icon Only</h3>
+      <p>Clean, minimalist, focuses purely on the branding symbol.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="icon-text" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Icon + App Name</h3>
+      <p>Reinforces the brand identity by showing both the logo and the name.</p>
+    </div>
+  </div>
+</div>

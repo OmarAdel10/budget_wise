@@ -1,0 +1,52 @@
+<h2>Finalized Splash Screen Design (Reloaded)</h2>
+<p class="subtitle">This is the blueprint we'll use for implementation.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Splash Screen Preview (Final)</div>
+  <div class="mockup-body" style="background: #0B241C; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 450px;">
+    <div style="animation: scaleIn 1.5s ease-out forwards; text-align: center;">
+      <img src="/files/app_icon.png" alt="Icon" style="width: 120px; height: 120px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+      <div style="animation: fadeIn 1s ease-out 1s forwards; opacity: 0;">
+        <h1 style="color: #FFFFFF; font-family: 'Inter', sans-serif; margin-top: 28px; font-size: 28px; letter-spacing: 1.5px; font-weight: 700;">BudgetWise</h1>
+        <p style="color: #13EC80; font-family: 'Inter', sans-serif; margin-top: 10px; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; font-weight: 500;">Wealth in Focus</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes scaleIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<div class="section">
+  <h3>Technical Details</h3>
+  <ul>
+    <li><strong>Screen Class:</strong> <code>SplashScreen</code> in <code>lib/onboarding/view/screens/splash_screen.dart</code></li>
+    <li><strong>Transition Duration:</strong> 2.5 seconds.</li>
+    <li><strong>Routing:</strong> Set as <code>initialRoute</code> in <code>lib/main.dart</code>.</li>
+  </ul>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="approved" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Approved!</h3>
+      <p>Let's build it.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="tweak" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content">
+      <h3>One small tweak...</h3>
+      <p>I have a minor change before we start.</p>
+    </div>
+  </div>
+</div>

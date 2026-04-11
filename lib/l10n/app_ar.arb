@@ -1,6 +1,7 @@
 {
   "@@locale": "ar",
   "appTitle": "BudgetWise",
+  "splashTagline": "الثروة في التركيز",
   "navHome": "الرئيسية",
   "navSavings": "المدخرات",
   "navAccounts": "الحسابات",
@@ -411,6 +412,7 @@
   "bankMargin": "هامش البنك (%)",
   "bankMarginInfo": "يضاف إلى أسعار التحويل",
   "subscriptionCreatedSuccessfully": "تم إنشاء الاشتراك بنجاح!",
+  "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!",
   "budgetExceeded": "تجاوز الميزانية",
   "budgetExceededDescription": "تجاوز إنفاقك في {category} حد الميزانية الشهري الخاص بك. اضغط على حفظ مرة أخرى إذا كنت تريد تسجيل العملية على أي حال.",
   "@budgetExceededDescription": {
@@ -421,7 +423,7 @@
     }
   },
   "saveAnyway": "حفظ على أي حال",
-  "confirmAnyway": "تأكيد على أي حال"
+  "confirmAnyway": "تأكيد على أي حال",
   "retry": "إعادة المحاولة",
   "invalidAmount": "يرجى إدخال مبلغ صالح",
   "conversionError": "تعذر تحميل أسعار الصرف",

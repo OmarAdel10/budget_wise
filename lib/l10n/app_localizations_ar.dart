@@ -12,6 +12,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTitle => 'BudgetWise';
 
   @override
+  String get splashTagline => 'الثروة في التركيز';
+
+  @override
   String get navHome => 'الرئيسية';
 
   @override
