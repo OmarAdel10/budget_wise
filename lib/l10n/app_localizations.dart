@@ -2544,6 +2544,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Budget Limit Exceeded'**
   String get budgetLimitExceeded;
+
+  /// No description provided for @notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettings;
+
+  /// No description provided for @sms.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS'**
+  String get sms;
+
+  /// No description provided for @daily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get daily;
+
+  /// No description provided for @categoryBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Budget'**
+  String get categoryBudget;
+
+  /// No description provided for @noServicesActive.
+  ///
+  /// In en, this message translates to:
+  /// **'No services active'**
+  String get noServicesActive;
+
+  /// No description provided for @allAlertsActive.
+  ///
+  /// In en, this message translates to:
+  /// **'All alerts are currently active'**
+  String get allAlertsActive;
+
+  /// No description provided for @activeServicesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active: {services}'**
+  String activeServicesLabel(String services);
+
+  /// No description provided for @allAlertsSilenced.
+  ///
+  /// In en, this message translates to:
+  /// **'All alerts are currently silenced'**
+  String get allAlertsSilenced;
+
+  /// No description provided for @madeByOmarAdel.
+  ///
+  /// In en, this message translates to:
+  /// **'Made By Omar Adel'**
+  String get madeByOmarAdel;
 }
 
 class _AppLocalizationsDelegate

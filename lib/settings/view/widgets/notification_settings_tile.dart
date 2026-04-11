@@ -112,22 +112,37 @@ class NotificationSettingsTile extends StatelessWidget {
       builder: (context, state) {
         final model = state.model;
         final allEnabled = model.allNotificationsEnabled;
+        final bool allNotificationsEnabled =
+            model.allNotificationsEnabled &&
+            model.dailyReminderNotificationsEnabled &&
+            model.smsNotificationsEnabled &&
+            model.categoryBudgetNotificationsEnabled &&
+            model.subscriptionNotificationsEnabled &&
+            model.savingsNotificationsEnabled;
 
         // Build dynamic summary
         List<String> activeServices = [];
-        if (model.smsNotificationsEnabled) activeServices.add('SMS');
+        if (model.smsNotificationsEnabled) activeServices.add(l10n.sms);
         if (model.subscriptionNotificationsEnabled) {
           activeServices.add(l10n.subscriptions);
         }
         if (model.savingsNotificationsEnabled) {
           activeServices.add(l10n.navSavings);
         }
+        if (model.dailyReminderNotificationsEnabled) {
+          activeServices.add(l10n.daily);
+        }
+        if (model.categoryBudgetNotificationsEnabled) {
+          activeServices.add(l10n.categoryBudget);
+        }
 
         String subtitle = allEnabled
             ? (activeServices.isEmpty
-                ? 'No services active'
-                : 'Active: ${activeServices.join(", ")}')
-            : 'All alerts are currently silenced';
+                  ? l10n.noServicesActive
+                  : allNotificationsEnabled
+                  ? l10n.allAlertsActive
+                  : l10n.activeServicesLabel(activeServices.join(", ")))
+            : l10n.allAlertsSilenced;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,6 +170,24 @@ class NotificationSettingsTile extends StatelessWidget {
                 opacity: allEnabled ? 1.0 : 0.5,
                 child: Column(
                   children: [
+                    // Daily Reminder
+                    SettingsTile(
+                      icon: PhosphorIconsRegular.clock,
+                      title: l10n.dailyReminderNotifications,
+                      showDivider: true,
+                      trailing: CupertinoSwitch(
+                        value: model.dailyReminderNotificationsEnabled,
+                        activeTrackColor: AppColors.primaryAccent,
+                        onChanged: (_) => _handleToggle(
+                          context,
+                          model.dailyReminderNotificationsEnabled,
+                          const SettingsEventToggleDailyReminderNotifications(),
+                          l10n.disableNotificationsWarningTitle,
+                          l10n.disableDailyReminderNotificationsWarningDesc,
+                        ),
+                      ),
+                    ),
+                    // Sms Draft
                     SettingsTile(
                       icon: PhosphorIconsRegular.chatCircleText,
                       title: l10n.smsDraftNotifications,
@@ -171,38 +204,7 @@ class NotificationSettingsTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SettingsTile(
-                      icon: PhosphorIconsRegular.calendar,
-                      title: l10n.subscriptionNotifications,
-                      showDivider: true,
-                      trailing: CupertinoSwitch(
-                        value: model.subscriptionNotificationsEnabled,
-                        activeTrackColor: AppColors.primaryAccent,
-                        onChanged: (_) => _handleToggle(
-                          context,
-                          model.subscriptionNotificationsEnabled,
-                          const SettingsEventToggleSubscriptionNotifications(),
-                          l10n.disableNotificationsWarningTitle,
-                          l10n.disableSubNotificationsWarningDesc,
-                        ),
-                      ),
-                    ),
-                    SettingsTile(
-                      icon: PhosphorIconsRegular.piggyBank,
-                      title: l10n.savingsNotifications,
-                      showDivider: true,
-                      trailing: CupertinoSwitch(
-                        value: model.savingsNotificationsEnabled,
-                        activeTrackColor: AppColors.primaryAccent,
-                        onChanged: (_) => _handleToggle(
-                          context,
-                          model.savingsNotificationsEnabled,
-                          const SettingsEventToggleSavingsNotifications(),
-                          l10n.disableNotificationsWarningTitle,
-                          l10n.disableSavingsNotificationsWarningDesc,
-                        ),
-                      ),
-                    ),
+                    // Catgory Budget
                     SettingsTile(
                       icon: PhosphorIconsRegular.trendUp,
                       title: l10n.categoryBudgetNotifications,
@@ -219,19 +221,37 @@ class NotificationSettingsTile extends StatelessWidget {
                         ),
                       ),
                     ),
+                    // Subscriptions
                     SettingsTile(
-                      icon: PhosphorIconsRegular.clock,
-                      title: l10n.dailyReminderNotifications,
-                      showDivider: false,
+                      icon: PhosphorIconsRegular.calendar,
+                      title: l10n.subscriptionNotifications,
+                      showDivider: true,
                       trailing: CupertinoSwitch(
-                        value: model.dailyReminderNotificationsEnabled,
+                        value: model.subscriptionNotificationsEnabled,
                         activeTrackColor: AppColors.primaryAccent,
                         onChanged: (_) => _handleToggle(
                           context,
-                          model.dailyReminderNotificationsEnabled,
-                          const SettingsEventToggleDailyReminderNotifications(),
+                          model.subscriptionNotificationsEnabled,
+                          const SettingsEventToggleSubscriptionNotifications(),
                           l10n.disableNotificationsWarningTitle,
-                          l10n.disableDailyReminderNotificationsWarningDesc,
+                          l10n.disableSubNotificationsWarningDesc,
+                        ),
+                      ),
+                    ),
+                    // Savings
+                    SettingsTile(
+                      icon: PhosphorIconsRegular.piggyBank,
+                      title: l10n.savingsNotifications,
+                      showDivider: false,
+                      trailing: CupertinoSwitch(
+                        value: model.savingsNotificationsEnabled,
+                        activeTrackColor: AppColors.primaryAccent,
+                        onChanged: (_) => _handleToggle(
+                          context,
+                          model.savingsNotificationsEnabled,
+                          const SettingsEventToggleSavingsNotifications(),
+                          l10n.disableNotificationsWarningTitle,
+                          l10n.disableSavingsNotificationsWarningDesc,
                         ),
                       ),
                     ),

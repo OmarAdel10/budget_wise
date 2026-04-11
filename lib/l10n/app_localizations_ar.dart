@@ -1296,4 +1296,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get budgetLimitExceeded => 'تجاوز الحد الأقصى للميزانية';
+
+  @override
+  String get notificationSettings => 'إعدادات الإشعارات';
+
+  @override
+  String get sms => 'الرسائل النصية';
+
+  @override
+  String get daily => 'يومي';
+
+  @override
+  String get categoryBudget => 'ميزانية الفئة';
+
+  @override
+  String get noServicesActive => 'لا توجد خدمات نشطة';
+
+  @override
+  String get allAlertsActive => 'جميع التنبيهات نشطة حالياً';
+
+  @override
+  String activeServicesLabel(String services) {
+    return 'نشط: $services';
+  }
+
+  @override
+  String get allAlertsSilenced => 'جميع التنبيهات مُعطلة حالياً';
+
+  @override
+  String get madeByOmarAdel => 'صنع بواسطة عمر عادل';
 }

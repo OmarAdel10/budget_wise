@@ -451,5 +451,21 @@
   "categoryBudgetApproaching": "لقد اقتربت من تجاوز ميزانية فئة {categoryName}!",
   "dailyReminderNotifications": "إشعارات التذكير اليومي",
   "disableDailyReminderNotificationsWarningDesc": "إذا قمت بإيقاف إشعارات التذكير اليومي، فلن تتلقى تذكيرات بالمدخرات اليومية. هل أنت متأكد أنك تريد الاستمرار؟",
-  "budgetLimitExceeded": "تجاوز الحد الأقصى للميزانية"
+  "budgetLimitExceeded": "تجاوز الحد الأقصى للميزانية",
+  "notificationSettings": "إعدادات الإشعارات",
+  "sms": "الرسائل النصية",
+  "daily": "يومي",
+  "categoryBudget": "ميزانية الفئة",
+  "noServicesActive": "لا توجد خدمات نشطة",
+  "allAlertsActive": "جميع التنبيهات نشطة حالياً",
+  "activeServicesLabel": "نشط: {services}",
+  "@activeServicesLabel": {
+    "placeholders": {
+      "services": {
+        "type": "String"
+      }
+    }
+  },
+  "allAlertsSilenced": "جميع التنبيهات مُعطلة حالياً",
+  "madeByOmarAdel": "صنع بواسطة عمر عادل"
 }
