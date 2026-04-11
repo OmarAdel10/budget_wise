@@ -54,8 +54,9 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
   @override
   void initState() {
     super.initState();
-    _targetDateNotifier =
-        ValueNotifier(DateTime.now().add(const Duration(days: 30)));
+    _targetDateNotifier = ValueNotifier(
+      DateTime.now().add(const Duration(days: 30)),
+    );
     _isByAmountNotifier = ValueNotifier(true);
     _selectedMethodNotifier = ValueNotifier(SavingsMethod.defaultPattern);
     _targetAmountNotifier = ValueNotifier(0.0);
@@ -94,7 +95,8 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         int days = 0;
         if (_selectedMethodNotifier.value == SavingsMethod.defaultPattern) {
           days = ((-1 + sqrt(1 + 8 * amount)) / 2).ceil();
-        } else if (_selectedMethodNotifier.value == SavingsMethod.doublePattern) {
+        } else if (_selectedMethodNotifier.value ==
+            SavingsMethod.doublePattern) {
           days = ((-1 + sqrt(1 + 4 * amount)) / 2).ceil();
         } else if (_selectedMethodNotifier.value == SavingsMethod.constant) {
           final constant = double.tryParse(_constantController.text) ?? 1.0;
@@ -112,7 +114,8 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
         double amount = 0;
         if (_selectedMethodNotifier.value == SavingsMethod.defaultPattern) {
           amount = (days * (days + 1)) / 2;
-        } else if (_selectedMethodNotifier.value == SavingsMethod.doublePattern) {
+        } else if (_selectedMethodNotifier.value ==
+            SavingsMethod.doublePattern) {
           amount = days * (days + 1);
         } else if (_selectedMethodNotifier.value == SavingsMethod.constant) {
           final constant = double.tryParse(_constantController.text) ?? 1.0;
@@ -241,16 +244,17 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                     const SizedBox(height: AppSpacing.lg),
 
                     // Method Selection Label
-                    Text(l10n.calculationMethod,
-                        style: AppTextStyles.bodyMedium),
+                    Text(
+                      l10n.calculationMethod,
+                      style: AppTextStyles.bodyMedium,
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                   ]),
                 ),
               ),
 
               SliverPadding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 sliver: CalculationMethodGrid(
                   selectedMethodNotifier: _selectedMethodNotifier,
                   onMethodSelected: (m) {
@@ -310,9 +314,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                     ),
 
                     const SizedBox(height: AppSpacing.lg),
-                    SavingsColorPicker(
-                      selectedColorNotifier: _selectedColor,
-                    ),
+                    SavingsColorPicker(selectedColorNotifier: _selectedColor),
 
                     const SizedBox(height: AppSpacing.xl),
                     // Dynamic Info Text
@@ -356,4 +358,3 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
     }
   }
 }
-

@@ -91,8 +91,9 @@ class CustomBottomSheet extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryAccent,
                     foregroundColor: Colors.white,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     ),

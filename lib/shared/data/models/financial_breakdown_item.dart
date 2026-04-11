@@ -44,7 +44,9 @@ class FinancialBreakdownItem extends Equatable {
     final FinancialRepresentable source = switch (sourceType) {
       StatisticsSourceType.category => CategoryModel.fromMap(sourceData),
       StatisticsSourceType.savings => SavingsModel.fromMap(sourceData),
-      StatisticsSourceType.subscription => SubscriptionModel.fromMap(sourceData),
+      StatisticsSourceType.subscription => SubscriptionModel.fromMap(
+        sourceData,
+      ),
     };
     return FinancialBreakdownItem(
       source: source,

@@ -7,10 +7,7 @@ import '../../../shared/constants/text_styles.dart';
 class SavingsInfoSection extends StatelessWidget {
   final ValueNotifier<bool> isByAmountNotifier;
 
-  const SavingsInfoSection({
-    super.key,
-    required this.isByAmountNotifier,
-  });
+  const SavingsInfoSection({super.key, required this.isByAmountNotifier});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +24,7 @@ class SavingsInfoSection extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.info_outline,
-                color: AppColors.textSecondary,
-              ),
+              const Icon(Icons.info_outline, color: AppColors.textSecondary),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(

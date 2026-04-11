@@ -78,9 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     // Extract args without causing full-screen rebuilds on layout changes
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final bool isFromOnboarding =
         args?[AuthConstants.loginRoutingKey] == LoginRouting.fromOnboarding;
 

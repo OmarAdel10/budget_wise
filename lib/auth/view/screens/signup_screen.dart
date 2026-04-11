@@ -93,9 +93,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               );
             }
             if (state is AuthStateSuccess) {
-              context.read<SettingsBloc>().add(
-                const SettingsEventLoggedIn(),
-              );
+              context.read<SettingsBloc>().add(const SettingsEventLoggedIn());
 
               context.read<TransactionBloc>().add(
                 const TransactionEventSyncPendingOnLogin(),

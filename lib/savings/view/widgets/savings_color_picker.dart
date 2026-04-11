@@ -6,12 +6,9 @@ import 'package:flutter/material.dart';
 class SavingsColorPicker extends StatelessWidget {
   final ValueNotifier<Color> selectedColorNotifier;
 
-  const SavingsColorPicker({
-    super.key,
-    required this.selectedColorNotifier,
-  });
+  const SavingsColorPicker({super.key, required this.selectedColorNotifier});
 
-  static final  List<int> colorOptions = [
+  static final List<int> colorOptions = [
     0xFF4CAF50,
     0xFF2196F3,
     0xFFFFC107,
@@ -41,7 +38,8 @@ class SavingsColorPicker extends StatelessWidget {
                 itemCount: colorOptions.length,
                 separatorBuilder: (_, _) => const SizedBox(width: 12),
                 itemBuilder: (context, i) => GestureDetector(
-                  onTap: () => selectedColorNotifier.value = Color(colorOptions[i]),
+                  onTap: () =>
+                      selectedColorNotifier.value = Color(colorOptions[i]),
                   child: Container(
                     width: 40,
                     height: 40,

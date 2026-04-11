@@ -109,24 +109,32 @@ class _CurrencyConversionPreviewState extends State<CurrencyConversionPreview> {
 
         if (state is CurrencyError) {
           return InkWell(
-            onTap: () => context
-                .read<CurrencyBloc>()
-                .add(CurrencyLoadRequested(baseCurrency: widget.fromCurrency)),
+            onTap: () => context.read<CurrencyBloc>().add(
+              CurrencyLoadRequested(baseCurrency: widget.fromCurrency),
+            ),
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.danger.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.danger.withValues(alpha: 0.1)),
+                border: Border.all(
+                  color: AppColors.danger.withValues(alpha: 0.1),
+                ),
               ),
               child: Row(
                 children: [
-                  const Icon(PhosphorIconsRegular.warning, color: AppColors.danger, size: 20),
+                  const Icon(
+                    PhosphorIconsRegular.warning,
+                    color: AppColors.danger,
+                    size: 20,
+                  ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
                       l10n.conversionError,
-                      style: AppTextStyles.bodyMedium.copyWith(color: AppColors.danger),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.danger,
+                      ),
                     ),
                   ),
                   Text(
@@ -207,5 +215,3 @@ class _CurrencyConversionPreviewState extends State<CurrencyConversionPreview> {
     );
   }
 }
-
-

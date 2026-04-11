@@ -5,8 +5,6 @@ class SignUpHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.sizeOf(context).height / 4.7,
-    );
+    return SizedBox(height: MediaQuery.sizeOf(context).height / 4.7);
   }
 }

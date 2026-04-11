@@ -22,9 +22,9 @@ class CategoryDropdown extends StatelessWidget {
     this.selectedTypeNotifier,
     this.fixedType,
   }) : assert(
-          selectedTypeNotifier != null || fixedType != null,
-          'Either selectedTypeNotifier or fixedType must be provided',
-        );
+         selectedTypeNotifier != null || fixedType != null,
+         'Either selectedTypeNotifier or fixedType must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +65,9 @@ class CategoryDropdown extends StatelessWidget {
     String? categoryId,
     AppLocalizations l10n,
   ) {
-    final categories =
-        state.categoriesList.where((c) => c.type == type).toList();
+    final categories = state.categoriesList
+        .where((c) => c.type == type)
+        .toList();
 
     // Auto-reset if the selected category doesn't match the new type
     if (categoryId != null && !categories.any((c) => c.id == categoryId)) {
@@ -104,10 +105,7 @@ class CategoryDropdown extends StatelessWidget {
                 children: [
                   Icon(cat.categoryIcon, size: 20),
                   const SizedBox(width: AppSpacing.md),
-                  Text(
-                    cat.categoryTitle,
-                    style: AppTextStyles.bodyLarge,
-                  ),
+                  Text(cat.categoryTitle, style: AppTextStyles.bodyLarge),
                 ],
               ),
             );

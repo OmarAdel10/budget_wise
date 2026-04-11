@@ -13,7 +13,8 @@ class IconPickerBottomSheet extends StatelessWidget {
   final ValueNotifier<Color>? selectedColorNotifier;
 
   const IconPickerBottomSheet({super.key, required this.onIconSelected})
-    : selectedColorNotifier = null, hasColorPalete = false;
+    : selectedColorNotifier = null,
+      hasColorPalete = false;
 
   const IconPickerBottomSheet.hasColorPalete({
     super.key,
@@ -50,10 +51,8 @@ class IconPickerBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           if (hasColorPalete && selectedColorNotifier != null) ...[
-            SavingsColorPicker(
-              selectedColorNotifier: selectedColorNotifier!,
-            ),
-          const SizedBox(height: AppSpacing.lg),
+            SavingsColorPicker(selectedColorNotifier: selectedColorNotifier!),
+            const SizedBox(height: AppSpacing.lg),
           ],
           Text(
             AppLocalizations.of(context)!.selectIcon,

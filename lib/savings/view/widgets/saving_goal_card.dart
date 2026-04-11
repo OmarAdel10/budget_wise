@@ -44,9 +44,7 @@ class SavingGoalCard extends StatelessWidget {
                   backgroundColor: AppColors.danger,
                   foregroundColor: Colors.white,
                   icon: PhosphorIconsBold.trash,
-                  borderRadius: BorderRadius.circular(
-                    AppSpacing.radiusSm,
-                  ),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
               ],
             ),
@@ -54,9 +52,7 @@ class SavingGoalCard extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(
-                  AppSpacing.radiusMd,
-                ),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,10 +60,7 @@ class SavingGoalCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        goal.name,
-                        style: AppTextStyles.heading3,
-                      ),
+                      Text(goal.name, style: AppTextStyles.heading3),
                       Text(
                         formattedProgress,
                         style: AppTextStyles.bodyMedium.copyWith(

@@ -26,11 +26,15 @@ class TargetDaysInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return ListenableBuilder(
-      listenable: Listenable.merge([isByAmountNotifier, selectedMethodNotifier]),
+      listenable: Listenable.merge([
+        isByAmountNotifier,
+        selectedMethodNotifier,
+      ]),
       builder: (context, _) {
         final isByAmount = isByAmountNotifier.value;
         final selectedMethod = selectedMethodNotifier.value;
-        final isInteractive = !isByAmount || selectedMethod == SavingsMethod.custom;
+        final isInteractive =
+            !isByAmount || selectedMethod == SavingsMethod.custom;
 
         return AnimatedOpacity(
           duration: const Duration(milliseconds: 300),

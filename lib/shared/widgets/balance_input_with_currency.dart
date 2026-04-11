@@ -136,9 +136,11 @@ class BalanceInputWithCurrency extends StatelessWidget {
                       ? l10n.lowBalanceAlertAmount
                       : l10n.addAccountInitialBalanceLabel
                 : l10n.currentBalance,
-            style: isSavingBalanceField ? AppTextStyles.bodyMedium : AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: isSavingBalanceField
+                ? AppTextStyles.bodyMedium
+                : AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
           ),
         ],
         const SizedBox(height: AppSpacing.sm + 1),

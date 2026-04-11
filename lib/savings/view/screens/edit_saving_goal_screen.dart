@@ -238,8 +238,10 @@ class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
                       },
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    Text(l10n.calculationMethod,
-                        style: AppTextStyles.bodyMedium),
+                    Text(
+                      l10n.calculationMethod,
+                      style: AppTextStyles.bodyMedium,
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                   ]),
                 ),
@@ -296,9 +298,7 @@ class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
                       },
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    SavingsColorPicker(
-                      selectedColorNotifier: _selectedColor,
-                    ),
+                    SavingsColorPicker(selectedColorNotifier: _selectedColor),
                     const SizedBox(height: AppSpacing.xl),
                     SavingsInfoSection(isByAmountNotifier: _isByAmountNotifier),
                     const SizedBox(height: AppSpacing.xl),

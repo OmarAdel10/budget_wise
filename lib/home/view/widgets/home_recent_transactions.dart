@@ -43,7 +43,9 @@ class HomeRecentTransactions extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        context.read<HomeBloc>().add(const HomeEventChangeAccountFilter(null));
+                        context.read<HomeBloc>().add(
+                          const HomeEventChangeAccountFilter(null),
+                        );
                         Navigator.of(
                           context,
                         ).pushNamed(AllTransactionsScreen.routeName);

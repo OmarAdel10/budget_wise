@@ -128,10 +128,7 @@ class _HomeCategoriesList extends StatelessWidget {
             onDelete: () => _handleDelete(context, item),
             onTap: () => Navigator.of(context).pushNamed(
               CategoryDetailScreen.routeName,
-              arguments: {
-                'categoryId': category.id,
-                'progress': progress,
-              },
+              arguments: {'categoryId': category.id, 'progress': progress},
             ),
           );
         },
@@ -145,10 +142,7 @@ class _HomeCategoriesList extends StatelessWidget {
     );
   }
 
-  void _handleDelete(
-    BuildContext context,
-    FinancialBreakdownItem item,
-  ) {
+  void _handleDelete(BuildContext context, FinancialBreakdownItem item) {
     final l10n = AppLocalizations.of(context)!;
     final catBloc = context.read<CategoryBloc>();
     final category = item.source as CategoryModel;
@@ -158,9 +152,7 @@ class _HomeCategoriesList extends StatelessWidget {
       type: AppToastType.deleteWithUndo,
       title: l10n.categoryDeleted,
       onCompleted: () {
-        catBloc.add(
-          CategoryEventDeleteCategory(categoryId: category.id),
-        );
+        catBloc.add(CategoryEventDeleteCategory(categoryId: category.id));
       },
     );
   }

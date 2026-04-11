@@ -95,11 +95,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 borderSide: BorderSide.none,
               )
             : widget.activeColor != null
-                ? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    borderSide: BorderSide(color: widget.activeColor!),
-                  )
-                : null,
+            ? OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                borderSide: BorderSide(color: widget.activeColor!),
+              )
+            : null,
       ),
     );
   }

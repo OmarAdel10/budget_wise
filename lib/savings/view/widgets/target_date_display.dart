@@ -28,7 +28,8 @@ class TargetDateDisplay extends StatelessWidget {
         selectedMethodNotifier,
       ]),
       builder: (context, _) {
-        final isInteractive = isByAmountNotifier.value &&
+        final isInteractive =
+            isByAmountNotifier.value &&
             selectedMethodNotifier.value == SavingsMethod.custom;
 
         return InkWell(

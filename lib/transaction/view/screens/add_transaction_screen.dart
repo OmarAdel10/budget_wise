@@ -97,11 +97,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   void _onAccountChanged() {
     if (_selectedAccountId.value != null) {
-      final account = context
-          .read<AccountBloc>()
-          .state
-          .accountsList
-          .firstWhere((a) => a.id == _selectedAccountId.value);
+      final account = context.read<AccountBloc>().state.accountsList.firstWhere(
+        (a) => a.id == _selectedAccountId.value,
+      );
       _selectedCurrency.value = account.currency;
     }
   }

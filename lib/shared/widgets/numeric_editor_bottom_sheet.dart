@@ -81,7 +81,9 @@ class _NumericEditorBottomSheetState extends State<NumericEditorBottomSheet> {
     }
 
     if (value < 0) {
-      setState(() => _errorText = l10n.invalidAmount); // Or a specific "must be positive" message
+      setState(
+        () => _errorText = l10n.invalidAmount,
+      ); // Or a specific "must be positive" message
       return;
     }
 

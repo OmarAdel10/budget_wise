@@ -37,8 +37,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     _toggleOptionNotifier.addListener(() {
       context.read<StatisticsBloc>().add(
-            StatisticsEventToggleType(_toggleOptionNotifier.value),
-          );
+        StatisticsEventToggleType(_toggleOptionNotifier.value),
+      );
     });
   }
 
@@ -133,12 +133,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       BlocSelector<
                         StatisticsBloc,
                         StatisticsState,
-                        (
-                          List<double>,
-                          List<double>,
-                          List<double>,
-                          List<double>,
-                        )
+                        (List<double>, List<double>, List<double>, List<double>)
                       >(
                         selector: (state) => (
                           state.model.dailyIncomeTrend,

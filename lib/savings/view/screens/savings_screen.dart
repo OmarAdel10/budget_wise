@@ -99,9 +99,7 @@ class SavingsScreen extends StatelessWidget {
                       title: l10n.savingDeleted,
                       onCompleted: () {
                         savingsBloc.add(
-                          SavingsEventDeleteGoal(
-                            goalId: goal.id,
-                          ),
+                          SavingsEventDeleteGoal(goalId: goal.id),
                         );
                       },
                     );

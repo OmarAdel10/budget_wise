@@ -116,8 +116,9 @@ class CategoryDetailScreen extends StatelessWidget {
                   .source;
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) =>
-                      AddCategoryScreen(categoryToEdit: currentCategory as CategoryModel),
+                  builder: (context) => AddCategoryScreen(
+                    categoryToEdit: currentCategory as CategoryModel,
+                  ),
                 ),
               );
             },

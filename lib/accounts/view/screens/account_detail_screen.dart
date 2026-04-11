@@ -18,7 +18,6 @@ import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_state.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -42,7 +41,9 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
         ModalRoute.of(context)!.settings.arguments as AccountModel;
     _accountId = _initialAccount.id;
     // Notify TransactionBloc which account is selected for optimized calculations
-    context.read<TransactionBloc>().add(TransactionEventSelectAccount(_accountId));
+    context.read<TransactionBloc>().add(
+      TransactionEventSelectAccount(_accountId),
+    );
   }
 
   @override
@@ -125,7 +126,11 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                 prev.currentAccountBalance != curr.currentAccountBalance ||
                 prev.lastAccountUpdatedAt != curr.lastAccountUpdatedAt,
             builder: (context, state) {
-              final account = context.read<AccountBloc>().state.accountsList.firstWhere(
+              final account = context
+                  .read<AccountBloc>()
+                  .state
+                  .accountsList
+                  .firstWhere(
                     (acc) => acc.id == _accountId,
                     orElse: () => _initialAccount,
                   );
@@ -168,7 +173,9 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                           .state
                           .accountsList
                           .firstWhere((acc) => acc.id == _accountId);
-                      context.read<HomeBloc>().add(HomeEventChangeAccountFilter(_accountId));
+                      context.read<HomeBloc>().add(
+                        HomeEventChangeAccountFilter(_accountId),
+                      );
                       Navigator.of(context).pushNamed(
                         AllTransactionsScreen.routeName,
                         arguments: {
@@ -191,7 +198,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
           ),
           //* Recent Transactions List
           BlocBuilder<TransactionBloc, TransactionState>(
-            buildWhen: (previous, current) => 
+            buildWhen: (previous, current) =>
                 previous.recentTransactions != current.recentTransactions,
             builder: (context, state) {
               return SliverPadding(

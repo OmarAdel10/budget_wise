@@ -67,5 +67,3 @@ class BankMarginTile extends StatelessWidget {
     );
   }
 }
-
-

@@ -5,10 +5,7 @@ import '../../../shared/widgets/custom_text_field.dart';
 class GoalNameInput extends StatelessWidget {
   final TextEditingController controller;
 
-  const GoalNameInput({
-    super.key,
-    required this.controller,
-  });
+  const GoalNameInput({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {

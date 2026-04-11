@@ -49,7 +49,9 @@ class CurrencyPrefix extends StatelessWidget {
       },
       child: Container(
         margin: const EdgeInsets.all(8),
-        padding: isSettingsTile ? const EdgeInsets.symmetric(vertical: AppSpacing.sm) : null,
+        padding: isSettingsTile
+            ? const EdgeInsets.symmetric(vertical: AppSpacing.sm)
+            : null,
         width: 80,
         alignment: Alignment.center,
         decoration: BoxDecoration(

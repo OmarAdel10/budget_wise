@@ -33,8 +33,10 @@ class SavingSectionHeader extends StatelessWidget {
           ),
           if (onJumpPressed != null)
             IconButton(
-              icon: Icon(icon ?? Icons.arrow_downward,
-                  color: AppColors.primaryAccent),
+              icon: Icon(
+                icon ?? Icons.arrow_downward,
+                color: AppColors.primaryAccent,
+              ),
               onPressed: onJumpPressed,
               tooltip: tooltip,
             ),

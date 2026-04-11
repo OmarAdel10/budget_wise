@@ -77,8 +77,8 @@ class AccountDropdown extends StatelessWidget {
                 accounts.isNotEmpty
                     ? l10n.selectAccountLabel
                     : (currency != null
-                        ? l10n.noAccountsAvailableForSelectedCurrency
-                        : l10n.noAccountsAvailable),
+                          ? l10n.noAccountsAvailableForSelectedCurrency
+                          : l10n.noAccountsAvailable),
                 minFontSize: 13,
                 maxLines: 1,
                 style: AppTextStyles.bodyMedium.copyWith(
@@ -98,10 +98,7 @@ class AccountDropdown extends StatelessWidget {
                     children: [
                       Icon(account.accountIcon, size: 20),
                       const SizedBox(width: AppSpacing.md),
-                      Text(
-                        account.title,
-                        style: AppTextStyles.bodyLarge,
-                      ),
+                      Text(account.title, style: AppTextStyles.bodyLarge),
                     ],
                   ),
                 );

@@ -53,10 +53,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<HomeEventChangeAccountFilter>((event, emit) async {
-      emit(HomeStateSuccess(model: state.model.copyWith(
-        filterAccountId: event.accountId,
-        clearFilteredAccountId: event.accountId == null
-      )));
+      emit(
+        HomeStateSuccess(
+          model: state.model.copyWith(
+            filterAccountId: event.accountId,
+            clearFilteredAccountId: event.accountId == null,
+          ),
+        ),
+      );
       _loadData(emit, accountId: event.accountId);
     });
 

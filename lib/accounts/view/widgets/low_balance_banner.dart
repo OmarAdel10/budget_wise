@@ -30,10 +30,7 @@ class LowBalanceBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(
-            PhosphorIconsBold.warning,
-            color: AppColors.danger,
-          ),
+          const Icon(PhosphorIconsBold.warning, color: AppColors.danger),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(

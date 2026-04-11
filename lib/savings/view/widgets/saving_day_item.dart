@@ -32,10 +32,7 @@ class SavingDayItem extends StatelessWidget {
           _showCustomAmountSheet(context, goal, dayNum);
         } else {
           context.read<SavingsBloc>().add(
-            SavingsEventToggleDayContribution(
-              goalId: goal.id,
-              day: dayNum,
-            ),
+            SavingsEventToggleDayContribution(goalId: goal.id, day: dayNum),
           );
         }
       },
@@ -105,7 +102,11 @@ class SavingDayItem extends StatelessWidget {
     );
   }
 
-  void _showCustomAmountSheet(BuildContext context, SavingsModel goal, int day) {
+  void _showCustomAmountSheet(
+    BuildContext context,
+    SavingsModel goal,
+    int day,
+  ) {
     final controller = TextEditingController();
     showModalBottomSheet(
       context: context,
@@ -127,7 +128,7 @@ class SavingDayItem extends StatelessWidget {
               hintText: "Enter amount",
               controller: controller,
               keyboardType: TextInputType.number,
-              suffixIcon: CloseButton(onPressed: controller.clear,),
+              suffixIcon: CloseButton(onPressed: controller.clear),
             ),
             const SizedBox(height: 20),
             CustomButton(

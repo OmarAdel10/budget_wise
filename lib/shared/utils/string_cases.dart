@@ -16,7 +16,8 @@ extension StringCases on String {
         .where((word) => word.toLowerCase() != 'of')
         .map((word) {
           return word.isNotEmpty ? word[0].toUpperCase() : word;
-        }).where((initial) => initial.isNotEmpty)
+        })
+        .where((initial) => initial.isNotEmpty)
         .join('.');
   }
 }

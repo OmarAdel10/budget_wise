@@ -7,10 +7,7 @@ import '../screens/login_screen.dart';
 class SignUpFooter extends StatelessWidget {
   final bool isFromOnboarding;
 
-  const SignUpFooter({
-    super.key,
-    required this.isFromOnboarding,
-  });
+  const SignUpFooter({super.key, required this.isFromOnboarding});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +27,7 @@ class SignUpFooter extends StatelessWidget {
             if (isFromOnboarding) {
               Navigator.of(context).pop('switch_to_login');
             } else {
-              Navigator.of(context).pushReplacementNamed(
-                LoginScreen.routeName,
-              );
+              Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
             }
           },
           child: Text(

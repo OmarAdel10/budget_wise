@@ -251,8 +251,9 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
       try {
         final updatedList = state.savingsList.map((goal) {
           if (goal.id == event.goalId) {
-            final Map<int, double> updatedCustomAmounts =
-                Map.from(goal.customAmounts);
+            final Map<int, double> updatedCustomAmounts = Map.from(
+              goal.customAmounts,
+            );
             final List<int> updatedDays = List.from(goal.completedDays);
             final Map<int, DateTime> updatedDates = Map.from(
               goal.contributionDates,

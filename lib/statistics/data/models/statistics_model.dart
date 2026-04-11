@@ -42,22 +42,22 @@ class StatisticsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        totalIncome,
-        totalExpenses,
-        totalSavings,
-        totalSubscriptions,
-        incomeBreakdown,
-        expenseBreakdown,
-        savingsBreakdown,
-        subscriptionBreakdown,
-        dailyIncomeTrend,
-        dailyExpenseTrend,
-        dailySavingsTrend,
-        dailySubscriptionTrend,
-        sortingType,
-        selectedMonth,
-        toggleType,
-      ];
+    totalIncome,
+    totalExpenses,
+    totalSavings,
+    totalSubscriptions,
+    incomeBreakdown,
+    expenseBreakdown,
+    savingsBreakdown,
+    subscriptionBreakdown,
+    dailyIncomeTrend,
+    dailyExpenseTrend,
+    dailySavingsTrend,
+    dailySubscriptionTrend,
+    sortingType,
+    selectedMonth,
+    toggleType,
+  ];
 
   StatisticsModel copyWith({
     double? totalIncome,
@@ -106,8 +106,9 @@ class StatisticsModel extends Equatable {
       'incomeBreakdown': incomeBreakdown.map((x) => x.toMap()).toList(),
       'expenseBreakdown': expenseBreakdown.map((x) => x.toMap()).toList(),
       'savingsBreakdown': savingsBreakdown.map((x) => x.toMap()).toList(),
-      'subscriptionBreakdown':
-          subscriptionBreakdown.map((x) => x.toMap()).toList(),
+      'subscriptionBreakdown': subscriptionBreakdown
+          .map((x) => x.toMap())
+          .toList(),
       'dailyIncomeTrend': dailyIncomeTrend,
       'dailyExpenseTrend': dailyExpenseTrend,
       'dailySavingsTrend': dailySavingsTrend,
@@ -135,36 +136,36 @@ class StatisticsModel extends Equatable {
         ),
       ),
       savingsBreakdown: List<FinancialBreakdownItem>.from(
-        (map['savingsBreakdown'] as List<dynamic>?)?.map<
-              FinancialBreakdownItem
-            >(
-              (x) => FinancialBreakdownItem.fromMap(x as Map<String, dynamic>),
-            ) ??
+        (map['savingsBreakdown'] as List<dynamic>?)
+                ?.map<FinancialBreakdownItem>(
+                  (x) =>
+                      FinancialBreakdownItem.fromMap(x as Map<String, dynamic>),
+                ) ??
             [],
       ),
       subscriptionBreakdown: List<FinancialBreakdownItem>.from(
-        (map['subscriptionBreakdown'] as List<dynamic>?)?.map<
-              FinancialBreakdownItem
-            >(
-              (x) => FinancialBreakdownItem.fromMap(x as Map<String, dynamic>),
-            ) ??
+        (map['subscriptionBreakdown'] as List<dynamic>?)
+                ?.map<FinancialBreakdownItem>(
+                  (x) =>
+                      FinancialBreakdownItem.fromMap(x as Map<String, dynamic>),
+                ) ??
             [],
       ),
       dailyIncomeTrend: List<double>.from(map['dailyIncomeTrend'] as List),
       dailyExpenseTrend: List<double>.from(map['dailyExpenseTrend'] as List),
       dailySavingsTrend: List<double>.from(map['dailySavingsTrend'] as List),
-      dailySubscriptionTrend:
-          List<double>.from(map['dailySubscriptionTrend'] as List),
+      dailySubscriptionTrend: List<double>.from(
+        map['dailySubscriptionTrend'] as List,
+      ),
       sortingType: StatisticsSorting.values[map['sortingType'] as int],
       selectedMonth: DateTime.fromMillisecondsSinceEpoch(
         map['selectedMonth'] as int,
       ),
       toggleType:
           map['toggleType'] != null &&
-                  (map['toggleType'] as num).toInt() <
-                      ToggleOption.values.length
-              ? ToggleOption.values[(map['toggleType'] as num).toInt()]
-              : ToggleOption.expense,
+              (map['toggleType'] as num).toInt() < ToggleOption.values.length
+          ? ToggleOption.values[(map['toggleType'] as num).toInt()]
+          : ToggleOption.expense,
     );
   }
 

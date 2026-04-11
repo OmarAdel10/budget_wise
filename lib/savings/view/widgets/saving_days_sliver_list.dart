@@ -23,24 +23,22 @@ class SavingDaysSliverList extends StatelessWidget {
 
     return SliverFixedExtentList(
       itemExtent: AppDimensions.savingDayItemTotalExtent,
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final dayNum = days[index];
-          final amount = goal.getAmountForDay(dayNum);
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final dayNum = days[index];
+        final amount = goal.getAmountForDay(dayNum);
 
-          return Padding(
-            padding:
-                const EdgeInsets.only(bottom: AppDimensions.savingDayItemGap),
-            child: SavingDayItem(
-              goal: goal,
-              dayNum: dayNum,
-              amount: amount,
-              isCompleted: isCompleted,
-            ),
-          );
-        },
-        childCount: days.length,
-      ),
+        return Padding(
+          padding: const EdgeInsets.only(
+            bottom: AppDimensions.savingDayItemGap,
+          ),
+          child: SavingDayItem(
+            goal: goal,
+            dayNum: dayNum,
+            amount: amount,
+            isCompleted: isCompleted,
+          ),
+        );
+      }, childCount: days.length),
     );
   }
 }

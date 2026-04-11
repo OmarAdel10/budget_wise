@@ -103,11 +103,7 @@ class SignUpForm extends StatelessWidget {
               text: l10n.loginWithGoogle,
               type: CustomButtonType.secondary,
               onPressed: onGoogleLogin,
-              icon: Icon(
-                PhosphorIcons.googleLogo(
-                  PhosphorIconsStyle.bold,
-                ),
-              ),
+              icon: Icon(PhosphorIcons.googleLogo(PhosphorIconsStyle.bold)),
             ),
           ),
         ],

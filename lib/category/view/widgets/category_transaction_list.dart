@@ -10,16 +10,15 @@ import 'package:budget_wise/l10n/app_localizations.dart';
 class CategoryTransactionList extends StatelessWidget {
   final String categoryId;
 
-  const CategoryTransactionList({
-    super.key,
-    required this.categoryId,
-  });
+  const CategoryTransactionList({super.key, required this.categoryId});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
-    final transactions = context.select<HomeBloc, List<TransactionModel>>((homeBloc) {
+
+    final transactions = context.select<HomeBloc, List<TransactionModel>>((
+      homeBloc,
+    ) {
       return homeBloc.state.model.transactions
           .where((expense) => expense.categoryId == categoryId)
           .toList();

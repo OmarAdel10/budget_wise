@@ -143,8 +143,9 @@ class _SavingGoalDetailScreenState extends State<SavingGoalDetailScreen> {
                       child: SavingSectionHeader(
                         title: l10n.todoSavings,
                         headerKey: _todoHeaderKey,
-                        onJumpPressed:
-                            completedDays.isNotEmpty ? _jumpToCompleted : null,
+                        onJumpPressed: completedDays.isNotEmpty
+                            ? _jumpToCompleted
+                            : null,
                         tooltip: "Jump to Completed",
                         icon: Icons.arrow_downward,
                       ),

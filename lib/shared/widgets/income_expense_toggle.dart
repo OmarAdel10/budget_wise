@@ -136,9 +136,7 @@ class IncomeExpenseToggle extends StatelessWidget {
         onChanged?.call(option);
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: AppSpacing.sm,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: itemBackgroundColor,
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),

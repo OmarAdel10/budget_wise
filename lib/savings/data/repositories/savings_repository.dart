@@ -52,8 +52,7 @@ class SavingsRepository {
     Map<int, double> customAmounts,
     DateTime updatedAt,
   ) async {
-    final CollectionReference<SavingsModel> collection =
-        getSavingsCollection();
+    final CollectionReference<SavingsModel> collection = getSavingsCollection();
     await collection.doc(goalId).update({
       'currentAmount': newAmount,
       'completedDays': completedDays,
