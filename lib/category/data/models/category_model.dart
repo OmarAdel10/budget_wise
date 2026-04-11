@@ -122,4 +122,12 @@ class CategoryModel implements FinancialRepresentable {
 
   factory CategoryModel.fromJson(String source) =>
       CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory CategoryModel.empty() => CategoryModel(
+    id: '',
+    categoryTitle: '',
+    categoryIcon: Icons.category,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+  );
 }

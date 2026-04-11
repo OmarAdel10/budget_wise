@@ -31,16 +31,27 @@ class AccountDetailScreen extends StatefulWidget {
 
 class _AccountDetailScreenState extends State<AccountDetailScreen> {
   late String _accountId;
-  late AccountModel _initialAccount;
+  AccountModel? _initialAccount;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _initialAccount =
-        ModalRoute.of(context)!.settings.arguments as AccountModel;
-    _accountId = _initialAccount.id;
+    final args = ModalRoute.of(context)!.settings.arguments;
+    if (args is AccountModel) {
+      _initialAccount = args;
+      _accountId = args.id;
+    } else if (args is Map<String, dynamic>) {
+      _accountId = args['accountId'];
+    } else {
+      // Fallback for unexpected argument types
+      _accountId = '';
+    }
     // Notify TransactionBloc which account is selected for optimized calculations
-    context.read<TransactionBloc>().add(TransactionEventSelectAccount(_accountId));
+    if (_accountId.isNotEmpty) {
+      context
+          .read<TransactionBloc>()
+          .add(TransactionEventSelectAccount(_accountId));
+    }
   }
 
   @override
@@ -54,57 +65,53 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    // Select the title to stay reactive without rebuilding the whole scaffold
-    final accountTitle = context.select<AccountBloc, String>((bloc) {
-      final account = bloc.state.accountsList.firstWhere(
-        (acc) => acc.id == _accountId,
-        orElse: () => _initialAccount,
-      );
-      return account.title;
-    });
+    return BlocBuilder<AccountBloc, AccountState>(
+      builder: (context, state) {
+        final account = state.accountsList.firstWhere(
+          (acc) => acc.id == _accountId,
+          orElse: () => _initialAccount ?? AccountModel.empty(),
+        );
 
-    return Scaffold(
-      backgroundColor: AppColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.textPrimary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(accountTitle, style: AppTextStyles.heading3),
-        actions: [
-          IconButton(
-            icon: Icon(
-              PhosphorIcons.trash(PhosphorIconsStyle.regular),
-              color: AppColors.danger,
+        if (account.id.isEmpty) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        return Scaffold(
+          backgroundColor: AppColors.primaryBackground,
+          appBar: AppBar(
+            backgroundColor: AppColors.primaryBackground,
+            elevation: 0,
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: AppColors.textPrimary),
+              onPressed: () => Navigator.of(context).pop(),
             ),
-            onPressed: () {
-              context.read<AccountBloc>().add(
-                AccountEventDeleteAccount(accountId: _accountId),
-              );
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop();
-              }
-            },
+            title: Text(account.title, style: AppTextStyles.heading3),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  PhosphorIcons.trash(PhosphorIconsStyle.regular),
+                  color: AppColors.danger,
+                ),
+                onPressed: () {
+                  context.read<AccountBloc>().add(
+                    AccountEventDeleteAccount(accountId: _accountId),
+                  );
+                  if (Navigator.canPop(context)) {
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: CustomScrollView(
-        slivers: [
-          //* Low Balance Alert Banner
-          BlocSelector<AccountBloc, AccountState, AccountModel>(
-            selector: (state) {
-              return state.accountsList.firstWhere(
-                (acc) => acc.id == _accountId,
-                orElse: () => _initialAccount,
-              );
-            },
-            builder: (context, account) {
+          body: CustomScrollView(
+            slivers: [
+              //* Low Balance Alert Banner
               if (account.lowBalanceAlertEnabled &&
-                  account.balance <= account.lowBalanceAlertAmount) {
-                return const SliverToBoxAdapter(
+                  account.balance <= account.lowBalanceAlertAmount)
+                const SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: AppSpacing.lg,
@@ -112,110 +119,101 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                     ),
                     child: LowBalanceBanner(),
                   ),
-                );
-              }
-              return const SliverToBoxAdapter(child: SizedBox.shrink());
-            },
-          ),
-          //* Hero Balance Section
-          BlocBuilder<TransactionBloc, TransactionState>(
-            buildWhen: (prev, curr) =>
-                prev.currentAccountBalance != curr.currentAccountBalance ||
-                prev.lastAccountUpdatedAt != curr.lastAccountUpdatedAt,
-            builder: (context, state) {
-              final account = context.read<AccountBloc>().state.accountsList.firstWhere(
-                    (acc) => acc.id == _accountId,
-                    orElse: () => _initialAccount,
+                ),
+              //* Hero Balance Section
+              BlocBuilder<TransactionBloc, TransactionState>(
+                buildWhen: (prev, curr) =>
+                    prev.currentAccountBalance != curr.currentAccountBalance ||
+                    prev.lastAccountUpdatedAt != curr.lastAccountUpdatedAt,
+                builder: (context, transState) {
+                  return AccountBalanceDetailsHeader(
+                    balance: transState.currentAccountBalance,
+                    currency: account.currency,
+                    lastUpdatedAt: transState.lastAccountUpdatedAt,
                   );
-              return AccountBalanceDetailsHeader(
-                balance: state.currentAccountBalance,
-                currency: account.currency,
-                lastUpdatedAt: state.lastAccountUpdatedAt,
-              );
-            },
-          ),
-          //* Credit Card Section (Conditional)
-          BlocSelector<AccountBloc, AccountState, AccountModel>(
-            selector: (state) => state.accountsList.firstWhere(
-              (acc) => acc.id == _accountId,
-              orElse: () => _initialAccount,
-            ),
-            builder: (context, account) {
-              return AccountCardDetailsSection(account: account);
-            },
-          ),
-          //* Edit Account Button
-          AccountActionButtons(accountId: _accountId),
-          //* Recent Transactions Header
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.lg,
-                AppSpacing.lg,
-                AppSpacing.lg,
-                AppSpacing.md,
+                },
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(l10n.recentTransactions, style: AppTextStyles.heading3),
-                  GestureDetector(
-                    onTap: () {
-                      final account = context
-                          .read<AccountBloc>()
-                          .state
-                          .accountsList
-                          .firstWhere((acc) => acc.id == _accountId);
-                      context.read<HomeBloc>().add(HomeEventChangeAccountFilter(_accountId));
-                      Navigator.of(context).pushNamed(
-                        AllTransactionsScreen.routeName,
-                        arguments: {
-                          'isNavFromAccount': true,
-                          'accountModel': account,
-                        },
-                      );
-                    },
-                    child: Text(
-                      l10n.viewAll,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.primaryAccent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+              //* Credit Card Section (Conditional)
+              AccountCardDetailsSection(account: account),
+              //* Edit Account Button
+              AccountActionButtons(accountId: _accountId),
+              //* Recent Transactions Header
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.md,
                   ),
-                ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        l10n.recentTransactions,
+                        style: AppTextStyles.heading3,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          context.read<HomeBloc>().add(
+                            HomeEventChangeAccountFilter(_accountId),
+                          );
+                          Navigator.of(context).pushNamed(
+                            AllTransactionsScreen.routeName,
+                            arguments: {
+                              'isNavFromAccount': true,
+                              'accountModel': account,
+                            },
+                          );
+                        },
+                        child: Text(
+                          l10n.viewAll,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.primaryAccent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          //* Recent Transactions List
-          BlocBuilder<TransactionBloc, TransactionState>(
-            buildWhen: (previous, current) => 
-                previous.recentTransactions != current.recentTransactions,
-            builder: (context, state) {
-              return SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                sliver: TransactionListView.sliver(
-                  transactions: state.recentTransactions,
-                  hasBackgroundColor: false,
-                  emptyState: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    child: Center(
-                      child: Text(
-                        l10n.noRecentTransactionsFound,
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
+              //* Recent Transactions List
+              BlocBuilder<TransactionBloc, TransactionState>(
+                buildWhen: (previous, current) =>
+                    previous.recentTransactions != current.recentTransactions,
+                builder: (context, transState) {
+                  return SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                    ),
+                    sliver: TransactionListView.sliver(
+                      transactions: transState.recentTransactions,
+                      hasBackgroundColor: false,
+                      emptyState: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        child: Center(
+                          child: Text(
+                            l10n.noRecentTransactionsFound,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+              //* Bottom Spacing
+              const SliverToBoxAdapter(
+                child: SizedBox(height: AppSpacing.xxl * 2),
+              ),
+            ],
           ),
-          //* Bottom Spacing
-          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl * 2)),
-        ],
-      ),
+        );
+      },
     );
   }
 }
+

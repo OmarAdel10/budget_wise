@@ -26,6 +26,8 @@ class LocalAuthScreen extends StatefulWidget {
 class _LocalAuthScreenState extends State<LocalAuthScreen>
     with SingleTickerProviderStateMixin {
   late final ValueNotifier<String> _passcodeNotifier;
+  late final ValueNotifier<bool> _isErrorNotifier;
+  late final ValueNotifier<bool> _isSuccessNotifier;
   bool _isBiometricTriggered = false;
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
@@ -34,6 +36,8 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
   void initState() {
     super.initState();
     _passcodeNotifier = ValueNotifier<String>('');
+    _isErrorNotifier = ValueNotifier<bool>(false);
+    _isSuccessNotifier = ValueNotifier<bool>(false);
     _shakeController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -47,6 +51,8 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
   @override
   void dispose() {
     _passcodeNotifier.dispose();
+    _isErrorNotifier.dispose();
+    _isSuccessNotifier.dispose();
     _shakeController.dispose();
     super.dispose();
   }
@@ -75,6 +81,11 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
 
   void _onDigitPressed(String digit) {
     HapticFeedback.lightImpact();
+    // Clear error state on new input
+    if (_isErrorNotifier.value) {
+      _isErrorNotifier.value = false;
+    }
+
     if (_passcodeNotifier.value.length < 4) {
       _passcodeNotifier.value += digit;
       if (_passcodeNotifier.value.length == 4) {
@@ -85,6 +96,10 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
 
   void _onBackspacePressed() {
     HapticFeedback.lightImpact();
+    if (_isErrorNotifier.value) {
+      _isErrorNotifier.value = false;
+    }
+
     if (_passcodeNotifier.value.isNotEmpty) {
       _passcodeNotifier.value = _passcodeNotifier.value.substring(
         0,
@@ -93,20 +108,28 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
     }
   }
 
-  void _verifyPasscode() {
+  Future<void> _verifyPasscode() async {
     final settings = context.read<SettingsBloc>().state.model;
     if (_passcodeNotifier.value == settings.passcode) {
-      Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
+      _isSuccessNotifier.value = true;
+      // Brief delay to show filled circles before navigating
+      await Future.delayed(const Duration(milliseconds: 300));
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
+      }
     } else {
-      HapticFeedback.vibrate();
+      _isErrorNotifier.value = true;
+      HapticFeedback.heavyImpact();
       _shakeController.forward(from: 0).then((_) {
         _passcodeNotifier.value = '';
       });
-      AppToast.show(
-        context,
-        type: AppToastType.error,
-        title: AppLocalizations.of(context)!.passcodeIncorrect,
-      );
+      if (mounted) {
+        AppToast.show(
+          context,
+          type: AppToastType.error,
+          title: AppLocalizations.of(context)!.passcodeIncorrect,
+        );
+      }
     }
   }
 
@@ -118,9 +141,15 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
     );
 
     return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is AuthStateSuccess) {
-          Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
+          // Fill circles visually on biometric success
+          _passcodeNotifier.value = '****';
+          _isSuccessNotifier.value = true;
+          await Future.delayed(const Duration(milliseconds: 300));
+          if (context.mounted) {
+            Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
+          }
         }
       },
       child: Scaffold(
@@ -140,15 +169,48 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
               ValueListenableBuilder<String>(
                 valueListenable: _passcodeNotifier,
                 builder: (context, passcode, child) {
-                  return AnimatedBuilder(
-                    animation: _shakeAnimation,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(_shakeAnimation.value, 0),
-                        child: PasscodeIndicator(inputLength: passcode.length),
+                  return ValueListenableBuilder<bool>(
+                    valueListenable: _isErrorNotifier,
+                    builder: (context, isError, child) {
+                      return ValueListenableBuilder<bool>(
+                        valueListenable: _isSuccessNotifier,
+                        builder: (context, isSuccess, child) {
+                          return AnimatedBuilder(
+                            animation: _shakeAnimation,
+                            builder: (context, child) {
+                              return Transform.translate(
+                                offset: Offset(_shakeAnimation.value, 0),
+                                child: PasscodeIndicator(
+                                  inputLength: passcode.length,
+                                  isError: isError,
+                                  isSuccess: isSuccess,
+                                ),
+                              );
+                            },
+                          );
+                        },
                       );
                     },
                   );
+                },
+              ),
+              const Spacer(),
+              ValueListenableBuilder<bool>(
+                valueListenable: _isSuccessNotifier,
+                builder: (context, success, child) {
+                  if (success) {
+                    return SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryAccent.withValues(
+                          alpha: 0.7,
+                        ),
+                        strokeWidth: 3,
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
                 },
               ),
               const Spacer(),

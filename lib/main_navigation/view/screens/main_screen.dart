@@ -1,6 +1,12 @@
 import 'dart:async';
 import 'package:another_telephony/telephony.dart';
+import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
+import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
+import 'package:budget_wise/notifications/view_model/notification_bloc.dart';
+import 'package:budget_wise/notifications/view_model/notification_event.dart';
+import 'package:budget_wise/notifications/view_model/notification_state.dart';
+import 'package:budget_wise/savings/view/screens/savings_screen.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
@@ -8,11 +14,15 @@ import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
+import 'package:budget_wise/transaction/view/screens/all_transactions_screen.dart';
 import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/settings/view/screens/settings_screen.dart';
+import 'package:budget_wise/statistics/view/screens/statistics_screen.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,9 +32,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../home/view/screens/home_screen.dart';
 import '../../../accounts/view/screens/accounts_screen.dart';
-import '../../../savings/view/screens/savings_screen.dart';
-import '../../../statistics/view/screens/statistics_screen.dart';
-import '../../../settings/view/screens/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routeName = '/main';
@@ -63,10 +70,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     _performInitialSync();
     _startPeriodicCheck();
     _initSmsService();
-    // Sequencing: Load drafts first, then check for notification launch
-    _checkBackgroundSmsDrafts().then((_) {
-      _handleLaunchNotification();
-    });
+    // Background SMS drafts are checked on initialization
+    _checkBackgroundSmsDrafts();
+
     if (context.read<SettingsBloc>().state.model.allNotificationsEnabled &&
         context
             .read<SettingsBloc>()
@@ -77,28 +83,50 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _handleLaunchNotification() async {
-    final notificationAppLaunchDetails = await NotificationRepository
-        .notifications
-        .getNotificationAppLaunchDetails();
-    if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-      final payload =
-          notificationAppLaunchDetails?.notificationResponse?.payload;
-      if (payload == 'sms_draft_confirm') {
-        if (mounted) {
-          Navigator.pushNamed(context, PendingSmsTransactionsScreen.routeName);
-        }
-      } else if (payload!.startsWith('subscription_')) {
-        final subId = payload.replaceFirst('subscription_', '');
-        if (mounted) {
-          Navigator.pushNamed(
-            context,
-            SubscriptionDetailsScreen.routeName,
-            arguments: subId,
-          );
-        }
+  void _handleNotificationRouting(String payload) {
+    log('MainScreen: Routing notification with payload: $payload');
+
+    if (payload == 'sms_draft_confirm') {
+      Navigator.pushNamed(context, PendingSmsTransactionsScreen.routeName);
+    } else if (payload == 'nav_savings' || payload.startsWith('saving_goal_')) {
+      Navigator.pushNamed(context, SavingsScreen.routeName);
+    } else if (payload.startsWith('subscription_')) {
+      final subId = payload.replaceFirst('subscription_', '');
+      Navigator.pushNamed(
+        context,
+        SubscriptionDetailsScreen.routeName,
+        arguments: subId,
+      );
+    } else if (payload.startsWith('add_transaction_with_context|')) {
+      final parts = payload.split('|');
+      if (parts.length >= 3) {
+        final accountId = parts[1];
+        final amount = parts[2];
+        Navigator.pushNamed(
+          context,
+          AddTransactionScreen.routeName,
+          arguments: {
+            'initialAccountId': accountId,
+            'initialAmount': double.tryParse(amount),
+          },
+        );
       }
+    } else if (payload.startsWith('nav_account_')) {
+      final accountId = payload.replaceFirst('nav_account_', '');
+      Navigator.pushNamed(context, AccountDetailScreen.routeName, arguments: {
+        'accountId': accountId,
+      });
+    } else if (payload.startsWith('nav_category_')) {
+      final categoryId = payload.replaceFirst('nav_category_', '');
+      Navigator.pushNamed(context, CategoryDetailScreen.routeName, arguments: {
+        'categoryId': categoryId,
+      });
+    } else if (payload == 'nav_transactions') {
+      Navigator.pushNamed(context, AllTransactionsScreen.routeName);
     }
+
+    // Mark as handled
+    context.read<NotificationBloc>().add(const NotificationHandled());
   }
 
   void _scheduleDailyReminder() {
@@ -171,19 +199,10 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _checkBackgroundSmsDrafts() async {
+  void _checkBackgroundSmsDrafts() {
     context.read<TransactionBloc>().add(
       const TransactionEventLoadBackgroundDrafts(),
     );
-
-    // Safety Gate: Wait for the BLoC to finish processing if we are in a launch/resume context
-    int attempts = 0;
-    while (mounted &&
-        context.read<TransactionBloc>().state.isProcessingBackgroundDrafts &&
-        attempts < 10) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      attempts++;
-    }
   }
 
   Future<void> _initSmsService() async {
@@ -283,11 +302,18 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _screens),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabSelected,
+    return BlocListener<NotificationBloc, NotificationState>(
+      listener: (context, state) {
+        if (state is NotificationPending) {
+          _handleNotificationRouting(state.payload);
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(index: _currentIndex, children: _screens),
+        bottomNavigationBar: CustomBottomNavBar(
+          currentIndex: _currentIndex,
+          onTap: _onTabSelected,
+        ),
       ),
     );
   }
