@@ -1,14 +1,5 @@
+import 'dart:async';
 import 'dart:developer';
-import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
-import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
-import 'package:budget_wise/main.dart';
-import 'package:budget_wise/savings/view/screens/savings_screen.dart';
-import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
-import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
-import 'package:budget_wise/transaction/view/screens/all_transactions_screen.dart';
-import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -17,6 +8,10 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 class NotificationRepository {
   static final FlutterLocalNotificationsPlugin notifications =
       FlutterLocalNotificationsPlugin();
+
+  static final StreamController<String?> _payloadController =
+      StreamController<String?>.broadcast();
+  static Stream<String?> get payloadStream => _payloadController.stream;
 
   // Notification ID Ranges
   static const int savingsRangeStart = 1000;
@@ -36,65 +31,8 @@ class NotificationRepository {
 
   @pragma('vm:entry-point')
   static void onReciveTap(NotificationResponse notificationResponse) {
-    log('ID: ${notificationResponse.id}');
-    log('PAYLOAD: ${notificationResponse.payload}');
-
-    final payload = notificationResponse.payload;
-    if (payload == null) return;
-
-    if (payload == 'sms_draft_confirm') {
-      BudgetWise.navigatorKey.currentState?.pushNamed(
-        PendingSmsTransactionsScreen.routeName,
-      );
-    } else if (payload == 'nav_savings') {
-      BudgetWise.navigatorKey.currentState?.pushNamed(SavingsScreen.routeName);
-    } else if (payload.startsWith('subscription_')) {
-      final subId = payload.replaceFirst('subscription_', '');
-      BudgetWise.navigatorKey.currentState?.pushNamed(
-        SubscriptionDetailsScreen.routeName,
-        arguments: subId,
-      );
-    } else if (payload.startsWith('add_transaction_with_context|')) {
-      final parts = payload.split('|');
-      if (parts.length >= 3) {
-        final accountId = parts[1];
-        final amount = parts[2];
-        BudgetWise.navigatorKey.currentState?.pushNamed(
-          AddTransactionScreen.routeName,
-          arguments: {
-            'initialAccountId': accountId,
-            'initialAmount': double.tryParse(amount),
-          },
-        );
-      }
-    } else if (payload.startsWith('nav_account_')) {
-      final accountId = payload.replaceFirst('nav_account_', '');
-      final context = BudgetWise.navigatorKey.currentContext;
-      if (context != null) {
-        try {
-          final accountBloc = context.read<AccountBloc>();
-          final account = accountBloc.state.accountsList.firstWhere(
-            (a) => a.id == accountId,
-          );
-          BudgetWise.navigatorKey.currentState?.pushNamed(
-            AccountDetailScreen.routeName,
-            arguments: account,
-          );
-        } catch (e) {
-          log('Error navigating to account detail: $e');
-        }
-      }
-    } else if (payload.startsWith('nav_category_')) {
-      final categoryId = payload.replaceFirst('nav_category_', '');
-      BudgetWise.navigatorKey.currentState?.pushNamed(
-        CategoryDetailScreen.routeName,
-        arguments: {'categoryId': categoryId},
-      );
-    } else if (payload == 'nav_transactions') {
-      BudgetWise.navigatorKey.currentState?.pushNamed(
-        AllTransactionsScreen.routeName,
-      );
-    }
+    log('Notification Tapped - ID: ${notificationResponse.id}, Payload: ${notificationResponse.payload}');
+    _payloadController.add(notificationResponse.payload);
   }
 
   static bool _isInitialized = false;
@@ -103,16 +41,25 @@ class NotificationRepository {
     if (_isInitialized) return;
 
     try {
-      await requestPermissions();
+      // 1. Initialize Timezones once at startup
+      tz.initializeTimeZones();
+      final TimezoneInfo currentTimeZone =
+          await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(currentTimeZone.identifier));
 
       const AndroidInitializationSettings androidInit =
           AndroidInitializationSettings('@mipmap/ic_launcher');
-      final DarwinInitializationSettings iosInit =
-          DarwinInitializationSettings();
+      final DarwinInitializationSettings darwinInit =
+          DarwinInitializationSettings(
+            requestAlertPermission: true,
+            requestBadgePermission: true,
+            requestSoundPermission: true,
+          );
 
       final InitializationSettings initSettings = InitializationSettings(
         android: androidInit,
-        iOS: iosInit,
+        iOS: darwinInit,
+        macOS: darwinInit,
       );
 
       await notifications.initialize(
@@ -134,7 +81,16 @@ class NotificationRepository {
             >()
             ?.areNotificationsEnabled() ??
         false;
-    return androidGranted;
+
+    final iosGranted =
+        await notifications
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >()
+            ?.requestPermissions(alert: true, badge: true, sound: true) ??
+        false;
+
+    return androidGranted || iosGranted;
   }
 
   static Future<void> requestPermissions() async {
@@ -143,18 +99,18 @@ class NotificationRepository {
           AndroidFlutterLocalNotificationsPlugin
         >()
         ?.requestNotificationsPermission();
-  }
 
-  static void showNotificationStack() async {
-    if (!_isInitialized) await notificationInit();
-    final getActiveNotifications = await notifications.getActiveNotifications();
-    log('getActiveNotifications: $getActiveNotifications');
-    final getNotificationAppLaunchDetails = await notifications
-        .getNotificationAppLaunchDetails();
-    log('getNotificationAppLaunchDetails: $getNotificationAppLaunchDetails');
-    final pendingNotificationRequests = await notifications
-        .pendingNotificationRequests();
-    log('pendingNotificationRequests: $pendingNotificationRequests');
+    await notifications
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
+
+    await notifications
+        .resolvePlatformSpecificImplementation<
+          MacOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
   static Future<void> instantNotification({
@@ -180,11 +136,21 @@ class NotificationRepository {
             ticker: 'ticker',
           );
 
+      const DarwinNotificationDetails darwinDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
+
       await notifications.show(
         id: id,
         title: title,
         body: body,
-        notificationDetails: NotificationDetails(android: androidDetails),
+        notificationDetails: NotificationDetails(
+          android: androidDetails,
+          iOS: darwinDetails,
+          macOS: darwinDetails,
+        ),
         payload: payload ?? 'Instant Notification For $title',
       );
     } catch (e) {
@@ -205,36 +171,38 @@ class NotificationRepository {
     try {
       if (!_isInitialized) await notificationInit();
 
-      final NotificationDetails details = NotificationDetails(
-        android: AndroidNotificationDetails(
-          channelId,
-          channelName,
-          channelDescription: channelDescription,
-          channelShowBadge: true,
-          importance: Importance.max,
-          priority: Priority.max,
-          ticker: 'ticker',
-        ),
+      final AndroidNotificationDetails androidDetails =
+          AndroidNotificationDetails(
+            channelId,
+            channelName,
+            channelDescription: channelDescription,
+            channelShowBadge: true,
+            importance: Importance.max,
+            priority: Priority.max,
+            ticker: 'ticker',
+          );
+
+      const DarwinNotificationDetails darwinDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
       );
-      tz.initializeTimeZones();
-      final TimezoneInfo currentTimeZone =
-          await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(currentTimeZone.identifier));
-      final tz.TZDateTime tzScheduledDate = tz.TZDateTime(
+
+      final tz.TZDateTime tzScheduledDate = tz.TZDateTime.from(
+        scheduledDate,
         tz.local,
-        scheduledDate.year,
-        scheduledDate.month,
-        scheduledDate.day,
-        scheduledDate.hour,
-        scheduledDate.minute,
-        scheduledDate.second,
       );
+
       await notifications.zonedSchedule(
         id: id,
         title: title,
         body: body,
         scheduledDate: tzScheduledDate,
-        notificationDetails: details,
+        notificationDetails: NotificationDetails(
+          android: androidDetails,
+          iOS: darwinDetails,
+          macOS: darwinDetails,
+        ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         payload: payload ?? 'Schedule Notification For $title',
       );
@@ -256,29 +224,25 @@ class NotificationRepository {
     try {
       if (!_isInitialized) await notificationInit();
 
-      final NotificationDetails details = NotificationDetails(
-        android: AndroidNotificationDetails(
-          channelId,
-          channelName,
-          channelDescription: channelDescription,
-          channelShowBadge: true,
-          importance: Importance.max,
-          priority: Priority.max,
-        ),
+      final AndroidNotificationDetails androidDetails =
+          AndroidNotificationDetails(
+            channelId,
+            channelName,
+            channelDescription: channelDescription,
+            channelShowBadge: true,
+            importance: Importance.max,
+            priority: Priority.max,
+          );
+
+      const DarwinNotificationDetails darwinDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
       );
 
-      tz.initializeTimeZones();
-      final TimezoneInfo currentTimeZone =
-          await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(currentTimeZone.identifier));
-      final tz.TZDateTime tzScheduledDate = tz.TZDateTime(
+      final tz.TZDateTime tzScheduledDate = tz.TZDateTime.from(
+        scheduledDate,
         tz.local,
-        scheduledDate.year,
-        scheduledDate.month,
-        scheduledDate.day,
-        scheduledDate.hour,
-        scheduledDate.minute,
-        scheduledDate.second,
       );
 
       await notifications.zonedSchedule(
@@ -286,7 +250,11 @@ class NotificationRepository {
         title: title,
         body: body,
         scheduledDate: tzScheduledDate,
-        notificationDetails: details,
+        notificationDetails: NotificationDetails(
+          android: androidDetails,
+          iOS: darwinDetails,
+          macOS: darwinDetails,
+        ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
         payload: payload ?? 'Daily Schedule For $title',
@@ -306,14 +274,27 @@ class NotificationRepository {
 
   static Future<void> cancelNotificationsInRange(int start, int end) async {
     try {
+      // 1. Cancel future pending notifications
       final pendingRequests = await notifications.pendingNotificationRequests();
       for (final request in pendingRequests) {
         if (request.id >= start && request.id <= end) {
           await notifications.cancel(id: request.id);
         }
       }
+
+      // 2. Clear already delivered/active notifications from system tray
+      final activeNotifications = await notifications.getActiveNotifications();
+      for (final active in activeNotifications) {
+        if (active.id != null && active.id! >= start && active.id! <= end) {
+          await notifications.cancel(id: active.id!);
+        }
+      }
     } catch (e) {
       log('Error canceling notifications in range $start-$end: $e');
     }
+  }
+
+  static void dispose() {
+    _payloadController.close();
   }
 }

@@ -182,4 +182,16 @@ class AccountModel {
 
   factory AccountModel.fromJson(String source) =>
       AccountModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory AccountModel.empty() => AccountModel(
+    id: '',
+    accountType: AccountType.cash,
+    title: '',
+    accountIcon: Icons.account_balance,
+    initialBalance: 0.0,
+    balance: 0.0,
+    currency: '',
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+  );
 }

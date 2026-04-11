@@ -7,6 +7,7 @@ import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/currency_conversions/data/repositories/currency_repository.dart';
 import 'package:budget_wise/currency_conversions/view_model/currency_bloc.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
+import 'package:budget_wise/notifications/view_model/notification_bloc.dart';
 import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
 import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
@@ -59,6 +60,7 @@ class AppProviders {
     ],
     child: MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => NotificationBloc()),
         BlocProvider(
           create: (context) => SettingsBloc(
             settingsRepository: context.read<SettingsRepository>(),

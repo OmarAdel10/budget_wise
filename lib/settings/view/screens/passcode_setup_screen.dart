@@ -8,6 +8,7 @@ import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/widgets/numeric_keypad.dart';
 import 'package:budget_wise/shared/widgets/passcode_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -21,20 +22,31 @@ class PasscodeSetupScreen extends StatefulWidget {
 
 class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
   late final PasscodeController _passcodeController;
+  late final ValueNotifier<bool> _isErrorNotifier;
+  late final ValueNotifier<bool> _isSuccessNotifier;
 
   @override
   void initState() {
     super.initState();
     _passcodeController = PasscodeController();
+    _isErrorNotifier = ValueNotifier<bool>(false);
+    _isSuccessNotifier = ValueNotifier<bool>(false);
   }
 
   @override
   void dispose() {
     _passcodeController.dispose();
+    _isErrorNotifier.dispose();
+    _isSuccessNotifier.dispose();
     super.dispose();
   }
 
   void _onDigitPressed(String digit) {
+    HapticFeedback.lightImpact();
+    if (_isErrorNotifier.value) {
+      _isErrorNotifier.value = false;
+    }
+
     _passcodeController.addDigit(digit);
     if (_passcodeController.value.isConfirming &&
         _passcodeController.value.confirmPasscode.length == 4) {
@@ -43,32 +55,45 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
   }
 
   void _onBackspacePressed() {
+    HapticFeedback.lightImpact();
+    if (_isErrorNotifier.value) {
+      _isErrorNotifier.value = false;
+    }
     _passcodeController.removeDigit();
   }
 
-  void _verifyAndSave() {
+  Future<void> _verifyAndSave() async {
     final l10n = AppLocalizations.of(context)!;
     final state = _passcodeController.value;
 
     if (state.passcode == state.confirmPasscode) {
+      _isSuccessNotifier.value = true;
       context.read<SettingsBloc>().add(
         SettingsEventUpdatePasscode(state.passcode),
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.passcodeSet),
-          backgroundColor: AppColors.primaryAccent,
-        ),
-      );
-      Navigator.of(context).pop();
+      await Future.delayed(const Duration(milliseconds: 200));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.passcodeSet),
+            backgroundColor: AppColors.primaryAccent,
+          ),
+        );
+        Navigator.of(context).pop();
+      }
     } else {
+      _isErrorNotifier.value = true;
+      HapticFeedback.heavyImpact();
+      await Future.delayed(const Duration(milliseconds: 500));
       _passcodeController.reset();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.passcodeMismatch),
-          backgroundColor: AppColors.danger,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.passcodeMismatch),
+            backgroundColor: AppColors.danger,
+          ),
+        );
+      }
     }
   }
 
@@ -112,7 +137,21 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
                       style: AppTextStyles.heading2,
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    PasscodeIndicator(inputLength: currentInputLength),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _isErrorNotifier,
+                      builder: (context, isError, child) {
+                        return ValueListenableBuilder<bool>(
+                          valueListenable: _isSuccessNotifier,
+                          builder: (context, isSuccess, child) {
+                            return PasscodeIndicator(
+                              inputLength: currentInputLength,
+                              isError: isError,
+                              isSuccess: isSuccess,
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ],
                 );
               },
