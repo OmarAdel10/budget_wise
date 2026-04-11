@@ -203,7 +203,7 @@ class NotificationRepository {
           iOS: darwinDetails,
           macOS: darwinDetails,
         ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         payload: payload ?? 'Schedule Notification For $title',
       );
     } catch (e) {
@@ -255,7 +255,7 @@ class NotificationRepository {
           iOS: darwinDetails,
           macOS: darwinDetails,
         ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
         payload: payload ?? 'Daily Schedule For $title',
       );
