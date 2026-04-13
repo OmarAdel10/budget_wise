@@ -143,15 +143,6 @@ class SettingsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    localAuthEnabled,
-    language,
-    isOnboardingCompleted,
-    hasLoggedIn,
-    lastForegroundActivityDateTime,
-    defaultCurrency,
-    passcode,
-    useBiometrics,
-    bankMargin,
         localAuthEnabled,
         language,
         isOnboardingCompleted,
@@ -160,6 +151,7 @@ class SettingsModel extends Equatable {
         defaultCurrency,
         passcode,
         useBiometrics,
+        bankMargin,
         allNotificationsEnabled,
         smsNotificationsEnabled,
         subscriptionNotificationsEnabled,

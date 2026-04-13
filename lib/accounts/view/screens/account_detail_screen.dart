@@ -217,3 +217,4 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
     );
   }
 }
+

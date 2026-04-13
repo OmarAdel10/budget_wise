@@ -130,6 +130,7 @@ class AppProviders {
             transactionBloc: context.read<TransactionBloc>(),
           ),
         ),
+
         BlocProvider(
           create: (context) => StatisticsBloc(
             transactionBloc: context.read<TransactionBloc>(),
