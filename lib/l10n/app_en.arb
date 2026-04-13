@@ -436,7 +436,7 @@
   "manualOverride": "Manual Override",
   "conversionEstimate": "Conversion Estimate",
   "manualConversion": "Manual Conversion",
-  "estimatedConversion": "Estimated Conversion"
+  "estimatedConversion": "Estimated Conversion",
   "notifications": "Notifications",
   "allNotifications": "All Notifications",
   "smsDraftNotifications": "SMS Draft Notifications",

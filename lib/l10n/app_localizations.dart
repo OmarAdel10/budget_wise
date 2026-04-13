@@ -2419,6 +2419,7 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Estimated Conversion'**
   String get estimatedConversion;
+
   /// No description provided for @notifications.
   ///
   /// In en, this message translates to:
