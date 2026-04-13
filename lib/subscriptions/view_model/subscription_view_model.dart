@@ -225,6 +225,7 @@ class SubscriptionBloc
         TransactionEventCreateTransaction(
           transaction,
           convertedAmount: event.convertedAmount,
+          toastCallback: event.toastCallback,
         ),
       );
     });

@@ -10,6 +10,7 @@ class AppColors {
 
   // Accents & Actions
   static const Color primaryAccent = Color(0xFF13EC80); // Bright Green
+  static const Color success = primaryAccent;
   static const Color danger = Color(0xFFE57373); // Red
   static const Color borderColor = Color(0xFF3B5447);
 

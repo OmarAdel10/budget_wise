@@ -18,7 +18,9 @@ import '../widgets/saving_section_header.dart';
 
 class SavingGoalDetailScreen extends StatefulWidget {
   static const String routeName = '/saving-goal-detail';
-  const SavingGoalDetailScreen({super.key});
+  final String savingGoalId;
+
+  const SavingGoalDetailScreen({super.key, required this.savingGoalId});
 
   @override
   State<SavingGoalDetailScreen> createState() => _SavingGoalDetailScreenState();
@@ -58,9 +60,18 @@ class _SavingGoalDetailScreenState extends State<SavingGoalDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final initialGoal = args['savingGoal'] as SavingsModel;
+    final goal = context.select<SavingsBloc, SavingsModel?>(
+      (bloc) => bloc.state.savingsList
+          .where((g) => g.id == widget.savingGoalId)
+          .firstOrNull,
+    );
+
+    if (goal == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) Navigator.of(context).pop();
+      });
+      return const Scaffold(backgroundColor: AppColors.primaryBackground);
+    }
 
     return MultiBlocListener(
       listeners: [
@@ -88,240 +99,132 @@ class _SavingGoalDetailScreenState extends State<SavingGoalDetailScreen> {
           },
         ),
       ],
-      child: BlocBuilder<SavingsBloc, SavingsState>(
-        buildWhen: (previous, current) {
-          final prevGoal = previous.savingsList.firstWhere(
-            (g) => g.id == initialGoal.id,
-            orElse: () => initialGoal,
-          );
-          final currGoal = current.savingsList.firstWhere(
-            (g) => g.id == initialGoal.id,
-            orElse: () => initialGoal,
-          );
-          return prevGoal != currGoal;
-        },
-        builder: (context, state) {
-          final goal = state.savingsList.firstWhere(
-            (g) => g.id == initialGoal.id,
-            orElse: () => initialGoal,
-          );
-
-          final double progress = (goal.currentAmount / goal.targetAmount)
-              .clamp(0.0, 1.0);
-          final int percentage = (progress * 100).toInt();
-
-          final uncompletedDays = goal.uncompletedDaysList;
-          final completedDays = goal.completedDaysList;
-
-          return Scaffold(
-            backgroundColor: AppColors.primaryBackground,
-            appBar: AppBar(
-              backgroundColor: AppColors.primaryBackground,
-              elevation: 0,
-              title: Text(goal.name, style: AppTextStyles.heading3),
-              centerTitle: true,
-              actions: [
-                IconButton(
-                  icon: const Icon(
-                    PhosphorIconsRegular.pencil,
-                    color: AppColors.textPrimary,
+      child: Scaffold(
+        backgroundColor: AppColors.primaryBackground,
+        appBar: AppBar(
+          backgroundColor: AppColors.primaryBackground,
+          elevation: 0,
+          title: Text(goal.name, style: AppTextStyles.heading3),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                PhosphorIconsRegular.pencil,
+                color: AppColors.textPrimary,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  EditSavingGoalScreen.routeName,
+                  arguments: {'savingGoal': goal},
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                PhosphorIcons.trash(PhosphorIconsStyle.regular),
+                color: AppColors.danger,
+              ),
+              onPressed: () => _showDeleteDialog(context, goal.id),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                sliver: SliverToBoxAdapter(
+                  child: SavingProgressHeader(
+                    goal: goal,
+                    progress: (goal.currentAmount / goal.targetAmount)
+                        .clamp(0.0, 1.0),
+                    percentage:
+                        ((goal.currentAmount / goal.targetAmount).clamp(0.0, 1.0) *
+                                100)
+                            .toInt(),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      EditSavingGoalScreen.routeName,
-                      arguments: {'savingGoal': goal},
-                    );
-                  },
                 ),
-                IconButton(
-                  icon: Icon(
-                    PhosphorIcons.trash(PhosphorIconsStyle.regular),
-                    color: AppColors.danger,
+              ),
+
+              // Uncompleted List
+              if (goal.uncompletedDaysList.isNotEmpty) ...[
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
                   ),
-                  onPressed: () => _showDeleteDialog(context, goal.id),
+                  sliver: SliverToBoxAdapter(
+                    child: SavingSectionHeader(
+                      title: l10n.todoSavings,
+                      headerKey: _todoHeaderKey,
+                      onJumpPressed: goal.completedDaysList.isNotEmpty
+                          ? _jumpToCompleted
+                          : null,
+                      tooltip: "Jump to Completed",
+                      icon: Icons.arrow_downward,
+                    ),
+                  ),
                 ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.md),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
+                  sliver: SavingDaysSliverList(
+                    goal: goal,
+                    days: goal.uncompletedDaysList,
+                  ),
+                ),
+              ],
+
+              // Completed List
+              if (goal.completedDaysList.isNotEmpty) ...[
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.xl),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: SavingSectionHeader(
+                      title: l10n.completedDaysLabel,
+                      headerKey: _completedHeaderKey,
+                      onJumpPressed: _jumpToTodo,
+                      tooltip: "Jump to Todo",
+                      icon: Icons.arrow_upward,
+                      titleColor: AppColors.primaryAccent,
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.md),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
+                  sliver: SavingDaysSliverList(
+                    goal: goal,
+                    days: goal.completedDaysList,
+                    isCompleted: true,
+                  ),
+                ),
+              ],
+
+              const SliverToBoxAdapter(child: SizedBox(height: 80)),
             ],
           ),
-          body: SafeArea(
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  sliver: SliverToBoxAdapter(
-                    child: SavingProgressHeader(
-                      goal: goal,
-                      progress: progress,
-                      percentage: percentage,
-                    ),
-                  ),
-                ),
-
-                // Uncompleted List
-                if (uncompletedDays.isNotEmpty) ...[
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    sliver: SliverToBoxAdapter(
-                      child: SavingSectionHeader(
-                        title: l10n.todoSavings,
-                        headerKey: _todoHeaderKey,
-                        onJumpPressed: completedDays.isNotEmpty
-                            ? _jumpToCompleted
-                            : null,
-                        tooltip: "Jump to Completed",
-                        icon: Icons.arrow_downward,
-                      ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: AppSpacing.md),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    sliver: SavingDaysSliverList(
-                      goal: goal,
-                      days: uncompletedDays,
-                    ),
-                  ),
-                ],
-
-                // Completed List
-                if (completedDays.isNotEmpty) ...[
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: AppSpacing.xl),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    sliver: SliverToBoxAdapter(
-                      child: SavingSectionHeader(
-                        title: l10n.completedDaysLabel,
-                        headerKey: _completedHeaderKey,
-                        onJumpPressed: _jumpToTodo,
-                        tooltip: "Jump to Todo",
-                        icon: Icons.arrow_upward,
-                        titleColor: AppColors.primaryAccent,
-                      ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: AppSpacing.md),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    sliver: SavingDaysSliverList(
-                      goal: goal,
-                      days: completedDays,
-                      isCompleted: true,
-                    ),
-                  ),
-                ],
-
-                const SliverToBoxAdapter(child: SizedBox(height: 80)),
-              ],
-            ),
-            body: SafeArea(
-              child: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  SliverPadding(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    sliver: SliverToBoxAdapter(
-                      child: SavingProgressHeader(
-                        goal: goal,
-                        progress: progress,
-                        percentage: percentage,
-                      ),
-                    ),
-                  ),
-
-                  // Uncompleted List
-                  if (uncompletedDays.isNotEmpty) ...[
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                      ),
-                      sliver: SliverToBoxAdapter(
-                        child: SavingSectionHeader(
-                          title: l10n.todoSavings,
-                          headerKey: _todoHeaderKey,
-                          onJumpPressed: completedDays.isNotEmpty
-                              ? _jumpToCompleted
-                              : null,
-                          tooltip: "Jump to Completed",
-                          icon: Icons.arrow_downward,
-                        ),
-                      ),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: AppSpacing.md),
-                    ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                      ),
-                      sliver: SavingDaysSliverList(
-                        goal: goal,
-                        days: uncompletedDays,
-                      ),
-                    ),
-                  ],
-
-                  // Completed List
-                  if (completedDays.isNotEmpty) ...[
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: AppSpacing.xl),
-                    ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                      ),
-                      sliver: SliverToBoxAdapter(
-                        child: SavingSectionHeader(
-                          title: l10n.completedDaysLabel,
-                          headerKey: _completedHeaderKey,
-                          onJumpPressed: _jumpToTodo,
-                          tooltip: "Jump to Todo",
-                          icon: Icons.arrow_upward,
-                          titleColor: AppColors.primaryAccent,
-                        ),
-                      ),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: SizedBox(height: AppSpacing.md),
-                    ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                      ),
-                      sliver: SavingDaysSliverList(
-                        goal: goal,
-                        days: completedDays,
-                        isCompleted: true,
-                      ),
-                    ),
-                  ],
-
-                  const SliverToBoxAdapter(child: SizedBox(height: 80)),
-                ],
-              ),
-            ),
-            floatingActionButton: goal.method == SavingsMethod.custom
-                ? FloatingActionButton(
-                    onPressed: () => _addManualEntry(context, goal),
-                    backgroundColor: AppColors.primaryAccent,
-                    child: const Icon(Icons.add, color: Colors.white),
-                  )
-                : null,
-          );
-        },
+        ),
+        floatingActionButton: goal.method == SavingsMethod.custom
+            ? FloatingActionButton(
+                onPressed: () => _addManualEntry(context, goal),
+                backgroundColor: AppColors.primaryAccent,
+                child: const Icon(Icons.add, color: Colors.white),
+              )
+            : null,
       ),
     );
   }

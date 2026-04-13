@@ -482,7 +482,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           emit(state.copyWith(isProcessingBackgroundDrafts: false));
         }
       } catch (e) {
-        debugPrint("Error loading background drafts in BLoC: $e");
+        log("Error loading background drafts in BLoC: $e");
         emit(state.copyWith(isProcessingBackgroundDrafts: false));
       }
     });

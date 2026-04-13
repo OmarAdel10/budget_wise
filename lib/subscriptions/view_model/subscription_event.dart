@@ -1,6 +1,7 @@
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 abstract class SubscriptionEvent extends Equatable {
   const SubscriptionEvent();
@@ -39,8 +40,15 @@ class SubscriptionPaid extends SubscriptionEvent {
   final String id;
   final double? convertedAmount;
   final AppLocalizations l10n;
-  const SubscriptionPaid(this.id, {this.convertedAmount, required this.l10n});
+  final VoidCallback toastCallback;
+
+  const SubscriptionPaid(
+    this.id, {
+    this.convertedAmount,
+    required this.l10n,
+    required this.toastCallback,
+  });
 
   @override
-  List<Object?> get props => [id, convertedAmount, l10n];
+  List<Object?> get props => [id, convertedAmount, l10n, toastCallback];
 }

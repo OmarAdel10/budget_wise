@@ -6,6 +6,7 @@ import 'package:budget_wise/notifications/data/repositories/notification_reposit
 import 'package:budget_wise/notifications/view_model/notification_bloc.dart';
 import 'package:budget_wise/notifications/view_model/notification_event.dart';
 import 'package:budget_wise/notifications/view_model/notification_state.dart';
+import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
 import 'package:budget_wise/savings/view/screens/savings_screen.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
@@ -86,8 +87,15 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     if (payload == 'sms_draft_confirm') {
       Navigator.pushNamed(context, PendingSmsTransactionsScreen.routeName);
-    } else if (payload == 'nav_savings' || payload.startsWith('saving_goal_')) {
+    } else if (payload == 'nav_savings') {
       Navigator.pushNamed(context, SavingsScreen.routeName);
+    } else if (payload.startsWith('saving_goal_')) {
+      final goalId = payload.replaceFirst('saving_goal_', '');
+      Navigator.pushNamed(
+        context,
+        SavingGoalDetailScreen.routeName,
+        arguments: {'savingGoalId': goalId},
+      );
     } else if (payload.startsWith('subscription_')) {
       final subId = payload.replaceFirst('subscription_', '');
       Navigator.pushNamed(

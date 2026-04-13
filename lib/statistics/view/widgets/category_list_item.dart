@@ -57,7 +57,7 @@ class CategoryListItem extends StatelessWidget {
         if (source is SavingsModel) {
           Navigator.of(context).pushNamed(
             SavingGoalDetailScreen.routeName,
-            arguments: {'savingGoal': source},
+            arguments: {'savingGoalId': source.id},
           );
         } else if (source is CategoryModel) {
           Navigator.of(context).pushNamed(

@@ -14,7 +14,7 @@ class TransactionEventCreateTransaction extends TransactionEvent {
 
   const TransactionEventCreateTransaction(
     this.transaction, {
-    this.convertedAmount
+    this.convertedAmount,
     required this.toastCallback,
   });
 
@@ -29,7 +29,7 @@ class TransactionEventUpdateTransaction extends TransactionEvent {
 
   const TransactionEventUpdateTransaction(
     this.transaction, {
-    this.convertedAmount
+    this.convertedAmount,
     required this.toastCallback,
   });
 

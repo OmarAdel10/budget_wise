@@ -320,6 +320,7 @@ class Routes {
           child: CategoryDetailScreen(),
         );
       case SavingGoalDetailScreen.routeName:
+        final args = settings.arguments as Map<String, dynamic>;
         return PageTransition(
           type: PageTransitionType.rightToLeft,
           reverseType: PageTransitionType.leftToRight,
@@ -328,7 +329,9 @@ class Routes {
           reverseDuration: Duration(milliseconds: 500),
           curve: Curves.easeIn,
           settings: settings,
-          child: SavingGoalDetailScreen(),
+          child: SavingGoalDetailScreen(
+            savingGoalId: args['savingGoalId'] as String,
+          ),
         );
       case TransactionTypeDetailScreen.routeName:
         return PageTransition(
