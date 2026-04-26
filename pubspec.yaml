@@ -70,7 +70,6 @@ dependencies:
   http: ^1.6.0
   money2: ^6.3.0
   flutter_animate: ^4.5.2
-  flutter_native_splash: ^2.4.7
   workmanager: ^0.9.0+3
 
 
@@ -132,13 +131,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
-flutter_native_splash:
-  color: "#0B241C"
-  image: assets/images/app_icon.png
-  android_12:
-    color: "#0B241C"
-    image: assets/images/app_icon.png
 
 flutter_launcher_icons:
   android: "launcher_icon"

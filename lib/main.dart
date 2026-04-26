@@ -1,42 +1,100 @@
+import 'dart:io';
+import 'package:budget_wise/auth/view/screens/local_auth_screen.dart';
+import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
+import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
 import 'package:budget_wise/routes/routes.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
-import 'package:budget_wise/shared/utils/background_tasks.dart';
 import 'package:budget_wise/shared/utils/sms_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:budget_wise/shared/app_theme.dart';
-import 'package:budget_wise/onboarding/view/screens/splash_screen.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:budget_wise/shared/app_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:budget_wise/shared/utils/background_tasks.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  await Future.wait([
-    Firebase.initializeApp(),
-    NotificationRepository.notificationInit(),
-  ]);
-  HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: HydratedStorageDirectory(
-      (await getApplicationDocumentsDirectory()).path,
-    ),
-  );
+  runApp(const AppBootstrapper());
+}
 
-  // Background Tasks
-  BackgroundTasks.initialize();
-  BackgroundTasks.scheduleTasks();
+class AppBootstrapper extends StatefulWidget {
+  const AppBootstrapper({super.key});
 
-  // Early registration of the background SMS handler to ensure it works even when killed.
-  SmsService().initializeBackgroundHandler();
+  @override
+  State<AppBootstrapper> createState() => _AppBootstrapperState();
+}
 
-  runApp(AppProviders.initProviders(const BudgetWise(), prefs));
+class _AppBootstrapperState extends State<AppBootstrapper> {
+  bool _initialized = false;
+  SharedPreferences? _prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    _initApp();
+  }
+
+  Future<void> _initApp() async {
+    try {
+      final results = await Future.wait([
+        SharedPreferences.getInstance(),
+        getApplicationDocumentsDirectory(),
+        Firebase.initializeApp(),
+        NotificationRepository.notificationInit(),
+      ]);
+
+      _prefs = results[0] as SharedPreferences;
+      final docsDir = results[1] as Directory;
+
+      HydratedBloc.storage = await HydratedStorage.build(
+        storageDirectory: HydratedStorageDirectory(docsDir.path),
+      );
+
+      SmsService().initializeBackgroundHandler();
+
+      const platform = MethodChannel('com.budget_wise/init');
+      await platform.invokeMethod('onFlutterReady');
+
+      if (mounted) {
+        setState(() => _initialized = true);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          BackgroundTasks.initialize();
+          BackgroundTasks.scheduleTasks();
+        });
+      }
+    } catch (e) {
+      debugPrint('Bootstrap Error: $e');
+      if (mounted) setState(() => _initialized = true);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_initialized || _prefs == null) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.darkTheme,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('en'), Locale('ar')],
+        home: Container(),
+      );
+    }
+
+    return AppProviders.initProviders(const BudgetWise(), _prefs!);
+  }
 }
 
 class BudgetWise extends StatelessWidget {
@@ -48,6 +106,12 @@ class BudgetWise extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {
+        String initialRoute = MainScreen.routeName;
+        if (!state.model.isOnboardingCompleted) {
+          initialRoute = OnboardingScreen.routeName;
+        } else if (state.model.localAuthEnabled) {
+          initialRoute = LocalAuthScreen.routeName;
+        }
         return MaterialApp(
           navigatorKey: navigatorKey,
           onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
@@ -62,7 +126,7 @@ class BudgetWise extends StatelessWidget {
           supportedLocales: const [Locale('en'), Locale('ar')],
           locale: Locale(state.model.language),
           onGenerateRoute: Routes.onGenerateRoutes(context),
-          initialRoute: SplashScreen.routeName,
+          initialRoute: initialRoute,
         );
       },
     );
