@@ -48,7 +48,6 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
         SharedPreferences.getInstance(),
         getApplicationDocumentsDirectory(),
         Firebase.initializeApp(),
-        NotificationRepository.notificationInit(),
       ]);
 
       _prefs = results[0] as SharedPreferences;
@@ -58,17 +57,11 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
         storageDirectory: HydratedStorageDirectory(docsDir.path),
       );
 
-      SmsService().initializeBackgroundHandler();
-
       const platform = MethodChannel('com.budget_wise/init');
       await platform.invokeMethod('onFlutterReady');
 
       if (mounted) {
         setState(() => _initialized = true);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          BackgroundTasks.initialize();
-          BackgroundTasks.scheduleTasks();
-        });
       }
     } catch (e) {
       debugPrint('Bootstrap Error: $e');
@@ -97,10 +90,39 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
   }
 }
 
-class BudgetWise extends StatelessWidget {
+class BudgetWise extends StatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
   const BudgetWise({super.key});
+
+  @override
+  State<BudgetWise> createState() => _BudgetWiseState();
+}
+
+class _BudgetWiseState extends State<BudgetWise> {
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  Future<void> init() async {
+    final bool isNotificationGranted =
+        await NotificationRepository.isPermissionGranted();
+    await Future.wait([
+      NotificationRepository.notificationInit(),
+      if (!isNotificationGranted) NotificationRepository.requestPermissions(),
+    ]);
+
+    SmsService().initializeBackgroundHandler();
+
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        BackgroundTasks.initialize();
+        BackgroundTasks.scheduleTasks();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +135,7 @@ class BudgetWise extends StatelessWidget {
           initialRoute = LocalAuthScreen.routeName;
         }
         return MaterialApp(
-          navigatorKey: navigatorKey,
+          navigatorKey: BudgetWise.navigatorKey,
           onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.darkTheme,
