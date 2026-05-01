@@ -1175,7 +1175,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paused => 'متوقف مؤقتاً';
 
   @override
-  String get bankMargin => 'هامش البنك (%)';
+  String get bankMargin => 'هامش البنك';
 
   @override
   String get bankMarginInfo => 'يضاف إلى أسعار التحويل';

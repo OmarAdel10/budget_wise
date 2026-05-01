@@ -11,6 +11,8 @@ class SettingsTile extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? onTap;
   final bool showDivider;
+  final bool? hasPadding;
+  final double paddingVertical;
 
   const SettingsTile({
     super.key,
@@ -20,6 +22,8 @@ class SettingsTile extends StatelessWidget {
     this.trailing,
     this.onTap,
     this.showDivider = false,
+    this.hasPadding = false,
+    this.paddingVertical = AppSpacing.sm,
   });
 
   @override
@@ -29,7 +33,9 @@ class SettingsTile extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+            padding: EdgeInsets.symmetric(
+              vertical: hasPadding == true ? paddingVertical : AppSpacing.xs,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

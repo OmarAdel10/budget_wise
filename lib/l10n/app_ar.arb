@@ -409,7 +409,7 @@
   "activeStatus": "الحالة النشطة",
   "trackingStatus": "تتبع",
   "paused": "متوقف مؤقتاً",
-  "bankMargin": "هامش البنك (%)",
+  "bankMargin": "هامش البنك",
   "bankMarginInfo": "يضاف إلى أسعار التحويل",
   "subscriptionCreatedSuccessfully": "تم إنشاء الاشتراك بنجاح!",
   "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!",

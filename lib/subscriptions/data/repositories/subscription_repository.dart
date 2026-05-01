@@ -30,6 +30,26 @@ class SubscriptionRepository {
     await collection.doc(subscriptionId).delete();
   }
 
+  Future<void> bulkAddSubscriptions(
+    List<SubscriptionModel> subscriptions,
+  ) async {
+    if (subscriptions.isEmpty) return;
+
+    final collection = getSubscriptionCollection();
+    const batchSize = 450;
+
+    for (var start = 0; start < subscriptions.length; start += batchSize) {
+      final batch = FirebaseFirestore.instance.batch();
+      final chunk = subscriptions.skip(start).take(batchSize);
+
+      for (final subscription in chunk) {
+        batch.set(collection.doc(subscription.id), subscription);
+      }
+
+      await batch.commit();
+    }
+  }
+
   Future<List<SubscriptionModel>> fetchAllSubscriptions() async {
     final collection = getSubscriptionCollection();
     final user = authRepo.currentUser;

@@ -415,7 +415,7 @@
   "activeStatus": "Active Status",
   "trackingStatus": "Tracking",
   "paused": "Paused",
-  "bankMargin": "Bank Margin (%)",
+  "bankMargin": "Bank Margin",
   "bankMarginInfo": "Added to conversion rates",
   "subscriptionCreatedSuccessfully": "Subscription created successfully!",
   "subscriptionUpdatedSuccessfully": "Subscription updated successfully!",

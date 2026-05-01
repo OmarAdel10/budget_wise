@@ -9,11 +9,13 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 class CurrencyPickerBottomSheet extends StatelessWidget {
   final String selectedCurrency;
   final ValueChanged<String> onCurrencySelected;
+  final Color selectionColor;
 
   const CurrencyPickerBottomSheet({
     super.key,
     required this.selectedCurrency,
     required this.onCurrencySelected,
+    this.selectionColor = AppColors.primaryAccent,
   });
 
   @override
@@ -80,13 +82,13 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? AppColors.primaryAccent.withValues(alpha: 0.1)
+                                ? selectionColor.withValues(alpha: 0.1)
                                 : AppColors.inputBackground,
                             borderRadius: BorderRadius.circular(
                               AppSpacing.radiusMd,
                             ),
                             border: isSelected
-                                ? Border.all(color: AppColors.primaryAccent)
+                                ? Border.all(color: selectionColor)
                                 : null,
                           ),
                           child: Text(
@@ -94,7 +96,7 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                             style: AppTextStyles.bodyMedium.copyWith(
                               fontWeight: FontWeight.bold,
                               color: isSelected
-                                  ? AppColors.primaryAccent
+                                  ? selectionColor
                                   : AppColors.textPrimary,
                             ),
                           ),
@@ -105,7 +107,7 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                             name,
                             style: AppTextStyles.bodyMedium.copyWith(
                               color: isSelected
-                                  ? AppColors.primaryAccent
+                                  ? selectionColor
                                   : AppColors.textPrimary,
                               fontWeight: isSelected
                                   ? FontWeight.bold
@@ -116,7 +118,7 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                         if (isSelected)
                           Icon(
                             PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
-                            color: AppColors.primaryAccent,
+                            color: selectionColor,
                             size: 24,
                           ),
                       ],

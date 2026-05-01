@@ -1184,7 +1184,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paused => 'Paused';
 
   @override
-  String get bankMargin => 'Bank Margin (%)';
+  String get bankMargin => 'Bank Margin';
 
   @override
   String get bankMarginInfo => 'Added to conversion rates';

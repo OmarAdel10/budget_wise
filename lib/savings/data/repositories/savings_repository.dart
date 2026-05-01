@@ -34,7 +34,7 @@ class SavingsRepository {
     await doc.set(model);
   }
 
-  Future<void> createGoalWithAccount(SavingsModel model) async {
+  Future<SavingsModel> createGoalWithAccount(SavingsModel model) async {
     // 1. Create the Saving Account
     final savingAccount = AccountModel(
       id: const Uuid().v4(),
@@ -55,6 +55,19 @@ class SavingsRepository {
     // 2. Add Saving Goal with the linked account ID
     final finalModel = model.copyWith(savingAccountId: savingAccount.id);
     await addSavingGoal(finalModel);
+    return finalModel;
+  }
+
+  Future<List<SavingsModel>> bulkCreateGoalsWithAccounts(
+    List<SavingsModel> models,
+  ) async {
+    final createdGoals = <SavingsModel>[];
+
+    for (final model in models) {
+      createdGoals.add(await createGoalWithAccount(model));
+    }
+
+    return createdGoals;
   }
 
   Future<List<SavingsModel>> fetchAllSavingGoals() async {

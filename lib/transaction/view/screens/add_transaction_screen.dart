@@ -408,6 +408,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       ],
                       prefixIcon: CurrencyPrefix(
                         selectedCurrencyNotifier: _selectedCurrency,
+                        selectionColor: accentColor,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),

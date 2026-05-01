@@ -113,4 +113,21 @@ class TransactionRepository {
         getTransactionsCollection();
     await collection.doc(transactionId).delete();
   }
+
+  Future<void> bulkAddTransactions(List<TransactionModel> transactions) async {
+    final collection = getTransactionsCollection();
+    const batchSize = 450;
+
+    for (var start = 0; start < transactions.length; start += batchSize) {
+      final batch = FirebaseFirestore.instance.batch();
+      final chunk = transactions.skip(start).take(batchSize);
+
+      for (final transaction in chunk) {
+        final doc = collection.doc(transaction.id);
+        batch.set(doc, transaction);
+      }
+
+      await batch.commit();
+    }
+  }
 }

@@ -447,6 +447,73 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       emit(newState.copyWith(selectedAccountId: event.accountId));
     });
 
+    on<TransactionEventBulkCreate>((event, emit) async {
+      try {
+        final userId = authRepository.currentUser?.uid ?? '';
+        if (event.transactions.isEmpty) {
+          event.completer?.complete();
+          return;
+        }
+
+        final List<TransactionModel> newTransactions = [];
+
+        for (var tx in event.transactions) {
+          newTransactions.add(tx.copyWith(
+            id: tx.id.isEmpty ? const Uuid().v4() : tx.id,
+            userId: userId,
+            isSynced: false,
+          ));
+        }
+
+        final updatedList = [...newTransactions, ...state.transactionsList];
+
+        _emitUpdatedState(
+          emit,
+          state.copyWith(transactionsList: updatedList, errorMessage: null),
+        );
+
+        // Update Account Balances in Bulk
+        final Map<String, double> balanceChanges = {};
+        for (var tx in newTransactions) {
+          if (tx.accountId.isNotEmpty) {
+            final delta = tx.type == TransactionType.income
+                ? tx.transactionAmount
+                : -tx.transactionAmount;
+            balanceChanges[tx.accountId] = (balanceChanges[tx.accountId] ?? 0.0) + delta;
+          }
+        }
+
+        balanceChanges.forEach((accountId, delta) {
+          accountBloc.add(AccountEventUpdateBalance(
+            accountId: accountId,
+            amountDelta: delta,
+          ));
+        });
+
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
+          final syncedTransactions = newTransactions
+              .map((transaction) => transaction.copyWith(isSynced: true))
+              .toList();
+          await transactionRepository.bulkAddTransactions(syncedTransactions);
+          // Mark all as synced
+          final syncedIds = syncedTransactions.map((t) => t.id).toSet();
+          final listAfterSync = updatedList.map((t) {
+            if (syncedIds.contains(t.id)) {
+              return t.copyWith(isSynced: true);
+            }
+            return t;
+          }).toList();
+          _emitUpdatedState(emit, state.copyWith(transactionsList: listAfterSync));
+        }
+
+        event.completer?.complete();
+      } catch (e) {
+        event.completer?.completeError(e);
+        emit(state.copyWith(errorMessage: 'Bulk import failed: ${e.toString()}'));
+      }
+    });
+
     on<TransactionEventLoadBackgroundDrafts>((event, emit) async {
       emit(state.copyWith(isProcessingBackgroundDrafts: true));
       try {

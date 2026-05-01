@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:equatable/equatable.dart';
@@ -34,6 +36,19 @@ class SubscriptionDeleted extends SubscriptionEvent {
 
   @override
   List<Object?> get props => [id];
+}
+
+class SubscriptionBulkCreate extends SubscriptionEvent {
+  final List<SubscriptionModel> subscriptions;
+  final Completer<void>? completer;
+
+  const SubscriptionBulkCreate({
+    required this.subscriptions,
+    this.completer,
+  });
+
+  @override
+  List<Object?> get props => [subscriptions];
 }
 
 class SubscriptionPaid extends SubscriptionEvent {

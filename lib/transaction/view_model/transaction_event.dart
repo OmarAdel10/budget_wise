@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
+import 'dart:async';
+
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -138,4 +140,17 @@ class TransactionEventSelectAccount extends TransactionEvent {
 
   @override
   List<Object?> get props => [accountId];
+}
+
+class TransactionEventBulkCreate extends TransactionEvent {
+  final List<TransactionModel> transactions;
+  final Completer<void>? completer;
+
+  const TransactionEventBulkCreate({
+    required this.transactions,
+    this.completer,
+  });
+
+  @override
+  List<Object?> get props => [transactions];
 }

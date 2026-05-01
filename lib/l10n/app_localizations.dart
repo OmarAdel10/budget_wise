@@ -2333,7 +2333,7 @@ abstract class AppLocalizations {
   /// No description provided for @bankMargin.
   ///
   /// In en, this message translates to:
-  /// **'Bank Margin (%)'**
+  /// **'Bank Margin'**
   String get bankMargin;
 
   /// No description provided for @bankMarginInfo.

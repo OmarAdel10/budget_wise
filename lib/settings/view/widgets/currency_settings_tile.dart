@@ -21,6 +21,7 @@ class CurrencySettingsTile extends StatelessWidget {
       trailing: CurrencyPrefix.settings(
         selectedCurrencyNotifier: selectedCurrencyNotifier,
       ),
+      showDivider: true,
     );
   }
 }

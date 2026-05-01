@@ -12,6 +12,24 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.primaryBackground,
       primaryColor: AppColors.primaryAccent,
 
+      colorScheme: const ColorScheme.dark(
+        primary: AppColors.primaryAccent,
+        onPrimary: AppColors.textInverse,
+        surface: AppColors.secondaryBackground,
+        onSurface: AppColors.textPrimary,
+        secondary: AppColors.primaryAccent,
+      ),
+
+      datePickerTheme: DatePickerThemeData(
+        headerBackgroundColor: AppColors.primaryAccent,
+        headerForegroundColor: AppColors.textInverse,
+        backgroundColor: AppColors.secondaryBackground,
+        dividerColor: AppColors.borderColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        ),
+      ),
+
       // Text Theme
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
         bodyColor: AppColors.textPrimary,

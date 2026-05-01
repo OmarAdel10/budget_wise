@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -76,4 +78,17 @@ class SavingsEventSyncPendingOnLogin extends SavingsEvent {
 
 class SavingsEventCheckAndSyncPending extends SavingsEvent {
   const SavingsEventCheckAndSyncPending();
+}
+
+class SavingsEventBulkCreate extends SavingsEvent {
+  final List<SavingsModel> goals;
+  final Completer<void>? completer;
+
+  const SavingsEventBulkCreate({
+    required this.goals,
+    this.completer,
+  });
+
+  @override
+  List<Object?> get props => [goals];
 }

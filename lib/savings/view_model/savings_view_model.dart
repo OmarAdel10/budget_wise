@@ -380,12 +380,90 @@ class SavingsBloc extends HydratedBloc<SavingsEvent, SavingsState> {
       }
       _syncToSharedPreferences(state.savingsList);
     });
+
+    on<SavingsEventBulkCreate>((event, emit) async {
+      try {
+        if (event.goals.isEmpty) {
+          event.completer?.complete();
+          return;
+        }
+
+        final userId = authRepository.currentUser?.uid ?? '';
+        final normalizedGoals = <SavingsModel>[];
+        final seenKeys = <String>{};
+
+        for (final goal in event.goals) {
+          final normalized = goal.copyWith(
+            id: goal.id.isEmpty ? const Uuid().v4() : goal.id,
+            userId: userId,
+            isSynced: false,
+          );
+
+          if (seenKeys.add(_savingsImportKey(normalized))) {
+            normalizedGoals.add(normalized);
+          }
+        }
+
+        if (normalizedGoals.isEmpty) {
+          event.completer?.complete();
+          return;
+        }
+
+        final updatedList = [...normalizedGoals, ...state.savingsList];
+        for (final goal in normalizedGoals) {
+          _scheduleNotifications(goal);
+        }
+
+        _syncToSharedPreferences(updatedList);
+        emit(SavingsStateSuccess(savingsList: updatedList));
+
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
+          final syncedGoals = normalizedGoals
+              .map((goal) => goal.copyWith(isSynced: true))
+              .toList();
+          final persistedGoals = await savingsRepo.bulkCreateGoalsWithAccounts(
+            syncedGoals,
+          );
+
+          final persistedById = {
+            for (final goal in persistedGoals)
+              goal.id: goal.copyWith(isSynced: true),
+          };
+          final finalList = updatedList.map((goal) {
+            return persistedById[goal.id] ?? goal;
+          }).toList();
+
+          _syncToSharedPreferences(finalList);
+          emit(SavingsStateSuccess(savingsList: finalList));
+        }
+
+        event.completer?.complete();
+      } catch (e) {
+        event.completer?.completeError(e);
+        log('Failed to bulk import savings goals: ${e.toString()}');
+        emit(
+          SavingsStateError(
+            message: 'Failed to bulk import savings goals: ${e.toString()}',
+            savingsList: state.savingsList,
+          ),
+        );
+      }
+    });
   }
 
   void _syncToSharedPreferences(List<SavingsModel> savings) {
     final List<Map<String, dynamic>> mapList =
         savings.map((s) => s.toMap()).toList();
     settingsBloc.add(SettingsEventSyncSavingsSnapshot(mapList));
+  }
+
+  String _savingsImportKey(SavingsModel goal) {
+    return [
+      goal.name.toLowerCase(),
+      goal.currency.toLowerCase(),
+      goal.sourceAccountId.toLowerCase(),
+    ].join('|');
   }
 
   void _scheduleNotifications(SavingsModel goal) async {

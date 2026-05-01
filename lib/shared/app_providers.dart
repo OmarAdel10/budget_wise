@@ -19,6 +19,8 @@ import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dar
 import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
+import 'package:budget_wise/csv_export/service/csv_service.dart';
+import 'package:budget_wise/csv_export/view_model/csv_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,6 +59,7 @@ class AppProviders {
             SubscriptionRepository(authRepo: context.read<AuthRepository>()),
       ),
       RepositoryProvider(create: (context) => CurrencyRepository(prefs)),
+      RepositoryProvider(create: (context) => CsvService()),
     ],
     child: MultiBlocProvider(
       providers: [
@@ -137,6 +140,14 @@ class AppProviders {
             savingsBloc: context.read<SavingsBloc>(),
             subscriptionBloc: context.read<SubscriptionBloc>(),
           )..add(StatisticsEventLoadRequested(DateTime.now())),
+        ),
+        BlocProvider(
+          create: (context) => CsvBloc(
+            csvService: context.read<CsvService>(),
+            transactionBloc: context.read<TransactionBloc>(),
+            subscriptionBloc: context.read<SubscriptionBloc>(),
+            savingsBloc: context.read<SavingsBloc>(),
+          ),
         ),
       ],
       child: app,

@@ -34,8 +34,13 @@ class DatePickerField extends StatelessWidget {
             colorScheme: ColorScheme.dark(
               primary: activeColor,
               onPrimary: AppColors.textInverse,
-              surface: AppColors.cardBackground,
+              surface: AppColors.secondaryBackground,
               onSurface: AppColors.textPrimary,
+            ),
+            datePickerTheme: DatePickerThemeData(
+              headerBackgroundColor: activeColor,
+              headerForegroundColor: AppColors.textInverse,
+              backgroundColor: AppColors.secondaryBackground,
             ),
           ),
           child: child!,

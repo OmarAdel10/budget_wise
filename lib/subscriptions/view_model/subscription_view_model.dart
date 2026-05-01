@@ -126,6 +126,87 @@ class SubscriptionBloc
       }
     });
 
+    on<SubscriptionBulkCreate>((event, emit) async {
+      try {
+        if (event.subscriptions.isEmpty) {
+          event.completer?.complete();
+          return;
+        }
+
+        final userId = authRepository.currentUser?.uid ?? '';
+        final normalizedSubscriptions = <SubscriptionModel>[];
+        final seenKeys = <String>{};
+
+        for (final subscription in event.subscriptions) {
+          final normalized = subscription.copyWith(
+            id: subscription.id.isEmpty
+                ? const Uuid().v4()
+                : subscription.id,
+            userId: userId,
+            isSynced: false,
+          );
+
+          if (seenKeys.add(_subscriptionImportKey(normalized))) {
+            normalizedSubscriptions.add(normalized);
+          }
+        }
+
+        if (normalizedSubscriptions.isEmpty) {
+          event.completer?.complete();
+          return;
+        }
+
+        final updatedList = [...normalizedSubscriptions, ...state.subscriptions];
+        for (final subscription in normalizedSubscriptions) {
+          _scheduleNotification(subscription);
+        }
+
+        emit(
+          SubscriptionLoadSuccess(
+            subscriptions: updatedList,
+            totalMonthlySpend: _calculateTotalMonthlySpend(updatedList),
+          ),
+        );
+
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
+          final syncedSubscriptions = normalizedSubscriptions
+              .map((subscription) => subscription.copyWith(isSynced: true))
+              .toList();
+          await subscriptionRepository.bulkAddSubscriptions(
+            syncedSubscriptions,
+          );
+
+          final syncedIds = syncedSubscriptions.map((s) => s.id).toSet();
+          final finalList = updatedList.map((subscription) {
+            if (syncedIds.contains(subscription.id)) {
+              return subscription.copyWith(isSynced: true);
+            }
+            return subscription;
+          }).toList();
+
+          emit(
+            SubscriptionLoadSuccess(
+              subscriptions: finalList,
+              totalMonthlySpend: _calculateTotalMonthlySpend(finalList),
+            ),
+          );
+        }
+
+        event.completer?.complete();
+      } catch (e) {
+        event.completer?.completeError(e);
+        log('Failed to bulk import subscriptions: $e');
+        emit(
+          SubscriptionError(
+            subscriptions: state.subscriptions,
+            totalMonthlySpend: state.totalMonthlySpend,
+            message: e.toString(),
+          ),
+        );
+      }
+    });
+
     on<SubscriptionUpdated>((event, emit) async {
       final updatedSubscription = event.subscription.copyWith(isSynced: false);
       final updatedList = state.subscriptions.map((sub) {
@@ -277,6 +358,20 @@ class SubscriptionBloc
       }
     }
     return total;
+  }
+
+  String _subscriptionImportKey(SubscriptionModel subscription) {
+    final dateKey =
+        DateFormat('yyyy-MM-dd').format(subscription.nextBillingDate);
+    return [
+      subscription.name.toLowerCase(),
+      subscription.amount.toStringAsFixed(2),
+      subscription.currency.toLowerCase(),
+      subscription.categoryId.toLowerCase(),
+      subscription.accountId.toLowerCase(),
+      subscription.billingCycle.name,
+      dateKey,
+    ].join('|');
   }
 
   @override

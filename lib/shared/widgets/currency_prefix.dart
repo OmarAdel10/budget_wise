@@ -12,13 +12,15 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 class CurrencyPrefix extends StatelessWidget {
   final ValueNotifier<String?> selectedCurrencyNotifier;
   final bool isSettingsTile;
+  final Color selectionColor;
 
-  const CurrencyPrefix({super.key, required this.selectedCurrencyNotifier})
+  const CurrencyPrefix({super.key, required this.selectedCurrencyNotifier, this.selectionColor = AppColors.primaryAccent, })
     : isSettingsTile = false;
 
   const CurrencyPrefix.settings({
     super.key,
     required this.selectedCurrencyNotifier,
+    this.selectionColor = AppColors.primaryAccent,
   }) : isSettingsTile = true;
 
   @override
@@ -34,6 +36,7 @@ class CurrencyPrefix extends StatelessWidget {
           isScrollControlled: true,
           builder: (context) => CurrencyPickerBottomSheet(
             selectedCurrency: selectedCurrencyNotifier.value ?? defaultCurrency,
+            selectionColor: selectionColor,
             onCurrencySelected: (currency) {
               selectedCurrencyNotifier.value = currency;
               if (isSettingsTile) {
