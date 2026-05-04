@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 
 class VoiceRecordingOverlay extends StatelessWidget {
-  final PlayerController controller;
+  final RecorderController controller;
 
   const VoiceRecordingOverlay({super.key, required this.controller});
 
@@ -20,7 +20,7 @@ class VoiceRecordingOverlay extends StatelessWidget {
             children: [
               AudioWaveforms(
                 size: Size(constraints.maxWidth * 0.6, 40),
-                recorderController: null, // This would be the recorder controller
+                recorderController: controller, // This would be the recorder controller
                 // For now, assume this is for playback or visualization
               ),
               const SizedBox(width: 16),
