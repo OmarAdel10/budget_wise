@@ -13,7 +13,12 @@ class ExportCsvTile extends StatelessWidget {
     return SettingsTile(
       icon: PhosphorIconsRegular.export,
       title: 'Export Data',
-      trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+      showDivider: true,
+      trailing: const Icon(
+        PhosphorIconsBold.caretRight,
+        color: AppColors.textSecondary,
+        size: 18,
+      ),
       onTap: () {
         showModalBottomSheet(
           context: context,

@@ -14,7 +14,11 @@ class ImportCsvTile extends StatelessWidget {
     return SettingsTile(
       icon: PhosphorIconsRegular.downloadSimple,
       title: 'Import Data',
-      trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+      trailing: const Icon(
+        PhosphorIconsBold.caretRight,
+        color: AppColors.textSecondary,
+        size: 18,
+      ),
       onTap: () {
         context.read<CsvBloc>().add(const CsvImportRequested());
       },
