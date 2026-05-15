@@ -13,14 +13,15 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 class BankMarginTile extends StatelessWidget {
   const BankMarginTile({super.key});
 
-  void _showEditBottomSheet(BuildContext context, double currentMargin) {
+  void _showEditBottomSheet(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final margin = context.read<SettingsBloc>().state.model.bankMargin;
 
     NumericEditorBottomSheet.show(
       context,
       title: l10n.bankMargin,
       description: l10n.bankMarginInfo,
-      initialValue: currentMargin,
+      initialValue: margin,
       suffixText: '%',
       onSave: (value) {
         context.read<SettingsBloc>().add(SettingsEventBankMarginChanged(value));
@@ -28,8 +29,25 @@ class BankMarginTile extends StatelessWidget {
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return SettingsTile(
+      icon: PhosphorIconsRegular.percent,
+      title: l10n.bankMargin,
+      subtitle: l10n.bankMarginInfo,
+      onTap: () => _showEditBottomSheet(context),
+      trailing: const _BankMarginTrailing(),
+    );
+  }
+}
+
+class _BankMarginTrailing extends StatelessWidget {
+  const _BankMarginTrailing();
+
   Color _getMarginColor(double margin) {
-    if (margin <= 2.0) return AppColors.primaryAccent;
+    if (margin <= 2.0) return AppColors.textSecondary;
     if (margin <= 5.0) return Colors.orangeAccent;
     return AppColors.danger;
   }
@@ -41,29 +59,22 @@ class BankMarginTile extends StatelessWidget {
       (SettingsBloc bloc) => bloc.state.model.bankMargin,
     );
 
-    return SettingsTile(
-      icon: PhosphorIconsRegular.percent,
-      title: l10n.bankMargin,
-      subtitle: l10n.bankMarginInfo,
-      onTap: () => _showEditBottomSheet(context, margin),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '$margin%',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: _getMarginColor(margin),
-              fontWeight: FontWeight.bold,
-            ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          l10n.bankMarginValue(margin),
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: _getMarginColor(margin),
           ),
-          const SizedBox(width: AppSpacing.sm),
-          const Icon(
-            PhosphorIconsRegular.caretRight,
-            color: AppColors.textSecondary,
-            size: 16,
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        const Icon(
+          PhosphorIconsRegular.caretRight,
+          color: AppColors.textSecondary,
+          size: 16,
+        ),
+      ],
     );
   }
 }
