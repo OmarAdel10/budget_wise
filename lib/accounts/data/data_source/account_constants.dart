@@ -1,12 +1,12 @@
 class AccountConstants {
-  static const Map<String, String> supportedCurrencies = {
-    'EGP': 'Egyptian Pound',
-    'USD': 'United States Dollar',
-    'EUR': 'Euro',
-    'GBP': 'British Pound Sterling',
-    'SAR': 'Saudi Riyal',
-    'AED': 'United Arab Emirates Dirham',
-    'KWD': 'Kuwaiti Dinar',
+  static const Map<String, Map<String, String>> supportedCurrencies = {
+    '🇪🇬': {'EGP': 'Egyptian Pound'},
+    '🇺🇲': {'USD': 'United States Dollar'},
+    '🇪🇺': {'EUR': 'Euro'},
+    '🇬🇧': {'GBP': 'British Pound Sterling'},
+    '🇸🇦': {'SAR': 'Saudi Riyal'},
+    '🇦🇪': {'AED': 'United Arab Emirates Dirham'},
+    '🇰🇼': {'KWD': 'Kuwaiti Dinar'},
   };
 
   static const Map<String, List<String>> egyptBanks = {
