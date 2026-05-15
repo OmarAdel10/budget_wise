@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:budget_wise/auth/view/screens/local_auth_screen.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
@@ -17,6 +18,7 @@ import 'package:budget_wise/shared/app_theme.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:budget_wise/shared/app_providers.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:budget_wise/shared/utils/background_tasks.dart';
 
@@ -109,9 +111,11 @@ class _BudgetWiseState extends State<BudgetWise> {
   Future<void> init() async {
     final bool isNotificationGranted =
         await NotificationRepository.isPermissionGranted();
+    final bool isMicrophonePermissionGranted = await Permission.microphone.isGranted;
     await Future.wait([
       NotificationRepository.notificationInit(),
       if (!isNotificationGranted) NotificationRepository.requestPermissions(),
+      if (!isMicrophonePermissionGranted) Permission.microphone.request(),
     ]);
 
     SmsService().initializeBackgroundHandler();

@@ -33,33 +33,33 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-  google_fonts: ^8.0.2
+  cupertino_icons: ^1.0.9
+  google_fonts: ^8.1.0
   phosphor_flutter: ^2.1.0
-  fl_chart: ^1.1.1
+  fl_chart: ^1.2.0
   flutter_bloc: ^9.1.1
   equatable: ^2.0.8
   intl: ^0.20.2
   flutter_localizations:
     sdk: flutter
   page_transition: ^2.2.1
-  firebase_auth: ^6.1.4
-  firebase_core: ^4.4.0
+  firebase_auth: ^6.4.0
+  firebase_core: ^4.7.0
   google_sign_in: ^7.2.0
   local_auth: ^3.0.0
-  hydrated_bloc: ^10.1.1
+  hydrated_bloc: ^11.0.0
   path_provider: ^2.1.5
   url_launcher: ^6.3.2
-  cloud_firestore: ^6.1.2
+  cloud_firestore: ^6.3.0
   uuid: ^4.5.2
   flutter_slidable: 4.0.3
-  syncfusion_flutter_charts: ^32.2.9
+  syncfusion_flutter_charts: ^33.2.4
   dotted_border: ^3.1.0
   flutter_credit_card: ^4.1.0
-  string_similarity: ^2.1.1
-  toastification: ^3.0.3
+  string_similarity: ^2.2.0
+  toastification: ^3.2.0
   another_telephony: ^0.4.1
-  flutter_svg: ^2.2.3
+  flutter_svg: ^2.2.4
   timeago: ^3.7.1
   auto_size_text: ^3.0.0
   shimmer: ^3.0.0
@@ -72,11 +72,11 @@ dependencies:
   flutter_animate: ^4.5.2
   workmanager: ^0.9.0+3
   csv: ^8.0.0
-  file_picker: ^8.1.7
+  file_picker: ^11.0.2
   dio: ^5.9.2
-  animations: ^2.2.0
   audio_waveforms: ^2.0.2
   permission_handler: ^12.0.1
+  # record: ^5.2.1
   sherpa_onnx: ^1.13.0
 
 dev_dependencies:
@@ -89,7 +89,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  mocktail: ^1.0.4
+  mocktail: ^1.0.5
   bloc_test: ^10.0.0
   flutter_launcher_icons: ^0.14.4
 
@@ -110,6 +110,7 @@ flutter:
     - assets/images/
     - assets/lottie/
     - assets/bank_logos/ # Place bank logo SVG/PNG files here.
+    - assets/audio/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
