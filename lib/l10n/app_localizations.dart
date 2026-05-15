@@ -2414,6 +2414,12 @@ abstract class AppLocalizations {
   /// **'Added to conversion rates'**
   String get bankMarginInfo;
 
+  /// No description provided for @bankMarginValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}%'**
+  String bankMarginValue(num value);
+
   /// No description provided for @subscriptionCreatedSuccessfully.
   ///
   /// In en, this message translates to:
@@ -2671,6 +2677,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Made By Omar Adel'**
   String get madeByOmarAdel;
+
+  /// No description provided for @sttInputMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Input'**
+  String get sttInputMode;
+
+  /// No description provided for @sttModeManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get sttModeManual;
+
+  /// No description provided for @sttModeVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice'**
+  String get sttModeVoice;
+
+  /// No description provided for @sttActivationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activating Voice Search'**
+  String get sttActivationTitle;
+
+  /// No description provided for @sttActivationDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading Egyptian language pack for offline performance'**
+  String get sttActivationDesc;
+
+  /// No description provided for @sttListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening...'**
+  String get sttListening;
+
+  /// No description provided for @sttDownloadSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure Connection'**
+  String get sttDownloadSecure;
+
+  /// No description provided for @sttExampleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example of what you can say'**
+  String get sttExampleHint;
+
+  /// No description provided for @sttPhrase1.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid 200 pounds for gas'**
+  String get sttPhrase1;
+
+  /// No description provided for @sttPhrase2.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought indomie for 10 and cheese for 50'**
+  String get sttPhrase2;
+
+  /// No description provided for @sttPhrase3.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent 200 pounds at the cafe today'**
+  String get sttPhrase3;
+
+  /// No description provided for @sttPhrase4.
+  ///
+  /// In en, this message translates to:
+  /// **'Received 500 pounds from the association'**
+  String get sttPhrase4;
+
+  /// No description provided for @sttPhrase5.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid electricity and water bills for 400'**
+  String get sttPhrase5;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @categoryNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Not Found'**
+  String get categoryNotFound;
+
+  /// No description provided for @returnToHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Return To Home Screen'**
+  String get returnToHome;
+
+  /// No description provided for @dayCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {day}'**
+  String dayCount(int day);
+
+  /// No description provided for @setAmountForDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Amount for Day {day}'**
+  String setAmountForDay(int day);
+
+  /// No description provided for @saveContribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Contribution'**
+  String get saveContribution;
+
+  /// No description provided for @exportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Export completed successfully.'**
+  String get exportSuccess;
+
+  /// No description provided for @importSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {count} items successfully!'**
+  String importSuccess(int count);
+
+  /// No description provided for @skippedDuplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped {count} duplicate rows.'**
+  String skippedDuplicates(int count);
+
+  /// No description provided for @operationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Operation Failed'**
+  String get operationFailed;
+
+  /// No description provided for @dataManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Management'**
+  String get dataManagement;
+
+  /// No description provided for @permissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Required'**
+  String get permissionRequired;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
+
+  /// No description provided for @startFresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Fresh?'**
+  String get startFresh;
+
+  /// No description provided for @resetDataWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll start with a blank slate. we\'ll just clear your transactions, accounts, goals, subscriptions, budgets, and categories. This can\'t be undone'**
+  String get resetDataWarning;
+
+  /// No description provided for @resetAllData.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset All Data'**
+  String get resetAllData;
+
+  /// No description provided for @mainAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Action'**
+  String get mainAction;
+
+  /// No description provided for @mainActionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose What the big button at the bottom of the home screen does.'**
+  String get mainActionDesc;
+
+  /// No description provided for @exportToCSV.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to CSV'**
+  String get exportToCSV;
+
+  /// No description provided for @selectMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Month'**
+  String get selectMonth;
+
+  /// No description provided for @customRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Range'**
+  String get customRange;
 }
 
 class _AppLocalizationsDelegate

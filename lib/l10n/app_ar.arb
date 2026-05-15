@@ -502,5 +502,53 @@
   "sttPhrase4": "استلمت 500 جنيه من الجمعية",
   "sttPhrase5": "دفع فواتير الكهرباء والميه 400 جنيه",
   "close": "إغلاق",
-  "preferences": "التفضيلات"
+  "preferences": "التفضيلات",
+  "categoryNotFound": "لم يتم العثور على الفئة",
+  "returnToHome": "العودة للشاشة الرئيسية",
+  "dayCount": "يوم {day}",
+  "@dayCount": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "setAmountForDay": "تحديد مبلغ لليوم {day}",
+  "@setAmountForDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "saveContribution": "حفظ المساهمة",
+  "exportSuccess": "تم التصدير بنجاح.",
+  "importSuccess": "تم استيراد {count} عنصر بنجاح!",
+  "@importSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "skippedDuplicates": "تم تخطي {count} صف مكرر.",
+  "@skippedDuplicates": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "operationFailed": "فشلت العملية",
+  "dataManagement": "إدارة البيانات",
+  "permissionRequired": "الإذن مطلوب",
+  "openSettings": "فتح الإعدادات",
+  "startFresh": "البدء من جديد؟",
+  "resetDataWarning": "ستبدأ من جديد. سنقوم بمسح معاملاتك وحساباتك وأهدافك واشتراكاتك وميزانياتك وتصنيفاتك. لا يمكن التراجع عن هذا الإجراء",
+  "resetAllData": "إعادة تعيين كافة البيانات",
+  "mainAction": "الإجراء الرئيسي",
+  "mainActionDesc": "اختر ما يفعله الزر الكبير الموجود أسفل الشاشة الرئيسية.",
+  "exportToCSV": "تصدير إلى CSV",
+  "selectMonth": "اختر الشهر",
+  "customRange": "نطاق مخصص"
 }

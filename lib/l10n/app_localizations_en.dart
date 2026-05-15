@@ -1228,6 +1228,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bankMarginInfo => 'Added to conversion rates';
 
   @override
+  String bankMarginValue(num value) {
+    return '$value%';
+  }
+
+  @override
   String get subscriptionCreatedSuccessfully =>
       'Subscription created successfully!';
 
@@ -1374,4 +1379,120 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get madeByOmarAdel => 'Made By Omar Adel';
+
+  @override
+  String get sttInputMode => 'Transaction Input';
+
+  @override
+  String get sttModeManual => 'Manual';
+
+  @override
+  String get sttModeVoice => 'Voice';
+
+  @override
+  String get sttActivationTitle => 'Activating Voice Search';
+
+  @override
+  String get sttActivationDesc =>
+      'Downloading Egyptian language pack for offline performance';
+
+  @override
+  String get sttListening => 'Listening...';
+
+  @override
+  String get sttDownloadSecure => 'Secure Connection';
+
+  @override
+  String get sttExampleHint => 'Example of what you can say';
+
+  @override
+  String get sttPhrase1 => 'Paid 200 pounds for gas';
+
+  @override
+  String get sttPhrase2 => 'Bought indomie for 10 and cheese for 50';
+
+  @override
+  String get sttPhrase3 => 'Spent 200 pounds at the cafe today';
+
+  @override
+  String get sttPhrase4 => 'Received 500 pounds from the association';
+
+  @override
+  String get sttPhrase5 => 'Paid electricity and water bills for 400';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get categoryNotFound => 'Category Not Found';
+
+  @override
+  String get returnToHome => 'Return To Home Screen';
+
+  @override
+  String dayCount(int day) {
+    return 'Day $day';
+  }
+
+  @override
+  String setAmountForDay(int day) {
+    return 'Set Amount for Day $day';
+  }
+
+  @override
+  String get saveContribution => 'Save Contribution';
+
+  @override
+  String get exportSuccess => 'Export completed successfully.';
+
+  @override
+  String importSuccess(int count) {
+    return 'Imported $count items successfully!';
+  }
+
+  @override
+  String skippedDuplicates(int count) {
+    return 'Skipped $count duplicate rows.';
+  }
+
+  @override
+  String get operationFailed => 'Operation Failed';
+
+  @override
+  String get dataManagement => 'Data Management';
+
+  @override
+  String get permissionRequired => 'Permission Required';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get startFresh => 'Start Fresh?';
+
+  @override
+  String get resetDataWarning =>
+      'You\'ll start with a blank slate. we\'ll just clear your transactions, accounts, goals, subscriptions, budgets, and categories. This can\'t be undone';
+
+  @override
+  String get resetAllData => 'Reset All Data';
+
+  @override
+  String get mainAction => 'Main Action';
+
+  @override
+  String get mainActionDesc =>
+      'Choose What the big button at the bottom of the home screen does.';
+
+  @override
+  String get exportToCSV => 'Export to CSV';
+
+  @override
+  String get selectMonth => 'Select Month';
+
+  @override
+  String get customRange => 'Custom Range';
 }

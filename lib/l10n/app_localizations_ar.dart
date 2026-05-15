@@ -1217,6 +1217,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bankMarginInfo => 'يضاف إلى أسعار التحويل';
 
   @override
+  String bankMarginValue(num value) {
+    return '$value%';
+  }
+
+  @override
   String get subscriptionCreatedSuccessfully => 'تم إنشاء الاشتراك بنجاح!';
 
   @override
@@ -1361,4 +1366,120 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get madeByOmarAdel => 'صنع بواسطة عمر عادل';
+
+  @override
+  String get sttInputMode => 'طريقة إدخال المعاملات';
+
+  @override
+  String get sttModeManual => 'يدوي';
+
+  @override
+  String get sttModeVoice => 'صوتي';
+
+  @override
+  String get sttActivationTitle => 'تفعيل البحث الصوتي';
+
+  @override
+  String get sttActivationDesc =>
+      'جاري تحميل حزمة اللغة المصرية لتحسين الأداء بدون إنترنت';
+
+  @override
+  String get sttListening => 'جاري الاستماع...';
+
+  @override
+  String get sttDownloadSecure => 'اتصال آمن ومستقر';
+
+  @override
+  String get sttExampleHint => 'مثال لما يمكنك قوله';
+
+  @override
+  String get sttPhrase1 => 'دفعت 200 جنيه بنزين';
+
+  @override
+  String get sttPhrase2 => 'جبت ب 10 اندومي و ب 50 جبنه من السوبر ماركت';
+
+  @override
+  String get sttPhrase3 => 'صرفت انهارده 200 جنيه ف الكافيه';
+
+  @override
+  String get sttPhrase4 => 'استلمت 500 جنيه من الجمعية';
+
+  @override
+  String get sttPhrase5 => 'دفع فواتير الكهرباء والميه 400 جنيه';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get preferences => 'التفضيلات';
+
+  @override
+  String get categoryNotFound => 'لم يتم العثور على الفئة';
+
+  @override
+  String get returnToHome => 'العودة للشاشة الرئيسية';
+
+  @override
+  String dayCount(int day) {
+    return 'يوم $day';
+  }
+
+  @override
+  String setAmountForDay(int day) {
+    return 'تحديد مبلغ لليوم $day';
+  }
+
+  @override
+  String get saveContribution => 'حفظ المساهمة';
+
+  @override
+  String get exportSuccess => 'تم التصدير بنجاح.';
+
+  @override
+  String importSuccess(int count) {
+    return 'تم استيراد $count عنصر بنجاح!';
+  }
+
+  @override
+  String skippedDuplicates(int count) {
+    return 'تم تخطي $count صف مكرر.';
+  }
+
+  @override
+  String get operationFailed => 'فشلت العملية';
+
+  @override
+  String get dataManagement => 'إدارة البيانات';
+
+  @override
+  String get permissionRequired => 'الإذن مطلوب';
+
+  @override
+  String get openSettings => 'فتح الإعدادات';
+
+  @override
+  String get startFresh => 'البدء من جديد؟';
+
+  @override
+  String get resetDataWarning =>
+      'ستبدأ من جديد. سنقوم بمسح معاملاتك وحساباتك وأهدافك واشتراكاتك وميزانياتك وتصنيفاتك. لا يمكن التراجع عن هذا الإجراء';
+
+  @override
+  String get resetAllData => 'إعادة تعيين كافة البيانات';
+
+  @override
+  String get mainAction => 'الإجراء الرئيسي';
+
+  @override
+  String get mainActionDesc =>
+      'اختر ما يفعله الزر الكبير الموجود أسفل الشاشة الرئيسية.';
+
+  @override
+  String get exportToCSV => 'تصدير إلى CSV';
+
+  @override
+  String get selectMonth => 'اختر الشهر';
+
+  @override
+  String get customRange => 'نطاق مخصص';
 }

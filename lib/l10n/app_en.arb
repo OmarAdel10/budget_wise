@@ -508,5 +508,53 @@
   "sttPhrase4": "Received 500 pounds from the association",
   "sttPhrase5": "Paid electricity and water bills for 400",
   "close": "Close",
-  "preferences": "Preferences"
+  "preferences": "Preferences",
+  "categoryNotFound": "Category Not Found",
+  "returnToHome": "Return To Home Screen",
+  "dayCount": "Day {day}",
+  "@dayCount": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "setAmountForDay": "Set Amount for Day {day}",
+  "@setAmountForDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "saveContribution": "Save Contribution",
+  "exportSuccess": "Export completed successfully.",
+  "importSuccess": "Imported {count} items successfully!",
+  "@importSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "skippedDuplicates": "Skipped {count} duplicate rows.",
+  "@skippedDuplicates": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "operationFailed": "Operation Failed",
+  "dataManagement": "Data Management",
+  "permissionRequired": "Permission Required",
+  "openSettings": "Open Settings",
+  "startFresh": "Start Fresh?",
+  "resetDataWarning": "You'll start with a blank slate. we'll just clear your transactions, accounts, goals, subscriptions, budgets, and categories. This can't be undone",
+  "resetAllData": "Reset All Data",
+  "mainAction": "Main Action",
+  "mainActionDesc": "Choose What the big button at the bottom of the home screen does.",
+  "exportToCSV": "Export to CSV",
+  "selectMonth": "Select Month",
+  "customRange": "Custom Range"
 }
