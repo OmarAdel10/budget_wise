@@ -33,6 +33,7 @@ class _EditAccountScreenState extends State<EditAccountScreen>
   late TextEditingController lowBalanceAlertAmountController;
   late TextEditingController cardNumberController;
   late TextEditingController expiryController;
+  late TextEditingController phoneNumberController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final ValueNotifier<String> selectedCurrencyNotifier = ValueNotifier<String>(
@@ -44,6 +45,8 @@ class _EditAccountScreenState extends State<EditAccountScreen>
       ValueNotifier<String?>(null);
   final ValueNotifier<List<String>?> selectedBankSenderIdsNotifier =
       ValueNotifier<List<String>?>(null);
+  final ValueNotifier<String?> selectedWalletProviderNotifier =
+      ValueNotifier<String?>(null);
 
   @override
   void initState() {
@@ -62,12 +65,16 @@ class _EditAccountScreenState extends State<EditAccountScreen>
     expiryController = TextEditingController(
       text: widget.account.cardExpiryDate,
     );
+    phoneNumberController = TextEditingController(
+      text: widget.account.phoneNumber,
+    );
 
     selectedCurrencyNotifier.value = widget.account.currency;
     lowBalanceAlertEnabledNotifier.value =
         widget.account.lowBalanceAlertEnabled;
     selectedBankNameNotifier.value = widget.account.cardBankName;
     selectedBankSenderIdsNotifier.value = widget.account.smsSenderIds;
+    selectedWalletProviderNotifier.value = widget.account.walletProvider;
 
     if (widget.account.accountType == AccountType.card) {
       selectedCardBrandNotifier.value =
@@ -83,16 +90,19 @@ class _EditAccountScreenState extends State<EditAccountScreen>
     balanceController.dispose();
     cardNumberController.dispose();
     expiryController.dispose();
+    phoneNumberController.dispose();
     selectedCurrencyNotifier.dispose();
     lowBalanceAlertEnabledNotifier.dispose();
     selectedBankNameNotifier.dispose();
     selectedBankSenderIdsNotifier.dispose();
+    selectedWalletProviderNotifier.dispose();
     disposeCardValidationNotifiers();
     super.dispose();
   }
 
   void _onSave() {
     bool isCard = widget.account.accountType == AccountType.card;
+    bool isWallet = widget.account.accountType == AccountType.wallet;
     if (_formKey.currentState!.validate()) {
       final updatedAccount = widget.account.copyWith(
         title: accountNameController.text.trim(),
@@ -108,6 +118,8 @@ class _EditAccountScreenState extends State<EditAccountScreen>
         cardNumber: isCard ? cardNumberController.text.trim() : null,
         cardExpiryDate: isCard ? expiryController.text.trim() : null,
         cardBrand: isCard ? selectedCardBrandNotifier.value : null,
+        phoneNumber: isWallet ? phoneNumberController.text.trim() : null,
+        walletProvider: isWallet ? selectedWalletProviderNotifier.value : null,
         lowBalanceAlertEnabled: lowBalanceAlertEnabledNotifier.value,
         lowBalanceAlertAmount:
             double.tryParse(
@@ -115,7 +127,7 @@ class _EditAccountScreenState extends State<EditAccountScreen>
             ) ??
             0.0,
         smsSenderIds: selectedBankSenderIdsNotifier.value,
-        smsIdentifier: cardNumberController.text.replaceAll(' ', '').length >= 4
+        smsIdentifier: isCard && cardNumberController.text.replaceAll(' ', '').length >= 4
             ? cardNumberController.text
                   .replaceAll(' ', '')
                   .substring(
@@ -167,8 +179,11 @@ class _EditAccountScreenState extends State<EditAccountScreen>
                   accountNameController: accountNameController,
                   cardNumberController: cardNumberController,
                   expiryController: expiryController,
+                  phoneNumberController: phoneNumberController,
                   selectedBankNameNotifier: selectedBankNameNotifier,
                   selectedBankSenderIdsNotifier: selectedBankSenderIdsNotifier,
+                  selectedWalletProviderNotifier:
+                      selectedWalletProviderNotifier,
                   cardValidationMixin: this,
                 ),
                 const SizedBox(height: AppSpacing.lg),

@@ -5,7 +5,8 @@ import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/accounts/view/widgets/add_account_part1.dart';
 import 'package:budget_wise/accounts/view/widgets/add_account_part2.dart';
-import 'package:budget_wise/accounts/view/widgets/add_account_navigation_buttons.dart'; // Import the new navigation buttons widget
+import 'package:budget_wise/accounts/view/widgets/add_account_part_wallet.dart';
+import 'package:budget_wise/accounts/view/widgets/add_account_navigation_buttons.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/utils/string_cases.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:budget_wise/accounts/utils/card_validation_mixin.dart';
+
+enum AddAccountStep { part1, cardDetails, walletDetails }
 
 class AddAccountScreen extends StatefulWidget {
   static const String routeName = '/addAccount';
@@ -31,8 +34,10 @@ class _AddAccountScreenState extends State<AddAccountScreen>
   final TextEditingController cardHolderController = TextEditingController();
   final TextEditingController cardNumberController = TextEditingController();
   final TextEditingController expiryController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
   final GlobalKey<FormState> _formKeyScreen1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyScreen2 = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyScreenWallet = GlobalKey<FormState>();
 
   final ValueNotifier<AccountType> _selectedAccount = ValueNotifier(
     AccountType.cash,
@@ -42,8 +47,11 @@ class _AddAccountScreenState extends State<AddAccountScreen>
   final ValueNotifier<List<String>?> _selectedBankSenderIds = ValueNotifier(
     null,
   );
+  final ValueNotifier<String?> _selectedWalletProvider = ValueNotifier(null);
   final ValueNotifier<bool> _isPart2Enabled = ValueNotifier(false);
-  final ValueNotifier<bool> _showCardEntry = ValueNotifier<bool>(false);
+  final ValueNotifier<AddAccountStep> _currentStep = ValueNotifier(
+    AddAccountStep.part1,
+  );
 
   @override
   void initState() {
@@ -62,25 +70,26 @@ class _AddAccountScreenState extends State<AddAccountScreen>
     cardHolderController.dispose();
     cardNumberController.dispose();
     expiryController.dispose();
+    phoneNumberController.dispose();
     _selectedAccount.dispose();
     _selectedCurrency.dispose();
     _selectedBankName.dispose();
     _selectedBankSenderIds.dispose();
+    _selectedWalletProvider.dispose();
     _isPart2Enabled.dispose();
-    _showCardEntry.dispose();
+    _currentStep.dispose();
     disposeCardValidationNotifiers();
     super.dispose();
   }
 
   void _onAddAccountTap() {
-    if (_selectedAccount.value == AccountType.cash) {
-      if (_formKeyScreen1.currentState!.validate()) {
+    if (_formKeyScreen1.currentState!.validate()) {
+      if (_selectedAccount.value == AccountType.cash) {
         final newAccount = AccountModel(
           accountType: _selectedAccount.value,
           title: accountNameController.text.trim(),
-          accountIcon: _selectedAccount.value == AccountType.cash
-              ? PhosphorIcons.currencyCircleDollar(PhosphorIconsStyle.regular)
-              : PhosphorIcons.creditCard(PhosphorIconsStyle.regular),
+          accountIcon:
+              PhosphorIcons.currencyCircleDollar(PhosphorIconsStyle.regular),
           initialBalance:
               double.tryParse(balanceController.text.replaceAll(',', '')) ??
               0.0,
@@ -97,11 +106,12 @@ class _AddAccountScreenState extends State<AddAccountScreen>
         if (Navigator.canPop(context)) {
           Navigator.of(context).pop();
         }
+      } else if (_selectedAccount.value == AccountType.card) {
+        _currentStep.value = AddAccountStep.cardDetails;
+      } else if (_selectedAccount.value == AccountType.wallet) {
+        _currentStep.value = AddAccountStep.walletDetails;
       }
-      return;
     }
-
-    _showCardEntry.value = true;
   }
 
   void _onSaveCard() {
@@ -110,9 +120,7 @@ class _AddAccountScreenState extends State<AddAccountScreen>
         final newAccount = AccountModel(
           accountType: _selectedAccount.value,
           title: accountNameController.text.trim(),
-          accountIcon: _selectedAccount.value == AccountType.cash
-              ? PhosphorIcons.currencyCircleDollar(PhosphorIconsStyle.regular)
-              : PhosphorIcons.creditCard(PhosphorIconsStyle.regular),
+          accountIcon: PhosphorIcons.creditCard(PhosphorIconsStyle.regular),
           initialBalance:
               double.tryParse(
                 balanceController.text.replaceAll(',', '').trim(),
@@ -151,6 +159,39 @@ class _AddAccountScreenState extends State<AddAccountScreen>
     }
   }
 
+  void _onSaveWallet() {
+    if (_selectedAccount.value == AccountType.wallet) {
+      if (_formKeyScreenWallet.currentState!.validate()) {
+        final newAccount = AccountModel(
+          accountType: _selectedAccount.value,
+          title: accountNameController.text.trim(),
+          accountIcon: PhosphorIcons.deviceMobile(PhosphorIconsStyle.regular),
+          initialBalance:
+              double.tryParse(
+                balanceController.text.replaceAll(',', '').trim(),
+              ) ??
+              0.0,
+          balance:
+              double.tryParse(
+                balanceController.text.replaceAll(',', '').trim(),
+              ) ??
+              0.0,
+          currency: _selectedCurrency.value!,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          phoneNumber: phoneNumberController.text.trim(),
+          walletProvider: _selectedWalletProvider.value,
+        );
+        context.read<AccountBloc>().add(
+          AccountEventCreateAccount(model: newAccount),
+        );
+        if (Navigator.canPop(context)) {
+          Navigator.of(context).pop();
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -176,53 +217,12 @@ class _AddAccountScreenState extends State<AddAccountScreen>
                 vertical: AppSpacing.md,
               ),
               sliver: SliverToBoxAdapter(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: _showCardEntry,
-                  builder: (context, showCardEntry, _) {
-                    return AnimatedCrossFade(
+                child: ValueListenableBuilder<AddAccountStep>(
+                  valueListenable: _currentStep,
+                  builder: (context, currentStep, _) {
+                    return AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
-                      firstChild: AddAccountPart1(
-                        l10n: l10n,
-                        formKey: _formKeyScreen1,
-                        accountNameController: accountNameController,
-                        balanceController: balanceController,
-                        selectedAccount: _selectedAccount,
-                        onAccountTypeSelected: (type) {
-                          _selectedAccount.value = type;
-                          if (type == AccountType.cash) {
-                            _showCardEntry.value = false;
-                          }
-                          _isPart2Enabled.value = type != AccountType.cash;
-                        },
-                        selectedCurrency: _selectedCurrency,
-                        onCurrencySelected: (currency) {
-                          _selectedCurrency.value = currency;
-                        },
-                      ),
-                      secondChild: AddAccountPart2(
-                        l10n: l10n,
-                        formKey: _formKeyScreen2,
-                        selectedCurrency: _selectedCurrency,
-                        balanceController: balanceController,
-                        authRepo: context.read<AuthRepository>(),
-                        selectedBankName: _selectedBankName,
-                        onBankSelected: (bankName, senderIds) {
-                          _selectedBankName.value = bankName;
-                          _selectedBankSenderIds.value = senderIds;
-                        },
-                        cardHolderController: cardHolderController,
-                        cardNumberController: cardNumberController,
-                        expiryController: expiryController,
-                        selectedCardBrand: selectedCardBrandNotifier,
-                        isCardValid: isCardValidNotifier,
-                        onValidateCardNumber: validateCardNumber,
-                        isExpiryValid: isExpiryValidNotifier,
-                        onValidateExpiryDate: validateExpiryDate,
-                        determineCardType: (brand) => determineCardType(brand),
-                      ),
-                      crossFadeState: showCardEntry
-                          ? CrossFadeState.showSecond
-                          : CrossFadeState.showFirst,
+                      child: _buildStepContent(currentStep, l10n),
                     );
                   },
                 ),
@@ -234,11 +234,22 @@ class _AddAccountScreenState extends State<AddAccountScreen>
                 child: Column(
                   children: [
                     const SizedBox(height: AppSpacing.sm),
-                    AddAccountNavigationButtons(
-                      showCardEntry: _showCardEntry,
-                      isPart2Enabled: _isPart2Enabled,
-                      onSaveCard: _onSaveCard,
-                      onAddAccountTap: _onAddAccountTap,
+                    ValueListenableBuilder<AddAccountStep>(
+                      valueListenable: _currentStep,
+                      builder: (context, currentStep, _) {
+                        return AddAccountNavigationButtons(
+                          showCardEntry: ValueNotifier(
+                            currentStep != AddAccountStep.part1,
+                          ),
+                          isPart2Enabled: _isPart2Enabled,
+                          onSaveCard: currentStep == AddAccountStep.cardDetails
+                              ? _onSaveCard
+                              : _onSaveWallet,
+                          onAddAccountTap: _onAddAccountTap,
+                          onBack: () =>
+                              _currentStep.value = AddAccountStep.part1,
+                        );
+                      },
                     ),
                     const SizedBox(height: AppSpacing.xxl),
                   ],
@@ -249,5 +260,60 @@ class _AddAccountScreenState extends State<AddAccountScreen>
         ),
       ),
     );
+  }
+
+  Widget _buildStepContent(AddAccountStep step, AppLocalizations l10n) {
+    switch (step) {
+      case AddAccountStep.part1:
+        return AddAccountPart1(
+          l10n: l10n,
+          formKey: _formKeyScreen1,
+          accountNameController: accountNameController,
+          balanceController: balanceController,
+          selectedAccount: _selectedAccount,
+          onAccountTypeSelected: (type) {
+            _selectedAccount.value = type;
+            _isPart2Enabled.value = type != AccountType.cash;
+          },
+          selectedCurrency: _selectedCurrency,
+          onCurrencySelected: (currency) {
+            _selectedCurrency.value = currency;
+          },
+        );
+      case AddAccountStep.cardDetails:
+        return AddAccountPart2(
+          l10n: l10n,
+          formKey: _formKeyScreen2,
+          selectedCurrency: _selectedCurrency,
+          balanceController: balanceController,
+          authRepo: context.read<AuthRepository>(),
+          selectedBankName: _selectedBankName,
+          onBankSelected: (bankName, senderIds) {
+            _selectedBankName.value = bankName;
+            _selectedBankSenderIds.value = senderIds;
+          },
+          cardHolderController: cardHolderController,
+          cardNumberController: cardNumberController,
+          expiryController: expiryController,
+          selectedCardBrand: selectedCardBrandNotifier,
+          isCardValid: isCardValidNotifier,
+          onValidateCardNumber: validateCardNumber,
+          isExpiryValid: isExpiryValidNotifier,
+          onValidateExpiryDate: validateExpiryDate,
+          determineCardType: (brand) => determineCardType(brand),
+        );
+      case AddAccountStep.walletDetails:
+        return AddAccountPartWallet(
+          l10n: l10n,
+          formKey: _formKeyScreenWallet,
+          selectedCurrency: _selectedCurrency,
+          balanceController: balanceController,
+          phoneNumberController: phoneNumberController,
+          selectedProvider: _selectedWalletProvider,
+          onProviderSelected: (providerName) {
+            _selectedWalletProvider.value = providerName;
+          },
+        );
+    }
   }
 }

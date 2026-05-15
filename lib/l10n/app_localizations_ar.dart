@@ -438,6 +438,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addAccountTypeCard => 'بطاقة';
 
   @override
+  String get addAccountTypeWallet => 'محفظة هاتف';
+
+  @override
   String get addAccountInitialBalanceLabel => 'الرصيد الابتدائي';
 
   @override
@@ -448,6 +451,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addAccountCardTitle => 'إدخال تفاصيل البطاقة';
+
+  @override
+  String get addAccountWalletTitle => 'إدخال تفاصيل المحفظة';
 
   @override
   String get addAccountCardNumberLabel => 'رقم البطاقة';
@@ -465,6 +471,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addAccountBankNamePlaceholder => 'اضغط لاختيار البنك';
 
   @override
+  String get addAccountPhoneNumberLabel => 'رقم الهاتف';
+
+  @override
+  String get addAccountPhoneNumberPlaceholder => '01xxxxxxxxx';
+
+  @override
+  String get addAccountProviderLabel => 'مزود الخدمة';
+
+  @override
+  String get addAccountProviderPlaceholder => 'اضغط لاختيار المزود';
+
+  @override
   String get addAccountCardExpiryLabel => 'تاريخ الانتهاء';
 
   @override
@@ -475,6 +493,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addAccountButtonSaveCard => 'حفظ البطاقة';
+
+  @override
+  String get addAccountButtonSaveWallet => 'حفظ المحفظة';
 
   @override
   String get addAccountCardSecureNote => 'معلومات بطاقتك مشفرة ومأمونة';
@@ -489,6 +510,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addAccountCardSaved => 'تم حفظ البطاقة';
 
   @override
+  String get addAccountWalletSaved => 'تم حفظ المحفظة';
+
+  @override
   String get netWorth => 'صافي الثروة';
 
   @override
@@ -498,7 +522,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get account => 'الحساب';
 
   @override
-  String get linkMoreAccounts => 'ربط المزيد من الحسابات';
+  String get linkMoreAccounts => 'ربط/اضافة المزيد من الحسابات';
 
   @override
   String get continueWord => 'متابعة';
@@ -521,6 +545,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get youShouldEnterAValidBankName => 'يجب إدخال اسم بنك صالح';
+
+  @override
+  String get phoneNumberCantLeftEmpty => 'لا يمكن ترك رقم الهاتف فارغاً';
+
+  @override
+  String get youShouldEnterAValidPhoneNumber => 'يجب إدخال رقم هاتف صحيح';
+
+  @override
+  String get providerCantLeftEmpty => 'لا يمكن ترك مزود الخدمة فارغاً';
+
+  @override
+  String get youShouldEnterAValidProvider => 'يجب إدخال مزود خدمة صحيح';
 
   @override
   String get didYouMean => 'هل تقصد';

@@ -491,7 +491,8 @@ class _DraftTransactionCardItemState extends State<DraftTransactionCardItem> {
                   .accountsList
                   .where(
                     (acc) =>
-                        acc.accountType == AccountType.card &&
+                        (acc.accountType == AccountType.card ||
+                            acc.accountType == AccountType.wallet) &&
                         acc.currency == widget.draft.extractedCurrency,
                   )
                   .map((account) {

@@ -12,12 +12,14 @@ class AddAccountNavigationButtons extends StatelessWidget {
     required this.isPart2Enabled,
     required this.onSaveCard,
     required this.onAddAccountTap,
+    this.onBack,
   });
 
   final ValueNotifier<bool> showCardEntry;
   final ValueNotifier<bool> isPart2Enabled;
   final VoidCallback onSaveCard;
   final VoidCallback onAddAccountTap;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class AddAccountNavigationButtons extends StatelessWidget {
             if (showCardEntryValue) ...[
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () => showCardEntry.value = false,
+                  onPressed: onBack ?? () => showCardEntry.value = false,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.borderColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -76,7 +78,9 @@ class AddAccountNavigationButtons extends StatelessWidget {
                       children: [
                         Text(
                           showCardEntryValue
-                              ? (l10n.addAccountButtonSaveCard)
+                              ? (l10n.addAccountButtonSaveCard.contains('Card') || l10n.addAccountButtonSaveCard.contains('بطاقة')
+                                  ? (onSaveCard.toString().contains('_onSaveWallet') ? l10n.addAccountButtonSaveWallet : l10n.addAccountButtonSaveCard)
+                                  : l10n.addAccountButtonSaveCard)
                               : isPart2EnabledValue
                               ? (l10n.continueWord)
                               : (l10n.addAccountButtonAddAccount),

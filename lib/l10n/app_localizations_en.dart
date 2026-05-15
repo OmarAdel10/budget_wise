@@ -439,6 +439,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addAccountTypeCard => 'Card';
 
   @override
+  String get addAccountTypeWallet => 'Mobile Wallet';
+
+  @override
   String get addAccountInitialBalanceLabel => 'Initial Balance';
 
   @override
@@ -449,6 +452,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addAccountCardTitle => 'Enter Card Details';
+
+  @override
+  String get addAccountWalletTitle => 'Enter Wallet Details';
 
   @override
   String get addAccountCardNumberLabel => 'Card Number';
@@ -466,6 +472,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addAccountBankNamePlaceholder => 'Tap To Select Bank';
 
   @override
+  String get addAccountPhoneNumberLabel => 'Phone Number';
+
+  @override
+  String get addAccountPhoneNumberPlaceholder => '01xxxxxxxxx';
+
+  @override
+  String get addAccountProviderLabel => 'Wallet Provider';
+
+  @override
+  String get addAccountProviderPlaceholder => 'Tap To Select Provider';
+
+  @override
   String get addAccountCardExpiryLabel => 'Expiry Date';
 
   @override
@@ -476,6 +494,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addAccountButtonSaveCard => 'Save Card';
+
+  @override
+  String get addAccountButtonSaveWallet => 'Save Wallet';
 
   @override
   String get addAccountCardSecureNote =>
@@ -491,6 +512,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addAccountCardSaved => 'Card saved';
 
   @override
+  String get addAccountWalletSaved => 'Wallet saved';
+
+  @override
   String get netWorth => 'Net Worth';
 
   @override
@@ -500,7 +524,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get linkMoreAccounts => 'Link More Accounts';
+  String get linkMoreAccounts => 'Add/Link More Accounts';
 
   @override
   String get continueWord => 'Continue';
@@ -524,6 +548,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get youShouldEnterAValidBankName =>
       'You Should Enter A Valid Bank Name';
+
+  @override
+  String get phoneNumberCantLeftEmpty => 'Phone Number Can\'t Left Empty';
+
+  @override
+  String get youShouldEnterAValidPhoneNumber =>
+      'You Should Enter A Valid Phone Number';
+
+  @override
+  String get providerCantLeftEmpty => 'Provider Can\'t Left Empty';
+
+  @override
+  String get youShouldEnterAValidProvider =>
+      'You Should Enter A Valid Provider';
 
   @override
   String get didYouMean => 'Did you mean:';

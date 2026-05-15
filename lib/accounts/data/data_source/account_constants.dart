@@ -26,4 +26,11 @@ class AccountConstants {
     "Suez Canal Bank": ["SCB", "SCBank"],
     "Al Ahli Bank of Kuwait": ["ABK", "ABK-KW"],
   };
+
+  static const Map<String, String> walletProviders = {
+    "Vodafone Cash": "vodafone",
+    "WE Pay": "we",
+    "Orange Cash": "orange",
+    "Etisalat Cash": "etisalat",
+  };
 }

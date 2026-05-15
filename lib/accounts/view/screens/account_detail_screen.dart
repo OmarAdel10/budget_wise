@@ -2,6 +2,7 @@ import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view/widgets/account_action_buttons.dart';
 import 'package:budget_wise/accounts/view/widgets/account_balance_details_header.dart';
 import 'package:budget_wise/accounts/view/widgets/account_card_details_section.dart';
+import 'package:budget_wise/accounts/view/widgets/account_wallet_details_section.dart';
 import 'package:budget_wise/accounts/view/widgets/low_balance_banner.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
@@ -136,6 +137,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
               ),
               //* Credit Card Section (Conditional)
               AccountCardDetailsSection(account: account),
+              //* Mobile Wallet Section (Conditional)
+              AccountWalletDetailsSection(account: account),
               //* Edit Account Button
               AccountActionButtons(accountId: _accountId),
               //* Recent Transactions Header

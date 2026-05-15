@@ -77,11 +77,9 @@ class AccountsList extends StatelessWidget {
                     child: AssetItem(
                       icon: accountItem.accountIcon,
                       title: accountItem.title,
-                      subtitle: accountItem.accountType != AccountType.cash
-                          ? '${accountItem.cardBankName != null ? accountItem.cardBankName?.initialChars() : ''} • ${accountItem.cardNumber != null && accountItem.cardNumber!.length >= 4 ? accountItem.cardNumber!.substring(accountItem.cardNumber!.length - 4) : '****'}'
-                          : '${accountItem.accountType.name.toUpperCase()} ${l10n.account.toUpperCase()}',
+                      subtitle: _buildSubtitle(accountItem, l10n),
                       amount:
-                          '${NumberFormat.simpleCurrency(name: accountItem.currency).currencyName} ${accountItem.balance}',
+                          '${NumberFormat.currency(name: accountItem.currency).currencyName} ${accountItem.balance}',
                       isWarningEnabled:
                           (accountItem.lowBalanceAlertEnabled &&
                           accountItem.balance <=
@@ -95,5 +93,21 @@ class AccountsList extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _buildSubtitle(AccountModel account, AppLocalizations l10n) {
+    if (account.accountType == AccountType.cash) {
+      return '${l10n.addAccountTypeCash.toUpperCase()} ${l10n.account.toUpperCase()}';
+    } else if (account.accountType == AccountType.wallet) {
+      final provider = account.walletProvider ?? '';
+      final phone = account.phoneNumber ?? '';
+      final last4 = phone.length >= 4 ? phone.substring(phone.length - 4) : phone;
+      return '${provider.initialChars()} • ****$last4';
+    } else {
+      final bank = account.cardBankName?.initialChars() ?? '';
+      final card = account.cardNumber ?? '';
+      final last4 = card.length >= 4 ? card.substring(card.length - 4) : '****';
+      return '$bank • $last4';
+    }
   }
 }

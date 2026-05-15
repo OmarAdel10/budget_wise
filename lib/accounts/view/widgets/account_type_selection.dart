@@ -35,28 +35,47 @@ class AccountTypeSelection extends StatelessWidget {
         ValueListenableBuilder<AccountType>(
           valueListenable: selectedAccount,
           builder: (context, type, _) {
-            return Row(
-              children: [
-                Expanded(
-                  child: AccountTypeTile(
-                    label: l10n.addAccountTypeCash,
-                    icon: PhosphorIcons.currencyCircleDollar(
-                      PhosphorIconsStyle.regular,
+            return SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.26,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: AccountTypeTile(
+                            label: l10n.addAccountTypeCash,
+                            icon: PhosphorIcons.currencyCircleDollar(
+                              PhosphorIconsStyle.regular,
+                            ),
+                            selected: type == AccountType.cash,
+                            onTap: () => onAccountTypeSelected(AccountType.cash),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: AccountTypeTile(
+                            label: l10n.addAccountTypeCard,
+                            icon: PhosphorIcons.creditCard(PhosphorIconsStyle.regular),
+                            selected: type == AccountType.card,
+                            onTap: () => onAccountTypeSelected(AccountType.card),
+                          ),
+                        ),
+                      ],
                     ),
-                    selected: type == AccountType.cash,
-                    onTap: () => onAccountTypeSelected(AccountType.cash),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: AccountTypeTile(
-                    label: l10n.addAccountTypeCard,
-                    icon: PhosphorIcons.creditCard(PhosphorIconsStyle.regular),
-                    selected: type == AccountType.card,
-                    onTap: () => onAccountTypeSelected(AccountType.card),
+                  const SizedBox(height: AppSpacing.sm),
+                  Expanded(
+                    child: AccountTypeTile(
+                      label: l10n.addAccountTypeWallet,
+                      icon: PhosphorIcons.deviceMobile(PhosphorIconsStyle.regular),
+                      selected: type == AccountType.wallet,
+                      onTap: () => onAccountTypeSelected(AccountType.wallet),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         ),

@@ -3,6 +3,8 @@ import 'package:budget_wise/accounts/view/widgets/account_bank_name_field.dart';
 import 'package:budget_wise/accounts/view/widgets/account_card_number_field.dart';
 import 'package:budget_wise/accounts/view/widgets/account_expiry_date_field.dart';
 import 'package:budget_wise/accounts/view/widgets/account_name_input.dart';
+import 'package:budget_wise/accounts/view/widgets/account_phone_number_field.dart';
+import 'package:budget_wise/accounts/view/widgets/account_wallet_provider_field.dart';
 import 'package:budget_wise/accounts/utils/card_validation_mixin.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
@@ -14,8 +16,10 @@ class AccountBasicInfoCard extends StatelessWidget {
   final TextEditingController accountNameController;
   final TextEditingController cardNumberController;
   final TextEditingController expiryController;
+  final TextEditingController? phoneNumberController;
   final ValueNotifier<String?> selectedBankNameNotifier;
   final ValueNotifier<List<String>?> selectedBankSenderIdsNotifier;
+  final ValueNotifier<String?>? selectedWalletProviderNotifier;
   final CardValidationMixin cardValidationMixin;
 
   const AccountBasicInfoCard({
@@ -27,6 +31,8 @@ class AccountBasicInfoCard extends StatelessWidget {
     required this.selectedBankNameNotifier,
     required this.selectedBankSenderIdsNotifier,
     required this.cardValidationMixin,
+    this.phoneNumberController,
+    this.selectedWalletProviderNotifier,
   });
 
   @override
@@ -78,6 +84,20 @@ class AccountBasicInfoCard extends StatelessWidget {
                   hasPadding: false,
                 ),
               ],
+            ),
+          ] else if (accountType == AccountType.wallet) ...[
+            const SizedBox(height: AppSpacing.md),
+            AccountWalletProviderField(
+              l10n: l10n,
+              selectedProvider: selectedWalletProviderNotifier!,
+              onProviderSelected: (providerName) {
+                selectedWalletProviderNotifier!.value = providerName;
+              },
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AccountPhoneNumberField(
+              l10n: l10n,
+              phoneNumberController: phoneNumberController!,
             ),
           ],
         ],

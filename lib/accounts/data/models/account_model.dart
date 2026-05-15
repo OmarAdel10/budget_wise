@@ -5,7 +5,7 @@ import 'package:budget_wise/accounts/data/models/card_brand.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-enum AccountType { cash, card, saving }
+enum AccountType { cash, card, saving, wallet }
 
 class AccountModel {
   final String id;
@@ -21,6 +21,8 @@ class AccountModel {
   final String? cardNumber;
   final String? cardExpiryDate;
   final CardBrand? cardBrand;
+  final String? phoneNumber;
+  final String? walletProvider;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isSynced;
@@ -42,7 +44,9 @@ class AccountModel {
     this.cardHolderName = '',
     this.cardNumber = '',
     this.cardExpiryDate = '',
-    this.cardBrand = CardBrand.visa,
+    this.cardBrand,
+    this.phoneNumber,
+    this.walletProvider,
     required this.createdAt,
     required this.updatedAt,
     this.isSynced = false,
@@ -66,6 +70,8 @@ class AccountModel {
     String? cardNumber,
     String? cardExpiryDate,
     CardBrand? cardBrand,
+    String? phoneNumber,
+    String? walletProvider,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isSynced,
@@ -88,6 +94,8 @@ class AccountModel {
       cardNumber: cardNumber ?? this.cardNumber,
       cardExpiryDate: cardExpiryDate ?? this.cardExpiryDate,
       cardBrand: cardBrand ?? this.cardBrand,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      walletProvider: walletProvider ?? this.walletProvider,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
@@ -117,6 +125,8 @@ class AccountModel {
       'cardNumber': cardNumber,
       'cardExpiryDate': cardExpiryDate,
       'cardBrand': cardBrand?.name,
+      'phoneNumber': phoneNumber,
+      'walletProvider': walletProvider,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'isSynced': isSynced,
@@ -160,6 +170,12 @@ class AccountModel {
               (e) => e.name == map['cardBrand'],
               orElse: () => CardBrand.mastercard,
             )
+          : null,
+      phoneNumber: map['phoneNumber'] != null
+          ? map['phoneNumber'] as String
+          : null,
+      walletProvider: map['walletProvider'] != null
+          ? map['walletProvider'] as String
           : null,
       createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()

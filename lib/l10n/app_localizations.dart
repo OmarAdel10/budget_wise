@@ -944,6 +944,12 @@ abstract class AppLocalizations {
   /// **'Card'**
   String get addAccountTypeCard;
 
+  /// No description provided for @addAccountTypeWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Wallet'**
+  String get addAccountTypeWallet;
+
   /// No description provided for @addAccountInitialBalanceLabel.
   ///
   /// In en, this message translates to:
@@ -967,6 +973,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter Card Details'**
   String get addAccountCardTitle;
+
+  /// No description provided for @addAccountWalletTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Wallet Details'**
+  String get addAccountWalletTitle;
 
   /// No description provided for @addAccountCardNumberLabel.
   ///
@@ -998,6 +1010,30 @@ abstract class AppLocalizations {
   /// **'Tap To Select Bank'**
   String get addAccountBankNamePlaceholder;
 
+  /// No description provided for @addAccountPhoneNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get addAccountPhoneNumberLabel;
+
+  /// No description provided for @addAccountPhoneNumberPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'01xxxxxxxxx'**
+  String get addAccountPhoneNumberPlaceholder;
+
+  /// No description provided for @addAccountProviderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet Provider'**
+  String get addAccountProviderLabel;
+
+  /// No description provided for @addAccountProviderPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap To Select Provider'**
+  String get addAccountProviderPlaceholder;
+
   /// No description provided for @addAccountCardExpiryLabel.
   ///
   /// In en, this message translates to:
@@ -1021,6 +1057,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Card'**
   String get addAccountButtonSaveCard;
+
+  /// No description provided for @addAccountButtonSaveWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Wallet'**
+  String get addAccountButtonSaveWallet;
 
   /// No description provided for @addAccountCardSecureNote.
   ///
@@ -1046,6 +1088,12 @@ abstract class AppLocalizations {
   /// **'Card saved'**
   String get addAccountCardSaved;
 
+  /// No description provided for @addAccountWalletSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet saved'**
+  String get addAccountWalletSaved;
+
   /// No description provided for @netWorth.
   ///
   /// In en, this message translates to:
@@ -1067,7 +1115,7 @@ abstract class AppLocalizations {
   /// No description provided for @linkMoreAccounts.
   ///
   /// In en, this message translates to:
-  /// **'Link More Accounts'**
+  /// **'Add/Link More Accounts'**
   String get linkMoreAccounts;
 
   /// No description provided for @continueWord.
@@ -1111,6 +1159,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You Should Enter A Valid Bank Name'**
   String get youShouldEnterAValidBankName;
+
+  /// No description provided for @phoneNumberCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number Can\'t Left Empty'**
+  String get phoneNumberCantLeftEmpty;
+
+  /// No description provided for @youShouldEnterAValidPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'You Should Enter A Valid Phone Number'**
+  String get youShouldEnterAValidPhoneNumber;
+
+  /// No description provided for @providerCantLeftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider Can\'t Left Empty'**
+  String get providerCantLeftEmpty;
+
+  /// No description provided for @youShouldEnterAValidProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'You Should Enter A Valid Provider'**
+  String get youShouldEnterAValidProvider;
 
   /// No description provided for @didYouMean.
   ///
