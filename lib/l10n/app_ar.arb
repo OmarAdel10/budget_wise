@@ -423,6 +423,14 @@
   "paused": "متوقف مؤقتاً",
   "bankMargin": "هامش البنك",
   "bankMarginInfo": "يضاف إلى أسعار التحويل",
+  "bankMarginValue": "{value}%",
+  "@bankMarginValue": {
+    "placeholders": {
+      "value": {
+        "type": "num"
+      }
+    }
+  },
   "subscriptionCreatedSuccessfully": "تم إنشاء الاشتراك بنجاح!",
   "subscriptionUpdatedSuccessfully": "تم تحديث الاشتراك بنجاح!",
   "budgetExceeded": "تجاوز الميزانية",
@@ -479,5 +487,20 @@
     }
   },
   "allAlertsSilenced": "جميع التنبيهات مُعطلة حالياً",
-  "madeByOmarAdel": "صنع بواسطة عمر عادل"
+  "madeByOmarAdel": "صنع بواسطة عمر عادل",
+  "sttInputMode": "طريقة إدخال المعاملات",
+  "sttModeManual": "يدوي",
+  "sttModeVoice": "صوتي",
+  "sttActivationTitle": "تفعيل البحث الصوتي",
+  "sttActivationDesc": "جاري تحميل حزمة اللغة المصرية لتحسين الأداء بدون إنترنت",
+  "sttListening": "جاري الاستماع...",
+  "sttDownloadSecure": "اتصال آمن ومستقر",
+  "sttExampleHint": "مثال لما يمكنك قوله",
+  "sttPhrase1": "دفعت 200 جنيه بنزين",
+  "sttPhrase2": "جبت ب 10 اندومي و ب 50 جبنه من السوبر ماركت",
+  "sttPhrase3": "صرفت انهارده 200 جنيه ف الكافيه",
+  "sttPhrase4": "استلمت 500 جنيه من الجمعية",
+  "sttPhrase5": "دفع فواتير الكهرباء والميه 400 جنيه",
+  "close": "إغلاق",
+  "preferences": "التفضيلات"
 }

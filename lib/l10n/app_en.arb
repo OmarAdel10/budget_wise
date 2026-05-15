@@ -429,6 +429,14 @@
   "paused": "Paused",
   "bankMargin": "Bank Margin",
   "bankMarginInfo": "Added to conversion rates",
+  "bankMarginValue": "{value}%",
+  "@bankMarginValue": {
+    "placeholders": {
+      "value": {
+        "type": "num"
+      }
+    }
+  },
   "subscriptionCreatedSuccessfully": "Subscription created successfully!",
   "subscriptionUpdatedSuccessfully": "Subscription updated successfully!",
   "budgetExceeded": "Budget Exceeded",
@@ -485,5 +493,20 @@
     }
   },
   "allAlertsSilenced": "All alerts are currently silenced",
-  "madeByOmarAdel": "Made By Omar Adel"
-  }
+  "madeByOmarAdel": "Made By Omar Adel",
+  "sttInputMode": "Transaction Input",
+  "sttModeManual": "Manual",
+  "sttModeVoice": "Voice",
+  "sttActivationTitle": "Activating Voice Search",
+  "sttActivationDesc": "Downloading Egyptian language pack for offline performance",
+  "sttListening": "Listening...",
+  "sttDownloadSecure": "Secure Connection",
+  "sttExampleHint": "Example of what you can say",
+  "sttPhrase1": "Paid 200 pounds for gas",
+  "sttPhrase2": "Bought indomie for 10 and cheese for 50",
+  "sttPhrase3": "Spent 200 pounds at the cafe today",
+  "sttPhrase4": "Received 500 pounds from the association",
+  "sttPhrase5": "Paid electricity and water bills for 400",
+  "close": "Close",
+  "preferences": "Preferences"
+}
