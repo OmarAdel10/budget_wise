@@ -8,6 +8,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as dev;
 
+import 'package:path_provider/path_provider.dart';
+
 class CsvValidationException implements Exception {
   final String message;
   CsvValidationException(this.message);
@@ -266,10 +268,12 @@ class CsvService {
     try {
       dev.log('Opening file picker for fileName: $fileName');
       final bytes = utf8.encode(csvContent);
+      final dir = await getApplicationDocumentsDirectory();
 
-      String? outputFile = await FilePicker.platform.saveFile(
+      String? outputFile = await FilePicker.saveFile(
         dialogTitle: 'Select Save Location',
         fileName: fileName,
+        initialDirectory: dir.path,
         type: FileType.any,
         bytes: bytes,
       );
@@ -294,9 +298,12 @@ class CsvService {
   /// Handles file picking for import.
   Future<String?> pickCsvFile() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
+      final dir = await getApplicationDocumentsDirectory();
+
+      final result = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['csv'],
+        initialDirectory: dir.path,
         allowMultiple: false,
         withData: true,
       );
