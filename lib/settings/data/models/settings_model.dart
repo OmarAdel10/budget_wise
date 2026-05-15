@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:equatable/equatable.dart';
+import 'transaction_input_mode.dart';
 
 class SettingsModel extends Equatable {
   final bool localAuthEnabled;
@@ -19,6 +20,7 @@ class SettingsModel extends Equatable {
   final bool savingsNotificationsEnabled;
   final bool categoryBudgetNotificationsEnabled;
   final bool dailyReminderNotificationsEnabled;
+  final TransactionInputMode transactionInputMode;
 
   const SettingsModel({
     this.localAuthEnabled = false,
@@ -36,6 +38,7 @@ class SettingsModel extends Equatable {
     this.savingsNotificationsEnabled = true,
     this.categoryBudgetNotificationsEnabled = true,
     this.dailyReminderNotificationsEnabled = true,
+    this.transactionInputMode = TransactionInputMode.voice,
   });
 
   bool get isPasscodeSet => passcode != null && passcode!.length == 4;
@@ -57,6 +60,7 @@ class SettingsModel extends Equatable {
     bool? savingsNotificationsEnabled,
     bool? categoryBudgetNotificationsEnabled,
     bool? dailyReminderNotificationsEnabled,
+    TransactionInputMode? transactionInputMode,
   }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
@@ -85,6 +89,7 @@ class SettingsModel extends Equatable {
       dailyReminderNotificationsEnabled:
           dailyReminderNotificationsEnabled ??
           this.dailyReminderNotificationsEnabled,
+      transactionInputMode: transactionInputMode ?? this.transactionInputMode,
     );
   }
 
@@ -106,6 +111,7 @@ class SettingsModel extends Equatable {
       'savingsNotificationsEnabled': savingsNotificationsEnabled,
       'categoryBudgetNotificationsEnabled': categoryBudgetNotificationsEnabled,
       'dailyReminderNotificationsEnabled': dailyReminderNotificationsEnabled,
+      'transactionInputMode': transactionInputMode.index,
     };
   }
 
@@ -133,6 +139,9 @@ class SettingsModel extends Equatable {
           map['categoryBudgetNotificationsEnabled'] as bool? ?? true,
       dailyReminderNotificationsEnabled:
           map['dailyReminderNotificationsEnabled'] as bool? ?? true,
+      transactionInputMode: map['transactionInputMode'] != null
+          ? TransactionInputMode.values[map['transactionInputMode'] as int]
+          : TransactionInputMode.voice,
     );
   }
 
@@ -152,19 +161,13 @@ class SettingsModel extends Equatable {
     passcode,
     useBiometrics,
     bankMargin,
-        localAuthEnabled,
-        language,
-        isOnboardingCompleted,
-        hasLoggedIn,
-        lastForegroundActivityDateTime,
-        defaultCurrency,
-        passcode,
-        useBiometrics,
-        allNotificationsEnabled,
-        smsNotificationsEnabled,
-        subscriptionNotificationsEnabled,
-        savingsNotificationsEnabled,
-        categoryBudgetNotificationsEnabled,
-        dailyReminderNotificationsEnabled,
-      ];
+    allNotificationsEnabled,
+    smsNotificationsEnabled,
+    subscriptionNotificationsEnabled,
+    savingsNotificationsEnabled,
+    categoryBudgetNotificationsEnabled,
+    dailyReminderNotificationsEnabled,
+    transactionInputMode,
+  ];
 }
+

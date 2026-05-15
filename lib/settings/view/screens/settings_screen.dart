@@ -1,7 +1,10 @@
 import 'package:budget_wise/csv_export/view_model/csv_bloc.dart';
+import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
+import 'package:budget_wise/savings/view_model/savings_view_model.dart';
 import 'package:budget_wise/settings/view/widgets/data_import_export_card.dart';
-import 'package:budget_wise/settings/view/widgets/language_settings_tile.dart';
 import 'package:budget_wise/settings/view/widgets/notification_settings_tile.dart';
+import 'package:budget_wise/settings/view/widgets/preferences_tile.dart';
+import 'package:budget_wise/settings/view/widgets/preferences_tile_content.dart';
 import 'package:budget_wise/settings/view/widgets/profile_header_section.dart';
 import 'package:budget_wise/settings/view/widgets/security_settings_tile.dart';
 import 'package:budget_wise/shared/constants/app_constants.dart';
@@ -9,12 +12,11 @@ import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
-import 'package:budget_wise/settings/view/widgets/bank_margin_tile.dart';
-import 'package:budget_wise/settings/view/widgets/currency_settings_tile.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/utils/auth_constants.dart';
 import 'package:flutter/material.dart';
@@ -36,25 +38,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late final ValueNotifier<String?> selectedCurrencyNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-    final initialCurrency = context
-        .read<SettingsBloc>()
-        .state
-        .model
-        .defaultCurrency;
-    selectedCurrencyNotifier = ValueNotifier(initialCurrency);
-  }
-
-  @override
-  void dispose() {
-    selectedCurrencyNotifier.dispose();
-    super.dispose();
-  }
-
   void _handleLogout() {
     context.read<AuthBloc>().add(AuthEventSignOut());
     context.read<SettingsBloc>().add(SettingsEventLoggedOut());
@@ -64,6 +47,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Navigator.of(
       context,
     ).pushNamedAndRemoveUntil(LoginScreen.routeName, (route) => false);
+  }
+
+  void resetAll() {
+    context.read<TransactionBloc>().clear();
+    context.read<CategoryBloc>().clear();
+    context.read<AccountBloc>().clear();
+    context.read<SavingsBloc>().clear();
+    context.read<SubscriptionBloc>().clear();
+    context.read<SettingsBloc>().clear();
+    Navigator.of(context).pop();
+    Navigator.of(context).pushNamed(MainScreen.routeName);
   }
 
   @override
@@ -84,16 +78,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         } else if (state is CsvExportSuccess) {
           toastification.show(
             context: context,
-            title: const Text('Export completed successfully.'),
+            title: Text(l10n.exportSuccess),
             type: ToastificationType.success,
             autoCloseDuration: const Duration(seconds: 3),
           );
         } else if (state is CsvImportSuccess) {
           toastification.show(
             context: context,
-            title: Text('Imported ${state.count} items successfully!'),
+            title: Text(l10n.importSuccess(state.count)),
             description: state.skipped > 0
-                ? Text('Skipped ${state.skipped} duplicate rows.')
+                ? Text(l10n.skippedDuplicates(state.skipped))
                 : null,
             type: ToastificationType.success,
             autoCloseDuration: const Duration(seconds: 4),
@@ -101,7 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         } else if (state is CsvFailure) {
           toastification.show(
             context: context,
-            title: const Text('Operation Failed'),
+            title: Text(l10n.operationFailed),
             description: Text(state.message),
             type: ToastificationType.error,
             autoCloseDuration: const Duration(seconds: 5),
@@ -182,11 +176,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Column(
                         children: [
                           const SecuritySettingsTile(),
-                          const LanguageSettingsTile(),
-                          CurrencySettingsTile(
-                            selectedCurrencyNotifier: selectedCurrencyNotifier,
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                backgroundColor: Colors.transparent,
+                                // isScrollControlled: true,
+                                builder: (context) =>
+                                    const PreferencesTileContent(),
+                              );
+                            },
+                            child: const PreferencesTile(),
                           ),
-                          const BankMarginTile(),
                         ],
                       ),
                     ),
@@ -215,7 +216,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text('Data Management', style: AppTextStyles.heading3),
                     const SizedBox(height: AppSpacing.md),
                     const DataImportExportCard(),
-                    const SizedBox(height: AppSpacing.xl),
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Delete Account
+                    GestureDetector(
+                      onTap: () => resetAll,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            PhosphorIconsBold.trash,
+                            color: AppColors.danger,
+                            size: 14,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            'Delete Account',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.danger,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: AppSpacing.md),
 
                     // About Section
                     Text(l10n.about, style: AppTextStyles.heading3),

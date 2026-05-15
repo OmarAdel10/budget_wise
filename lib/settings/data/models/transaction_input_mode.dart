@@ -1,0 +1,1 @@
+enum TransactionInputMode { manual, voice }

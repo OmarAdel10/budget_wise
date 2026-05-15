@@ -174,6 +174,11 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
     on<SettingsEventSyncSavingsSnapshot>((event, emit) async {
       await settingsRepository.syncSavingsSnapshot(event.savings);
     });
+
+    on<SettingsEventUpdateInputMode>((event, emit) {
+      final newModel = state.model.copyWith(transactionInputMode: event.mode);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
   }
 
   static String _getCurrencyName(String currencyCode) {

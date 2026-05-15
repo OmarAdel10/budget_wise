@@ -1,5 +1,12 @@
+import '../data/models/transaction_input_mode.dart';
+
 sealed class SettingsEvent {
   const SettingsEvent();
+}
+
+class SettingsEventUpdateInputMode extends SettingsEvent {
+  final TransactionInputMode mode;
+  const SettingsEventUpdateInputMode(this.mode);
 }
 
 class SettingsEventLocalAuth extends SettingsEvent {
