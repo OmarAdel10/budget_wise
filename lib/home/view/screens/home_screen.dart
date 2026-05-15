@@ -1,4 +1,5 @@
-// import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
+import 'package:budget_wise/sst/view/widgets/morphing_fab_recorder.dart';
+import 'package:budget_wise/settings/data/models/transaction_input_mode.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:budget_wise/shared/widgets/income_expense_toggle.dart';
 import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
+import '../../../settings/view_model/settings_view_model.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home-screen';
@@ -54,6 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final settingsState = context.watch<SettingsBloc>().state;
+    final isVoiceMode =
+        settingsState.model.transactionInputMode == TransactionInputMode.voice;
 
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
@@ -99,18 +104,17 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: "home_fab",
-        tooltip: l10n.addTransactionTitle,
-        onPressed: () {
-          Navigator.of(context).pushNamed(AddTransactionScreen.routeName);
-        },
-        backgroundColor: AppColors.primaryAccent,
-        child: Icon(
-          PhosphorIcons.plus(PhosphorIconsStyle.bold),
-          color: Colors.white,
-        ),
-      ),
+      // floatingActionButton: isVoiceMode
+          // ? const MorphingFabRecorder()
+          floatingActionButton:  FloatingActionButton(
+              heroTag: "home_fab",
+              tooltip: l10n.addTransactionTitle,
+              onPressed: () {
+                Navigator.of(context).pushNamed(AddTransactionScreen.routeName);
+              },
+              backgroundColor: AppColors.primaryAccent,
+              child: const Icon(PhosphorIconsBold.plus, color: Colors.white),
+            ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/savings/data/models/savings_model.dart';
 import 'package:budget_wise/savings/view_model/savings_view_model.dart';
 import 'package:budget_wise/savings/view_model/savings_event.dart';
@@ -26,6 +27,7 @@ class SavingDayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () {
         if (goal.method == SavingsMethod.custom) {
@@ -65,14 +67,14 @@ class SavingDayItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
-                Text("Day $dayNum", style: AppTextStyles.bodyLarge),
+                Text(l10n.dayCount(dayNum), style: AppTextStyles.bodyLarge),
               ],
             ),
             Row(
               children: [
                 if (goal.method == SavingsMethod.custom && amount == 0)
                   Text(
-                    "Tap to set",
+                    l10n.tapToChangeIcon, // Reusing existing key or we could add "tapToSet"
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -108,6 +110,7 @@ class SavingDayItem extends StatelessWidget {
     int day,
   ) {
     final controller = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -122,17 +125,17 @@ class SavingDayItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Set Amount for Day $day", style: AppTextStyles.heading3),
+            Text(l10n.setAmountForDay(day), style: AppTextStyles.heading3),
             const SizedBox(height: 20),
             CustomTextField(
-              hintText: "Enter amount",
+              hintText: l10n.enterAmount,
               controller: controller,
               keyboardType: TextInputType.number,
               suffixIcon: CloseButton(onPressed: controller.clear),
             ),
             const SizedBox(height: 20),
             CustomButton(
-              text: "Save Contribution",
+              text: l10n.saveContribution,
               onPressed: () {
                 final val = double.tryParse(controller.text) ?? 0;
                 if (val > 0) {

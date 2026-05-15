@@ -113,7 +113,7 @@ class ExportDatePickerSheet extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _SelectionCard(
-                      title: 'Select Month',
+                      title: l10n.selectMonth,
                       value: state.isRange ? '-' : dateFormat.format(state.start),
                       icon: PhosphorIconsRegular.calendar,
                       isSelected: !state.isRange,
@@ -123,7 +123,7 @@ class ExportDatePickerSheet extends StatelessWidget {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _SelectionCard(
-                      title: 'Custom Range',
+                      title: l10n.customRange,
                       value: state.isRange
                           ? '${rangeFormat.format(state.start)} - ${rangeFormat.format(state.end)}'
                           : '-',
@@ -139,7 +139,7 @@ class ExportDatePickerSheet extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.xl),
           CustomButton(
-            text: 'Export to CSV',
+            text: l10n.exportToCSV,
             onPressed: () => _handleExport(context, notifier),
           ),
           const SizedBox(height: AppSpacing.md),

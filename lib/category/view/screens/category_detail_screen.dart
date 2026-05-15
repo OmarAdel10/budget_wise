@@ -44,12 +44,12 @@ class CategoryDetailScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'This Category Is Not Available',
+                  l10n.categoryNotFound,
                   style: AppTextStyles.bodyLarge,
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 CustomButton(
-                  text: 'Return To Home Screen',
+                  text: l10n.returnToHome,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],

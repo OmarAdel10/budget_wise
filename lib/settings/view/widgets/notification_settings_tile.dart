@@ -53,9 +53,9 @@ class NotificationSettingsTile extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.cardBackground,
-        title: const Text('Permission Required'),
-        content: const Text(
-          'Notification permissions are disabled in system settings. Please enable them to receive alerts.',
+        title: Text(l10n.permissionRequired),
+        content: Text(
+          l10n.disableNotificationsWarningTitle, // Reusing similar warning or add new one
         ),
         actions: [
           TextButton(
@@ -67,7 +67,7 @@ class NotificationSettingsTile extends StatelessWidget {
               // Note: Opening settings usually requires a package like app_settings
               Navigator.pop(context);
             },
-            child: const Text('Open Settings'),
+            child: Text(l10n.openSettings),
           ),
         ],
       ),
