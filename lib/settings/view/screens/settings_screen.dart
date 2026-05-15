@@ -218,27 +218,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const DataImportExportCard(),
                     const SizedBox(height: AppSpacing.md),
 
-                    // Delete Account
-                    GestureDetector(
-                      onTap: () => resetAll,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            PhosphorIconsBold.trash,
-                            color: AppColors.danger,
-                            size: 14,
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          Text(
-                            'Delete Account',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.danger,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Delete Account - implement later (only show when the user is logged in)
+                    // GestureDetector(
+                    //   onTap: resetAll,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       const Icon(
+                    //         PhosphorIconsBold.trash,
+                    //         color: AppColors.danger,
+                    //         size: 14,
+                    //       ),
+                    //       const SizedBox(width: AppSpacing.sm),
+                    //       Text(
+                    //         'Delete Account',
+                    //         style: AppTextStyles.bodyMedium.copyWith(
+                    //           color: AppColors.danger,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
 
                     const SizedBox(height: AppSpacing.md),
 
