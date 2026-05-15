@@ -110,7 +110,7 @@ class _NumericEditorBottomSheetState extends State<NumericEditorBottomSheet> {
           suffixText: widget.suffixText,
           errorText: _errorText,
           filled: true,
-          fillColor: AppColors.primaryBackground,
+          fillColor: AppColors.inputBackground,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             borderSide: BorderSide.none,

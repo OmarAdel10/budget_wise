@@ -6,6 +6,8 @@ class AppSpacing {
   static const double lg = 24.0;
   static const double xl = 32.0;
   static const double xxl = 48.0;
+  static const double xxxl = 90;
+  static const double xxxxl = 100;
 
   // Border Radius
   static const double radiusSm = 8.0;

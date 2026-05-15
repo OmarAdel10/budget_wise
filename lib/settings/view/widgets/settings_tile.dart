@@ -13,6 +13,8 @@ class SettingsTile extends StatelessWidget {
   final bool showDivider;
   final bool? hasPadding;
   final double paddingVertical;
+  final Color? iconColor;
+  final Color? titleColor;
 
   const SettingsTile({
     super.key,
@@ -24,6 +26,8 @@ class SettingsTile extends StatelessWidget {
     this.showDivider = false,
     this.hasPadding = false,
     this.paddingVertical = AppSpacing.sm,
+    this.iconColor = AppColors.textPrimary,
+    this.titleColor = AppColors.textPrimary,
   });
 
   @override
@@ -42,17 +46,18 @@ class SettingsTile extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      PhosphorIcon(
-                        icon,
-                        color: AppColors.textPrimary,
-                        size: 24,
-                      ),
+                      PhosphorIcon(icon, color: iconColor, size: 24),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(title, style: AppTextStyles.bodyLarge),
+                            Text(
+                              title,
+                              style: AppTextStyles.bodyLarge.copyWith(
+                                color: titleColor,
+                              ),
+                            ),
                             if (subtitle != null)
                               Text(
                                 subtitle!,

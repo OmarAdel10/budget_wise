@@ -57,10 +57,24 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
               separatorBuilder: (context, index) =>
                   const Divider(color: AppColors.borderColor, height: 1),
               itemBuilder: (context, index) {
-                final code = AccountConstants.supportedCurrencies.keys
+                final flag = AccountConstants.supportedCurrencies.keys
                     .elementAt(index);
-                final name = AccountConstants.supportedCurrencies.values
+                final code = AccountConstants.supportedCurrencies.entries
+                    .map((entry) {
+                      return entry.value.keys;
+                    })
+                    .expand((i) => i)
                     .elementAt(index);
+                final name = AccountConstants.supportedCurrencies.entries
+                    .map((entry) {
+                      return entry.value.values;
+                    })
+                    .expand((i) => i)
+                    .elementAt(index);
+                // final code = AccountConstants.supportedCurrencies.values.
+                // .elementAt(index);
+                // final name = AccountConstants.supportedCurrencies.values
+                //     .elementAt(index);
                 final isSelected = code == selectedCurrency;
 
                 return InkWell(
@@ -92,7 +106,7 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                                 : null,
                           ),
                           child: Text(
-                            code,
+                            flag,
                             style: AppTextStyles.bodyMedium.copyWith(
                               fontWeight: FontWeight.bold,
                               color: isSelected
@@ -103,16 +117,31 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                         ),
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
-                          child: Text(
-                            name,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: isSelected
-                                  ? selectionColor
-                                  : AppColors.textPrimary,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: isSelected
+                                      ? selectionColor
+                                      : AppColors.textPrimary,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
+                              ),
+                              Text(
+                                code,
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: isSelected
+                                      ? selectionColor.withValues(alpha: 0.6)
+                                      : AppColors.textSecondary,
+                                  fontWeight: FontWeight.w100,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         if (isSelected)

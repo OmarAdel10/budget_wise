@@ -33,7 +33,7 @@ class CustomBottomSheet extends StatelessWidget {
         top: AppSpacing.md,
       ),
       decoration: const BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.primaryBackground,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppSpacing.radiusLg),
           topRight: Radius.circular(AppSpacing.radiusLg),
@@ -49,8 +49,8 @@ class CustomBottomSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.textSecondary.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                color: AppColors.borderColor,
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
