@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_generic_function_type_aliases, avoid_print, unnecessary_this
 import 'dart:async';
 import 'dart:ui';
 

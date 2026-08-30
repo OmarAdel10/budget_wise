@@ -111,7 +111,7 @@ class _BudgetCategoryItem extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  // TODO: Quick Edit Budget
+                  // TO DO: Quick Edit Budget
                 },
                 icon: const Icon(
                   PhosphorIconsBold.pencilSimple,

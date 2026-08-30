@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, non_const_argument_for_const_parameter
 import 'dart:convert';
 
 import 'package:budget_wise/shared/data/models/statistics_representable.dart';

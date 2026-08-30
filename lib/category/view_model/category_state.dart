@@ -13,9 +13,9 @@ sealed class CategoryState extends Equatable {
 
 class CategoryStateInitial extends CategoryState {
   const CategoryStateInitial({
-    required List<CategoryModel> categoriesList,
-    Map<String, double> totalSpentById = const {},
-  }) : super(categoriesList: categoriesList, totalSpentById: totalSpentById);
+    required super.categoriesList,
+    super.totalSpentById = const {},
+  });
 
   @override
   List<Object?> get props => [categoriesList, totalSpentById];

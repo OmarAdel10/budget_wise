@@ -1,15 +1,14 @@
 import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/category/view/screens/add_category_bottom_sheet.dart';
-import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
-import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
+import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/l10n/l10n_extension.dart';
-import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:budget_wise/shared/widgets/category_list_item.dart';
@@ -113,21 +112,17 @@ class _HomeCategoriesList extends StatelessWidget {
         delegate: SliverChildBuilderDelegate((context, index) {
           final item = categoryData[index];
           final category = item.source as CategoryModel;
-          return; //! Implement If Needed
-          // return CategoryListItem(
-          //   key: ValueKey(category.id),
-          //   name: category.categoryTitle,
-          //   totalSpent: totalSpentById[category.id] ?? 0.0,
-          //   //! Implement If Needed
-          //   totalNumberOfTransaction: 0,
-          //   type: category.type,
-          //   icon: category.categoryIcon,
-          //   onDelete: () => _handleDelete(context, item),
-          //   onTap: () => Navigator.of(context).pushNamed(
-          //     CategoryDetailScreen.routeName,
-          //     arguments: {'categoryId': category.id},
-          //   ),
-          // );
+
+          return CategoryListItem(
+            key: ValueKey(category.id),
+            name: category.categoryTitle,
+            totalSpent: totalSpentById[category.id] ?? 0.0,
+            totalNumberOfTransaction: 0,
+            type: category.type,
+            icon: category.categoryIcon,
+            onDelete: () => _handleDelete(context, item),
+            onTap: () {},
+          );
         }, childCount: categoryData.length),
       ),
     );

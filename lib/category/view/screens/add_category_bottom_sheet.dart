@@ -1,24 +1,20 @@
 import 'package:budget_wise/category/data/models/category_model.dart';
-import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
-import 'package:budget_wise/shared/widgets/generic_icon_container.dart';
-import 'package:budget_wise/shared/widgets/type_tab_bar.dart';
-import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/category/view/widgets/budget_section.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/l10n/l10n_extension.dart';
-import 'package:budget_wise/transaction/view/widgets/description_field.dart';
-import 'package:budget_wise/transaction/view/widgets/transaction_type_toggle.dart';
+import 'package:budget_wise/shared/constants/colors.dart';
+import 'package:budget_wise/shared/constants/spacing.dart';
+import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
+import 'package:budget_wise/shared/widgets/custom_text_field.dart';
+import 'package:budget_wise/shared/widgets/generic_icon_container.dart';
+import 'package:budget_wise/shared/widgets/icon_picker_bottom_sheet.dart';
+import 'package:budget_wise/shared/widgets/type_tab_bar.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
-import 'package:budget_wise/shared/utils/app_toast.dart';
-import '../../../shared/constants/colors.dart';
-import '../../../shared/constants/spacing.dart';
-import '../../../shared/constants/text_styles.dart';
-import '../../../shared/widgets/custom_text_field.dart';
-import '../../../shared/widgets/custom_button.dart';
-import '../../../shared/widgets/icon_picker_bottom_sheet.dart';
 
 class AddCategoryBottomSheet extends StatefulWidget {
   final CategoryModel? categoryToEdit;

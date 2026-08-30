@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
 import 'package:budget_wise/shared/vendor/telephony/telephony.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
-import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/notifications/view_model/notification_bloc.dart';
 import 'package:budget_wise/notifications/view_model/notification_event.dart';
@@ -77,6 +76,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       Future.microtask(() => _startPeriodicCheck());
 
       Future.microtask(() {
+        if (!mounted) return;
         final settings = context.read<SettingsBloc>().state.model;
         if (settings.allNotificationsEnabled &&
             settings.dailyReminderNotificationsEnabled) {
@@ -146,13 +146,8 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         ),
       );
     } else if (payload.startsWith('nav_category_')) {
-      final categoryId = payload.replaceFirst('nav_category_', '');
-      //! Implement If Needed
-      // Navigator.pushNamed(
-      //   context,
-      //   CategoryDetailScreen.routeName,
-      //   arguments: {'categoryId': categoryId},
-      // );
+      // The category detail route is intentionally left unimplemented for now.
+      // Keeping the route payload mirrored without creating unused locals.
     } else if (payload == 'nav_transactions') {
       AllTransactionsBottomSheet.show(context);
     }

@@ -1,3 +1,4 @@
+// ignore_for_file: annotate_overrides, prefer_final_fields, use_super_parameters, library_private_types_in_public_api
 part of 'telephony.dart';
 
 abstract class Filter<T, K> {

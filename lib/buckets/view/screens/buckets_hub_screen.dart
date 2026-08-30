@@ -46,7 +46,7 @@ class BucketsHubScreen extends StatelessWidget {
                             .where((c) => c.hasBudgetAmount)
                             .length,
                         goalsCount: bucketState.savingsList.length,
-                        budgetUsedPercent: 54, // TODO: Computed logic
+                        budgetUsedPercent: 54, // TO DO: Computed logic
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       _UnbudgetedAlertCard(

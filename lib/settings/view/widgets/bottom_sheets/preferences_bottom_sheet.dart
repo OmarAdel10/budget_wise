@@ -1,14 +1,13 @@
 import 'package:budget_wise/settings/view/widgets/tiles/bank_margin_tile.dart';
 import 'package:budget_wise/settings/view/widgets/tiles/currency_settings_tile.dart';
 import 'package:budget_wise/settings/view/widgets/tiles/language_settings_tile.dart';
-import 'package:budget_wise/settings/view/widgets/tiles/month_start_day_tile.dart';
-import 'package:budget_wise/settings/view/widgets/tiles/week_start_day_tile.dart';
-import 'package:budget_wise/settings/view/widgets/tiles/recent_transactions_count_tile.dart';
 import 'package:budget_wise/settings/view/widgets/tiles/merchant_rules_tile.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/month_start_day_tile.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/recent_transactions_count_tile.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/week_start_day_tile.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
-import 'package:budget_wise/shared/widgets/drag_handle.dart';
 import 'package:flutter/material.dart';
 
 class PreferencesBottomSheet extends StatefulWidget {

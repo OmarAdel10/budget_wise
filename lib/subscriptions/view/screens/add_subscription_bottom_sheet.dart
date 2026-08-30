@@ -1,11 +1,10 @@
 import 'package:budget_wise/currency_conversions/view/currency_conversion_preview.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/buckets/view/widgets/savings_color_picker.dart';
-import 'package:budget_wise/shared/utils/app_toast.dart';
-import 'package:budget_wise/accounts/view/widgets/account_field.dart';
-import 'package:budget_wise/shared/widgets/alert_setting_card.dart';
+import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
+import 'package:budget_wise/shared/widgets/alert_setting_card.dart';
 import 'package:budget_wise/shared/widgets/drag_handle.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 

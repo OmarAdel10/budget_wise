@@ -6,7 +6,6 @@ import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
-import 'package:budget_wise/shared/widgets/drag_handle.dart';
 import 'package:budget_wise/shared/widgets/month_selector.dart';
 import 'package:budget_wise/shared/widgets/transaction_list_view.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';

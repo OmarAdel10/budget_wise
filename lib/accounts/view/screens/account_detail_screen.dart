@@ -1,6 +1,5 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view/screens/edit_account_screen.dart';
-import 'package:budget_wise/accounts/view/widgets/account_action_buttons.dart';
 import 'package:budget_wise/accounts/view/widgets/account_balance_details_header.dart';
 import 'package:budget_wise/accounts/view/widgets/account_card_details_section.dart';
 import 'package:budget_wise/accounts/view/widgets/account_wallet_details_section.dart';

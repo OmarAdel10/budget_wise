@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, non_const_argument_for_const_parameter
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -138,6 +138,10 @@ class SubscriptionModel implements FinancialRepresentable {
   }
 
   factory SubscriptionModel.fromMap(Map<String, dynamic> map) {
+    final iconCodePoint = map['iconCodePoint'] as int;
+    final iconFontFamily = map['iconFontFamily'] as String?;
+    final iconFontPackage = map['iconFontPackage'] as String?;
+
     return SubscriptionModel(
       id: map['id'] as String,
       userId: map['userId'] as String,
@@ -150,9 +154,9 @@ class SubscriptionModel implements FinancialRepresentable {
       categoryId: map['categoryId'] as String,
       accountId: map['accountId'] as String? ?? '',
       icon: IconData(
-        map['iconCodePoint'] as int,
-        fontFamily: map['iconFontFamily'] as String?,
-        fontPackage: map['iconFontPackage'] as String?,
+        iconCodePoint,
+        fontFamily: iconFontFamily,
+        fontPackage: iconFontPackage,
       ),
       iconColorValue: map['iconColorValue'] as int,
       startDate: DateTime.parse(map['startDate'] as String),

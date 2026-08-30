@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names, unreachable_switch_default
 part of 'telephony.dart';
 
 const _FOREGROUND_CHANNEL = 'plugins.shounakmulay.com/foreground_sms_channel';

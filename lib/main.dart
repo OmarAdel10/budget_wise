@@ -1,28 +1,25 @@
 import 'dart:io';
+
 import 'package:budget_wise/app_entry/view/initialization_loading_screen.dart';
-import 'package:budget_wise/auth/view/screens/local_auth_screen.dart';
+import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
-import 'package:budget_wise/onboarding/view/screens/onboarding_screen.dart';
 import 'package:budget_wise/routes/routes.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/settings/view_model/settings_state.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
-import 'package:budget_wise/shared/constants/colors.dart';
-import 'package:budget_wise/shared/constants/spacing.dart';
+import 'package:budget_wise/shared/app_providers.dart';
+import 'package:budget_wise/shared/app_theme.dart';
+import 'package:budget_wise/shared/utils/background_tasks.dart';
 import 'package:budget_wise/shared/utils/sms_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:budget_wise/shared/app_theme.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:budget_wise/shared/app_providers.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:budget_wise/shared/utils/background_tasks.dart';
 import 'package:toastification/toastification.dart';
 
 void main() async {
@@ -89,9 +86,12 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
       _statusNotifier.value = "Syncing with your budget goals...";
 
       await NotificationRepository.notificationInit();
-      if (!isNotificationGranted)
+      if (!isNotificationGranted) {
         await NotificationRepository.requestPermissions();
-      if (!isMicrophonePermissionGranted) await Permission.microphone.request();
+      }
+      if (!isMicrophonePermissionGranted) {
+        await Permission.microphone.request();
+      }
 
       BackgroundTasks.initialize();
       BackgroundTasks.scheduleTasks();

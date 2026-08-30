@@ -49,10 +49,12 @@ class HomeTopSheet extends StatelessWidget {
               IconButton(
                 icon: const Icon(PhosphorIconsBold.gearFine, size: 20),
                 onPressed: () async {
-                  Navigator.pop(context);
+                  final currentContext = context;
+                  Navigator.pop(currentContext);
                   await Future.delayed(const Duration(milliseconds: 150));
+                  if (!currentContext.mounted) return;
                   showModalBottomSheet(
-                    context: context,
+                    context: currentContext,
                     backgroundColor: Colors.transparent,
                     isScrollControlled: true,
                     builder: (context) => const AccountsBottomSheet(),

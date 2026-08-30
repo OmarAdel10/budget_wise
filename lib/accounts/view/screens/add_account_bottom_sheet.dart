@@ -1,24 +1,21 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
-import 'package:budget_wise/accounts/view_model/account_event.dart';
-import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-
+import 'package:budget_wise/accounts/utils/card_validation_mixin.dart';
+import 'package:budget_wise/accounts/view/widgets/add_account_navigation_buttons.dart';
 import 'package:budget_wise/accounts/view/widgets/add_account_part1.dart';
 import 'package:budget_wise/accounts/view/widgets/add_account_part2.dart';
 import 'package:budget_wise/accounts/view/widgets/add_account_part_wallet.dart';
-import 'package:budget_wise/accounts/view/widgets/add_account_navigation_buttons.dart';
+import 'package:budget_wise/accounts/view_model/account_event.dart';
+import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
-import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
-import 'package:budget_wise/shared/utils/string_cases.dart';
-import 'package:budget_wise/shared/widgets/drag_handle.dart';
-import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
-import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
+import 'package:budget_wise/shared/utils/string_cases.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
-import 'package:budget_wise/accounts/utils/card_validation_mixin.dart';
 
 enum AddAccountStep { part1, cardDetails, walletDetails }
 
