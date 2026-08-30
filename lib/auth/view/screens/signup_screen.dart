@@ -10,7 +10,7 @@ import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
 import '../../../shared/constants/colors.dart';
@@ -60,7 +60,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final isFromOnboarding =
         ModalRoute.of(context)!.settings.arguments as bool? ?? false;
 
@@ -74,7 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          l10n.createAccount,
+          context.l10n.createAccount,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,

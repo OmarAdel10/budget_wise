@@ -1,7 +1,8 @@
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
@@ -13,7 +14,7 @@ import 'package:budget_wise/shared/widgets/passcode_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class LocalAuthScreen extends StatefulWidget {
   static const String routeName = '/local_auth';
@@ -70,11 +71,10 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
   }
 
   void _triggerBiometrics() {
-    final l10n = AppLocalizations.of(context)!;
     context.read<AuthBloc>().add(
       AuthEventLocalAuth(
-        localizedReason: l10n.biometricReason,
-        biometricNotAvailableErrorMessage: l10n.biometricNotAvailable,
+        localizedReason: context.l10n.biometricReason,
+        biometricNotAvailableErrorMessage: context.l10n.biometricNotAvailable,
       ),
     );
   }
@@ -127,7 +127,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
         AppToast.show(
           context,
           type: AppToastType.error,
-          title: AppLocalizations.of(context)!.passcodeIncorrect,
+          title: context.l10n.passcodeIncorrect,
         );
       }
     }
@@ -135,7 +135,6 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final useBiometrics = context.select<SettingsBloc, bool>(
       (bloc) => bloc.state.model.useBiometrics,
     );
@@ -164,7 +163,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
                 color: AppColors.primaryAccent,
               ),
               const SizedBox(height: AppSpacing.lg),
-              Text(l10n.enterPasscode, style: AppTextStyles.heading2),
+              Text(context.l10n.enterPasscode, style: AppTextStyles.heading2),
               const SizedBox(height: AppSpacing.xl),
               ValueListenableBuilder<String>(
                 valueListenable: _passcodeNotifier,
@@ -203,9 +202,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen>
                       width: 24,
                       height: 24,
                       child: CircularProgressIndicator(
-                        color: AppColors.primaryAccent.withValues(
-                          alpha: 0.7,
-                        ),
+                        color: AppColors.primaryAccent.withValues(alpha: 0.7),
                         strokeWidth: 3,
                       ),
                     );

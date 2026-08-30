@@ -1,4 +1,6 @@
 import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/shared/constants/colors.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
@@ -35,6 +37,11 @@ class CategoryDetailHeader extends StatelessWidget {
           budgetAmount: category.budgetAmount,
           hasBudgetAmount: category.hasBudgetAmount,
           icon: categoryData.source.financialIcon,
+          color: category.type == TransactionType.transfer
+              ? AppColors.transfer
+              : category.type == TransactionType.income
+              ? AppColors.income
+              : AppColors.expense,
           progress: progress,
         ),
       );

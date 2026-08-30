@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -8,12 +8,10 @@ import 'package:flutter/material.dart';
 class AccountNameInput extends StatelessWidget {
   const AccountNameInput({
     super.key,
-    required this.l10n,
     required this.accountNameController,
     this.hasPadding = true,
   });
 
-  final AppLocalizations l10n;
   final TextEditingController accountNameController;
   final bool hasPadding;
 
@@ -29,7 +27,7 @@ class AccountNameInput extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.addAccountAccountNameLabel,
+            context.l10n.addAccountAccountNameLabel,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -40,14 +38,14 @@ class AccountNameInput extends StatelessWidget {
             bgColor: AppColors.inputBackground,
             keyboardType: TextInputType.name,
             controller: accountNameController,
-            hintText: l10n.addAccountAccountNamePlaceholder,
+            hintText: context.l10n.addAccountAccountNamePlaceholder,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.accountNameCantLeftEmpty;
+                return context.l10n.accountNameCantLeftEmpty;
               }
 
               if (value.length < 3) {
-                return l10n.youShouldEnterMoreThan3Characters;
+                return context.l10n.youShouldEnterMoreThan3Characters;
               }
 
               return null;

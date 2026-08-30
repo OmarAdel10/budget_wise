@@ -1,4 +1,4 @@
-import 'package:budget_wise/savings/data/models/savings_model.dart';
+import 'package:budget_wise/buckets/data/models/saving_goal_model.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/subscriptions/data/models/billing_cycle.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
@@ -60,7 +60,7 @@ class CsvService {
   String generateCsvContent({
     required List<TransactionModel> transactions,
     required List<SubscriptionModel> subscriptions,
-    required List<SavingsModel> savings,
+    required List<SavingGoalModel> savings,
     required DateTime start,
     required DateTime end,
   }) {
@@ -80,7 +80,7 @@ class CsvService {
           dateFormat.format(tx.transactionDate),
           'Transaction',
           tx.type == TransactionType.income ? 'Income' : 'Expense',
-          tx.transactionTitle,
+          tx.description ?? '',
           tx.transactionAmount.toString(),
           tx.transactionCurrency,
           tx.categoryId,

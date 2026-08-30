@@ -110,7 +110,7 @@ class TransactionState extends Equatable {
         .where(
           (t) =>
               t.categoryId == categoryId &&
-              t.transactionTitle.toLowerCase().contains(name.toLowerCase()),
+              (t.description ?? '').toLowerCase().contains(name.toLowerCase()),
         )
         .toList();
   }

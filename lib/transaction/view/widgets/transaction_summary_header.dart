@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -18,7 +18,6 @@ class TransactionSummaryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -26,7 +25,7 @@ class TransactionSummaryHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            '${l10n.income}: ',
+            '${context.l10n.income}: ',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w500,
@@ -49,7 +48,7 @@ class TransactionSummaryHeader extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.md),
           Text(
-            '${l10n.expenses}: ',
+            '${context.l10n.expenses}: ',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w500,

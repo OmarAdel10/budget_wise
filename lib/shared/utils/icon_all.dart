@@ -1,6 +1,6 @@
 import 'package:budget_wise/shared/utils/all_phosphor_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 extension PhosPhorEx on PhosphorIcons {
   List<IconData> allRegularIcons() {
@@ -11,19 +11,13 @@ extension PhosPhorEx on PhosphorIcons {
     return AllIcons.boldIcons.values.toList();
   }
 
-  List<IconData> allDuoToneIcons() {
-    return AllIcons.duotoneIcons.values.toList();
-  }
-
   List<IconData> allFilledIcons() {
     return AllIcons.fillIcons.values.toList();
   }
 
-  List<IconData> allLightIcons() {
-    return AllIcons.lightIcons.values.toList();
-  }
+  Map<String, IconData> get allRegularIconsWithName => AllIcons.regularIcons;
 
-  List<IconData> allThinIcons() {
-    return AllIcons.thinIcons.values.toList();
-  }
+  Map<String, IconData> get allBoldIconsWithName => AllIcons.boldIcons;
+
+  Map<String, IconData> get allFilledIconsWithName => AllIcons.fillIcons;
 }

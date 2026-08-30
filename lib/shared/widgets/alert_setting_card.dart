@@ -1,11 +1,11 @@
 import 'package:budget_wise/shared/widgets/balance_input_with_currency.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class AlertSettingCard extends StatelessWidget {
   final ValueNotifier<bool> enabledNotifier;
@@ -29,7 +29,6 @@ class AlertSettingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: backgroundColorDecoration,
@@ -39,7 +38,7 @@ class AlertSettingCard extends StatelessWidget {
       child: ValueListenableBuilder<bool>(
         valueListenable: enabledNotifier,
         child: Text(
-          settingTitle ?? l10n.alertOnLowBalance,
+          settingTitle ?? context.l10n.alertOnLowBalance,
           style: AppTextStyles.bodyMedium,
         ),
         builder: (context, isEnabled, staticTitle) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/text_styles.dart';
 import '../screens/login_screen.dart';
@@ -11,13 +11,12 @@ class SignUpFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          l10n.alreadyHaveAccount,
+          context.l10n.alreadyHaveAccount,
           style: AppTextStyles.bodyMedium.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -31,7 +30,7 @@ class SignUpFooter extends StatelessWidget {
             }
           },
           child: Text(
-            l10n.login,
+            context.l10n.login,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
               decoration: TextDecoration.underline,

@@ -1,5 +1,5 @@
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -13,7 +13,6 @@ class NetWorthSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final netWorth = context.select<AccountBloc, double>(
       (bloc) => bloc.state.netWorth,
     );
@@ -24,6 +23,7 @@ class NetWorthSection extends StatelessWidget {
     final currency = NumberFormat.currency(name: defaultCurrency).currencyName;
 
     return Container(
+      margin: const EdgeInsets.all(AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
@@ -33,7 +33,7 @@ class NetWorthSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.netWorth,
+            context.l10n.netWorth,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),

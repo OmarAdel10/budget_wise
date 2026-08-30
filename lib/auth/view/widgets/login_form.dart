@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -21,7 +21,6 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Form(
       key: formKey,
@@ -30,12 +29,12 @@ class LoginForm extends StatelessWidget {
         children: [
           // Email Input
           CustomTextField(
-            hintText: l10n.email,
+            hintText: context.l10n.email,
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.emailRequired;
+                return context.l10n.emailRequired;
               }
               return null;
             },
@@ -44,16 +43,16 @@ class LoginForm extends StatelessWidget {
 
           // Password Input
           CustomTextField(
-            hintText: l10n.password,
+            hintText: context.l10n.password,
             controller: passwordController,
             isPassword: true,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.passwordRequired;
+                return context.l10n.passwordRequired;
               }
 
               if (value.length < 6) {
-                return l10n.passwordTooShort;
+                return context.l10n.passwordTooShort;
               }
               return null;
             },
@@ -72,7 +71,7 @@ class LoginForm extends StatelessWidget {
                 foregroundColor: AppColors.textSecondary,
               ),
               child: Text(
-                l10n.forgotPassword,
+                context.l10n.forgotPassword,
                 style: AppTextStyles.bodyMedium.copyWith(
                   decoration: TextDecoration.underline,
                 ),

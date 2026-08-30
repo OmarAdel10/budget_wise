@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/statistics/data/constants/statistics_constants.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -38,7 +39,6 @@ class CategoryChartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final List<FinancialBreakdownItem> breakdown;
     switch (toggleType) {
       case ToggleOption.income:
@@ -46,6 +46,9 @@ class CategoryChartSection extends StatelessWidget {
         break;
       case ToggleOption.expense:
         breakdown = expenseBreakdown;
+        break;
+      case ToggleOption.transfer:
+        breakdown = []; // Handle transfer if added later
         break;
       case ToggleOption.savings:
         breakdown = savingsBreakdown;
@@ -59,7 +62,7 @@ class CategoryChartSection extends StatelessWidget {
       children: [
         Align(
           alignment: Alignment.centerLeft,
-          child: Text(l10n.chart, style: AppTextStyles.heading3),
+          child: Text(context.l10n.chart, style: AppTextStyles.heading3),
         ),
         SizedBox(
           height: 280,
@@ -132,6 +135,10 @@ class CategoryChartSection extends StatelessWidget {
                             break;
                           case ToggleOption.expense:
                             colors = StatisticsConstants.expenseColors;
+                            break;
+                          case ToggleOption.transfer:
+                            colors =
+                                StatisticsConstants.savingsColors; // Fallback
                             break;
                           case ToggleOption.savings:
                             colors = StatisticsConstants.savingsColors;

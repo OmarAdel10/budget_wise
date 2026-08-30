@@ -1,20 +1,19 @@
 import 'package:budget_wise/accounts/view/widgets/wallet_provider_bottom_sheet.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class AccountWalletProviderField extends StatelessWidget {
   const AccountWalletProviderField({
     super.key,
-    required this.l10n,
     required this.selectedProvider,
     required this.onProviderSelected,
   });
 
-  final AppLocalizations l10n;
   final ValueNotifier<String?> selectedProvider;
   final Function(String providerName) onProviderSelected;
 
@@ -30,7 +29,7 @@ class AccountWalletProviderField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.addAccountProviderLabel,
+            context.l10n.addAccountProviderLabel,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -44,7 +43,7 @@ class AccountWalletProviderField extends StatelessWidget {
                 key: ValueKey(providerName),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return l10n.providerCantLeftEmpty;
+                    return context.l10n.providerCantLeftEmpty;
                   }
                   return null;
                 },
@@ -58,6 +57,7 @@ class AccountWalletProviderField extends StatelessWidget {
                             context: context,
                             backgroundColor: Colors.transparent,
                             isScrollControlled: true,
+                            useSafeArea: true,
                             builder: (context) => WalletProviderBottomSheet(
                               onProviderSelected: (name) {
                                 onProviderSelected(name);
@@ -85,7 +85,8 @@ class AccountWalletProviderField extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                providerName ?? l10n.addAccountProviderPlaceholder,
+                                providerName ??
+                                    context.l10n.addAccountProviderPlaceholder,
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   color: providerName == null
                                       ? AppColors.textSecondary
@@ -93,7 +94,7 @@ class AccountWalletProviderField extends StatelessWidget {
                                 ),
                               ),
                               Icon(
-                                PhosphorIcons.caretDown(),
+                                PhosphorIconsRegular.caretDown,
                                 size: 20,
                                 color: AppColors.textSecondary,
                               ),

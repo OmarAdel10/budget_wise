@@ -9,8 +9,14 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final CustomButtonType type;
   final bool isLoading;
-  final Widget? icon;
+  final Widget? leftIcon;
+  final Widget? rightIcon;
   final Color? color;
+  final double? height;
+  final EdgeInsets? padding;
+  final double? borderRadius;
+  final Color? borderColor;
+  final double borderWidth;
 
   const CustomButton({
     super.key,
@@ -18,8 +24,14 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.type = CustomButtonType.primary,
     this.isLoading = false,
-    this.icon,
+    this.leftIcon,
+    this.rightIcon,
     this.color,
+    this.height,
+    this.padding,
+    this.borderRadius,
+    this.borderColor,
+    this.borderWidth = 1,
   });
 
   @override
@@ -35,14 +47,23 @@ class CustomButton extends StatelessWidget {
         : AppColors.textPrimary;
 
     return SizedBox(
-      height: 55,
+      height: height,
       width: double.infinity,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
+          shape: borderRadius != null
+              ? RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(borderRadius!),
+                )
+              : null,
+          padding: padding,
           backgroundColor: backgroundColor,
           foregroundColor: textColor,
           disabledBackgroundColor: backgroundColor.withValues(alpha: 0.5),
+          side: borderColor != null
+              ? BorderSide(color: borderColor!, width: borderWidth)
+              : null,
         ),
         child: isLoading
             ? SizedBox(
@@ -56,11 +77,18 @@ class CustomButton extends StatelessWidget {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (icon != null) ...[icon!, const SizedBox(width: 8)],
+                  if (leftIcon != null) ...[
+                    leftIcon!,
+                    const SizedBox(width: 8),
+                  ],
                   Text(
                     text,
                     style: AppTextStyles.button.copyWith(color: textColor),
                   ),
+                  if (rightIcon != null) ...[
+                    const SizedBox(width: 8),
+                    rightIcon!,
+                  ],
                 ],
               ),
       ),

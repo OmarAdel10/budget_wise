@@ -1,9 +1,9 @@
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class AddAccountNavigationButtons extends StatelessWidget {
   const AddAccountNavigationButtons({
@@ -23,7 +23,6 @@ class AddAccountNavigationButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return ValueListenableBuilder<bool>(
       valueListenable: showCardEntry,
       builder: (context, showCardEntryValue, _) {
@@ -44,10 +43,10 @@ class AddAccountNavigationButtons extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(PhosphorIcons.arrowLeft(), color: Colors.white),
+                      Icon(PhosphorIconsRegular.arrowLeft, color: Colors.white),
                       const SizedBox(width: 8),
                       Text(
-                        l10n.back,
+                        context.l10n.back,
                         style: AppTextStyles.button.copyWith(
                           color: Colors.white,
                         ),
@@ -78,12 +77,12 @@ class AddAccountNavigationButtons extends StatelessWidget {
                       children: [
                         Text(
                           showCardEntryValue
-                              ? (l10n.addAccountButtonSaveCard.contains('Card') || l10n.addAccountButtonSaveCard.contains('بطاقة')
-                                  ? (onSaveCard.toString().contains('_onSaveWallet') ? l10n.addAccountButtonSaveWallet : l10n.addAccountButtonSaveCard)
-                                  : l10n.addAccountButtonSaveCard)
+                              ? (context.l10n.addAccountButtonSaveCard.contains('Card') || context.l10n.addAccountButtonSaveCard.contains('بطاقة')
+                                  ? (onSaveCard.toString().contains('_onSaveWallet') ? context.l10n.addAccountButtonSaveWallet : context.l10n.addAccountButtonSaveCard)
+                                  : context.l10n.addAccountButtonSaveCard)
                               : isPart2EnabledValue
-                              ? (l10n.continueWord)
-                              : (l10n.addAccountButtonAddAccount),
+                              ? (context.l10n.continueWord)
+                              : (context.l10n.addAccountButtonAddAccount),
                           style: AppTextStyles.button.copyWith(
                             color: Colors.white,
                           ),
@@ -91,16 +90,10 @@ class AddAccountNavigationButtons extends StatelessWidget {
                         const SizedBox(width: 8),
                         Icon(
                           showCardEntryValue
-                              ? PhosphorIcons.checkCircle(
-                                  PhosphorIconsStyle.fill,
-                                )
+                              ? PhosphorIconsFill.checkCircle
                               : isPart2EnabledValue
-                              ? PhosphorIcons.arrowCircleRight(
-                                  PhosphorIconsStyle.fill,
-                                )
-                              : PhosphorIcons.plusCircle(
-                                  PhosphorIconsStyle.fill,
-                                ),
+                              ? PhosphorIconsFill.arrowCircleRight
+                              : PhosphorIconsFill.plusCircle,
                           color: Colors.white,
                           size: 20,
                         ),

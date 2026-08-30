@@ -11,6 +11,7 @@ class HomeModel extends Equatable {
   final double totalExpenses;
   final DateTime currentMonth;
   final String? filterAccountId;
+  final String? selectedCategoryId;
   final List<FinancialBreakdownItem> categories;
   final List<TransactionModel> transactions;
 
@@ -19,6 +20,7 @@ class HomeModel extends Equatable {
     required this.totalExpenses,
     required this.currentMonth,
     this.filterAccountId,
+    this.selectedCategoryId,
     required this.categories,
     required this.transactions,
   });
@@ -29,6 +31,7 @@ class HomeModel extends Equatable {
     totalExpenses,
     currentMonth,
     filterAccountId,
+    selectedCategoryId,
     categories,
     transactions,
   ];
@@ -38,9 +41,11 @@ class HomeModel extends Equatable {
     double? totalExpenses,
     DateTime? currentMonth,
     String? filterAccountId,
+    String? selectedCategoryId,
     List<FinancialBreakdownItem>? categories,
     List<TransactionModel>? transactions,
     bool clearFilteredAccountId = false,
+    bool clearSelectedCategoryId = false,
   }) {
     return HomeModel(
       totalIncome: totalIncome ?? this.totalIncome,
@@ -49,6 +54,9 @@ class HomeModel extends Equatable {
       filterAccountId: clearFilteredAccountId
           ? null
           : (filterAccountId ?? this.filterAccountId),
+      selectedCategoryId: clearSelectedCategoryId
+          ? null
+          : (selectedCategoryId ?? this.selectedCategoryId),
       categories: categories ?? this.categories,
       transactions: transactions ?? this.transactions,
     );
@@ -60,6 +68,7 @@ class HomeModel extends Equatable {
       'totalExpenses': totalExpenses,
       'currentMonth': currentMonth.millisecondsSinceEpoch,
       'filterAccountId': filterAccountId,
+      'selectedCategoryId': selectedCategoryId,
       'categories': categories.map((x) => x.toMap()).toList(),
       'transactions': transactions.map((x) => x.toMap()).toList(),
     };
@@ -73,6 +82,7 @@ class HomeModel extends Equatable {
         map['currentMonth'] as int,
       ),
       filterAccountId: map['filterAccountId'] as String?,
+      selectedCategoryId: map['selectedCategoryId'] as String?,
       categories: List<FinancialBreakdownItem>.from(
         (map['categories'] as List<dynamic>).map<FinancialBreakdownItem>(
           (x) => FinancialBreakdownItem.fromMap(x as Map<String, dynamic>),

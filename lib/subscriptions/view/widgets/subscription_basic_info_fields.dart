@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/widgets/balance_input_with_currency.dart';
 import 'package:budget_wise/shared/widgets/custom_text_field.dart';
@@ -18,19 +18,18 @@ class SubscriptionBasicInfoFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         CustomTextField(
-          hintText: l10n.subscriptionNameHint,
+          hintText: context.l10n.subscriptionNameHint,
           controller: nameController,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return l10n.subNameCantLeftEmpty;
+              return context.l10n.subNameCantLeftEmpty;
             }
 
             if (value.length < 3) {
-              return l10n.youShouldEnterMoreThan3Characters;
+              return context.l10n.youShouldEnterMoreThan3Characters;
             }
 
             return null;
@@ -44,14 +43,14 @@ class SubscriptionBasicInfoFields extends StatelessWidget {
           hasTitle: false,
           hasDecoration: false,
           hasPadding: false,
-          hint: l10n.amount,
+          hint: context.l10n.amount,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return l10n.amountCantLeftEmpty;
+              return context.l10n.amountCantLeftEmpty;
             }
 
             if (value.isEmpty) {
-              return l10n.amountGreaterThan1;
+              return context.l10n.amountGreaterThan1;
             }
 
             return null;

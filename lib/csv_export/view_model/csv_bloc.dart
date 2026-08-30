@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:budget_wise/csv_export/service/csv_service.dart';
-import 'package:budget_wise/savings/data/models/savings_model.dart';
-import 'package:budget_wise/savings/view_model/savings_event.dart';
-import 'package:budget_wise/savings/view_model/savings_view_model.dart';
+import 'package:budget_wise/buckets/data/models/saving_goal_model.dart';
+import 'package:budget_wise/buckets/view_model/buckets_event.dart';
+import 'package:budget_wise/buckets/view_model/buckets_view_model.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_event.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
@@ -12,7 +12,7 @@ import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 part 'csv_event.dart';
@@ -22,7 +22,7 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
   final CsvService csvService;
   final TransactionBloc transactionBloc;
   final SubscriptionBloc subscriptionBloc;
-  final SavingsBloc savingsBloc;
+  final BucketsBloc savingsBloc;
 
   CsvBloc({
     required this.csvService,
@@ -116,7 +116,7 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
           final candidate = TransactionModel(
             id: const Uuid().v4(),
             userId: userId,
-            transactionTitle: row.title,
+            description: row.title,
             transactionAmount: row.amount,
             transactionCurrency: row.currency,
             transactionDate: row.date,
@@ -150,7 +150,7 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
             billingCycle: billingCycle,
             categoryId: row.categoryId,
             accountId: row.accountId,
-            icon: PhosphorIcons.repeat(PhosphorIconsStyle.fill),
+            icon: PhosphorIconsFill.repeat,
             iconColorValue: const Color(0xFF4CAF50).toARGB32(),
             startDate: row.date,
             billingDay: row.date.day,
@@ -258,7 +258,7 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
       if (savingsToImport.isNotEmpty) {
         final completer = Completer<void>();
         savingsBloc.add(
-          SavingsEventBulkCreate(
+          BucketsEventBulkCreate(
             goals: savingsToImport,
             completer: completer,
           ),
@@ -278,7 +278,7 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
         '${transaction.transactionDate.month.toString().padLeft(2, '0')}-'
         '${transaction.transactionDate.day.toString().padLeft(2, '0')}';
     return [
-      transaction.transactionTitle.toLowerCase(),
+      (transaction.description ?? '').toLowerCase(),
       transaction.transactionAmount.toStringAsFixed(2),
       transaction.transactionCurrency.toLowerCase(),
       transaction.categoryId.toLowerCase(),
@@ -304,7 +304,7 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
     ].join('|');
   }
 
-  String _savingsImportKey(SavingsModel goal) {
+  String _savingsImportKey(SavingGoalModel goal) {
     return [
       goal.name.toLowerCase(),
       goal.currency.toLowerCase(),
@@ -343,7 +343,7 @@ class _SavingsImportGroup {
     _completedDays.add(dayIndex);
   }
 
-  SavingsModel toModel({
+  SavingGoalModel toModel({
     required String id,
     required String userId,
     required DateTime now,
@@ -361,7 +361,7 @@ class _SavingsImportGroup {
         ? 0
         : _customAmounts.keys.reduce((a, b) => a > b ? a : b);
 
-    return SavingsModel(
+    return SavingGoalModel(
       id: id,
       userId: userId,
       name: name,
@@ -375,7 +375,7 @@ class _SavingsImportGroup {
       isSynced: false,
       completedDays: List<int>.from(_completedDays)..sort(),
       contributionDates: Map<int, DateTime>.from(_contributionDates),
-      method: SavingsMethod.custom,
+      method: SavingGoalMethod.custom,
       customAmounts: Map<int, double>.from(_customAmounts),
       targetDays: targetDays,
       sourceAccountId: sourceAccountId,

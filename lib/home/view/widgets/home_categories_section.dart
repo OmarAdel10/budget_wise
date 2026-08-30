@@ -1,11 +1,11 @@
 import 'package:budget_wise/category/data/models/category_model.dart';
-import 'package:budget_wise/category/view/screens/add_category_screen.dart';
+import 'package:budget_wise/category/view/screens/add_category_bottom_sheet.dart';
 import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -16,7 +16,7 @@ import 'package:budget_wise/shared/widgets/category_list_item.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class HomeCategoriesSection extends StatelessWidget {
   final ValueNotifier<ToggleOption> showIncomeNotifier;
@@ -64,7 +64,6 @@ class _HomeCategoriesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -72,15 +71,21 @@ class _HomeCategoriesHeader extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(l10n.categories, style: AppTextStyles.heading3),
+            Text(context.l10n.categories, style: AppTextStyles.heading3),
             const Spacer(),
             IconButton(
-              tooltip: l10n.addCategory,
+              tooltip: context.l10n.addCategory,
               onPressed: () {
-                Navigator.of(context).pushNamed(AddCategoryScreen.routeName);
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  useSafeArea: true,
+                  builder: (context) => const AddCategoryBottomSheet(),
+                );
               },
               icon: Icon(
-                PhosphorIcons.plus(PhosphorIconsStyle.bold),
+                PhosphorIconsBold.plus,
                 color: AppColors.textSecondary,
                 size: 20,
               ),
@@ -99,58 +104,44 @@ class _HomeCategoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final totalSpentById = context.select<CategoryBloc, Map<String, double>>(
+      (bloc) => bloc.state.totalSpentById,
+    );
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      sliver: SliverReorderableList(
-        itemBuilder: (context, index) {
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
           final item = categoryData[index];
           final category = item.source as CategoryModel;
-          final hasBudget = category.hasBudgetAmount;
-          final budget = category.budgetAmount ?? 0;
-          final spending = item.amount;
-          final isIncome = category.type == TransactionType.income;
-
-          double? progress;
-          if (hasBudget && budget > 0) {
-            progress = spending / budget;
-          }
-
-          return CategoryListItem(
-            key: ValueKey(category.id),
-            name: category.categoryTitle,
-            amount: spending.toStringAsFixed(0),
-            totalBudget: budget.toStringAsFixed(0),
-            hasBudgetAmount: hasBudget,
-            isIncome: isIncome,
-            icon: category.categoryIcon,
-            progress: progress,
-            index: index,
-            onDelete: () => _handleDelete(context, item),
-            onTap: () => Navigator.of(context).pushNamed(
-              CategoryDetailScreen.routeName,
-              arguments: {'categoryId': category.id, 'progress': progress},
-            ),
-          );
-        },
-        itemCount: categoryData.length,
-        onReorder: (oldIndex, newIndex) {
-          context.read<CategoryBloc>().add(
-            CategoryEventReorder(oldIndex: oldIndex, newIndex: newIndex),
-          );
-        },
+return;   //! Implement If Needed
+          // return CategoryListItem(
+          //   key: ValueKey(category.id),
+          //   name: category.categoryTitle,
+          //   totalSpent: totalSpentById[category.id] ?? 0.0,
+          //   //! Implement If Needed
+          //   totalNumberOfTransaction: 0,
+          //   type: category.type,
+          //   icon: category.categoryIcon,
+          //   onDelete: () => _handleDelete(context, item),
+          //   onTap: () => Navigator.of(context).pushNamed(
+          //     CategoryDetailScreen.routeName,
+          //     arguments: {'categoryId': category.id},
+          //   ),
+          // );
+        }, childCount: categoryData.length),
       ),
     );
   }
 
   void _handleDelete(BuildContext context, FinancialBreakdownItem item) {
-    final l10n = AppLocalizations.of(context)!;
     final catBloc = context.read<CategoryBloc>();
     final category = item.source as CategoryModel;
 
     AppToast.show(
       context,
       type: AppToastType.deleteWithUndo,
-      title: l10n.categoryDeleted,
+      title: context.l10n.categoryDeleted,
       onCompleted: () {
         catBloc.add(CategoryEventDeleteCategory(categoryId: category.id));
       },

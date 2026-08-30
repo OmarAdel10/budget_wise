@@ -4,7 +4,8 @@ import 'package:budget_wise/accounts/view/widgets/account_basic_info_card.dart';
 import 'package:budget_wise/accounts/view/widgets/account_delete_card.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
 import 'package:flutter/material.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -127,7 +128,8 @@ class _EditAccountScreenState extends State<EditAccountScreen>
             ) ??
             0.0,
         smsSenderIds: selectedBankSenderIdsNotifier.value,
-        smsIdentifier: isCard && cardNumberController.text.replaceAll(' ', '').length >= 4
+        smsIdentifier:
+            isCard && cardNumberController.text.replaceAll(' ', '').length >= 4
             ? cardNumberController.text
                   .replaceAll(' ', '')
                   .substring(
@@ -147,71 +149,61 @@ class _EditAccountScreenState extends State<EditAccountScreen>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBackground,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(l10n.editAccount, style: AppTextStyles.heading2),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => Navigator.of(context).pop(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
         ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.md,
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                //* Basic Information Section
-                SectionHeader(title: l10n.basicInformation),
-                AccountBasicInfoCard(
-                  accountType: widget.account.accountType,
-                  accountNameController: accountNameController,
-                  cardNumberController: cardNumberController,
-                  expiryController: expiryController,
-                  phoneNumberController: phoneNumberController,
-                  selectedBankNameNotifier: selectedBankNameNotifier,
-                  selectedBankSenderIdsNotifier: selectedBankSenderIdsNotifier,
-                  selectedWalletProviderNotifier:
-                      selectedWalletProviderNotifier,
-                  cardValidationMixin: this,
-                ),
-                const SizedBox(height: AppSpacing.lg),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              BottomSheetService.header(
+                title: context.l10n.editAccount,
+                padding: EdgeInsets.only(bottom: AppSpacing.lg),
+                hasPadding: true,
+              ),
+              //* Basic Information Section
+              SectionHeader(title: context.l10n.basicInformation),
+              AccountBasicInfoCard(
+                accountType: widget.account.accountType,
+                accountNameController: accountNameController,
+                cardNumberController: cardNumberController,
+                expiryController: expiryController,
+                phoneNumberController: phoneNumberController,
+                selectedBankNameNotifier: selectedBankNameNotifier,
+                selectedBankSenderIdsNotifier: selectedBankSenderIdsNotifier,
+                selectedWalletProviderNotifier: selectedWalletProviderNotifier,
+                cardValidationMixin: this,
+              ),
+              const SizedBox(height: AppSpacing.lg),
 
-                //* Financials Section
-                SectionHeader(title: l10n.financials),
-                AccountFinancialsCard(
-                  balanceController: balanceController,
-                  selectedCurrencyNotifier: selectedCurrencyNotifier,
-                ),
+              //* Financials Section
+              SectionHeader(title: context.l10n.financials),
+              AccountFinancialsCard(
+                balanceController: balanceController,
+                selectedCurrencyNotifier: selectedCurrencyNotifier,
+              ),
 
-                const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
-                //* Settings Section
-                SectionHeader(title: l10n.navSettings),
-                AlertSettingCard(
-                  enabledNotifier: lowBalanceAlertEnabledNotifier,
-                  alertAmountController: lowBalanceAlertAmountController,
-                ),
+              //* Settings Section
+              SectionHeader(title: context.l10n.navSettings),
+              AlertSettingCard(
+                enabledNotifier: lowBalanceAlertEnabledNotifier,
+                alertAmountController: lowBalanceAlertAmountController,
+              ),
 
-                const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
-                //* Delete Action
-                AccountDeleteCard(accountId: widget.account.id),
+              //* Delete Action
+              AccountDeleteCard(accountId: widget.account.id),
 
-                const SizedBox(height: AppSpacing.xxl * 2),
-              ],
-            ),
+              const SizedBox(height: AppSpacing.xxl * 2),
+            ],
           ),
         ),
       ),

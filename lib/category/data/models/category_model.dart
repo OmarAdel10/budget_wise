@@ -16,7 +16,8 @@ class CategoryModel implements FinancialRepresentable {
   final double? budgetAmount;
   final TransactionType type;
   final bool isSynced;
-  final int index;
+  final bool isDefault;
+  final bool isSystem;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -29,7 +30,8 @@ class CategoryModel implements FinancialRepresentable {
     this.budgetAmount,
     this.type = TransactionType.expense,
     this.isSynced = false,
-    this.index = 0,
+    this.isDefault = false,
+    this.isSystem = false,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -58,7 +60,8 @@ class CategoryModel implements FinancialRepresentable {
       'budgetAmount': budgetAmount,
       'type': type.name,
       'isSynced': isSynced,
-      'index': index,
+      'isDefault': isDefault,
+      'isSystem': isSystem,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -80,7 +83,8 @@ class CategoryModel implements FinancialRepresentable {
           ? TransactionType.values.firstWhere((e) => e.name == map['type'])
           : TransactionType.expense,
       isSynced: map['isSynced'] as bool,
-      index: map['index'] as int? ?? 0,
+      isDefault: map['isDefault'] as bool? ?? false,
+      isSystem: map['isSystem'] as bool? ?? false,
       createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt'] as String),
@@ -99,7 +103,8 @@ class CategoryModel implements FinancialRepresentable {
     double? budgetAmount,
     TransactionType? type,
     bool? isSynced,
-    int? index,
+    bool? isDefault,
+    bool? isSystem,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -112,7 +117,8 @@ class CategoryModel implements FinancialRepresentable {
       budgetAmount: budgetAmount ?? this.budgetAmount,
       type: type ?? this.type,
       isSynced: isSynced ?? this.isSynced,
-      index: index ?? this.index,
+      isDefault: isDefault ?? this.isDefault,
+      isSystem: isSystem ?? this.isSystem,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

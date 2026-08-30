@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -20,8 +20,6 @@ class NextBillingPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return ValueListenableBuilder2<DateTime, BillingCycle>(
       first: startDateNotifier,
       second: billingCycleNotifier,
@@ -45,7 +43,10 @@ class NextBillingPreview extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.nextRenewalDate, style: AppTextStyles.bodySmall),
+              Text(
+                context.l10n.nextRenewalDate,
+                style: AppTextStyles.bodySmall,
+              ),
               Text(
                 DateFormat('EEEE, MMM dd, yyyy').format(nextBillingPreview),
                 style: AppTextStyles.bodyLarge.copyWith(

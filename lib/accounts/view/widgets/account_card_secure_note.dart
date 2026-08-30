@@ -1,13 +1,11 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AccountCardSecureNote extends StatelessWidget {
-  const AccountCardSecureNote({super.key, required this.l10n});
-
-  final AppLocalizations l10n;
+  const AccountCardSecureNote({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +21,13 @@ class AccountCardSecureNote extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            l10n.addAccountCardSecureNote,
+            context.l10n.addAccountCardSecureNote,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
           Text(
-            l10n.disclaimer,
+            context.l10n.disclaimer,
             style: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
             textAlign: TextAlign.center,
           ),

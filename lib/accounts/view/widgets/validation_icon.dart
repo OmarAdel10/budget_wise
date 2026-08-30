@@ -1,6 +1,6 @@
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class ValidationIcon extends StatelessWidget {
   final bool isValid;

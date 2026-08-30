@@ -4,7 +4,7 @@ import 'package:budget_wise/auth/view/widgets/forgot_password_footer.dart';
 import 'package:budget_wise/auth/view/widgets/forgot_password_form.dart';
 import 'package:budget_wise/auth/view/widgets/forgot_password_header.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
 import '../../../shared/constants/colors.dart';
@@ -20,7 +20,6 @@ class ForgotPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
@@ -32,7 +31,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          l10n.forgotPassword,
+          context.l10n.forgotPassword,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
@@ -66,22 +65,22 @@ class ForgotPasswordScreen extends StatelessWidget {
                       const Spacer(flex: 2),
 
                       // Heading
-                      ForgotPasswordHeader(title: l10n.enterEmail),
+                      ForgotPasswordHeader(title: context.l10n.enterEmail),
                       const SizedBox(height: AppSpacing.xl),
 
                       // Reset Form
                       ForgotPasswordForm(
-                        emailHint: l10n.email,
-                        emailRequiredError: l10n.emailRequired,
-                        sendResetLinkText: l10n.sendResetLink,
+                        emailHint: context.l10n.email,
+                        emailRequiredError: context.l10n.emailRequired,
+                        sendResetLinkText: context.l10n.sendResetLink,
                       ),
 
                       const Spacer(flex: 3),
 
                       // Login Link (Footer)
                       ForgotPasswordFooter(
-                        rememberPasswordText: l10n.rememberPassword,
-                        loginText: l10n.login,
+                        rememberPasswordText: context.l10n.rememberPassword,
+                        loginText: context.l10n.login,
                         onLoginPressed: () => _onLogin(context),
                       ),
                       const SizedBox(height: AppSpacing.lg),

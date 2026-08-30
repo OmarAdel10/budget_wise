@@ -1,5 +1,5 @@
 import 'package:budget_wise/currency_conversions/view_model/currency_bloc.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -7,7 +7,7 @@ import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/widgets/numeric_editor_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:intl/intl.dart';
 
 class CurrencyConversionPreview extends StatefulWidget {
@@ -67,11 +67,10 @@ class _CurrencyConversionPreviewState extends State<CurrencyConversionPreview> {
   }
 
   void _showOverrideBottomSheet() {
-    final l10n = AppLocalizations.of(context)!;
 
     NumericEditorBottomSheet.show(
       context,
-      title: l10n.manualOverride,
+      title: context.l10n.manualOverride,
       description: 'Enter the exact amount deducted from your account:',
       initialValue: _manualOverride ?? _calculatedAmount,
       suffixText: widget.toCurrency,
@@ -93,14 +92,18 @@ class _CurrencyConversionPreviewState extends State<CurrencyConversionPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     if (widget.fromCurrency == widget.toCurrency || widget.amount == 0) {
       return const SizedBox.shrink();
     }
 
     return BlocBuilder<CurrencyBloc, CurrencyState>(
       builder: (context, state) {
-        if (state is CurrencyLoading) {
+        if (state is CurrencyInitial || state is CurrencyLoading) {
+          if (state is CurrencyInitial) {
+            context.read<CurrencyBloc>().add(
+              CurrencyLoadRequested(baseCurrency: widget.fromCurrency),
+            );
+          }
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
             child: Center(child: LinearProgressIndicator(minHeight: 2)),
@@ -131,14 +134,14 @@ class _CurrencyConversionPreviewState extends State<CurrencyConversionPreview> {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
-                      l10n.conversionError,
+                      context.l10n.conversionError,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.danger,
                       ),
                     ),
                   ),
                   Text(
-                    l10n.retry,
+                    context.l10n.retry,
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.danger,
                       fontWeight: FontWeight.bold,
@@ -181,8 +184,8 @@ class _CurrencyConversionPreviewState extends State<CurrencyConversionPreview> {
                     children: [
                       Text(
                         isOverridden
-                            ? l10n.manualConversion
-                            : l10n.estimatedConversion,
+                            ? context.l10n.manualConversion
+                            : context.l10n.estimatedConversion,
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                           fontWeight: FontWeight.bold,

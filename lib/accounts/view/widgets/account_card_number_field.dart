@@ -1,6 +1,7 @@
 import 'package:budget_wise/accounts/data/models/card_formatters.dart';
 import 'package:budget_wise/accounts/view/widgets/validation_icon.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -11,7 +12,6 @@ import 'package:flutter/services.dart';
 class AccountCardNumberField extends StatelessWidget {
   const AccountCardNumberField({
     super.key,
-    required this.l10n,
     required this.cardNumberController,
     required this.isCardValid,
     required this.onValidateCardNumber,
@@ -19,7 +19,6 @@ class AccountCardNumberField extends StatelessWidget {
     this.hasPadding = true,
   });
 
-  final AppLocalizations l10n;
   final TextEditingController cardNumberController;
   final ValueNotifier<bool> isCardValid;
   final Function(String) onValidateCardNumber;
@@ -38,7 +37,7 @@ class AccountCardNumberField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.addAccountCardNumberLabel,
+            context.l10n.addAccountCardNumberLabel,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -69,10 +68,10 @@ class AccountCardNumberField extends StatelessWidget {
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.cardNumberCantLeftEmpty;
+                return context.l10n.cardNumberCantLeftEmpty;
               }
               if (isCardValid.value == false) {
-                return l10n.youShouldEnterAValidCardNumber;
+                return context.l10n.youShouldEnterAValidCardNumber;
               }
               return null;
             },

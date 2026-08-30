@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/widgets/custom_toggle_button.dart';
 import 'package:budget_wise/subscriptions/data/models/billing_cycle.dart';
@@ -11,8 +11,6 @@ class BillingCycleSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     //* Forth UI Idea (Best and recommendable)
     return ValueListenableBuilder(
       valueListenable: billingCycleNotifier,
@@ -26,7 +24,7 @@ class BillingCycleSelector extends StatelessWidget {
                   .map(
                     (cycle) => Expanded(
                       child: CustomToggleButton(
-                        label: _getCycleLabel(cycle, l10n),
+                        label: _getCycleLabel(cycle, context),
                         isSelected: selectedCycle == cycle,
                         onTap: () => billingCycleNotifier.value = cycle,
                         hasPadding: true,
@@ -43,7 +41,7 @@ class BillingCycleSelector extends StatelessWidget {
                   .map(
                     (cycle) => Expanded(
                       child: CustomToggleButton(
-                        label: _getCycleLabel(cycle, l10n),
+                        label: _getCycleLabel(cycle, context),
                         isSelected: selectedCycle == cycle,
                         onTap: () => billingCycleNotifier.value = cycle,
                         hasPadding: true,
@@ -59,7 +57,7 @@ class BillingCycleSelector extends StatelessWidget {
                   .map(
                     (cycle) => Expanded(
                       child: CustomToggleButton(
-                        label: _getCycleLabel(cycle, l10n),
+                        label: _getCycleLabel(cycle, context),
                         isSelected: selectedCycle == cycle,
                         onTap: () => billingCycleNotifier.value = cycle,
                         hasPadding: true,
@@ -82,7 +80,7 @@ class BillingCycleSelector extends StatelessWidget {
     //       children: BillingCycle.values
     //           .map(
     //             (cycle) => CustomToggleButton(
-    //               label: _getCycleLabel(cycle, l10n),
+    //               label: _getCycleLabel(cycle, context.l10n),
     //               isSelected: selectedCycle == cycle,
     //               onTap: () => billingCycleNotifier.value = cycle,
     //               hasPadding: true,
@@ -120,7 +118,7 @@ class BillingCycleSelector extends StatelessWidget {
     //         itemBuilder: (context, index) {
     //           final cycle = BillingCycle.values[index];
     //           return CustomToggleButton(
-    //             label: _getCycleLabel(cycle, l10n),
+    //             label: _getCycleLabel(cycle, context.l10n),
     //             isSelected: selectedCycle == cycle,
     //             onTap: () => billingCycleNotifier.value = cycle,
     //           );
@@ -150,7 +148,7 @@ class BillingCycleSelector extends StatelessWidget {
     //                 double.infinity,
     //             height: 40,
     //             child: CustomToggleButton(
-    //               label: _getCycleLabel(cycle, l10n),
+    //               label: _getCycleLabel(cycle, context.l10n),
     //               isSelected: selectedCycle == cycle,
     //               onTap: () => billingCycleNotifier.value = cycle,
     //             ),
@@ -162,18 +160,18 @@ class BillingCycleSelector extends StatelessWidget {
     // );
   }
 
-  String _getCycleLabel(BillingCycle cycle, AppLocalizations l10n) {
+  String _getCycleLabel(BillingCycle cycle, BuildContext context) {
     switch (cycle) {
       case BillingCycle.weekly:
-        return l10n.weekly;
+        return context.l10n.weekly;
       case BillingCycle.monthly:
-        return l10n.monthly;
+        return context.l10n.monthly;
       case BillingCycle.quarterly:
-        return l10n.quarterly;
+        return context.l10n.quarterly;
       case BillingCycle.halfYearly:
-        return l10n.halfYearly;
+        return context.l10n.halfYearly;
       case BillingCycle.yearly:
-        return l10n.yearly;
+        return context.l10n.yearly;
     }
   }
 }

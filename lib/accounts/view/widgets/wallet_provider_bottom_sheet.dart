@@ -1,5 +1,5 @@
 import 'package:budget_wise/accounts/data/data_source/account_constants.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -12,9 +12,10 @@ class WalletProviderBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return DraggableScrollableSheet(
+            shouldCloseOnMinExtent: false,
+
       initialChildSize: 0.5,
       minChildSize: 0.3,
       maxChildSize: 0.7,
@@ -44,7 +45,7 @@ class WalletProviderBottomSheet extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    Text(l10n.addAccountProviderLabel, style: AppTextStyles.heading2),
+                    Text(context.l10n.addAccountProviderLabel, style: AppTextStyles.heading2),
                   ],
                 ),
               ),

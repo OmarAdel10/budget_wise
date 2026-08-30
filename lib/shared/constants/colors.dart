@@ -24,11 +24,11 @@ class AppColors {
   static const Color expense = Color(0xFFE57373);
   static const Color savings = Color(0xFF81D4FA);
   static const Color subscription = Color(0xFFCE93D8);
+  static const Color transfer = Color(0xFF90CAF9);
 
   // Categories Colors (Sample)
   static const Color categoryPink = Color(0xFFF48FB1);
   static const Color categoryTeal = Color(0xFF80CBC4);
-  static const Color categoryBlue = Color(0xFF90CAF9);
   static const Color categoryPurple = Color(0xFFCE93D8);
   static const Color categoryYellow = Color(0xFFFFF59D);
 }

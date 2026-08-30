@@ -11,6 +11,8 @@
   "income": "الدخل",
   "expense": "مصروف",
   "expenses": "المصروفات",
+  "all": "الكل",
+  "transfer": "تحويل",
   "categories": "التصنيفات",
   "addCategory": "إضافة تصنيف",
   "allSavingGoals": "كل أهداف الادخار",
@@ -103,7 +105,7 @@
   "saveChanges": "حفظ التغييرات",
   "newPassword": "كلمة المرور الجديدة",
   "syncToCloud": "مزامنة البيانات",
-  "recentTransactions": "أحدث العمليات",
+  "recentActivity": "النشاط الأخير",
   "seeAll": "عرض الكل",
   "expenseDetails": "تفاصيل المصروف",
   "incomeDetails": "تفاصيل الدخل",
@@ -113,6 +115,7 @@
   "delete": "حذف",
   "edit": "تعديل",
   "title": "العنوان",
+  "titleLabel": "العنوان (اختياري)",
   "transactionHistory": "تاريخ العمليات",
   "total": "إجمالي",
   "totalSpent": "إجمالي المصروفات",
@@ -122,6 +125,11 @@
   "hasNoBudget": "لا يوجد ميزانية",
   "undo": "تراجع",
   "transactionDeleted": "تم حذف العملية",
+  "undoDeletionDescription": "اضغط على تراجع لإلغاء الحذف.",
+  "transactionDeletedSuccessfully": "تم حذف العملية بنجاح.",
+  "transactionSavedSuccessfully": "تم حفظ العملية بنجاح.",
+  "categoryDeletedSuccessfully": "تم حذف التصنيف بنجاح.",
+  "categorySavedSuccessfully": "تم حفظ التصنيف بنجاح.",
   "categoryDeleted": "تم حذف التصنيف",
   "yourExpensesExceedYourIncome": "مصروفاتك تتجاوز دخلك",
   "noEarningsThisMonth": "لا توجد أرباح لهذا الشهر",
@@ -230,8 +238,8 @@
   "monthlyBudget": "الميزانية الشهرية",
   "enterTitle": "يرجى إدخال العنوان",
   "enterValidAmount": "يرجى إدخال مبلغ صالح",
-  "selectCategory": "يرجى اختيار تصنيف",
-  "selectAccount": "يرجى اختيار حساب",
+  "selectCategory": "اختر الفئة",
+  "selectAccount": "اختر حساب",
   "editTransaction": "تعديل العملية",
   "editCategory": "تعديل التصنيف",
   "addTransactionTitle": "إضافة عملية",
@@ -491,6 +499,7 @@
   "sttInputMode": "طريقة إدخال المعاملات",
   "sttModeManual": "يدوي",
   "sttModeVoice": "صوتي",
+  "voiceNote": "ملاحظة صوتية",
   "sttActivationTitle": "تفعيل البحث الصوتي",
   "sttActivationDesc": "جاري تحميل حزمة اللغة المصرية لتحسين الأداء بدون إنترنت",
   "sttListening": "جاري الاستماع...",
@@ -503,6 +512,23 @@
   "sttPhrase5": "دفع فواتير الكهرباء والميه 400 جنيه",
   "close": "إغلاق",
   "preferences": "التفضيلات",
+  "merchantRulesEnabled": "قواعد التاجر",
+  "merchantRulesEnabledInfo": "تصنيف المعاملات تلقائياً حسب اسم التاجر",
+  "merchantRules": "قواعد التاجر",
+  "addMerchantRule": "إضافة قاعدة تاجر",
+  "editMerchantRule": "تعديل قاعدة التاجر",
+  "merchantName": "اسم التاجر",
+  "merchantNameHint": "مثال: ستاربكس",
+  "saveRule": "حفظ القاعدة",
+  "noMerchantRules": "لا توجد قواعد بعد",
+  "noMerchantRulesDesc": "اضغط + لإنشاء القاعدة الأولى",
+  "deleteRuleTitle": "حذف القاعدة",
+  "rule": "القاعدة",
+  "ruleDeleted": "تم حذف القاعدة بنجاح",
+  "deleteRuleConfirmation": "هل أنت متأكد من حذف هذه القاعدة؟",
+  "searchByMerchantName": "ابحث باسم التاجر...",
+  "recentTransactionsCount": "عدد العمليات المعروضة مؤخراً",
+  "recentTransactionsCountInfo": "عدد العمليات المعروضة في الشاشة الرئيسية",
   "categoryNotFound": "لم يتم العثور على الفئة",
   "returnToHome": "العودة للشاشة الرئيسية",
   "dayCount": "يوم {day}",
@@ -550,5 +576,81 @@
   "mainActionDesc": "اختر ما يفعله الزر الكبير الموجود أسفل الشاشة الرئيسية.",
   "exportToCSV": "تصدير إلى CSV",
   "selectMonth": "اختر الشهر",
-  "customRange": "نطاق مخصص"
+  "customRange": "نطاق مخصص",
+  "allAccounts": "جميع الحسابات",
+  "balance": "رصيد حساب",
+  "appLock": "قفل التطبيق",
+  "incomeHint": "من أين ربحت هذا المال؟",
+  "expenseHint": "فيمَ أنفقت هذا المال؟",
+  "transferNoteHint": "أضف ملاحظة لهذا التحويل",
+  "noteHint": "أضف ملاحظة أو سياق...",
+  "note": "ملاحظة (اختياري)",
+  "hint": "تلميح (اختياري)",
+  "selectToAccount": "اختر الحساب المحول إليه",
+  "fromAccount": "من حساب",
+  "toAccount": "إلى حساب",
+  "sameAccountError": "لا يمكن أن يكون حساب المصدر والوجهة متطابقين",
+  "descriptionLabel": "الوصف (اختياري)",
+  "categoryLabel": "التصنيف",
+  "categoryLabelOptional": "التصنيف (اختياري)",
+  "accountLabel": "الحساب",
+  "dateLabel": "التاريخ",
+  "pickDate": "اختار تاريخ",
+  "mostUsed": "الأكثر استخداما",
+  "transferFrom": "تحويل من {fromAccountName}",
+  "@transferFrom": {
+    "placeholders": {
+      "fromAccountName": {
+        "type": "String"
+      }
+    }
+  },
+  "transferTo": "تحويل الي {toAccountName}",
+  "@transferTo": {
+    "placeholders": {
+      "toAccountName": {
+        "type": "String"
+      }
+    }
+  },
+  "pendingReview": "{count} قيد المراجعة",
+  "@pendingReview": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "review": "مراجعة",
+  "transactionsRequireReviewing": "عمليات قيد المراجعة",
+  "deleteType": "حذف {type}",
+  "@deleteType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTypeDesc": "هل أنت متأكد أنك تريد حذف هذا {type}? لا يمكن التراجع عن هذا الإجراء.",
+  "@deleteTypeDesc": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "transactionLabel": "عملية",
+  "searchTransactions": "ابحث عن المعاملات...",
+  "searchCategories": "ابحث عن الفئات...",
+  "monthStartDay": "يوم بداية الشهر",
+  "monthStartDayInfo": "اليوم الذي يبدأ فيه شهرك (مثل يوم الراتب)",
+  "weekStartDay": "يوم بداية الأسبوع",
+  "weekStartDayInfo": "اليوم الذي يبدأ فيه أسبوعك",
+  "monday": "الاثنين",
+  "tuesday": "الثلاثاء",
+  "wednesday": "الأربعاء",
+  "thursday": "الخميس",
+  "friday": "الجمعة",
+  "saturday": "السبت",
+  "sunday": "الأحد"
 }

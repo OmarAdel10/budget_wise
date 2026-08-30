@@ -92,3 +92,11 @@ class AccountEventCheckAndSyncPending extends AccountEvent {
   @override
   List<Object> get props => [];
 }
+
+class AccountEventSetDefault extends AccountEvent {
+  final String accountId;
+  const AccountEventSetDefault({required this.accountId});
+
+  @override
+  List<Object> get props => [accountId];
+}

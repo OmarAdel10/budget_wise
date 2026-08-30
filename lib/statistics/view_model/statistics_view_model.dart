@@ -1,4 +1,4 @@
-import 'package:budget_wise/savings/view_model/savings_view_model.dart';
+import 'package:budget_wise/buckets/view_model/buckets_view_model.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/subscriptions/data/models/billing_cycle.dart';
@@ -14,7 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   final TransactionBloc transactionBloc;
   final CategoryBloc categoryBloc;
-  final SavingsBloc savingsBloc;
+  final BucketsBloc savingsBloc;
   final SubscriptionBloc subscriptionBloc;
 
   StatisticsBloc({

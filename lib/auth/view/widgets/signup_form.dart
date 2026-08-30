@@ -2,8 +2,8 @@ import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/custom_text_field.dart';
@@ -28,7 +28,6 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Form(
       key: formKey,
@@ -37,12 +36,12 @@ class SignUpForm extends StatelessWidget {
         children: [
           // Name Input
           CustomTextField(
-            hintText: l10n.name,
+            hintText: context.l10n.name,
             controller: nameController,
             keyboardType: TextInputType.name,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.nameRequired;
+                return context.l10n.nameRequired;
               }
               return null;
             },
@@ -51,12 +50,12 @@ class SignUpForm extends StatelessWidget {
 
           // Email Input
           CustomTextField(
-            hintText: l10n.email,
+            hintText: context.l10n.email,
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.emailRequired;
+                return context.l10n.emailRequired;
               }
               return null;
             },
@@ -65,16 +64,16 @@ class SignUpForm extends StatelessWidget {
 
           // Password Input
           CustomTextField(
-            hintText: l10n.password,
+            hintText: context.l10n.password,
             controller: passwordController,
             isPassword: true,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.passwordRequired;
+                return context.l10n.passwordRequired;
               }
 
               if (value.length < 6) {
-                return l10n.passwordTooShort;
+                return context.l10n.passwordTooShort;
               }
               return null;
             },
@@ -88,7 +87,7 @@ class SignUpForm extends StatelessWidget {
             builder: (context, state) {
               return RepaintBoundary(
                 child: CustomButton(
-                  text: l10n.createAccount,
+                  text: context.l10n.createAccount,
                   onPressed: onSignUp,
                   isLoading: state is AuthStateLoading,
                 ),
@@ -100,10 +99,10 @@ class SignUpForm extends StatelessWidget {
           // Google Login Button
           RepaintBoundary(
             child: CustomButton(
-              text: l10n.loginWithGoogle,
+              text: context.l10n.loginWithGoogle,
               type: CustomButtonType.secondary,
               onPressed: onGoogleLogin,
-              icon: Icon(PhosphorIcons.googleLogo(PhosphorIconsStyle.bold)),
+              leftIcon: Icon(PhosphorIconsBold.googleLogo),
             ),
           ),
         ],

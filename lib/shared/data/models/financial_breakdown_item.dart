@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 import 'package:budget_wise/category/data/models/category_model.dart';
-import 'package:budget_wise/savings/data/models/savings_model.dart';
+import 'package:budget_wise/buckets/data/models/saving_goal_model.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/shared/data/models/statistics_representable.dart';
 
@@ -43,7 +43,7 @@ class FinancialBreakdownItem extends Equatable {
 
     final FinancialRepresentable source = switch (sourceType) {
       StatisticsSourceType.category => CategoryModel.fromMap(sourceData),
-      StatisticsSourceType.savings => SavingsModel.fromMap(sourceData),
+      StatisticsSourceType.savings => SavingGoalModel.fromMap(sourceData),
       StatisticsSourceType.subscription => SubscriptionModel.fromMap(
         sourceData,
       ),

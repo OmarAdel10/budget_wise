@@ -3,21 +3,32 @@ import 'package:equatable/equatable.dart';
 
 sealed class CategoryState extends Equatable {
   final List<CategoryModel> categoriesList;
-  const CategoryState({required this.categoriesList});
+  final Map<String, double> totalSpentById;
+
+  const CategoryState({
+    required this.categoriesList,
+    required this.totalSpentById,
+  });
 }
 
 class CategoryStateInitial extends CategoryState {
-  const CategoryStateInitial({required super.categoriesList});
+  const CategoryStateInitial({
+    required List<CategoryModel> categoriesList,
+    Map<String, double> totalSpentById = const {},
+  }) : super(categoriesList: categoriesList, totalSpentById: totalSpentById);
 
   @override
-  List<Object?> get props => [categoriesList];
+  List<Object?> get props => [categoriesList, totalSpentById];
 }
 
 class CategoryStateSuccess extends CategoryState {
-  const CategoryStateSuccess({required super.categoriesList});
+  const CategoryStateSuccess({
+    required super.categoriesList,
+    required super.totalSpentById,
+  });
 
   @override
-  List<Object?> get props => [categoriesList];
+  List<Object?> get props => [categoriesList, totalSpentById];
 }
 
 class CategoryStateError extends CategoryState {
@@ -26,8 +37,9 @@ class CategoryStateError extends CategoryState {
   const CategoryStateError({
     required this.message,
     required super.categoriesList,
+    required super.totalSpentById,
   });
 
   @override
-  List<Object?> get props => [message, categoriesList];
+  List<Object?> get props => [message, categoriesList, totalSpentById];
 }

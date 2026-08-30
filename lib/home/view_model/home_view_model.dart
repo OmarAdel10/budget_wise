@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/home/data/models/home_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_extensions.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/home/view_model/home_event.dart';
 import 'package:budget_wise/home/view_model/home_state.dart';
@@ -10,6 +11,7 @@ import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
@@ -34,10 +36,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
            ),
          ),
        ) {
-    if (settingsBloc.state.model.hasLoggedIn) {
-      transactionBloc.add(const TransactionEventSyncUnsynced());
-      categoryBloc.add(const CategoryEventSyncUnsynced());
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (settingsBloc.state.model.hasLoggedIn) {
+        transactionBloc.add(const TransactionEventSyncUnsynced());
+        categoryBloc.add(const CategoryEventSyncUnsynced());
+      }
+    });
     on<HomeEventLoadAllData>((event, emit) async {
       _loadData(emit, monthDate: event.monthDate, accountId: event.accountId);
     });
@@ -56,6 +60,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ),
       );
       _loadData(emit, accountId: event.accountId);
+    });
+
+    on<HomeEventFilterByCategory>((event, emit) async {
+      emit(
+        HomeStateSuccess(
+          model: state.model.copyWith(
+            selectedCategoryId: event.categoryId,
+            clearSelectedCategoryId: event.categoryId == null,
+          ),
+        ),
+      );
+      _loadData(emit, categoryId: event.categoryId);
     });
 
     _transSub = transactionBloc.stream.listen(
@@ -80,10 +96,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit, {
     DateTime? monthDate,
     String? accountId,
+    String? categoryId,
   }) {
     try {
       final currentMonth = monthDate ?? state.model.currentMonth;
       final currentAccountId = accountId ?? state.model.filterAccountId;
+      final currentCategoryId = categoryId ?? state.model.selectedCategoryId;
 
       final allTransactions = transactionBloc.state.transactionsList;
       final allCategories = categoryBloc.state.categoriesList;
@@ -104,6 +122,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 .toList();
 
       for (final transaction in filteredTransactions) {
+        if (transaction.isSystemTransaction || transaction.isTransferLeg) {
+          continue;
+        }
         if (transaction.type == TransactionType.income) {
           income += transaction.transactionAmount;
         } else {
@@ -125,15 +146,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             );
           }).toList();
 
+      final finalTransactions = currentCategoryId == null
+          ? filteredTransactions
+          : filteredTransactions
+                .where((t) => t.categoryId == currentCategoryId)
+                .toList();
+
       emit(
         HomeStateSuccess(
           model: state.model.copyWith(
             categories: categoriesWithSpendingList,
             currentMonth: currentMonth,
             filterAccountId: currentAccountId,
+            selectedCategoryId: currentCategoryId,
+            clearSelectedCategoryId: currentCategoryId == null,
             totalIncome: income,
             totalExpenses: expenses,
-            transactions: filteredTransactions,
+            transactions: finalTransactions,
           ),
         ),
       );

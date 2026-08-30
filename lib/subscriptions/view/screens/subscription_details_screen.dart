@@ -8,19 +8,19 @@ import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/view_model/transaction_state.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/subscriptions/data/utils/billing_utils.dart';
-import 'package:budget_wise/subscriptions/view/screens/add_subscription_screen.dart';
+import 'package:budget_wise/subscriptions/view/screens/add_subscription_bottom_sheet.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_event.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_history_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class SubscriptionDetailsScreen extends StatelessWidget {
   static const routeName = '/subscription-details';
@@ -29,7 +29,6 @@ class SubscriptionDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final subscriptionId = ModalRoute.of(context)?.settings.arguments as String;
     final subscriptionModel = context
         .select<SubscriptionBloc, SubscriptionModel?>(
@@ -52,7 +51,7 @@ class SubscriptionDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.subscriptionDetails),
+        title: Text(context.l10n.subscriptionDetails),
         leading: CloseButton(),
         actions: [
           BlocSelector<SubscriptionBloc, SubscriptionState, SubscriptionModel>(
@@ -68,7 +67,7 @@ class SubscriptionDetailsScreen extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) =>
-                          AddSubscriptionScreen(subscriptionToEdit: model),
+                          AddSubscriptionBottomSheet(subscriptionToEdit: model),
                     ),
                   );
                 },
@@ -78,7 +77,7 @@ class SubscriptionDetailsScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(PhosphorIconsBold.trash, color: AppColors.danger),
             onPressed: () =>
-                _showDeleteDialog(context, l10n, subscriptionModel),
+                _showDeleteDialog(context, subscriptionModel),
           ),
         ],
       ),
@@ -94,16 +93,17 @@ class SubscriptionDetailsScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xl),
                   SubscriptionInfoGrid(
                     subscriptionId: subscriptionModel.id,
-                    l10n: l10n,
                     isOverdueNotifier: isOverdueNotifier,
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   SubscriptionPayAction(
                     subscriptionModel: subscriptionModel,
-                    l10n: l10n,
                     isOverdueNotifier: isOverdueNotifier,
                   ),
-                  Text(l10n.paymentHistory, style: AppTextStyles.heading3),
+                  Text(
+                    context.l10n.paymentHistory,
+                    style: AppTextStyles.heading3,
+                  ),
                   const SizedBox(height: AppSpacing.md),
                 ],
               ),
@@ -129,7 +129,7 @@ class SubscriptionDetailsScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          l10n.noPaymentHistory,
+                          context.l10n.noPaymentHistory,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -164,20 +164,19 @@ class SubscriptionDetailsScreen extends StatelessWidget {
   }
 
   void _showNotFoundDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.cardBackground,
-        title: Text(l10n.notAvailable, style: AppTextStyles.heading3),
+        title: Text(context.l10n.notAvailable, style: AppTextStyles.heading3),
         content: Text(
-          l10n.thisSubscriptionNotAvailable,
+          context.l10n.thisSubscriptionNotAvailable,
           style: AppTextStyles.bodyMedium,
         ),
         actions: [
           CustomButton(
-            text: l10n.back,
+            text: context.l10n.back,
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
@@ -199,7 +198,6 @@ class SubscriptionDetailsScreen extends StatelessWidget {
 
   void _showDeleteDialog(
     BuildContext context,
-    AppLocalizations l10n,
     SubscriptionModel subscriptionModel,
   ) {
     showDialog(
@@ -207,15 +205,18 @@ class SubscriptionDetailsScreen extends StatelessWidget {
       builder: (context) => RepaintBoundary(
         child: AlertDialog(
           backgroundColor: AppColors.cardBackground,
-          title: Text(l10n.deleteSubscription, style: AppTextStyles.heading3),
+          title: Text(
+            context.l10n.deleteSubscription,
+            style: AppTextStyles.heading3,
+          ),
           content: Text(
-            l10n.deleteSubscriptionConfirm,
+            context.l10n.deleteSubscriptionConfirm,
             style: AppTextStyles.bodyMedium,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(l10n.cancel, style: AppTextStyles.bodyMedium),
+              child: Text(context.l10n.cancel, style: AppTextStyles.bodyMedium),
             ),
             TextButton(
               onPressed: () {
@@ -229,7 +230,7 @@ class SubscriptionDetailsScreen extends StatelessWidget {
                 );
               },
               child: Text(
-                l10n.deleteSubscription,
+                context.l10n.deleteSubscription,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.danger,
                 ),

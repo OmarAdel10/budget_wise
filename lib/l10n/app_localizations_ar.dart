@@ -42,6 +42,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get expenses => 'المصروفات';
 
   @override
+  String get all => 'الكل';
+
+  @override
+  String get transfer => 'تحويل';
+
+  @override
   String get categories => 'التصنيفات';
 
   @override
@@ -323,7 +329,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get syncToCloud => 'مزامنة البيانات';
 
   @override
-  String get recentTransactions => 'أحدث العمليات';
+  String get recentActivity => 'النشاط الأخير';
 
   @override
   String get seeAll => 'عرض الكل';
@@ -353,6 +359,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get title => 'العنوان';
 
   @override
+  String get titleLabel => 'العنوان (اختياري)';
+
+  @override
   String get transactionHistory => 'تاريخ العمليات';
 
   @override
@@ -378,6 +387,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get transactionDeleted => 'تم حذف العملية';
+
+  @override
+  String get undoDeletionDescription => 'اضغط على تراجع لإلغاء الحذف.';
+
+  @override
+  String get transactionDeletedSuccessfully => 'تم حذف العملية بنجاح.';
+
+  @override
+  String get transactionSavedSuccessfully => 'تم حفظ العملية بنجاح.';
+
+  @override
+  String get categoryDeletedSuccessfully => 'تم حذف التصنيف بنجاح.';
+
+  @override
+  String get categorySavedSuccessfully => 'تم حفظ التصنيف بنجاح.';
 
   @override
   String get categoryDeleted => 'تم حذف التصنيف';
@@ -514,6 +538,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get netWorth => 'صافي الثروة';
+
+  @override
+  String get allAccounts => 'جميع الحسابات';
 
   @override
   String get yourAssets => 'أصولك';
@@ -728,10 +755,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterValidAmount => 'يرجى إدخال مبلغ صالح';
 
   @override
-  String get selectCategory => 'يرجى اختيار تصنيف';
+  String get selectCategory => 'اختر الفئة';
 
   @override
-  String get selectAccount => 'يرجى اختيار حساب';
+  String get mostUsed => 'الأكثر استخداما';
+
+  @override
+  String get selectAccount => 'اختر حساب';
 
   @override
   String get editTransaction => 'تعديل العملية';
@@ -1377,6 +1407,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sttModeVoice => 'صوتي';
 
   @override
+  String get voiceNote => 'ملاحظة صوتية';
+
+  @override
   String get sttActivationTitle => 'تفعيل البحث الصوتي';
 
   @override
@@ -1412,6 +1445,59 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get preferences => 'التفضيلات';
+
+  @override
+  String get merchantRulesEnabled => 'قواعد التاجر';
+
+  @override
+  String get merchantRulesEnabledInfo =>
+      'تصنيف المعاملات تلقائياً حسب اسم التاجر';
+
+  @override
+  String get merchantRules => 'قواعد التاجر';
+
+  @override
+  String get addMerchantRule => 'إضافة قاعدة تاجر';
+
+  @override
+  String get editMerchantRule => 'تعديل قاعدة التاجر';
+
+  @override
+  String get merchantName => 'اسم التاجر';
+
+  @override
+  String get merchantNameHint => 'مثال: ستاربكس';
+
+  @override
+  String get saveRule => 'حفظ القاعدة';
+
+  @override
+  String get noMerchantRules => 'لا توجد قواعد بعد';
+
+  @override
+  String get noMerchantRulesDesc => 'اضغط + لإنشاء القاعدة الأولى';
+
+  @override
+  String get deleteRuleTitle => 'حذف القاعدة';
+
+  @override
+  String get rule => 'القاعدة';
+
+  @override
+  String get ruleDeleted => 'تم حذف القاعدة بنجاح';
+
+  @override
+  String get deleteRuleConfirmation => 'هل أنت متأكد من حذف هذه القاعدة؟';
+
+  @override
+  String get searchByMerchantName => 'ابحث باسم التاجر...';
+
+  @override
+  String get recentTransactionsCount => 'عدد العمليات المعروضة مؤخراً';
+
+  @override
+  String get recentTransactionsCountInfo =>
+      'عدد العمليات المعروضة في الشاشة الرئيسية';
 
   @override
   String get categoryNotFound => 'لم يتم العثور على الفئة';
@@ -1482,4 +1568,131 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get customRange => 'نطاق مخصص';
+
+  @override
+  String get balance => 'رصيد حساب';
+
+  @override
+  String get appLock => 'قفل التطبيق';
+
+  @override
+  String get incomeHint => 'من أين ربحت هذا المال؟';
+
+  @override
+  String get expenseHint => 'فيمَ أنفقت هذا المال؟';
+
+  @override
+  String get transferNoteHint => 'أضف ملاحظة لهذا التحويل';
+
+  @override
+  String get noteHint => 'أضف ملاحظة أو سياق...';
+
+  @override
+  String get note => 'ملاحظة (اختياري)';
+
+  @override
+  String get hint => 'تلميح (اختياري)';
+
+  @override
+  String get selectToAccount => 'اختر الحساب المحول إليه';
+
+  @override
+  String get fromAccount => 'من حساب';
+
+  @override
+  String get toAccount => 'إلى حساب';
+
+  @override
+  String get sameAccountError => 'لا يمكن أن يكون حساب المصدر والوجهة متطابقين';
+
+  @override
+  String get descriptionLabel => 'الوصف (اختياري)';
+
+  @override
+  String get categoryLabel => 'التصنيف';
+
+  @override
+  String get categoryLabelOptional => 'التصنيف (اختياري)';
+
+  @override
+  String get accountLabel => 'الحساب';
+
+  @override
+  String get dateLabel => 'التاريخ';
+
+  @override
+  String get pickDate => 'اختار تاريخ';
+
+  @override
+  String transferFrom(String fromAccountName) {
+    return 'تحويل من $fromAccountName';
+  }
+
+  @override
+  String transferTo(String toAccountName) {
+    return 'تحويل الي $toAccountName';
+  }
+
+  @override
+  String pendingReview(int count) {
+    return '$count قيد المراجعة';
+  }
+
+  @override
+  String get review => 'مراجعة';
+
+  @override
+  String get transactionsRequireReviewing => 'عمليات قيد المراجعة';
+
+  @override
+  String deleteType(String type) {
+    return 'حذف $type';
+  }
+
+  @override
+  String deleteTypeDesc(String type) {
+    return 'هل أنت متأكد أنك تريد حذف هذا $type? لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String get transactionLabel => 'عملية';
+
+  @override
+  String get searchTransactions => 'ابحث عن المعاملات...';
+
+  @override
+  String get searchCategories => 'ابحث عن الفئات...';
+
+  @override
+  String get monthStartDay => 'يوم بداية الشهر';
+
+  @override
+  String get monthStartDayInfo => 'اليوم الذي يبدأ فيه شهرك (مثل يوم الراتب)';
+
+  @override
+  String get weekStartDay => 'يوم بداية الأسبوع';
+
+  @override
+  String get weekStartDayInfo => 'اليوم الذي يبدأ فيه أسبوعك';
+
+  @override
+  String get monday => 'الاثنين';
+
+  @override
+  String get tuesday => 'الثلاثاء';
+
+  @override
+  String get wednesday => 'الأربعاء';
+
+  @override
+  String get thursday => 'الخميس';
+
+  @override
+  String get friday => 'الجمعة';
+
+  @override
+  String get saturday => 'السبت';
+
+  @override
+  String get sunday => 'الأحد';
 }

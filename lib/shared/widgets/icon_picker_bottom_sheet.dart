@@ -1,36 +1,69 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:budget_wise/savings/view/widgets/savings_color_picker.dart';
+import 'package:budget_wise/buckets/view/widgets/savings_color_picker.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
+import 'package:budget_wise/shared/data/services/search_service.dart';
 import 'package:budget_wise/shared/utils/icon_all.dart';
+import 'package:budget_wise/shared/utils/string_cases.dart';
+import 'package:budget_wise/shared/widgets/generic_icon_container.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import '../constants/colors.dart';
 import '../constants/spacing.dart';
 import '../constants/text_styles.dart';
 
-class IconPickerBottomSheet extends StatelessWidget {
+class IconPickerBottomSheet extends StatefulWidget {
   final Function(IconData) onIconSelected;
+  final Color? accentColor;
   final bool hasColorPalete;
   final ValueNotifier<Color>? selectedColorNotifier;
 
-  const IconPickerBottomSheet({super.key, required this.onIconSelected})
-    : selectedColorNotifier = null,
-      hasColorPalete = false;
+  const IconPickerBottomSheet({
+    super.key,
+    required this.onIconSelected,
+    this.accentColor,
+  }) : selectedColorNotifier = null,
+       hasColorPalete = false;
 
   const IconPickerBottomSheet.hasColorPalete({
     super.key,
     required this.selectedColorNotifier,
     required this.onIconSelected,
-  }) : hasColorPalete = true;
+  }) : hasColorPalete = true,
+       accentColor = null;
 
-  static final List<IconData> _availableIcons = PhosphorIcons()
-      .allRegularIcons();
+  static final Map<String, IconData> _availableIcons =
+      PhosphorIcons().allRegularIconsWithName;
+
+  @override
+  State<IconPickerBottomSheet> createState() => _IconPickerBottomSheetState();
+}
+
+class _IconPickerBottomSheetState extends State<IconPickerBottomSheet> {
+  late final SearchService<MapEntry<String, IconData>> _searchService;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchService = SearchService<MapEntry<String, IconData>>(
+      initialSource: IconPickerBottomSheet._availableIcons.entries.toList(),
+      searchFieldsExtractor: (entry) => [entry.key],
+    );
+  }
+
+  // void syncIcons() {}
+
+  @override
+  void dispose() {
+    _searchService.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: const BoxDecoration(
-        color: AppColors.secondaryBackground,
+        color: AppColors.primaryBackground,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppSpacing.radiusLg),
         ),
@@ -39,51 +72,60 @@ class IconPickerBottomSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.borderColor,
-                borderRadius: BorderRadius.all(Radius.circular(2)),
-              ),
-            ),
+          BottomSheetService.headerWithSearch(
+            headerTitle: context.l10n.selectIcon,
+            searchHintText: 'Search For An Icon',
+            searchController: _searchService.searchController,
           ),
           const SizedBox(height: AppSpacing.md),
-          if (hasColorPalete && selectedColorNotifier != null) ...[
-            SavingsColorPicker(selectedColorNotifier: selectedColorNotifier!),
+          if (widget.hasColorPalete &&
+              widget.selectedColorNotifier != null) ...[
+            SavingGoalColorPicker(
+              selectedColorNotifier: widget.selectedColorNotifier!,
+            ),
             const SizedBox(height: AppSpacing.lg),
           ],
-          Text(
-            AppLocalizations.of(context)!.selectIcon,
-            style: AppTextStyles.heading3,
-          ),
           const SizedBox(height: AppSpacing.lg),
           Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-                crossAxisSpacing: AppSpacing.md,
-                mainAxisSpacing: AppSpacing.md,
-              ),
-              itemCount: _availableIcons.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    onIconSelected(_availableIcons[index]);
-                    Navigator.pop(context);
-                  },
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    ),
-                    child: Icon(
-                      _availableIcons[index],
-                      color: AppColors.textPrimary,
-                    ),
+            child: ValueListenableBuilder<List<MapEntry<String, IconData>>>(
+              valueListenable: _searchService.filteredListNotifier,
+              builder: (context, filteredList, child) {
+                return GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: AppSpacing.md,
+                    mainAxisSpacing: AppSpacing.md,
                   ),
+                  itemCount: filteredList.length,
+                  itemBuilder: (context, index) {
+                    final title = filteredList[index].key;
+                    final icon = filteredList[index].value;
+                    return GestureDetector(
+                      onTap: () {
+                        widget.onIconSelected(icon);
+                        Navigator.of(context).pop();
+                      },
+                      child: Column(
+                        children: [
+                          GenericIconContainer(
+                            icon: icon,
+                            size: 50,
+                            iconSize: 30,
+                            color: widget.accentColor ?? AppColors.textPrimary,
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            title
+                                .replaceAll(RegExp(r'[_-]'), ' ')
+                                .toTitleCase(),
+                            style: AppTextStyles.bodySmall,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
             ),

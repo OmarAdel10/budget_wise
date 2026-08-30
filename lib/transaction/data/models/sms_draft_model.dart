@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
+enum SmsTransferDirection { incoming, outgoing, unknown }
+
 class SmsDraftModel extends Equatable {
   final String id;
   final String sender;
@@ -12,6 +14,12 @@ class SmsDraftModel extends Equatable {
   final DateTime? extractedDate;
   final String? extractedCardLastFour;
   final TransactionType transactionType;
+  final String? suggestedCategoryTitle;
+  final String? transferSourceLastFour;
+  final String? transferDestinationLastFour;
+  final String? transferFromAccountId;
+  final String? transferToAccountId;
+  final SmsTransferDirection transferDirection;
   final String? matchedAccountId;
   final DateTime timestamp;
 
@@ -25,6 +33,12 @@ class SmsDraftModel extends Equatable {
     this.extractedDate,
     this.extractedCardLastFour,
     required this.transactionType,
+    this.suggestedCategoryTitle,
+    this.transferSourceLastFour,
+    this.transferDestinationLastFour,
+    this.transferFromAccountId,
+    this.transferToAccountId,
+    this.transferDirection = SmsTransferDirection.unknown,
     this.matchedAccountId,
     required this.timestamp,
   });
@@ -39,6 +53,12 @@ class SmsDraftModel extends Equatable {
     DateTime? extractedDate,
     String? extractedCardLastFour,
     TransactionType? transactionType,
+    String? suggestedCategoryTitle,
+    String? transferSourceLastFour,
+    String? transferDestinationLastFour,
+    String? transferFromAccountId,
+    String? transferToAccountId,
+    SmsTransferDirection? transferDirection,
     String? matchedAccountId,
     DateTime? timestamp,
   }) {
@@ -53,6 +73,15 @@ class SmsDraftModel extends Equatable {
       extractedCardLastFour:
           extractedCardLastFour ?? this.extractedCardLastFour,
       transactionType: transactionType ?? this.transactionType,
+      suggestedCategoryTitle:
+          suggestedCategoryTitle ?? this.suggestedCategoryTitle,
+      transferSourceLastFour:
+          transferSourceLastFour ?? this.transferSourceLastFour,
+      transferDestinationLastFour:
+          transferDestinationLastFour ?? this.transferDestinationLastFour,
+      transferFromAccountId: transferFromAccountId ?? this.transferFromAccountId,
+      transferToAccountId: transferToAccountId ?? this.transferToAccountId,
+      transferDirection: transferDirection ?? this.transferDirection,
       matchedAccountId: matchedAccountId ?? this.matchedAccountId,
       timestamp: timestamp ?? this.timestamp,
     );
@@ -69,6 +98,12 @@ class SmsDraftModel extends Equatable {
       'extractedDate': extractedDate?.toIso8601String(),
       'extractedCardLastFour': extractedCardLastFour,
       'transactionType': transactionType.name,
+      'suggestedCategoryTitle': suggestedCategoryTitle,
+      'transferSourceLastFour': transferSourceLastFour,
+      'transferDestinationLastFour': transferDestinationLastFour,
+      'transferFromAccountId': transferFromAccountId,
+      'transferToAccountId': transferToAccountId,
+      'transferDirection': transferDirection.name,
       'matchedAccountId': matchedAccountId,
       'timestamp': timestamp.toIso8601String(),
     };
@@ -83,7 +118,7 @@ class SmsDraftModel extends Equatable {
           ? map['extractedMerchant'] as String
           : null,
       extractedAmount: map['extractedAmount'] != null
-          ? map['extractedAmount'] as double
+          ? (map['extractedAmount'] as num).toDouble()
           : null,
       extractedCurrency: map['extractedCurrency'] != null
           ? map['extractedCurrency'] as String
@@ -96,6 +131,16 @@ class SmsDraftModel extends Equatable {
           : null,
       transactionType: TransactionType.values.firstWhere(
         (e) => e.name == map['transactionType'],
+      ),
+      suggestedCategoryTitle: map['suggestedCategoryTitle'] as String?,
+      transferSourceLastFour: map['transferSourceLastFour'] as String?,
+      transferDestinationLastFour:
+          map['transferDestinationLastFour'] as String?,
+      transferFromAccountId: map['transferFromAccountId'] as String?,
+      transferToAccountId: map['transferToAccountId'] as String?,
+      transferDirection: SmsTransferDirection.values.firstWhere(
+        (e) => e.name == map['transferDirection'],
+        orElse: () => SmsTransferDirection.unknown,
       ),
       matchedAccountId: map['matchedAccountId'] != null
           ? map['matchedAccountId'] as String
@@ -120,6 +165,12 @@ class SmsDraftModel extends Equatable {
     extractedDate,
     extractedCardLastFour,
     transactionType,
+    suggestedCategoryTitle,
+    transferSourceLastFour,
+    transferDestinationLastFour,
+    transferFromAccountId,
+    transferToAccountId,
+    transferDirection,
     matchedAccountId,
     timestamp,
   ];

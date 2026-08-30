@@ -3,14 +3,13 @@ import 'package:budget_wise/accounts/view/widgets/account_type_selection.dart';
 import 'package:budget_wise/accounts/view/widgets/account_name_input.dart';
 import 'package:budget_wise/accounts/view/widgets/account_identity_section.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 
 class AddAccountPart1 extends StatelessWidget {
   const AddAccountPart1({
     super.key,
-    required this.l10n,
     required this.formKey,
     required this.accountNameController,
     required this.balanceController,
@@ -20,7 +19,6 @@ class AddAccountPart1 extends StatelessWidget {
     required this.onCurrencySelected,
   });
 
-  final AppLocalizations l10n;
   final GlobalKey<FormState> formKey;
   final TextEditingController accountNameController;
   final TextEditingController balanceController;
@@ -36,17 +34,15 @@ class AddAccountPart1 extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AccountIdentitySection(l10n: l10n),
+          AccountIdentitySection(),
 
           //* Account Name
           AccountNameInput(
-            l10n: l10n,
             accountNameController: accountNameController,
           ),
 
           const SizedBox(height: AppSpacing.lg),
           AccountTypeSelection(
-            l10n: l10n,
             selectedAccount: selectedAccount,
             onAccountTypeSelected: onAccountTypeSelected,
           ),

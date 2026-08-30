@@ -9,11 +9,13 @@ class TransactionModel {
   final String id;
   final String userId;
   final TransactionType type;
-  final String transactionTitle;
+  final String? description;
   final double transactionAmount;
   final String transactionCurrency;
   final String categoryId;
   final String accountId;
+  final String? toAccountId;
+  final String? transferGroupId;
   final DateTime transactionDate;
   final String? transactionNotes;
   final bool isSynced;
@@ -24,13 +26,15 @@ class TransactionModel {
     this.id = '',
     this.userId = '',
     required this.type,
-    required this.transactionTitle,
+    this.description,
     required this.transactionAmount,
     required this.transactionCurrency,
     required this.categoryId,
     required this.accountId,
+    this.toAccountId,
+    this.transferGroupId,
     required this.transactionDate,
-    this.transactionNotes = '',
+    this.transactionNotes,
     this.isSynced = false,
     required this.createdAt,
     required this.updatedAt,
@@ -41,11 +45,13 @@ class TransactionModel {
       'id': id,
       'userId': userId,
       'type': type.name,
-      'transactionTitle': transactionTitle,
+      'description': description,
       'transactionAmount': transactionAmount,
       'transactionCurrency': transactionCurrency,
       'categoryId': categoryId,
       'accountId': accountId,
+      'toAccountId': toAccountId,
+      'transferGroupId': transferGroupId,
       'transactionDate': transactionDate.toIso8601String(),
       'transactionNotes': transactionNotes,
       'isSynced': isSynced,
@@ -61,17 +67,17 @@ class TransactionModel {
       type: TransactionType.values.firstWhere(
         (e) => e.name == map['type'] as String,
       ),
-      transactionTitle: map['transactionTitle'] as String,
+      description: (map['description'] ?? map['transactionTitle']) as String?,
       transactionAmount: map['transactionAmount'] as double,
       transactionCurrency: map['transactionCurrency'] as String,
       categoryId: map['categoryId'] as String,
       accountId: map['accountId'] as String,
+      toAccountId: map['toAccountId'] as String?,
+      transferGroupId: map['transferGroupId'] as String?,
       transactionDate: map['transactionDate'] is Timestamp
           ? (map['transactionDate'] as Timestamp).toDate()
           : DateTime.parse(map['transactionDate'] as String),
-      transactionNotes: map['transactionNotes'] != null
-          ? map['transactionNotes'] as String
-          : '',
+      transactionNotes: map['transactionNotes'] as String?,
       isSynced: map['isSynced'] as bool,
       createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
@@ -91,11 +97,13 @@ class TransactionModel {
     String? id,
     String? userId,
     TransactionType? type,
-    String? transactionTitle,
+    String? description,
     double? transactionAmount,
     String? transactionCurrency,
     String? categoryId,
     String? accountId,
+    String? toAccountId,
+    String? transferGroupId,
     DateTime? transactionDate,
     String? transactionNotes,
     bool? isSynced,
@@ -106,11 +114,13 @@ class TransactionModel {
       id: id ?? this.id,
       userId: userId ?? this.userId,
       type: type ?? this.type,
-      transactionTitle: transactionTitle ?? this.transactionTitle,
+      description: description ?? this.description,
       transactionAmount: transactionAmount ?? this.transactionAmount,
       transactionCurrency: transactionCurrency ?? this.transactionCurrency,
       categoryId: categoryId ?? this.categoryId,
       accountId: accountId ?? this.accountId,
+      toAccountId: toAccountId ?? this.toAccountId,
+      transferGroupId: transferGroupId ?? this.transferGroupId,
       transactionDate: transactionDate ?? this.transactionDate,
       transactionNotes: transactionNotes ?? this.transactionNotes,
       isSynced: isSynced ?? this.isSynced,

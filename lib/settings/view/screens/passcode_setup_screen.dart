@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/settings/view_model/passcode_controller.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
@@ -10,7 +10,7 @@ import 'package:budget_wise/shared/widgets/passcode_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class PasscodeSetupScreen extends StatefulWidget {
   static const String routeName = '/passcode_setup';
@@ -63,7 +63,6 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
   }
 
   Future<void> _verifyAndSave() async {
-    final l10n = AppLocalizations.of(context)!;
     final state = _passcodeController.value;
 
     if (state.passcode == state.confirmPasscode) {
@@ -75,7 +74,7 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.passcodeSet),
+            content: Text(context.l10n.passcodeSet),
             backgroundColor: AppColors.primaryAccent,
           ),
         );
@@ -89,7 +88,7 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(l10n.passcodeMismatch),
+            content: Text(context.l10n.passcodeMismatch),
             backgroundColor: AppColors.danger,
           ),
         );
@@ -99,7 +98,6 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
@@ -132,8 +130,8 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
                   children: [
                     Text(
                       state.isConfirming
-                          ? l10n.confirmPasscode
-                          : l10n.enterPasscode,
+                          ? context.l10n.confirmPasscode
+                          : context.l10n.enterPasscode,
                       style: AppTextStyles.heading2,
                     ),
                     const SizedBox(height: AppSpacing.xl),

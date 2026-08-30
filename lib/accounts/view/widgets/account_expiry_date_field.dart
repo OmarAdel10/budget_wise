@@ -1,6 +1,7 @@
 import 'package:budget_wise/accounts/data/models/card_formatters.dart';
 import 'package:budget_wise/accounts/view/widgets/validation_icon.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -11,14 +12,12 @@ import 'package:flutter/services.dart';
 class AccountExpiryDateField extends StatelessWidget {
   const AccountExpiryDateField({
     super.key,
-    required this.l10n,
     required this.expiryController,
     required this.isExpiryValid,
     required this.onValidateExpiryDate,
     this.hasPadding = true,
   });
 
-  final AppLocalizations l10n;
   final TextEditingController expiryController;
   final ValueNotifier<bool> isExpiryValid;
   final Function(String) onValidateExpiryDate;
@@ -37,7 +36,7 @@ class AccountExpiryDateField extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n.addAccountCardExpiryLabel,
+              context.l10n.addAccountCardExpiryLabel,
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -65,10 +64,10 @@ class AccountExpiryDateField extends StatelessWidget {
               onChanged: onValidateExpiryDate,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return l10n.expiryDateCantLeftEmpty;
+                  return context.l10n.expiryDateCantLeftEmpty;
                 }
                 if (isExpiryValid.value == false) {
-                  return l10n.youShouldEnterAValidExpiryDate;
+                  return context.l10n.youShouldEnterAValidExpiryDate;
                 }
                 return null;
               },

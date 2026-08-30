@@ -1,6 +1,6 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import '../constants/colors.dart';
 import '../constants/text_styles.dart';
 
@@ -16,7 +16,6 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.secondaryBackground,
@@ -44,50 +43,42 @@ class CustomBottomNavBar extends StatelessWidget {
               BottomNavigationBarItem(
                 icon: Icon(
                   currentIndex == 0
-                      ? PhosphorIcons.house(PhosphorIconsStyle.fill)
-                      : PhosphorIcons.house(),
+                      ? PhosphorIconsFill.house
+                      : PhosphorIconsRegular.house,
                 ),
-                label: l10n.navHome,
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(
-                  currentIndex == 1
-                      ? PhosphorIcons.wallet(PhosphorIconsStyle.fill)
-                      : PhosphorIcons.wallet(),
-                ),
-                label: l10n.navAccounts,
+                label: context.l10n.navHome,
               ),
               BottomNavigationBarItem(
                 icon: Icon(
                   currentIndex == 2
-                      ? PhosphorIcons.repeat(PhosphorIconsStyle.fill)
-                      : PhosphorIcons.repeat(),
+                      ? PhosphorIconsFill.repeat
+                      : PhosphorIconsRegular.repeat,
                 ),
-                label: l10n.subscriptions,
+                label: context.l10n.subscriptions,
               ),
               BottomNavigationBarItem(
                 icon: Icon(
                   currentIndex == 3
-                      ? PhosphorIcons.piggyBank(PhosphorIconsStyle.fill)
-                      : PhosphorIcons.piggyBank(),
+                      ? PhosphorIconsFill.piggyBank
+                      : PhosphorIconsRegular.piggyBank,
                 ),
-                label: l10n.navSavings,
+                label: context.l10n.navSavings,
               ),
               BottomNavigationBarItem(
                 icon: Icon(
                   currentIndex == 4
-                      ? PhosphorIcons.chartLine(PhosphorIconsStyle.fill)
-                      : PhosphorIcons.chartLine(),
+                      ? PhosphorIconsFill.chartLine
+                      : PhosphorIconsRegular.chartLine,
                 ),
-                label: l10n.navStatistics,
+                label: context.l10n.navStatistics,
               ),
               BottomNavigationBarItem(
                 icon: Icon(
                   currentIndex == 5
-                      ? PhosphorIcons.gear(PhosphorIconsStyle.fill)
-                      : PhosphorIcons.gear(),
+                      ? PhosphorIconsFill.gear
+                      : PhosphorIconsRegular.gear,
                 ),
-                label: l10n.navSettings,
+                label: context.l10n.navSettings,
               ),
             ],
           );

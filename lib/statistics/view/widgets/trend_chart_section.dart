@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -26,12 +27,11 @@ class TrendChartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Row(
           children: [
-            Text(l10n.dailyTrend, style: AppTextStyles.heading3),
+            Text(context.l10n.dailyTrend, style: AppTextStyles.heading3),
             Container(
               margin: const EdgeInsets.only(left: AppSpacing.md),
               decoration: BoxDecoration(
@@ -117,7 +117,7 @@ class TrendChartSection extends StatelessWidget {
                           enable: true,
                           header: '',
                           canShowMarker: true,
-                          format: '${l10n.day} point.x: point.y',
+                          format: '${context.l10n.day} point.x: point.y',
                           duration: 1000,
                           textStyle: AppTextStyles.bodyMedium,
                           color: AppColors.cardBackground,
@@ -126,7 +126,7 @@ class TrendChartSection extends StatelessWidget {
                         ),
                         series: <CartesianSeries<double, int>>[
                           LineSeries<double, int>(
-                            name: l10n.income,
+                            name: context.l10n.income,
                             dataSource: dailyIncomeTrend,
                             xValueMapper: (value, index) => index + 1,
                             yValueMapper: (value, _) => value,
@@ -144,7 +144,7 @@ class TrendChartSection extends StatelessWidget {
                             enableTooltip: true,
                           ),
                           LineSeries<double, int>(
-                            name: l10n.expenses,
+                            name: context.l10n.expenses,
                             dataSource: dailyExpenseTrend,
                             xValueMapper: (value, index) => index + 1,
                             yValueMapper: (value, _) => value,
@@ -162,7 +162,7 @@ class TrendChartSection extends StatelessWidget {
                             enableTooltip: true,
                           ),
                           LineSeries<double, int>(
-                            name: l10n.navSavings,
+                            name: context.l10n.navSavings,
                             dataSource: dailySavingsTrend,
                             xValueMapper: (value, index) => index + 1,
                             yValueMapper: (value, _) => value,
@@ -180,7 +180,7 @@ class TrendChartSection extends StatelessWidget {
                             enableTooltip: true,
                           ),
                           LineSeries<double, int>(
-                            name: l10n.totalSubscriptions,
+                            name: context.l10n.totalSubscriptions,
                             dataSource: dailySubscriptionTrend,
                             xValueMapper: (value, index) => index + 1,
                             yValueMapper: (value, _) => value,

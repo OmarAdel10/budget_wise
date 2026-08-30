@@ -1,7 +1,7 @@
 import 'package:budget_wise/accounts/view/widgets/net_worth_section.dart';
 import 'package:budget_wise/accounts/view/widgets/accounts_list.dart';
 import 'package:budget_wise/accounts/view/widgets/link_more_accounts_button.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -13,7 +13,6 @@ class AccountsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
@@ -21,7 +20,7 @@ class AccountsScreen extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
-          l10n.navAccounts,
+          context.l10n.navAccounts,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
@@ -44,7 +43,7 @@ class AccountsScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.lg),
                   //* Accounts List
                   Text(
-                    l10n.yourAssets,
+                    context.l10n.yourAssets,
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                       fontWeight: FontWeight.bold,

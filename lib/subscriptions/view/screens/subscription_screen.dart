@@ -1,8 +1,8 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
-import 'package:budget_wise/subscriptions/view/screens/add_subscription_screen.dart';
+import 'package:budget_wise/subscriptions/view/screens/add_subscription_bottom_sheet.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_card.dart';
 import 'package:budget_wise/subscriptions/view/widgets/subscription_empty_state.dart';
@@ -13,7 +13,7 @@ import 'package:budget_wise/subscriptions/view_model/subscription_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class SubscriptionScreen extends StatelessWidget {
   static const routeName = '/subscriptions';
@@ -22,14 +22,13 @@ class SubscriptionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primaryBackground,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
-          l10n.subscriptions,
+          context.l10n.subscriptions,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
@@ -74,7 +73,7 @@ class SubscriptionScreen extends StatelessWidget {
                                   AppToast.show(
                                     context,
                                     type: AppToastType.deleteWithUndo,
-                                    title: l10n.accountDeleted,
+                                    title: context.l10n.accountDeleted,
                                     onCompleted: () {
                                       subBloc.add(
                                         SubscriptionDeleted(
@@ -86,9 +85,7 @@ class SubscriptionScreen extends StatelessWidget {
                                 },
                                 backgroundColor: AppColors.danger,
                                 foregroundColor: Colors.white,
-                                icon: PhosphorIcons.trash(
-                                  PhosphorIconsStyle.bold,
-                                ),
+                                icon: PhosphorIconsBold.trash,
                                 borderRadius: BorderRadius.circular(
                                   AppSpacing.radiusSm,
                                 ),
@@ -120,7 +117,13 @@ class SubscriptionScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, AddSubscriptionScreen.routeName);
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            useSafeArea: true,
+            builder: (context) => const AddSubscriptionBottomSheet(),
+          );
         },
         backgroundColor: AppColors.primaryAccent,
         foregroundColor: AppColors.textInverse,

@@ -2,11 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:budget_wise/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/accounts/data/models/account_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import '../constants/colors.dart';
 import '../constants/spacing.dart';
 import '../constants/text_styles.dart';
@@ -23,12 +24,14 @@ class AccountDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return BlocBuilder<AccountBloc, AccountState>(
       builder: (context, state) {
         if (selectedCurrency == null) {
-          return _buildDropdown(context, state.accountsList, null, l10n);
+          return _buildDropdown(
+            context,
+            state.accountsList,
+            null,
+          );
         }
 
         return ValueListenableBuilder<String?>(
@@ -37,7 +40,7 @@ class AccountDropdown extends StatelessWidget {
             final accounts = state.accountsList
                 .where((acc) => acc.currency == currency)
                 .toList();
-            return _buildDropdown(context, accounts, currency, l10n);
+            return _buildDropdown(context, accounts, currency);
           },
         );
       },
@@ -48,7 +51,6 @@ class AccountDropdown extends StatelessWidget {
     BuildContext context,
     List<AccountModel> accounts,
     String? currency,
-    AppLocalizations l10n,
   ) {
     return ValueListenableBuilder<String?>(
       valueListenable: selectedAccountId,
@@ -75,10 +77,10 @@ class AccountDropdown extends StatelessWidget {
               value: dropdownValue,
               hint: AutoSizeText(
                 accounts.isNotEmpty
-                    ? l10n.selectAccountLabel
+                    ? context.l10n.selectAccountLabel
                     : (currency != null
-                          ? l10n.noAccountsAvailableForSelectedCurrency
-                          : l10n.noAccountsAvailable),
+                          ? context.l10n.noAccountsAvailableForSelectedCurrency
+                          : context.l10n.noAccountsAvailable),
                 minFontSize: 13,
                 maxLines: 1,
                 style: AppTextStyles.bodyMedium.copyWith(
@@ -88,7 +90,7 @@ class AccountDropdown extends StatelessWidget {
               isExpanded: true,
               dropdownColor: AppColors.cardBackground,
               icon: Icon(
-                PhosphorIcons.caretDown(PhosphorIconsStyle.regular),
+                PhosphorIconsRegular.caretDown,
                 color: AppColors.textSecondary,
               ),
               items: accounts.map((account) {

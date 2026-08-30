@@ -1,6 +1,8 @@
+import 'package:budget_wise/buckets/view_model/buckets_view_model.dart';
+import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
-import 'package:budget_wise/shared/widgets/income_expense_toggle.dart';
+import 'package:budget_wise/shared/widgets/type_tab_bar.dart';
 import 'package:budget_wise/statistics/view/widgets/category_chart_section.dart';
 import 'package:budget_wise/statistics/view/widgets/category_list_section.dart';
 import 'package:budget_wise/shared/widgets/month_selector.dart';
@@ -9,22 +11,41 @@ import 'package:budget_wise/statistics/view/widgets/trend_chart_section.dart';
 import 'package:budget_wise/statistics/view_model/statistics_event.dart';
 import 'package:budget_wise/statistics/view_model/statistics_state.dart';
 import 'package:budget_wise/statistics/view_model/statistics_view_model.dart';
+import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
+import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
 
-class StatisticsScreen extends StatefulWidget {
-  static const String routeName = '/stats-screen';
+class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
 
   @override
-  State<StatisticsScreen> createState() => _StatisticsScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (ctx) => StatisticsBloc(
+        transactionBloc: ctx.read<TransactionBloc>(),
+        categoryBloc: ctx.read<CategoryBloc>(),
+        savingsBloc: ctx.read<BucketsBloc>(),
+        subscriptionBloc: ctx.read<SubscriptionBloc>(),
+      )..add(StatisticsEventLoadRequested(DateTime.now())),
+      child: const StatisticsScreenBody(),
+    );
+  }
 }
 
-class _StatisticsScreenState extends State<StatisticsScreen> {
+class StatisticsScreenBody extends StatefulWidget {
+  static const String routeName = '/stats-screen';
+  const StatisticsScreenBody({super.key});
+
+  @override
+  State<StatisticsScreenBody> createState() => _StatisticsScreenBodyState();
+}
+
+class _StatisticsScreenBodyState extends State<StatisticsScreenBody> {
   late final ValueNotifier<bool> _isTrendExpandedNotifier;
   late final ValueNotifier<ToggleOption> _toggleOptionNotifier;
 
@@ -52,7 +73,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final statisticsBloc = context.read<StatisticsBloc>();
 
     return Scaffold(
@@ -62,7 +82,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
-          l10n.financialStatistics,
+          context.l10n.financialStatistics,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
@@ -122,12 +142,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         },
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      Row(
-                        children: [
-                          IncomeExpenseToggle(
-                            selectionNotifier: _toggleOptionNotifier,
-                            isForHome: false,
-                          ),
+                      TypeTabBar.forToggleOptions(
+                        selectionNotifier: _toggleOptionNotifier,
+                        options: const [
+                          ToggleOption.income,
+                          ToggleOption.expense,
+                          ToggleOption.savings,
+                          ToggleOption.subscription,
                         ],
                       ),
                       const SizedBox(height: AppSpacing.xl),
@@ -187,7 +208,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                               ),
                               child: Center(
                                 child: Text(
-                                  l10n.noDataThisMonth,
+                                  context.l10n.noDataThisMonth,
                                   style: AppTextStyles.bodyLarge.copyWith(
                                     color: AppColors.textSecondary,
                                   ),
@@ -252,6 +273,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         break;
                       case ToggleOption.expense:
                         breakdown = model.expenseBreakdown;
+                        break;
+                      case ToggleOption.transfer:
+                        breakdown =
+                            []; // Handle transfer if added to model later
                         break;
                       case ToggleOption.savings:
                         breakdown = model.savingsBreakdown;

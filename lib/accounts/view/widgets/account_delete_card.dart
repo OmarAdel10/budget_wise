@@ -1,6 +1,6 @@
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -14,7 +14,6 @@ class AccountDeleteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       decoration: BoxDecoration(
@@ -26,7 +25,7 @@ class AccountDeleteCard extends StatelessWidget {
         onPressed: () => onDelete(context),
         icon: Icon(Icons.delete_forever, color: AppColors.danger),
         label: Text(
-          l10n.deleteAccount,
+          context.l10n.deleteAccount,
           style: AppTextStyles.button.copyWith(color: AppColors.danger),
         ),
       ),
@@ -34,17 +33,16 @@ class AccountDeleteCard extends StatelessWidget {
   }
 
   void onDelete(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.deleteAccount, style: AppTextStyles.heading3),
-        content: Text(l10n.deleteAccountConfirmation),
+        title: Text(context.l10n.deleteAccount, style: AppTextStyles.heading3),
+        content: Text(context.l10n.deleteAccountConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              l10n.back,
+              context.l10n.back,
               style: const TextStyle(color: AppColors.textSecondary),
             ),
           ),
@@ -57,7 +55,7 @@ class AccountDeleteCard extends StatelessWidget {
               Navigator.of(context).pop(); // Return to previous screen
             },
             child: Text(
-              l10n.deleteAccount,
+              context.l10n.deleteAccount,
               style: const TextStyle(color: AppColors.danger),
             ),
           ),

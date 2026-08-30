@@ -11,7 +11,7 @@ import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
 import '../../../shared/constants/colors.dart';
@@ -77,7 +77,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     // Extract args without causing full-screen rebuilds on layout changes
     final args =
@@ -88,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       appBar: CustomAppBar(
-        title: l10n.appTitle,
+        title: context.l10n.appTitle,
         showBackButton: true,
         onBackPressed: () => Navigator.of(context).pop(false),
       ),

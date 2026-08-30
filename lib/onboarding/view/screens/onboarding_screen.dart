@@ -16,10 +16,10 @@ import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -54,7 +54,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _openAuthFlow({bool startWithLogin = true}) {
-    final l10n = AppLocalizations.of(context)!;
     Future<dynamic> navFuture;
     if (startWithLogin) {
       navFuture = Navigator.of(context).pushNamed(
@@ -82,15 +81,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         AppToast.show(
           context,
           type: AppToastType.success,
-          title: l10n.loginSuccessful,
-          description: l10n.continueOnboarding,
+          title: context.l10n.loginSuccessful,
+          description: context.l10n.continueOnboarding,
         );
       } else {
         AppToast.show(
           context,
           type: AppToastType.error,
-          title: l10n.loginFailed,
-          description: l10n.tryAgainLocally,
+          title: context.l10n.loginFailed,
+          description: context.l10n.tryAgainLocally,
         );
       }
     });
@@ -108,7 +107,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _nextPage() {
-    final l10n = AppLocalizations.of(context)!;
     if (_currentPage < 4) {
       // Validation check before moving from Income Page (Page 3)
       if (_currentPage == 3) {
@@ -116,8 +114,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           AppToast.show(
             context,
             type: AppToastType.error,
-            title: l10n.enterValidIncome,
-            description: l10n.amountGreaterThan1,
+            title: context.l10n.enterValidIncome,
+            description: context.l10n.amountGreaterThan1,
           );
           return;
         }
@@ -125,7 +123,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           AppToast.show(
             context,
             type: AppToastType.error,
-            title: l10n.selectIncomeSource,
+            title: context.l10n.selectIncomeSource,
           );
           return;
         }
@@ -141,7 +139,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         AppToast.show(
           context,
           type: AppToastType.error,
-          title: l10n.errorSelectCategories,
+          title: context.l10n.errorSelectCategories,
         );
         return;
       }
@@ -151,7 +149,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _finishOnboarding() {
-    final l10n = AppLocalizations.of(context)!;
 
     // Generate IDs
     final accountId = const Uuid().v4();
@@ -163,12 +160,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       updatedAt: DateTime.now(),
       accountType: AccountType.cash,
       title: 'Main Account',
-      accountIcon: PhosphorIcons.currencyCircleDollar(
-        PhosphorIconsStyle.regular,
-      ),
+      accountIcon: PhosphorIconsRegular.currencyCircleDollar,
       initialBalance: 0.0,
       balance: 0.0,
       currency: _selectedIncomeCurrency ?? 'EGP',
+      isDefault: true,
     );
     context.read<AccountBloc>().add(
       AccountEventCreateAccount(model: accountModel),
@@ -219,7 +215,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         type: TransactionType.income,
         transactionAmount: _incomeAmount,
         transactionCurrency: _selectedIncomeCurrency ?? 'EGP',
-        transactionTitle: '${l10n.income} ${date.format(DateTime.now())}',
+        description: '${context.l10n.income} ${date.format(DateTime.now())}',
         transactionDate: DateTime.now(),
         categoryId: incomeCategoryId,
         accountId: accountId,
@@ -252,7 +248,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -267,7 +262,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Center(
                   child: Text(
-                    l10n.appTitle,
+                    context.l10n.appTitle,
                     style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.bold,
@@ -288,25 +283,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
                 children: [
                   OnboardingPageWidget(
-                    title: l10n.onboardingTitle1,
-                    description: l10n.onboardingDesc1,
-                    placeholderIcon: PhosphorIcons.chartBar(
-                      PhosphorIconsStyle.fill,
-                    ),
+                    title: context.l10n.onboardingTitle1,
+                    description: context.l10n.onboardingDesc1,
+                    placeholderIcon: PhosphorIconsFill.chartBar,
                   ),
                   OnboardingPageWidget(
-                    title: l10n.onboardingTitle2,
-                    description: l10n.onboardingDesc2,
-                    placeholderIcon: PhosphorIcons.piggyBank(
-                      PhosphorIconsStyle.fill,
-                    ),
+                    title: context.l10n.onboardingTitle2,
+                    description: context.l10n.onboardingDesc2,
+                    placeholderIcon: PhosphorIconsFill.piggyBank,
                   ),
                   OnboardingPageWidget(
-                    title: l10n.onboardingTitle3,
-                    description: l10n.onboardingDesc3,
-                    placeholderIcon: PhosphorIcons.cloudArrowUp(
-                      PhosphorIconsStyle.fill,
-                    ),
+                    title: context.l10n.onboardingTitle3,
+                    description: context.l10n.onboardingDesc3,
+                    placeholderIcon: PhosphorIconsFill.cloudArrowUp,
                   ),
                   IncomeSetupPage(
                     onDataChanged: (amount, categoryTitle, selectedCurrency) {
@@ -339,13 +328,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Column(
                     children: [
                       Text(
-                        l10n.disclaimerLabel,
+                        context.l10n.disclaimerLabel,
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.danger,
                         ),
                       ),
                       Text(
-                        l10n.onboardingDisclaimer,
+                        context.l10n.onboardingDisclaimer,
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.textSecondary.withValues(alpha: .7),
                         ),
@@ -363,7 +352,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const SizedBox(height: AppSpacing.xl),
                     // Button Logic
                     if (_currentPage == 0)
-                      CustomButton(text: l10n.next, onPressed: _nextPage)
+                      CustomButton(text: context.l10n.next, onPressed: _nextPage)
                     else
                       Column(
                         children: [
@@ -371,7 +360,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             children: [
                               Expanded(
                                 child: CustomButton(
-                                  text: l10n.back,
+                                  text: context.l10n.back,
                                   type: CustomButtonType.secondary,
                                   onPressed: _previousPage,
                                 ),
@@ -379,7 +368,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: CustomButton(
-                                  text: l10n.onboardingSkipForNow,
+                                  text: context.l10n.onboardingSkipForNow,
                                   onPressed: _onSkipForNowPressed,
                                 ),
                               ),
@@ -387,7 +376,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                           const SizedBox(height: AppSpacing.md),
                           CustomButton(
-                            text: l10n.onboardingLoginSignUp,
+                            text: context.l10n.onboardingLoginSignUp,
                             onPressed: _onLoginSignUpPressed,
                           ),
                         ],
@@ -405,13 +394,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const SizedBox(height: AppSpacing.xl),
                     // Button Logic
                     if (_currentPage == 0)
-                      CustomButton(text: l10n.next, onPressed: _nextPage)
+                      CustomButton(text: context.l10n.next, onPressed: _nextPage)
                     else
                       Row(
                         children: [
                           Expanded(
                             child: CustomButton(
-                              text: l10n.back,
+                              text: context.l10n.back,
                               type: CustomButtonType.secondary,
                               onPressed: _previousPage,
                             ),
@@ -420,8 +409,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           Expanded(
                             child: CustomButton(
                               text: _currentPage == 4
-                                  ? l10n.getStarted
-                                  : l10n.next,
+                                  ? context.l10n.getStarted
+                                  : context.l10n.next,
                               onPressed: _nextPage,
                             ),
                           ),

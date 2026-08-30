@@ -8,6 +8,7 @@ class TransactionTypeToggle extends StatelessWidget {
   final ValueNotifier<TransactionType> selectedType;
   final String incomeLabel;
   final String expenseLabel;
+  final String transferLabel;
   final Color accentColor;
 
   const TransactionTypeToggle({
@@ -15,6 +16,7 @@ class TransactionTypeToggle extends StatelessWidget {
     required this.selectedType,
     required this.incomeLabel,
     required this.expenseLabel,
+    required this.transferLabel,
     required this.accentColor,
   });
 
@@ -30,13 +32,12 @@ class TransactionTypeToggle extends StatelessWidget {
       child: ValueListenableBuilder<TransactionType>(
         valueListenable: selectedType,
         builder: (context, type, _) {
-          final isIncome = type == TransactionType.income;
           return Row(
             children: [
               Expanded(
                 child: _ToggleButton(
                   label: incomeLabel,
-                  isSelected: isIncome,
+                  isSelected: type == TransactionType.income,
                   activeColor: AppColors.primaryAccent,
                   onTap: () => selectedType.value = TransactionType.income,
                 ),
@@ -44,9 +45,17 @@ class TransactionTypeToggle extends StatelessWidget {
               Expanded(
                 child: _ToggleButton(
                   label: expenseLabel,
-                  isSelected: !isIncome,
+                  isSelected: type == TransactionType.expense,
                   activeColor: AppColors.expense,
                   onTap: () => selectedType.value = TransactionType.expense,
+                ),
+              ),
+              Expanded(
+                child: _ToggleButton(
+                  label: transferLabel,
+                  isSelected: type == TransactionType.transfer,
+                  activeColor: AppColors.transfer,
+                  onTap: () => selectedType.value = TransactionType.transfer,
                 ),
               ),
             ],

@@ -12,16 +12,69 @@ sealed class TransactionEvent extends Equatable {
 class TransactionEventCreateTransaction extends TransactionEvent {
   final TransactionModel transaction;
   final double? convertedAmount;
+  final bool skipBalanceUpdate;
   final VoidCallback toastCallback;
 
   const TransactionEventCreateTransaction(
     this.transaction, {
     this.convertedAmount,
+    this.skipBalanceUpdate = false,
     required this.toastCallback,
   });
 
   @override
-  List<Object?> get props => [transaction, convertedAmount, toastCallback];
+  List<Object?> get props => [
+    transaction,
+    convertedAmount,
+    skipBalanceUpdate,
+    toastCallback,
+  ];
+}
+
+class TransactionEventCreateTransfer extends TransactionEvent {
+  final String fromAccountId;
+  final String toAccountId;
+  final double amount;
+  final String fromCurrency;
+  final double destinationAmount;
+  final String destinationCurrency;
+  final DateTime transactionDate;
+  final String? transactionNotes;
+  final String fromDescription;
+  final String toDescription;
+  final String? categoryId;
+  final VoidCallback toastCallback;
+
+  const TransactionEventCreateTransfer({
+    required this.fromAccountId,
+    required this.toAccountId,
+    required this.amount,
+    required this.fromCurrency,
+    required this.destinationAmount,
+    required this.destinationCurrency,
+    required this.transactionDate,
+    this.transactionNotes,
+    required this.fromDescription,
+    required this.toDescription,
+    this.categoryId,
+    required this.toastCallback,
+  });
+
+  @override
+  List<Object?> get props => [
+    fromAccountId,
+    toAccountId,
+    amount,
+    fromCurrency,
+    destinationAmount,
+    destinationCurrency,
+    transactionDate,
+    transactionNotes,
+    fromDescription,
+    toDescription,
+    categoryId,
+    toastCallback,
+  ];
 }
 
 class TransactionEventUpdateTransaction extends TransactionEvent {

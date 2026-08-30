@@ -1,21 +1,20 @@
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/accounts/view/widgets/account_type_tile.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class AccountTypeSelection extends StatelessWidget {
   const AccountTypeSelection({
     super.key,
-    required this.l10n,
     required this.selectedAccount,
     required this.onAccountTypeSelected,
   });
 
-  final AppLocalizations l10n;
   final ValueNotifier<AccountType> selectedAccount;
   final ValueChanged<AccountType> onAccountTypeSelected;
 
@@ -25,7 +24,7 @@ class AccountTypeSelection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.addAccountTypeHeader,
+          context.l10n.addAccountTypeHeader,
           style: AppTextStyles.bodySmall.copyWith(
             color: AppColors.textSecondary,
             fontWeight: FontWeight.bold,
@@ -45,21 +44,21 @@ class AccountTypeSelection extends StatelessWidget {
                       children: [
                         Expanded(
                           child: AccountTypeTile(
-                            label: l10n.addAccountTypeCash,
-                            icon: PhosphorIcons.currencyCircleDollar(
-                              PhosphorIconsStyle.regular,
-                            ),
+                            label: context.l10n.addAccountTypeCash,
+                            icon: PhosphorIconsRegular.currencyCircleDollar,
                             selected: type == AccountType.cash,
-                            onTap: () => onAccountTypeSelected(AccountType.cash),
+                            onTap: () =>
+                                onAccountTypeSelected(AccountType.cash),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: AccountTypeTile(
-                            label: l10n.addAccountTypeCard,
-                            icon: PhosphorIcons.creditCard(PhosphorIconsStyle.regular),
+                            label: context.l10n.addAccountTypeCard,
+                            icon: PhosphorIconsRegular.creditCard,
                             selected: type == AccountType.card,
-                            onTap: () => onAccountTypeSelected(AccountType.card),
+                            onTap: () =>
+                                onAccountTypeSelected(AccountType.card),
                           ),
                         ),
                       ],
@@ -68,8 +67,8 @@ class AccountTypeSelection extends StatelessWidget {
                   const SizedBox(height: AppSpacing.sm),
                   Expanded(
                     child: AccountTypeTile(
-                      label: l10n.addAccountTypeWallet,
-                      icon: PhosphorIcons.deviceMobile(PhosphorIconsStyle.regular),
+                      label: context.l10n.addAccountTypeWallet,
+                      icon: PhosphorIconsRegular.deviceMobile,
                       selected: type == AccountType.wallet,
                       onTap: () => onAccountTypeSelected(AccountType.wallet),
                     ),

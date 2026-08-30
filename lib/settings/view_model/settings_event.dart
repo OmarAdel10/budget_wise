@@ -88,3 +88,27 @@ class SettingsEventSyncSavingsSnapshot extends SettingsEvent {
   final List<Map<String, dynamic>> savings;
   const SettingsEventSyncSavingsSnapshot(this.savings);
 }
+
+class SettingsEventChangeRecentTransactionCount extends SettingsEvent {
+  final int newCount;
+  const SettingsEventChangeRecentTransactionCount(this.newCount);
+}
+
+class SettingsEventToggleMerchantRules extends SettingsEvent {
+  const SettingsEventToggleMerchantRules();
+}
+
+class SettingsEventUpdateHomeFilterAccount extends SettingsEvent {
+  final String? accountId;
+  const SettingsEventUpdateHomeFilterAccount(this.accountId);
+}
+
+class SettingsEventUpdateMonthStartDay extends SettingsEvent {
+  final int day;
+  const SettingsEventUpdateMonthStartDay(this.day);
+}
+
+class SettingsEventUpdateWeekStartDay extends SettingsEvent {
+  final int day;
+  const SettingsEventUpdateWeekStartDay(this.day);
+}

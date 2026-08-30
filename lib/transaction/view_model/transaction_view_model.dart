@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
+import 'package:budget_wise/category/data/constants/system_category_ids.dart';
+import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
+import 'package:budget_wise/transaction/data/models/transaction_extensions.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
@@ -28,6 +31,12 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
     required this.transactionRepository,
     required this.authRepository,
   }) : super(TransactionState.initial()) {
+    if (state.transactionsList.isNotEmpty) {
+      categoryBloc.add(
+        CategoryEventRefreshTotals(transactions: state.transactionsList),
+      );
+    }
+
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const TransactionEventFetchAll());
@@ -50,20 +59,44 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           emit,
           state.copyWith(transactionsList: updatedList, errorMessage: null),
         );
+        categoryBloc.add(CategoryEventRefreshTotals(transactions: updatedList));
 
         // Update Account Balance
         final amountForAccount =
             event.convertedAmount ?? newTransaction.transactionAmount;
-        final amountDelta = newTransaction.type == TransactionType.income
-            ? amountForAccount
-            : -amountForAccount;
-        if (newTransaction.accountId.isNotEmpty) {
-          accountBloc.add(
-            AccountEventUpdateBalance(
-              accountId: newTransaction.accountId,
-              amountDelta: amountDelta,
-            ),
-          );
+
+        if (newTransaction.type == TransactionType.transfer) {
+          // Dual update for transfers
+          if (newTransaction.accountId.isNotEmpty) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: newTransaction.accountId,
+                amountDelta: -amountForAccount,
+              ),
+            );
+          }
+          if (newTransaction.toAccountId != null &&
+              newTransaction.toAccountId!.isNotEmpty) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: newTransaction.toAccountId!,
+                amountDelta: amountForAccount,
+              ),
+            );
+          }
+        } else {
+          // Standard single account update
+          final amountDelta = newTransaction.type == TransactionType.income
+              ? amountForAccount
+              : -amountForAccount;
+          if (newTransaction.accountId.isNotEmpty) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: newTransaction.accountId,
+                amountDelta: amountDelta,
+              ),
+            );
+          }
         }
 
         if (settingsBloc.state.model.hasLoggedIn &&
@@ -97,12 +130,110 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
       }
     });
 
+    on<TransactionEventCreateTransfer>((event, emit) async {
+      try {
+        final userId = authRepository.currentUser?.uid ?? '';
+        final groupId = const Uuid().v4();
+        final now = DateTime.now();
+        final categoryId =
+            event.categoryId ?? SystemCategoryIds.accountTransfer;
+
+        final expenseLeg = TransactionModel(
+          id: const Uuid().v4(),
+          userId: userId,
+          type: TransactionType.expense,
+          description: event.fromDescription,
+          transactionAmount: event.amount,
+          transactionCurrency: event.fromCurrency,
+          categoryId: categoryId,
+          accountId: event.fromAccountId,
+          toAccountId: event.toAccountId,
+          transferGroupId: groupId,
+          transactionDate: event.transactionDate,
+          transactionNotes: event.transactionNotes,
+          isSynced: false,
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        final incomeLeg = TransactionModel(
+          id: const Uuid().v4(),
+          userId: userId,
+          type: TransactionType.income,
+          description: event.toDescription,
+          transactionAmount: event.destinationAmount,
+          transactionCurrency: event.destinationCurrency,
+          categoryId: categoryId,
+          accountId: event.toAccountId,
+          transferGroupId: groupId,
+          transactionDate: event.transactionDate,
+          transactionNotes: event.transactionNotes,
+          isSynced: false,
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        final newTransactions = [expenseLeg, incomeLeg];
+        final updatedList = [...newTransactions, ...state.transactionsList];
+
+        _emitUpdatedState(
+          emit,
+          state.copyWith(transactionsList: updatedList, errorMessage: null),
+        );
+        categoryBloc.add(CategoryEventRefreshTotals(transactions: updatedList));
+
+        accountBloc.add(
+          AccountEventUpdateBalance(
+            accountId: event.fromAccountId,
+            amountDelta: -event.amount,
+          ),
+        );
+        accountBloc.add(
+          AccountEventUpdateBalance(
+            accountId: event.toAccountId,
+            amountDelta: event.destinationAmount,
+          ),
+        );
+
+        if (settingsBloc.state.model.hasLoggedIn &&
+            authRepository.currentUser != null) {
+          for (final tx in newTransactions) {
+            transactionRepository
+                .addTransaction(tx)
+                .then((_) {
+                  add(TransactionEventMarkSynced(transactionId: tx.id));
+                })
+                .catchError((e) {
+                  log('Cloud sync failed: $e');
+                });
+          }
+        }
+      } catch (e) {
+        emit(
+          state.copyWith(
+            errorMessage: 'Transfer creation failed: ${e.toString()}',
+          ),
+        );
+      }
+    });
+
     on<TransactionEventUpdateTransaction>((event, emit) async {
       try {
         final updatedTransaction = event.transaction.copyWith(isSynced: false);
         final oldTransaction = state.transactionsList.firstWhere(
           (t) => t.id == updatedTransaction.id,
         );
+
+        if (SystemCategoryIds.isBalanceAdjustment(oldTransaction.categoryId) &&
+            updatedTransaction.transactionAmount !=
+                oldTransaction.transactionAmount) {
+          emit(
+            state.copyWith(
+              errorMessage: 'Cannot change amount of balance adjustment',
+            ),
+          );
+          return;
+        }
 
         final updatedList = state.transactionsList.map((transaction) {
           return transaction.id == updatedTransaction.id
@@ -114,49 +245,69 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           emit,
           state.copyWith(transactionsList: updatedList, errorMessage: null),
         );
+        categoryBloc.add(CategoryEventRefreshTotals(transactions: updatedList));
 
         // Update Account Balance
-        if (oldTransaction.accountId == updatedTransaction.accountId) {
-          // Same account, update with diff
-          final oldAmountDelta = oldTransaction.type == TransactionType.income
-              ? oldTransaction.transactionAmount
-              : -oldTransaction.transactionAmount;
-          final newAmountDelta =
-              updatedTransaction.type == TransactionType.income
-              ? updatedTransaction.transactionAmount
-              : -updatedTransaction.transactionAmount;
-          final diff = newAmountDelta - oldAmountDelta;
-
-          if (diff != 0 && updatedTransaction.accountId.isNotEmpty) {
+        // 1. Reverse old transaction effect
+        if (oldTransaction.type == TransactionType.transfer) {
+          if (oldTransaction.accountId.isNotEmpty) {
             accountBloc.add(
               AccountEventUpdateBalance(
-                accountId: updatedTransaction.accountId,
-                amountDelta: diff,
+                accountId: oldTransaction.accountId,
+                amountDelta: oldTransaction.transactionAmount,
+              ),
+            );
+          }
+          if (oldTransaction.toAccountId != null &&
+              oldTransaction.toAccountId!.isNotEmpty) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: oldTransaction.toAccountId!,
+                amountDelta: -oldTransaction.transactionAmount,
               ),
             );
           }
         } else {
-          // Different account: reverse old, apply new
-          final oldAmountReversal =
-              oldTransaction.type == TransactionType.income
+          final reversalDelta = oldTransaction.type == TransactionType.income
               ? -oldTransaction.transactionAmount
               : oldTransaction.transactionAmount;
+          if (oldTransaction.accountId.isNotEmpty) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: oldTransaction.accountId,
+                amountDelta: reversalDelta,
+              ),
+            );
+          }
+        }
 
-          final newAmountForAccount =
-              event.convertedAmount ?? updatedTransaction.transactionAmount;
+        // 2. Apply new transaction effect
+        final newAmountForAccount =
+            event.convertedAmount ?? updatedTransaction.transactionAmount;
+        if (updatedTransaction.type == TransactionType.transfer) {
+          if (updatedTransaction.accountId.isNotEmpty) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: updatedTransaction.accountId,
+                amountDelta: -newAmountForAccount,
+              ),
+            );
+          }
+          if (updatedTransaction.toAccountId != null &&
+              updatedTransaction.toAccountId!.isNotEmpty) {
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: updatedTransaction.toAccountId!,
+                amountDelta: newAmountForAccount,
+              ),
+            );
+          }
+        } else {
           final newAmountDelta =
               updatedTransaction.type == TransactionType.income
               ? newAmountForAccount
               : -newAmountForAccount;
-
-          if (oldTransaction.accountId.isNotEmpty &&
-              updatedTransaction.accountId.isNotEmpty) {
-            accountBloc.add(
-              AccountEventUpdateBalance(
-                accountId: oldTransaction.accountId,
-                amountDelta: oldAmountReversal,
-              ),
-            );
+          if (updatedTransaction.accountId.isNotEmpty) {
             accountBloc.add(
               AccountEventUpdateBalance(
                 accountId: updatedTransaction.accountId,
@@ -211,6 +362,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           emit,
           state.copyWith(transactionsList: updatedList, errorMessage: null),
         );
+        categoryBloc.add(CategoryEventRefreshTotals(transactions: updatedList));
       } catch (e) {
         emit(
           state.copyWith(
@@ -255,6 +407,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           emit,
           state.copyWith(transactionsList: updatedList, errorMessage: null),
         );
+        categoryBloc.add(CategoryEventRefreshTotals(transactions: updatedList));
       } catch (e) {
         emit(
           state.copyWith(
@@ -270,46 +423,86 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           (t) => t.id == event.transactionId,
         );
 
+        final idsToDelete = <String>{event.transactionId};
+        if (transactionToDelete.isTransferLeg &&
+            transactionToDelete.transferGroupId != null) {
+          for (final t in state.transactionsList) {
+            if (t.transferGroupId == transactionToDelete.transferGroupId &&
+                t.id != event.transactionId) {
+              idsToDelete.add(t.id);
+            }
+          }
+        }
+
+        final removedTransactions = state.transactionsList
+            .where((t) => idsToDelete.contains(t.id))
+            .toList();
+
         final updatedList = state.transactionsList
-            .where((transaction) => transaction.id != event.transactionId)
+            .where((t) => !idsToDelete.contains(t.id))
             .toList();
 
         _emitUpdatedState(
           emit,
           state.copyWith(transactionsList: updatedList, errorMessage: null),
         );
+        categoryBloc.add(CategoryEventRefreshTotals(transactions: updatedList));
 
-        // Reverse Account Balance
-        final reversalDelta = transactionToDelete.type == TransactionType.income
-            ? -transactionToDelete.transactionAmount
-            : transactionToDelete.transactionAmount;
+        // Reverse Account Balance (skip for balance_adjustment only)
+        if (!transactionToDelete.isBalanceAdjustment) {
+          if (transactionToDelete.type == TransactionType.transfer) {
+            if (transactionToDelete.accountId.isNotEmpty) {
+              accountBloc.add(
+                AccountEventUpdateBalance(
+                  accountId: transactionToDelete.accountId,
+                  amountDelta: transactionToDelete.transactionAmount,
+                ),
+              );
+            }
+            if (transactionToDelete.toAccountId != null &&
+                transactionToDelete.toAccountId!.isNotEmpty) {
+              accountBloc.add(
+                AccountEventUpdateBalance(
+                  accountId: transactionToDelete.toAccountId!,
+                  amountDelta: -transactionToDelete.transactionAmount,
+                ),
+              );
+            }
+          } else {
+            final reversalDelta =
+                transactionToDelete.type == TransactionType.income
+                ? -transactionToDelete.transactionAmount
+                : transactionToDelete.transactionAmount;
 
-        accountBloc.add(
-          AccountEventUpdateBalance(
-            accountId: transactionToDelete.accountId,
-            amountDelta: reversalDelta,
-          ),
-        );
+            accountBloc.add(
+              AccountEventUpdateBalance(
+                accountId: transactionToDelete.accountId,
+                amountDelta: reversalDelta,
+              ),
+            );
+          }
+        }
 
         if (settingsBloc.state.model.hasLoggedIn &&
             authRepository.currentUser != null) {
-          await transactionRepository
-              .deleteTransaction(event.transactionId)
-              .catchError((e) {
-                // Restore transaction to list and mark as unsynced for retry
-                final restoredList = [
-                  transactionToDelete,
-                  ...state.transactionsList,
-                ];
-                emit(
-                  state.copyWith(
-                    transactionsList: restoredList,
-                    errorMessage:
-                        'Cloud delete failed. Will retry on next sync.',
-                  ),
-                );
-                log('Failed to delete transaction ${event.transactionId}: $e');
-              });
+          for (final id in idsToDelete) {
+            await transactionRepository.deleteTransaction(id).catchError((e) {
+              final restoredList = [
+                ...removedTransactions,
+                ...state.transactionsList,
+              ];
+              emit(
+                state.copyWith(
+                  transactionsList: restoredList,
+                  errorMessage: 'Cloud delete failed. Will retry on next sync.',
+                ),
+              );
+              categoryBloc.add(
+                CategoryEventRefreshTotals(transactions: restoredList),
+              );
+              log('Failed to delete transaction $id: $e');
+            });
+          }
         }
       } catch (e) {
         emit(state.copyWith(errorMessage: 'Delete failed: ${e.toString()}'));
@@ -458,11 +651,13 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
         final List<TransactionModel> newTransactions = [];
 
         for (var tx in event.transactions) {
-          newTransactions.add(tx.copyWith(
-            id: tx.id.isEmpty ? const Uuid().v4() : tx.id,
-            userId: userId,
-            isSynced: false,
-          ));
+          newTransactions.add(
+            tx.copyWith(
+              id: tx.id.isEmpty ? const Uuid().v4() : tx.id,
+              userId: userId,
+              isSynced: false,
+            ),
+          );
         }
 
         final updatedList = [...newTransactions, ...state.transactionsList];
@@ -471,6 +666,7 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
           emit,
           state.copyWith(transactionsList: updatedList, errorMessage: null),
         );
+        categoryBloc.add(CategoryEventRefreshTotals(transactions: updatedList));
 
         // Update Account Balances in Bulk
         final Map<String, double> balanceChanges = {};
@@ -479,15 +675,15 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             final delta = tx.type == TransactionType.income
                 ? tx.transactionAmount
                 : -tx.transactionAmount;
-            balanceChanges[tx.accountId] = (balanceChanges[tx.accountId] ?? 0.0) + delta;
+            balanceChanges[tx.accountId] =
+                (balanceChanges[tx.accountId] ?? 0.0) + delta;
           }
         }
 
         balanceChanges.forEach((accountId, delta) {
-          accountBloc.add(AccountEventUpdateBalance(
-            accountId: accountId,
-            amountDelta: delta,
-          ));
+          accountBloc.add(
+            AccountEventUpdateBalance(accountId: accountId, amountDelta: delta),
+          );
         });
 
         if (settingsBloc.state.model.hasLoggedIn &&
@@ -504,13 +700,21 @@ class TransactionBloc extends HydratedBloc<TransactionEvent, TransactionState> {
             }
             return t;
           }).toList();
-          _emitUpdatedState(emit, state.copyWith(transactionsList: listAfterSync));
+          _emitUpdatedState(
+            emit,
+            state.copyWith(transactionsList: listAfterSync),
+          );
+          categoryBloc.add(
+            CategoryEventRefreshTotals(transactions: listAfterSync),
+          );
         }
 
         event.completer?.complete();
       } catch (e) {
         event.completer?.completeError(e);
-        emit(state.copyWith(errorMessage: 'Bulk import failed: ${e.toString()}'));
+        emit(
+          state.copyWith(errorMessage: 'Bulk import failed: ${e.toString()}'),
+        );
       }
     });
 

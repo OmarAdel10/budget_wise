@@ -3,37 +3,55 @@ import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/widgets/generic_icon_container.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class AssetItem extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final String amount;
   final bool isWarningEnabled;
+  final bool? isSelected;
+  final bool isSelectable;
 
   const AssetItem({
     super.key,
     required this.icon,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.amount,
     this.isWarningEnabled = false,
-  });
+  }) : isSelected = null,
+       isSelectable = false;
+
+  const AssetItem.selectable({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.amount,
+    this.isWarningEnabled = false,
+    required this.isSelected,
+  }) : subtitle = null,
+       isSelectable = true;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    Widget widget = Stack(
       clipBehavior: Clip.none,
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.symmetric(
+            vertical: AppSpacing.md,
+            horizontal: AppSpacing.md,
+          ),
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             border: Border.all(
               color: isWarningEnabled
                   ? AppColors.danger.withValues(alpha: 0.6)
+                  : isSelected != null && isSelected!
+                  ? AppColors.primaryAccent.withValues(alpha: 0.6)
                   : AppColors.borderColor.withValues(alpha: 0.6),
             ),
           ),
@@ -44,6 +62,8 @@ class AssetItem extends StatelessWidget {
                 color: AppColors.textSecondary,
                 borderRadius: 10,
                 backgroundOpacity: 0.12,
+                size: 34,
+                iconSize: 22,
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -57,7 +77,9 @@ class AssetItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
-                    Text(subtitle, style: AppTextStyles.bodySmall),
+                    subtitle != null
+                        ? Text(subtitle!, style: AppTextStyles.bodySmall)
+                        : const SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -65,6 +87,9 @@ class AssetItem extends StatelessWidget {
                 amount,
                 style: AppTextStyles.bodyLarge.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: isSelected != null && isSelected!
+                      ? AppColors.primaryAccent
+                      : AppColors.textPrimary,
                 ),
               ),
             ],
@@ -83,5 +108,16 @@ class AssetItem extends StatelessWidget {
         ],
       ],
     );
+
+    if (isSelectable) {
+      return Column(
+        children: [
+          widget,
+          const SizedBox(height: AppSpacing.md),
+        ],
+      );
+    }
+
+    return widget;
   }
 }

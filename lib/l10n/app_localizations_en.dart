@@ -42,6 +42,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenses => 'Expenses';
 
   @override
+  String get all => 'All';
+
+  @override
+  String get transfer => 'Transfer';
+
+  @override
   String get categories => 'Categories';
 
   @override
@@ -324,7 +330,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncToCloud => 'Sync To Cloud';
 
   @override
-  String get recentTransactions => 'Recent Transactions';
+  String get recentActivity => 'Recent Activity';
 
   @override
   String get seeAll => 'See All';
@@ -354,6 +360,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get title => 'Title';
 
   @override
+  String get titleLabel => 'Title (optional)';
+
+  @override
   String get transactionHistory => 'Transaction History';
 
   @override
@@ -379,6 +388,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transactionDeleted => 'Transaction Deleted';
+
+  @override
+  String get undoDeletionDescription => 'Tap Undo to cancel deletion.';
+
+  @override
+  String get transactionDeletedSuccessfully =>
+      'Transaction deleted successfully.';
+
+  @override
+  String get transactionSavedSuccessfully => 'Transaction saved successfully.';
+
+  @override
+  String get categoryDeletedSuccessfully => 'Category deleted successfully.';
+
+  @override
+  String get categorySavedSuccessfully => 'Category saved successfully.';
 
   @override
   String get categoryDeleted => 'Category Deleted';
@@ -516,6 +541,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get netWorth => 'Net Worth';
+
+  @override
+  String get allAccounts => 'All Accounts';
 
   @override
   String get yourAssets => 'Your Assets';
@@ -734,10 +762,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterValidAmount => 'Please enter a valid amount';
 
   @override
-  String get selectCategory => 'Please select a category';
+  String get selectCategory => 'Select Category';
 
   @override
-  String get selectAccount => 'Please select an account';
+  String get mostUsed => 'Most Used';
+
+  @override
+  String get selectAccount => 'Select Account';
 
   @override
   String get editTransaction => 'Edit Transaction';
@@ -1390,6 +1421,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sttModeVoice => 'Voice';
 
   @override
+  String get voiceNote => 'Voice Note';
+
+  @override
   String get sttActivationTitle => 'Activating Voice Search';
 
   @override
@@ -1425,6 +1459,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get preferences => 'Preferences';
+
+  @override
+  String get merchantRulesEnabled => 'Merchant Rules';
+
+  @override
+  String get merchantRulesEnabledInfo =>
+      'Auto-categorize transactions by merchant name';
+
+  @override
+  String get merchantRules => 'Merchant Rules';
+
+  @override
+  String get addMerchantRule => 'Add Merchant Rule';
+
+  @override
+  String get editMerchantRule => 'Edit Merchant Rule';
+
+  @override
+  String get merchantName => 'Merchant Name';
+
+  @override
+  String get merchantNameHint => 'e.g. Starbucks';
+
+  @override
+  String get saveRule => 'Save Rule';
+
+  @override
+  String get noMerchantRules => 'No merchant rules yet';
+
+  @override
+  String get noMerchantRulesDesc => 'Tap + to create your first rule';
+
+  @override
+  String get deleteRuleTitle => 'Delete Rule';
+
+  @override
+  String get rule => 'Rule';
+
+  @override
+  String get ruleDeleted => 'Rule Deleted Successfully';
+
+  @override
+  String get deleteRuleConfirmation =>
+      'Are you sure you want to delete this rule?';
+
+  @override
+  String get searchByMerchantName => 'Search by merchant name...';
+
+  @override
+  String get recentTransactionsCount => 'Recent Transactions Display Count';
+
+  @override
+  String get recentTransactionsCountInfo =>
+      'Number of transactions shown on home screen';
 
   @override
   String get categoryNotFound => 'Category Not Found';
@@ -1495,4 +1583,131 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customRange => 'Custom Range';
+
+  @override
+  String get balance => 'Balance';
+
+  @override
+  String get appLock => 'App Lock';
+
+  @override
+  String get incomeHint => 'What did you earn from?';
+
+  @override
+  String get expenseHint => 'What did you spend on?';
+
+  @override
+  String get transferNoteHint => 'Add a note for this transfer';
+
+  @override
+  String get noteHint => 'Add a note or context...';
+
+  @override
+  String get note => 'Note (optional)';
+
+  @override
+  String get hint => 'Hint (optional)';
+
+  @override
+  String get selectToAccount => 'Select To Account';
+
+  @override
+  String get fromAccount => 'From Account';
+
+  @override
+  String get toAccount => 'To Account';
+
+  @override
+  String get sameAccountError => 'From and To accounts cannot be the same';
+
+  @override
+  String get descriptionLabel => 'Description (optional)';
+
+  @override
+  String get categoryLabel => 'Category';
+
+  @override
+  String get categoryLabelOptional => 'Category (optional)';
+
+  @override
+  String get accountLabel => 'Account';
+
+  @override
+  String get dateLabel => 'Date';
+
+  @override
+  String get pickDate => 'Pick Date';
+
+  @override
+  String transferFrom(String fromAccountName) {
+    return 'Transfer from $fromAccountName';
+  }
+
+  @override
+  String transferTo(String toAccountName) {
+    return 'Transfer to $toAccountName';
+  }
+
+  @override
+  String pendingReview(int count) {
+    return '$count Pending Review';
+  }
+
+  @override
+  String get review => 'Review';
+
+  @override
+  String get transactionsRequireReviewing => 'Transactions require reviewing';
+
+  @override
+  String deleteType(String type) {
+    return 'Delete $type';
+  }
+
+  @override
+  String deleteTypeDesc(String type) {
+    return 'Are you sure you want to delete this $type? This action cannot be undone.';
+  }
+
+  @override
+  String get transactionLabel => 'Transaction';
+
+  @override
+  String get searchTransactions => 'Search transactions...';
+
+  @override
+  String get searchCategories => 'Search categories...';
+
+  @override
+  String get monthStartDay => 'Month Start Day';
+
+  @override
+  String get monthStartDayInfo => 'The day your month starts (e.g. payday)';
+
+  @override
+  String get weekStartDay => 'Week Start Day';
+
+  @override
+  String get weekStartDayInfo => 'The day your week starts';
+
+  @override
+  String get monday => 'Monday';
+
+  @override
+  String get tuesday => 'Tuesday';
+
+  @override
+  String get wednesday => 'Wednesday';
+
+  @override
+  String get thursday => 'Thursday';
+
+  @override
+  String get friday => 'Friday';
+
+  @override
+  String get saturday => 'Saturday';
+
+  @override
+  String get sunday => 'Sunday';
 }

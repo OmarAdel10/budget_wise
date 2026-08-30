@@ -1,12 +1,12 @@
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/settings/view/screens/edit_profile_screen.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class ProfileHeaderSection extends StatelessWidget {
   final User user;
@@ -20,12 +20,11 @@ class ProfileHeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.profile, style: AppTextStyles.heading3),
+        Text(context.l10n.profile, style: AppTextStyles.heading3),
         const SizedBox(height: AppSpacing.md),
         Container(
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -94,7 +93,7 @@ class ProfileHeaderSection extends StatelessWidget {
                     size: 20,
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(l10n.editProfile, style: AppTextStyles.bodyLarge),
+                  Text(context.l10n.editProfile, style: AppTextStyles.bodyLarge),
                 ],
               ),
             ),

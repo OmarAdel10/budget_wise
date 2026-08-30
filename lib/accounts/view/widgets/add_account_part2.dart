@@ -7,14 +7,13 @@ import 'package:budget_wise/accounts/view/widgets/account_expiry_date_field.dart
 import 'package:budget_wise/accounts/view/widgets/account_initial_balance_display.dart';
 import 'package:budget_wise/accounts/view/widgets/credit_card_preview.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:flutter/material.dart';
 
 class AddAccountPart2 extends StatelessWidget {
   const AddAccountPart2({
     super.key,
-    required this.l10n,
     required this.formKey,
     required this.selectedCurrency,
     required this.balanceController,
@@ -32,7 +31,6 @@ class AddAccountPart2 extends StatelessWidget {
     required this.determineCardType,
   });
 
-  final AppLocalizations l10n;
   final GlobalKey<FormState> formKey;
   final ValueNotifier<String?> selectedCurrency;
   final TextEditingController balanceController;
@@ -57,7 +55,6 @@ class AddAccountPart2 extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           AccountInitialBalanceDisplay(
-            l10n: l10n,
             selectedCurrency: selectedCurrency,
             balanceController: balanceController,
           ),
@@ -72,20 +69,17 @@ class AddAccountPart2 extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           AccountBankNameField(
-            l10n: l10n,
             selectedBankName: selectedBankName,
             onBankSelected: onBankSelected,
           ),
           const SizedBox(height: AppSpacing.md),
           if (authRepo.currentUser == null) ...[
             AccountCardHolderField(
-              l10n: l10n,
               cardHolderController: cardHolderController,
             ),
             const SizedBox(height: AppSpacing.md),
           ],
           AccountCardNumberField(
-            l10n: l10n,
             cardNumberController: cardNumberController,
             isCardValid: isCardValid,
             onValidateCardNumber: onValidateCardNumber,
@@ -95,7 +89,6 @@ class AddAccountPart2 extends StatelessWidget {
           Row(
             children: [
               AccountExpiryDateField(
-                l10n: l10n,
                 expiryController: expiryController,
                 isExpiryValid: isExpiryValid,
                 onValidateExpiryDate: onValidateExpiryDate,
@@ -103,7 +96,7 @@ class AddAccountPart2 extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
-          AccountCardSecureNote(l10n: l10n),
+          AccountCardSecureNote(),
         ],
       ),
     );

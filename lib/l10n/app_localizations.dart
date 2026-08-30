@@ -164,6 +164,18 @@ abstract class AppLocalizations {
   /// **'Expenses'**
   String get expenses;
 
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @transfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get transfer;
+
   /// No description provided for @categories.
   ///
   /// In en, this message translates to:
@@ -716,11 +728,11 @@ abstract class AppLocalizations {
   /// **'Sync To Cloud'**
   String get syncToCloud;
 
-  /// No description provided for @recentTransactions.
+  /// No description provided for @recentActivity.
   ///
   /// In en, this message translates to:
-  /// **'Recent Transactions'**
-  String get recentTransactions;
+  /// **'Recent Activity'**
+  String get recentActivity;
 
   /// No description provided for @seeAll.
   ///
@@ -776,6 +788,12 @@ abstract class AppLocalizations {
   /// **'Title'**
   String get title;
 
+  /// No description provided for @titleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (optional)'**
+  String get titleLabel;
+
   /// No description provided for @transactionHistory.
   ///
   /// In en, this message translates to:
@@ -829,6 +847,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Transaction Deleted'**
   String get transactionDeleted;
+
+  /// No description provided for @undoDeletionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Undo to cancel deletion.'**
+  String get undoDeletionDescription;
+
+  /// No description provided for @transactionDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction deleted successfully.'**
+  String get transactionDeletedSuccessfully;
+
+  /// No description provided for @transactionSavedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction saved successfully.'**
+  String get transactionSavedSuccessfully;
+
+  /// No description provided for @categoryDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Category deleted successfully.'**
+  String get categoryDeletedSuccessfully;
+
+  /// No description provided for @categorySavedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Category saved successfully.'**
+  String get categorySavedSuccessfully;
 
   /// No description provided for @categoryDeleted.
   ///
@@ -1099,6 +1147,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Net Worth'**
   String get netWorth;
+
+  /// No description provided for @allAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'All Accounts'**
+  String get allAccounts;
 
   /// No description provided for @yourAssets.
   ///
@@ -1505,13 +1559,19 @@ abstract class AppLocalizations {
   /// No description provided for @selectCategory.
   ///
   /// In en, this message translates to:
-  /// **'Please select a category'**
+  /// **'Select Category'**
   String get selectCategory;
+
+  /// No description provided for @mostUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Most Used'**
+  String get mostUsed;
 
   /// No description provided for @selectAccount.
   ///
   /// In en, this message translates to:
-  /// **'Please select an account'**
+  /// **'Select Account'**
   String get selectAccount;
 
   /// No description provided for @editTransaction.
@@ -2696,6 +2756,12 @@ abstract class AppLocalizations {
   /// **'Voice'**
   String get sttModeVoice;
 
+  /// No description provided for @voiceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Note'**
+  String get voiceNote;
+
   /// No description provided for @sttActivationTitle.
   ///
   /// In en, this message translates to:
@@ -2767,6 +2833,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Preferences'**
   String get preferences;
+
+  /// No description provided for @merchantRulesEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant Rules'**
+  String get merchantRulesEnabled;
+
+  /// No description provided for @merchantRulesEnabledInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-categorize transactions by merchant name'**
+  String get merchantRulesEnabledInfo;
+
+  /// No description provided for @merchantRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant Rules'**
+  String get merchantRules;
+
+  /// No description provided for @addMerchantRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Merchant Rule'**
+  String get addMerchantRule;
+
+  /// No description provided for @editMerchantRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Merchant Rule'**
+  String get editMerchantRule;
+
+  /// No description provided for @merchantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Merchant Name'**
+  String get merchantName;
+
+  /// No description provided for @merchantNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Starbucks'**
+  String get merchantNameHint;
+
+  /// No description provided for @saveRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Rule'**
+  String get saveRule;
+
+  /// No description provided for @noMerchantRules.
+  ///
+  /// In en, this message translates to:
+  /// **'No merchant rules yet'**
+  String get noMerchantRules;
+
+  /// No description provided for @noMerchantRulesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to create your first rule'**
+  String get noMerchantRulesDesc;
+
+  /// No description provided for @deleteRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Rule'**
+  String get deleteRuleTitle;
+
+  /// No description provided for @rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule'**
+  String get rule;
+
+  /// No description provided for @ruleDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule Deleted Successfully'**
+  String get ruleDeleted;
+
+  /// No description provided for @deleteRuleConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this rule?'**
+  String get deleteRuleConfirmation;
+
+  /// No description provided for @searchByMerchantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by merchant name...'**
+  String get searchByMerchantName;
+
+  /// No description provided for @recentTransactionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Transactions Display Count'**
+  String get recentTransactionsCount;
+
+  /// No description provided for @recentTransactionsCountInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of transactions shown on home screen'**
+  String get recentTransactionsCountInfo;
 
   /// No description provided for @categoryNotFound.
   ///
@@ -2887,6 +3055,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom Range'**
   String get customRange;
+
+  /// No description provided for @balance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get balance;
+
+  /// No description provided for @appLock.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock'**
+  String get appLock;
+
+  /// No description provided for @incomeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What did you earn from?'**
+  String get incomeHint;
+
+  /// No description provided for @expenseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What did you spend on?'**
+  String get expenseHint;
+
+  /// No description provided for @transferNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note for this transfer'**
+  String get transferNoteHint;
+
+  /// No description provided for @noteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a note or context...'**
+  String get noteHint;
+
+  /// No description provided for @note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get note;
+
+  /// No description provided for @hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hint (optional)'**
+  String get hint;
+
+  /// No description provided for @selectToAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Select To Account'**
+  String get selectToAccount;
+
+  /// No description provided for @fromAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'From Account'**
+  String get fromAccount;
+
+  /// No description provided for @toAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'To Account'**
+  String get toAccount;
+
+  /// No description provided for @sameAccountError.
+  ///
+  /// In en, this message translates to:
+  /// **'From and To accounts cannot be the same'**
+  String get sameAccountError;
+
+  /// No description provided for @descriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get descriptionLabel;
+
+  /// No description provided for @categoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryLabel;
+
+  /// No description provided for @categoryLabelOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Category (optional)'**
+  String get categoryLabelOptional;
+
+  /// No description provided for @accountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountLabel;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get dateLabel;
+
+  /// No description provided for @pickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Date'**
+  String get pickDate;
+
+  /// No description provided for @transferFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer from {fromAccountName}'**
+  String transferFrom(String fromAccountName);
+
+  /// No description provided for @transferTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer to {toAccountName}'**
+  String transferTo(String toAccountName);
+
+  /// No description provided for @pendingReview.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Pending Review'**
+  String pendingReview(int count);
+
+  /// No description provided for @review.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get review;
+
+  /// No description provided for @transactionsRequireReviewing.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions require reviewing'**
+  String get transactionsRequireReviewing;
+
+  /// No description provided for @deleteType.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {type}'**
+  String deleteType(String type);
+
+  /// No description provided for @deleteTypeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this {type}? This action cannot be undone.'**
+  String deleteTypeDesc(String type);
+
+  /// No description provided for @transactionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction'**
+  String get transactionLabel;
+
+  /// No description provided for @searchTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Search transactions...'**
+  String get searchTransactions;
+
+  /// No description provided for @searchCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Search categories...'**
+  String get searchCategories;
+
+  /// No description provided for @monthStartDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Month Start Day'**
+  String get monthStartDay;
+
+  /// No description provided for @monthStartDayInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'The day your month starts (e.g. payday)'**
+  String get monthStartDayInfo;
+
+  /// No description provided for @weekStartDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Week Start Day'**
+  String get weekStartDay;
+
+  /// No description provided for @weekStartDayInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'The day your week starts'**
+  String get weekStartDayInfo;
+
+  /// No description provided for @monday.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get monday;
+
+  /// No description provided for @tuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get tuesday;
+
+  /// No description provided for @wednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get wednesday;
+
+  /// No description provided for @thursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get thursday;
+
+  /// No description provided for @friday.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get friday;
+
+  /// No description provided for @saturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get saturday;
+
+  /// No description provided for @sunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get sunday;
 }
 
 class _AppLocalizationsDelegate

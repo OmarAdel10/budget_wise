@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/widgets/summary_card.dart';
@@ -8,17 +8,15 @@ import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class SubscriptionInfoGrid extends StatelessWidget {
   final String subscriptionId;
-  final AppLocalizations l10n;
   final ValueNotifier<bool> isOverdueNotifier;
 
   const SubscriptionInfoGrid({
     super.key,
     required this.subscriptionId,
-    required this.l10n,
     required this.isOverdueNotifier,
   });
 
@@ -44,8 +42,8 @@ class SubscriptionInfoGrid extends StatelessWidget {
                           .billingCycle,
                       builder: (context, billingCycle) {
                         return SummaryCard(
-                          title: l10n.billingCycle,
-                          amount: billingCycle.label(l10n),
+                          title: context.l10n.billingCycle,
+                          amount: billingCycle.label(context),
                           icon: Icons.calendar_today_outlined,
                           isCompact: true,
                           hasFixedHeight: true,
@@ -72,7 +70,7 @@ class SubscriptionInfoGrid extends StatelessWidget {
                             valueListenable: isOverdueNotifier,
                             builder: (context, isOverdue, child) {
                               return SummaryCard(
-                                title: l10n.nextRenewalDate,
+                                title: context.l10n.nextRenewalDate,
                                 amount: DateFormat(
                                   'MMM dd, yyyy',
                                 ).format(nextBilling),
@@ -121,10 +119,10 @@ class SubscriptionInfoGrid extends StatelessWidget {
                                 .remindBeforeDays,
                             builder: (context, reminderValue) {
                               return SummaryCard(
-                                title: l10n.reminder,
+                                title: context.l10n.reminder,
                                 amount: reminderEnabled
-                                    ? l10n.daysBefore(reminderValue)
-                                    : l10n.off,
+                                    ? context.l10n.daysBefore(reminderValue)
+                                    : context.l10n.off,
                                 icon: Icons.notifications_active_outlined,
                                 isCompact: true,
                                 hasFixedHeight: true,
@@ -153,14 +151,14 @@ class SubscriptionInfoGrid extends StatelessWidget {
                         valueListenable: isOverdueNotifier,
                         builder: (context, isOverdue, child) {
                           return SummaryCard(
-                            title: l10n.status,
+                            title: context.l10n.status,
                             amount: (isInActive && isOverdue)
-                                ? l10n.inActiveAndOverdue
+                                ? context.l10n.inActiveAndOverdue
                                 : isInActive
-                                ? l10n.inActive
+                                ? context.l10n.inActive
                                 : isOverdue
-                                ? l10n.overdue
-                                : l10n.active,
+                                ? context.l10n.overdue
+                                : context.l10n.active,
                             icon: (isInActive && isOverdue)
                                 ? PhosphorIconsBold.xCircle
                                 : isInActive

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import '../constants/colors.dart';
 import '../constants/text_styles.dart';
 import '../constants/spacing.dart';
@@ -51,7 +51,7 @@ class SavingGoalItem extends StatelessWidget {
               ),
               child: imageUrl == null || imageUrl!.isEmpty
                   ? Icon(
-                      PhosphorIcons.piggyBank(),
+                      PhosphorIconsRegular.piggyBank,
                       color: AppColors.textSecondary,
                       size: 24,
                     )

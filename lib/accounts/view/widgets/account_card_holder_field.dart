@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -6,14 +6,12 @@ import 'package:budget_wise/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class AccountCardHolderField extends StatelessWidget {
+  final TextEditingController cardHolderController;
   const AccountCardHolderField({
     super.key,
-    required this.l10n,
     required this.cardHolderController,
   });
-
-  final AppLocalizations l10n;
-  final TextEditingController cardHolderController;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class AccountCardHolderField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.addAccountCardHolderLabel,
+            context.l10n.addAccountCardHolderLabel,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -36,11 +34,11 @@ class AccountCardHolderField extends StatelessWidget {
           CustomTextField(
             bgColor: AppColors.inputBackground,
             controller: cardHolderController,
-            hintText: l10n.addAccountCardHolderPlaceholder,
+            hintText: context.l10n.addAccountCardHolderPlaceholder,
             keyboardType: TextInputType.name,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.cardHolderCantLeftEmpty;
+                return context.l10n.cardHolderCantLeftEmpty;
               }
               return null;
             },

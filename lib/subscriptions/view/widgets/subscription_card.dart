@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -20,7 +20,6 @@ class SubscriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final ValueNotifier<bool> isOverdueNotifier = ValueNotifier(
       BillingUtils.isOverdue(subscription.nextBillingDate),
     );
@@ -62,12 +61,12 @@ class SubscriptionCard extends StatelessWidget {
                         ),
                         Text(
                           isOverdue
-                              ? l10n.dueToBillingDate(
+                              ? context.l10n.dueToBillingDate(
                                   SubscriptionFormatter.formatDate(
                                     subscription.nextBillingDate,
                                   ),
                                 )
-                              : l10n.nextBillingDate(
+                              : context.l10n.nextBillingDate(
                                   SubscriptionFormatter.formatDate(
                                     subscription.nextBillingDate,
                                   ),
@@ -102,12 +101,12 @@ class SubscriptionCard extends StatelessWidget {
                       ),
                       Text(
                         '${(isInActive && isOverdue)
-                            ? l10n.inActiveAndOverdue
+                            ? context.l10n.inActiveAndOverdue
                             : isInActive
-                            ? l10n.inActive
+                            ? context.l10n.inActive
                             : isOverdue
-                            ? l10n.overdue
-                            : l10n.active} • ${SubscriptionFormatter.getCycleLabel(subscription.billingCycle, l10n).toUpperCase()}',
+                            ? context.l10n.overdue
+                            : context.l10n.active} • ${SubscriptionFormatter.getCycleLabel(subscription.billingCycle, context).toUpperCase()}',
                         style: AppTextStyles.bodySmall.copyWith(
                           color: (isInActive && isOverdue)
                               ? AppColors.danger

@@ -1,6 +1,5 @@
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'constants/colors.dart';
 import 'constants/spacing.dart';
 
@@ -31,7 +30,8 @@ class AppTheme {
       ),
 
       // Text Theme
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
+      textTheme: ThemeData.dark().textTheme.apply(
+        fontFamily: 'IBM Plex Sans',
         bodyColor: AppColors.textPrimary,
         displayColor: AppColors.textPrimary,
       ),
@@ -47,7 +47,7 @@ class AppTheme {
           color: AppColors.textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          fontFamily: 'Inter',
+          fontFamily: 'IBM Plex Sans',
         ),
       ),
 
@@ -96,7 +96,7 @@ class AppTheme {
           textStyle: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            fontFamily: 'Inter',
+            fontFamily: 'IBM Plex Sans',
           ),
         ),
       ),
@@ -108,7 +108,7 @@ class AppTheme {
           textStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.normal,
-            fontFamily: 'Inter',
+            fontFamily: 'IBM Plex Sans',
           ),
         ),
       ),

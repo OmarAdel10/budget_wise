@@ -21,6 +21,11 @@ class SettingsModel extends Equatable {
   final bool categoryBudgetNotificationsEnabled;
   final bool dailyReminderNotificationsEnabled;
   final TransactionInputMode transactionInputMode;
+  final int recentTransactionDisplayedCount;
+  final String? homeFilterAccountId;
+  final bool merchantRulesEnabled;
+  final int monthStartDay;
+  final int weekStartDay;
 
   const SettingsModel({
     this.localAuthEnabled = false,
@@ -39,6 +44,11 @@ class SettingsModel extends Equatable {
     this.categoryBudgetNotificationsEnabled = true,
     this.dailyReminderNotificationsEnabled = true,
     this.transactionInputMode = TransactionInputMode.voice,
+    this.recentTransactionDisplayedCount = 50,
+    this.homeFilterAccountId,
+    this.merchantRulesEnabled = false,
+    this.monthStartDay = 1,
+    this.weekStartDay = 6,
   });
 
   bool get isPasscodeSet => passcode != null && passcode!.length == 4;
@@ -61,6 +71,12 @@ class SettingsModel extends Equatable {
     bool? categoryBudgetNotificationsEnabled,
     bool? dailyReminderNotificationsEnabled,
     TransactionInputMode? transactionInputMode,
+    int? recentTransactionDisplayedCount,
+    String? homeFilterAccountId,
+    bool clearHomeFilterAccountId = false,
+    bool? merchantRulesEnabled,
+    int? monthStartDay,
+    int? weekStartDay,
   }) {
     return SettingsModel(
       localAuthEnabled: localAuthEnabled ?? this.localAuthEnabled,
@@ -90,6 +106,15 @@ class SettingsModel extends Equatable {
           dailyReminderNotificationsEnabled ??
           this.dailyReminderNotificationsEnabled,
       transactionInputMode: transactionInputMode ?? this.transactionInputMode,
+      recentTransactionDisplayedCount:
+          recentTransactionDisplayedCount ??
+          this.recentTransactionDisplayedCount,
+      homeFilterAccountId: clearHomeFilterAccountId
+          ? null
+          : (homeFilterAccountId ?? this.homeFilterAccountId),
+      merchantRulesEnabled: merchantRulesEnabled ?? this.merchantRulesEnabled,
+      monthStartDay: monthStartDay ?? this.monthStartDay,
+      weekStartDay: weekStartDay ?? this.weekStartDay,
     );
   }
 
@@ -112,6 +137,11 @@ class SettingsModel extends Equatable {
       'categoryBudgetNotificationsEnabled': categoryBudgetNotificationsEnabled,
       'dailyReminderNotificationsEnabled': dailyReminderNotificationsEnabled,
       'transactionInputMode': transactionInputMode.index,
+      'recentTransactionDisplayedCount': recentTransactionDisplayedCount,
+      'homeFilterAccountId': homeFilterAccountId,
+      'merchantRulesEnabled': merchantRulesEnabled,
+      'monthStartDay': monthStartDay,
+      'weekStartDay': weekStartDay,
     };
   }
 
@@ -142,6 +172,12 @@ class SettingsModel extends Equatable {
       transactionInputMode: map['transactionInputMode'] != null
           ? TransactionInputMode.values[map['transactionInputMode'] as int]
           : TransactionInputMode.voice,
+      recentTransactionDisplayedCount:
+          map['recentTransactionDisplayedCount'] as int? ?? 50,
+      homeFilterAccountId: map['homeFilterAccountId'] as String?,
+      merchantRulesEnabled: map['merchantRulesEnabled'] as bool? ?? false,
+      monthStartDay: map['monthStartDay'] as int? ?? 1,
+      weekStartDay: map['weekStartDay'] as int? ?? 6,
     );
   }
 
@@ -168,6 +204,10 @@ class SettingsModel extends Equatable {
     categoryBudgetNotificationsEnabled,
     dailyReminderNotificationsEnabled,
     transactionInputMode,
+    recentTransactionDisplayedCount,
+    monthStartDay,
+    weekStartDay,
+    homeFilterAccountId,
+    merchantRulesEnabled,
   ];
 }
-

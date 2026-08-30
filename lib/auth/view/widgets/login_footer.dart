@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -23,7 +23,6 @@ class LoginFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       children: [
@@ -34,7 +33,7 @@ class LoginFooter extends StatelessWidget {
           builder: (context, state) {
             return RepaintBoundary(
               child: CustomButton(
-                text: l10n.login,
+                text: context.l10n.login,
                 isLoading: state is AuthStateLoading,
                 onPressed: onLogin,
               ),
@@ -46,10 +45,10 @@ class LoginFooter extends StatelessWidget {
         // Google Login Button
         RepaintBoundary(
           child: CustomButton(
-            text: l10n.loginWithGoogle,
+            text: context.l10n.loginWithGoogle,
             type: CustomButtonType.secondary,
             onPressed: onGoogleLogin,
-            icon: Icon(PhosphorIcons.googleLogo(PhosphorIconsStyle.bold)),
+            leftIcon: Icon(PhosphorIconsBold.googleLogo),
           ),
         ),
 
@@ -60,7 +59,7 @@ class LoginFooter extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              l10n.dontHaveAccount,
+              context.l10n.dontHaveAccount,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -68,7 +67,7 @@ class LoginFooter extends StatelessWidget {
             TextButton(
               onPressed: onSignUp,
               child: Text(
-                l10n.signUp,
+                context.l10n.signUp,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                   decoration: TextDecoration.underline,

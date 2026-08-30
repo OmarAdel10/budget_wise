@@ -1,6 +1,6 @@
 import 'package:budget_wise/shared/widgets/currency_picker_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -8,7 +8,7 @@ import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/utils/thousands_formatter.dart';
 import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class IncomeSetupPage extends StatefulWidget {
   final Function(double amount, String categoryTitle, String selectedCurrency)
@@ -75,16 +75,15 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
 
   // Helper to get localized source name
   String _getLocalizedSource(BuildContext context, String sourceKey) {
-    final l10n = AppLocalizations.of(context)!;
     switch (sourceKey) {
       case 'Work':
-        return l10n.sourceWork;
+        return context.l10n.sourceWork;
       case 'Personal':
-        return l10n.sourcePersonal;
+        return context.l10n.sourcePersonal;
       case 'Freelance':
-        return l10n.sourceFreelance;
+        return context.l10n.sourceFreelance;
       case 'Other':
-        return l10n.sourceOther;
+        return context.l10n.sourceOther;
       default:
         return sourceKey;
     }
@@ -93,7 +92,6 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -104,7 +102,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
           Center(
             // Center Title
             child: Text(
-              l10n.incomeSetupTitle,
+              context.l10n.incomeSetupTitle,
               style: AppTextStyles.heading1,
               textAlign: TextAlign.center,
             ),
@@ -112,7 +110,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
           const SizedBox(height: AppSpacing.md),
           Center(
             child: Text(
-              l10n.incomeSetupDesc,
+              context.l10n.incomeSetupDesc,
               style: AppTextStyles.bodyLarge.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -123,14 +121,14 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
 
           // Amount Input
           Text(
-            l10n.incomeAmountLabel,
+            context.l10n.incomeAmountLabel,
             style: AppTextStyles.bodyLarge.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
           CustomTextField(
-            hintText: l10n.addAccountInitialBalancePlaceholder,
+            hintText: context.l10n.addAccountInitialBalancePlaceholder,
             controller: _amountController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [ThousandsSeparatorInputFormatter()],
@@ -182,7 +180,7 @@ class _IncomeSetupPageState extends State<IncomeSetupPage>
 
           // Source Selection
           Text(
-            l10n.incomeSourceLabel,
+            context.l10n.incomeSourceLabel,
             style: AppTextStyles.bodyLarge.copyWith(
               fontWeight: FontWeight.bold,
             ),

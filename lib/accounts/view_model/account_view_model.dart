@@ -4,9 +4,12 @@ import 'package:budget_wise/accounts/data/repositories/account_repository.dart';
 import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
+import 'package:budget_wise/category/data/constants/system_category_ids.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
+import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,15 +17,14 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
   final SettingsBloc settingsBloc;
   final AccountRepository accountRepo;
   final AuthRepository authRepository;
+  final TransactionRepository transactionRepo;
 
   AccountBloc({
     required this.settingsBloc,
     required this.accountRepo,
     required this.authRepository,
+    required this.transactionRepo,
   }) : super(AccountStateInitial(accountsList: [], netWorth: 0)) {
-    // Initial sync of loaded accounts to Snapshot
-    _syncToSharedPreferences(state.accountsList);
-
     authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const AccountEventFetchAll());
@@ -88,7 +90,18 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         );
 
         if (isDuplicate) return;
-        final updatedList = [...state.accountsList, newAccount];
+
+        List<AccountModel> updatedList;
+        if (newAccount.isDefault) {
+          updatedList =
+              state.accountsList
+                  .map((a) => a.copyWith(isDefault: false))
+                  .toList();
+          updatedList.add(newAccount);
+        } else {
+          updatedList = [...state.accountsList, newAccount];
+        }
+
         emit(
           AccountStateSuccess(
             accountsList: updatedList,
@@ -112,6 +125,14 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
                   ),
                 );
               });
+          if (newAccount.initialBalance != 0) {
+            _createBalanceAdjustmentTransaction(
+              accountId: newAccount.id,
+              userId: newAccount.userId,
+              amount: newAccount.initialBalance,
+              currency: newAccount.currency,
+            );
+          }
         }
       } catch (e) {
         log('Failed to create new account: ${e.toString()}');
@@ -133,12 +154,21 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         );
         final balanceDelta = updatedAccount.balance - oldAccount.balance;
 
-        final updatedList = state.accountsList
-            .map(
-              (account) =>
-                  account.id == updatedAccount.id ? updatedAccount : account,
-            )
-            .toList();
+        List<AccountModel> updatedList;
+        if (updatedAccount.isDefault) {
+          updatedList = state.accountsList.map((account) {
+            if (account.id == updatedAccount.id) return updatedAccount;
+            return account.copyWith(isDefault: false);
+          }).toList();
+        } else {
+          updatedList = state.accountsList
+              .map(
+                (account) =>
+                    account.id == updatedAccount.id ? updatedAccount : account,
+              )
+              .toList();
+        }
+
         emit(
           AccountStateSuccess(
             accountsList: updatedList,
@@ -164,6 +194,14 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
                   ),
                 );
               });
+          if (balanceDelta != 0) {
+            _createBalanceAdjustmentTransaction(
+              accountId: updatedAccount.id,
+              userId: updatedAccount.userId,
+              amount: balanceDelta,
+              currency: updatedAccount.currency,
+            );
+          }
         }
       } catch (e) {
         log('Failed to update account: ${e.toString()}');
@@ -479,6 +517,34 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
         );
       }
     });
+
+    on<AccountEventSetDefault>((event, emit) {
+      try {
+        final updatedList = state.accountsList.map((account) {
+          return account.copyWith(isDefault: account.id == event.accountId);
+        }).toList();
+
+        emit(
+          AccountStateSuccess(
+            accountsList: updatedList,
+            netWorth: state.netWorth,
+          ),
+        );
+        _syncToSharedPreferences(updatedList);
+
+        if (settingsBloc.state.model.hasLoggedIn) {
+          final newDefault = updatedList.firstWhere(
+            (a) => a.id == event.accountId,
+          );
+          accountRepo.addAccount(newDefault).then(
+            (_) => add(AccountEventMarkSynced(accountId: newDefault.id)),
+          );
+          // Ideally, we'd also sync the one that was previously default but is no longer.
+        }
+      } catch (e) {
+        log('Failed to set default account: ${e.toString()}');
+      }
+    });
   }
 
   void _syncToSharedPreferences(List<AccountModel> accounts) {
@@ -510,6 +576,35 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
     } catch (e) {
       log('Error During Serialization: $e');
       return null;
+    }
+  }
+
+  void _createBalanceAdjustmentTransaction({
+    required String accountId,
+    required String userId,
+    required double amount,
+    required String currency,
+  }) {
+    final isIncome = amount > 0;
+    final transaction = TransactionModel(
+      id: const Uuid().v4(),
+      userId: userId,
+      type: isIncome ? TransactionType.income : TransactionType.expense,
+      description: 'Initial balance adjustment',
+      transactionAmount: amount.abs(),
+      transactionCurrency: currency,
+      categoryId: SystemCategoryIds.balanceAdjustment,
+      accountId: accountId,
+      transactionDate: DateTime.now(),
+      transactionNotes: null,
+      isSynced: false,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    try {
+      transactionRepo.addTransaction(transaction);
+    } catch (e) {
+      log('Failed to create balance adjustment transaction: $e');
     }
   }
 

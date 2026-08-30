@@ -179,6 +179,38 @@ class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
       final newModel = state.model.copyWith(transactionInputMode: event.mode);
       emit(SettingsStateSuccess(newModel, state.currencySymbol));
     });
+
+    on<SettingsEventChangeRecentTransactionCount>((event, emit) {
+      final newModel = state.model.copyWith(
+        recentTransactionDisplayedCount: event.newCount,
+      );
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
+
+    on<SettingsEventToggleMerchantRules>((event, emit) {
+      final newModel = state.model.copyWith(
+        merchantRulesEnabled: !state.model.merchantRulesEnabled,
+      );
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
+
+    on<SettingsEventUpdateHomeFilterAccount>((event, emit) {
+      final newModel = state.model.copyWith(
+        homeFilterAccountId: event.accountId,
+        clearHomeFilterAccountId: event.accountId == null,
+      );
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
+
+    on<SettingsEventUpdateMonthStartDay>((event, emit) {
+      final newModel = state.model.copyWith(monthStartDay: event.day);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
+
+    on<SettingsEventUpdateWeekStartDay>((event, emit) {
+      final newModel = state.model.copyWith(weekStartDay: event.day);
+      emit(SettingsStateSuccess(newModel, state.currencySymbol));
+    });
   }
 
   static String _getCurrencyName(String currencyCode) {

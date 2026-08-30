@@ -1,11 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:budget_wise/category/data/constants/category_constants.dart';
+import 'package:budget_wise/category/data/constants/system_category_seed.dart';
 import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/category/data/repositories/category_repository.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_state.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
+import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
 
@@ -13,18 +18,86 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
   final SettingsBloc settingsBloc;
   final AuthRepository authRepository;
   final CategoryRepository categoryRepository;
+  final TransactionRepository transactionRepository;
   late final StreamSubscription _authSubscription;
 
   CategoryBloc({
     required this.settingsBloc,
     required this.authRepository,
     required this.categoryRepository,
+    required this.transactionRepository,
   }) : super(const CategoryStateInitial(categoriesList: [])) {
     _authSubscription = authRepository.authStateChanges.listen((user) {
       if (user != null && settingsBloc.state.model.hasLoggedIn) {
         add(const CategoryEventFetchAll());
       }
     });
+
+    on<CategoryEventPreSeedDefaults>((event, emit) async {
+      if (state.categoriesList.isNotEmpty) return;
+
+      final List<CategoryModel> defaultCategories = [];
+      final now = DateTime.now();
+      final user = authRepository.currentUser;
+      final userId = user?.uid ?? '';
+
+      CategoryModel createCat(
+        String title,
+        IconData icon,
+        TransactionType type,
+      ) {
+        return CategoryModel(
+          id: const Uuid().v4(),
+          userId: userId,
+          categoryTitle: title,
+          categoryIcon: icon,
+          type: type,
+          isDefault: true,
+          createdAt: now,
+          updatedAt: now,
+        );
+      }
+
+      for (final entry in CategoryConstants.incomeCategories.entries) {
+        defaultCategories.add(
+          createCat(entry.key, entry.value.icon, TransactionType.income),
+        );
+      }
+      for (final entry in CategoryConstants.expenseCategories.entries) {
+        defaultCategories.add(
+          createCat(entry.key, entry.value.icon, TransactionType.expense),
+        );
+      }
+      for (final entry in CategoryConstants.transferCategories.entries) {
+        defaultCategories.add(
+          createCat(entry.key, entry.value.icon, TransactionType.transfer),
+        );
+      }
+
+      defaultCategories.addAll(SystemCategorySeed.categories(userId, now));
+
+      emit(
+        CategoryStateSuccess(
+          categoriesList: defaultCategories,
+          totalSpentById: _buildZeroTotals(defaultCategories),
+        ),
+      );
+
+      if (settingsBloc.state.model.hasLoggedIn && user != null) {
+        for (final cat in defaultCategories) {
+          categoryRepository.addCategory(cat).catchError((e) {
+            log('Pre-seed sync failed for ${cat.categoryTitle}: $e');
+          });
+        }
+      }
+    });
+
+    // Trigger pre-seed if list is empty (deferred to avoid blocking first frame)
+    if (state.categoriesList.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        add(const CategoryEventPreSeedDefaults());
+      });
+    }
 
     on<CategoryEventCreateCategory>((event, emit) {
       final user = authRepository.currentUser;
@@ -33,7 +106,6 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           id: event.category.id.isEmpty ? const Uuid().v4() : event.category.id,
           userId: user != null ? user.uid : '',
           isSynced: false,
-          index: state.categoriesList.length,
         );
 
         // Prevent duplicate categories with same title and type
@@ -45,7 +117,14 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
         if (alreadyExists) return;
 
         final updatedList = [...state.categoriesList, newCategory];
-        emit(CategoryStateSuccess(categoriesList: updatedList));
+        final updatedTotals = Map<String, double>.from(state.totalSpentById)
+          ..putIfAbsent(newCategory.id, () => 0.0);
+        emit(
+          CategoryStateSuccess(
+            categoriesList: updatedList,
+            totalSpentById: updatedTotals,
+          ),
+        );
 
         if (settingsBloc.state.model.hasLoggedIn &&
             authRepository.currentUser != null) {
@@ -59,6 +138,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
                   CategoryStateError(
                     message: 'Cloud sync failed: ${e.toString()}',
                     categoriesList: state.categoriesList,
+                    totalSpentById: state.totalSpentById,
                   ),
                 );
               });
@@ -68,45 +148,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           CategoryStateError(
             message: 'Local storage failed: ${e.toString()}',
             categoriesList: state.categoriesList,
-          ),
-        );
-      }
-    });
-
-    on<CategoryEventReorder>((event, emit) {
-      try {
-        final List<CategoryModel> updatedList = List.from(state.categoriesList);
-        int newIndex = event.newIndex;
-        if (event.oldIndex < event.newIndex) {
-          newIndex -= 1;
-        }
-        final item = updatedList.removeAt(event.oldIndex);
-        updatedList.insert(newIndex, item);
-
-        // Update indexes
-        final reindexedList = updatedList.asMap().entries.map((entry) {
-          return entry.value.copyWith(index: entry.key);
-        }).toList();
-
-        emit(CategoryStateSuccess(categoriesList: reindexedList));
-
-        if (settingsBloc.state.model.hasLoggedIn) {
-          categoryRepository.updateCategoryIndexes(reindexedList).catchError((
-            e,
-          ) {
-            emit(
-              CategoryStateError(
-                message: 'Index update failed: ${e.toString()}',
-                categoriesList: state.categoriesList,
-              ),
-            );
-          });
-        }
-      } catch (e) {
-        emit(
-          CategoryStateError(
-            message: 'Reorder failed: ${e.toString()}',
-            categoriesList: state.categoriesList,
+            totalSpentById: state.totalSpentById,
           ),
         );
       }
@@ -119,7 +161,12 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           return category.id == updatedCategory.id ? updatedCategory : category;
         }).toList();
 
-        emit(CategoryStateSuccess(categoriesList: updatedList));
+        emit(
+          CategoryStateSuccess(
+            categoriesList: updatedList,
+            totalSpentById: _retainTotals(updatedList, state.totalSpentById),
+          ),
+        );
 
         if (settingsBloc.state.model.hasLoggedIn &&
             authRepository.currentUser != null) {
@@ -133,6 +180,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
                   CategoryStateError(
                     message: 'Cloud sync failed: ${e.toString()}',
                     categoriesList: state.categoriesList,
+                    totalSpentById: state.totalSpentById,
                   ),
                 );
               });
@@ -142,6 +190,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           CategoryStateError(
             message: 'Local update failed: ${e.toString()}',
             categoriesList: state.categoriesList,
+            totalSpentById: state.totalSpentById,
           ),
         );
       }
@@ -155,12 +204,18 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           }
           return category;
         }).toList();
-        emit(CategoryStateSuccess(categoriesList: updatedList));
+        emit(
+          CategoryStateSuccess(
+            categoriesList: updatedList,
+            totalSpentById: _retainTotals(updatedList, state.totalSpentById),
+          ),
+        );
       } catch (e) {
         emit(
           CategoryStateError(
             message: 'Marking as synced failed: ${e.toString()}',
             categoriesList: state.categoriesList,
+            totalSpentById: state.totalSpentById,
           ),
         );
       }
@@ -190,12 +245,18 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
         }
 
         updatedList.addAll(localCategoriesMap.values);
-        emit(CategoryStateSuccess(categoriesList: updatedList));
+        emit(
+          CategoryStateSuccess(
+            categoriesList: updatedList,
+            totalSpentById: await _buildTotalSpentById(updatedList),
+          ),
+        );
       } catch (e) {
         emit(
           CategoryStateError(
             message: 'Failed to fetch categories: ${e.toString()}',
             categoriesList: state.categoriesList,
+            totalSpentById: state.totalSpentById,
           ),
         );
       }
@@ -210,7 +271,14 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
             .where((category) => category.id != event.categoryId)
             .toList();
 
-        emit(CategoryStateSuccess(categoriesList: updatedList));
+        final updatedTotals = Map<String, double>.from(state.totalSpentById)
+          ..remove(event.categoryId);
+        emit(
+          CategoryStateSuccess(
+            categoriesList: updatedList,
+            totalSpentById: updatedTotals,
+          ),
+        );
 
         if (settingsBloc.state.model.hasLoggedIn &&
             authRepository.currentUser != null) {
@@ -220,6 +288,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
               CategoryStateError(
                 message: 'Cloud sync failed: ${e.toString()}',
                 categoriesList: restoredList,
+                totalSpentById: state.totalSpentById,
               ),
             );
           });
@@ -229,6 +298,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           CategoryStateError(
             message: 'Delete failed: ${e.toString()}',
             categoriesList: state.categoriesList,
+            totalSpentById: state.totalSpentById,
           ),
         );
       }
@@ -264,6 +334,7 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           CategoryStateError(
             message: 'Sync on login failed: ${e.toString()}',
             categoriesList: state.categoriesList,
+            totalSpentById: state.totalSpentById,
           ),
         );
       }
@@ -291,9 +362,22 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
           CategoryStateError(
             message: 'Check and sync failed: ${e.toString()}',
             categoriesList: state.categoriesList,
+            totalSpentById: state.totalSpentById,
           ),
         );
       }
+    });
+
+    on<CategoryEventRefreshTotals>((event, emit) {
+      emit(
+        CategoryStateSuccess(
+          categoriesList: state.categoriesList,
+          totalSpentById: _buildTotalSpentByIdFromTransactions(
+            state.categoriesList,
+            event.transactions,
+          ),
+        ),
+      );
     });
   }
 
@@ -313,7 +397,16 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
       final List<CategoryModel> categoryList = list
           .map((cat) => CategoryModel.fromMap(cat))
           .toList();
-      return CategoryStateSuccess(categoriesList: categoryList);
+      final totalsRaw = json['totalSpentById'] as Map<String, dynamic>?;
+      return CategoryStateSuccess(
+        categoriesList: categoryList,
+        totalSpentById: totalsRaw != null
+            ? {
+                for (final entry in totalsRaw.entries)
+                  entry.key: (entry.value as num).toDouble(),
+              }
+            : {},
+      );
     } catch (e) {
       log('Error during serialization: ${e.toString()}');
       return null;
@@ -324,6 +417,47 @@ class CategoryBloc extends HydratedBloc<CategoryEvent, CategoryState> {
   Map<String, dynamic>? toJson(CategoryState state) {
     return {
       'categoryList': state.categoriesList.map((cat) => cat.toMap()).toList(),
+      'totalSpentById': state.totalSpentById,
     };
+  }
+
+  Map<String, double> _buildZeroTotals(List<CategoryModel> categories) {
+    return {for (final category in categories) category.id: 0.0};
+  }
+
+  Map<String, double> _retainTotals(
+    List<CategoryModel> categories,
+    Map<String, double> currentTotals,
+  ) {
+    return {
+      for (final category in categories)
+        category.id: currentTotals[category.id] ?? 0.0,
+    };
+  }
+
+  Future<Map<String, double>> _buildTotalSpentById(
+    List<CategoryModel> categories,
+  ) async {
+    final transactions = await transactionRepository.fetchAllTransactions();
+    return _buildTotalSpentByIdFromTransactions(categories, transactions);
+  }
+
+  Map<String, double> _buildTotalSpentByIdFromTransactions(
+    List<CategoryModel> categories,
+    List<TransactionModel> transactions,
+  ) {
+    return {
+      for (final category in categories)
+        category.id: _calculateTotalSpent(category.id, transactions),
+    };
+  }
+
+  double _calculateTotalSpent(
+    String categoryId,
+    List<TransactionModel> transactions,
+  ) {
+    return transactions
+        .where((transaction) => transaction.categoryId == categoryId)
+        .fold(0.0, (sum, transaction) => sum + transaction.transactionAmount);
   }
 }

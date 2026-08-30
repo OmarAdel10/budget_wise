@@ -1,69 +1,39 @@
-import 'package:budget_wise/home/view_model/home_event.dart';
-import 'package:budget_wise/transaction/view/screens/all_transactions_screen.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/widgets/transaction_list_view.dart';
-import 'package:budget_wise/shared/widgets/multi_sliver.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:budget_wise/shared/constants/spacing.dart';
-import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeRecentTransactions extends StatelessWidget {
-  const HomeRecentTransactions({super.key});
+  /// When provided, this overrides the Bloc-sourced list and disables the
+  /// top-N limit. Used for displaying search results.
+  final List<TransactionModel>? filteredTransactions;
+
+  const HomeRecentTransactions({super.key, this.filteredTransactions});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    // If a filtered list is provided, render it directly (search mode).
+    if (filteredTransactions != null) {
+      return TransactionListView(transactions: filteredTransactions!);
+    }
 
     final transactions = context.select(
       (HomeBloc bloc) => bloc.state.model.transactions,
     );
 
+    final transactionsCount = context.select<SettingsBloc, int>(
+      (bloc) => bloc.state.model.recentTransactionDisplayedCount,
+    );
+
     if (transactions.isEmpty) {
-      return const SliverToBoxAdapter(child: SizedBox.shrink());
+      return const SizedBox.shrink();
     }
 
-    final recentTransactions = transactions.take(3).toList();
+    // Show top N recent transactions on home, filtered by category if applied
+    final recentTransactions = transactions.take(transactionsCount).toList();
 
-    return MultiSliver(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          sliver: SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const SizedBox(height: AppSpacing.sm),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      l10n.recentTransactions,
-                      style: AppTextStyles.heading3,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.read<HomeBloc>().add(
-                          const HomeEventChangeAccountFilter(null),
-                        );
-                        Navigator.of(
-                          context,
-                        ).pushNamed(AllTransactionsScreen.routeName);
-                      },
-                      child: Text(l10n.seeAll, style: AppTextStyles.link),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          sliver: TransactionListView.sliver(transactions: recentTransactions),
-        ),
-      ],
-    );
+    return TransactionListView(transactions: recentTransactions);
   }
 }

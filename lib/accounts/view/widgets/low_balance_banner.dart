@@ -1,18 +1,17 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class LowBalanceBanner extends StatelessWidget {
   const LowBalanceBanner({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final warningText = AppLocalizations.of(
-      context,
-    )!.yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount;
+    final warningText = 
+      context.l10n.yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(

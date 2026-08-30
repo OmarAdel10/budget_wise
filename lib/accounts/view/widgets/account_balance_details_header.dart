@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -20,8 +20,6 @@ class AccountBalanceDetailsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
@@ -37,7 +35,7 @@ class AccountBalanceDetailsHeader extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             if (lastUpdatedAt != null) ...[
               Text(
-                '${l10n.lastUpdatedAt} ${timeago.format(lastUpdatedAt!)}',
+                '${context.l10n.lastUpdatedAt} ${timeago.format(lastUpdatedAt!)}',
                 style: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.textSecondary,
                 ),

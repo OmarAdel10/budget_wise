@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -15,8 +15,6 @@ class SubscriptionSummaryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     final totalMonthlySpend = context.select<SubscriptionBloc, double>(
       (bloc) => bloc.state.totalMonthlySpend,
     );
@@ -47,7 +45,7 @@ class SubscriptionSummaryHeader extends StatelessWidget {
           children: [
             Expanded(
               child: SummaryCard.subscriptions(
-                title: l10n.totalMonthlySpend,
+                title: context.l10n.totalMonthlySpend,
                 amount: SubscriptionFormatter.formatCurrency(
                   totalMonthlySpend,
                   currencySymbol,
@@ -70,7 +68,7 @@ class SubscriptionSummaryHeader extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              l10n.active,
+                              context.l10n.active,
                               style: AppTextStyles.bodyLarge.copyWith(
                                 color: AppColors.primaryAccent,
                               ),
@@ -92,7 +90,7 @@ class SubscriptionSummaryHeader extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              l10n.inActive,
+                              context.l10n.inActive,
                               style: AppTextStyles.bodyLarge.copyWith(
                                 color: Colors.orange,
                               ),
@@ -114,7 +112,7 @@ class SubscriptionSummaryHeader extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              l10n.overdue,
+                              context.l10n.overdue,
                               style: AppTextStyles.bodyLarge.copyWith(
                                 color: AppColors.danger,
                               ),

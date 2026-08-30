@@ -1,52 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 
 class AppTextStyles {
-  static TextStyle get heading1 => GoogleFonts.inter(
-    fontSize: 28,
+  static const TextStyle heading1 = TextStyle(
+    fontFamily: 'IBM Plex Sans',
+    fontSize: 24,
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
   );
 
-  static TextStyle get heading2 => GoogleFonts.inter(
-    fontSize: 22,
+  static const TextStyle heading2 = TextStyle(
+    fontFamily: 'IBM Plex Sans',
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
   );
 
-  static TextStyle get heading3 => GoogleFonts.inter(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    color: AppColors.textPrimary,
-  );
-
-  static TextStyle get bodyLarge => GoogleFonts.inter(
+  static const TextStyle heading3 = TextStyle(
+    fontFamily: 'IBM Plex Sans',
     fontSize: 16,
-    fontWeight: FontWeight.normal,
+    fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
   );
 
-  static TextStyle get bodyMedium => GoogleFonts.inter(
+  static const TextStyle bodyLarge = TextStyle(
+    fontFamily: 'IBM Plex Sans',
     fontSize: 14,
     fontWeight: FontWeight.normal,
-    color: AppColors.textSecondary,
+    color: AppColors.textPrimary,
   );
 
-  static TextStyle get button => GoogleFonts.inter(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    color: AppColors.textInverse,
-  );
-
-  static TextStyle get bodySmall => GoogleFonts.inter(
+  static const TextStyle bodyMedium = TextStyle(
+    fontFamily: 'IBM Plex Sans',
     fontSize: 12,
     fontWeight: FontWeight.normal,
     color: AppColors.textSecondary,
   );
 
-  static TextStyle get link => GoogleFonts.inter(
+  static const TextStyle button = TextStyle(
+    fontFamily: 'IBM Plex Sans',
     fontSize: 14,
+    fontWeight: FontWeight.bold,
+    color: AppColors.textInverse,
+  );
+
+  static const TextStyle bodySmall = TextStyle(
+    fontFamily: 'IBM Plex Sans',
+    fontSize: 11,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textSecondary,
+  );
+
+  static const TextStyle link = TextStyle(
+    fontFamily: 'IBM Plex Sans',
+    fontSize: 12,
     fontWeight: FontWeight.normal,
     color: AppColors.textSecondary,
     decoration: TextDecoration.underline,

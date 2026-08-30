@@ -1,6 +1,6 @@
 import 'package:budget_wise/csv_export/data/models/export_date_state.dart';
 import 'package:budget_wise/csv_export/view_model/csv_bloc.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -8,7 +8,7 @@ import 'package:budget_wise/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class ExportDatePickerSheet extends StatelessWidget {
   const ExportDatePickerSheet({super.key});
@@ -66,7 +66,6 @@ class ExportDatePickerSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final dateFormat = DateFormat('MMMM yyyy');
     final rangeFormat = DateFormat('MMM dd, yyyy');
 
@@ -100,7 +99,7 @@ class ExportDatePickerSheet extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            l10n.navSettings,
+            context.l10n.navSettings,
             style: AppTextStyles.heading2,
             textAlign: TextAlign.center,
           ),
@@ -113,7 +112,7 @@ class ExportDatePickerSheet extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _SelectionCard(
-                      title: l10n.selectMonth,
+                      title: context.l10n.selectMonth,
                       value: state.isRange ? '-' : dateFormat.format(state.start),
                       icon: PhosphorIconsRegular.calendar,
                       isSelected: !state.isRange,
@@ -123,7 +122,7 @@ class ExportDatePickerSheet extends StatelessWidget {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _SelectionCard(
-                      title: l10n.customRange,
+                      title: context.l10n.customRange,
                       value: state.isRange
                           ? '${rangeFormat.format(state.start)} - ${rangeFormat.format(state.end)}'
                           : '-',
@@ -139,7 +138,7 @@ class ExportDatePickerSheet extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.xl),
           CustomButton(
-            text: l10n.exportToCSV,
+            text: context.l10n.exportToCSV,
             onPressed: () => _handleExport(context, notifier),
           ),
           const SizedBox(height: AppSpacing.md),

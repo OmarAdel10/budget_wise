@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:another_telephony/telephony.dart';
+import 'package:budget_wise/shared/vendor/telephony/telephony.dart';
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
@@ -74,7 +74,26 @@ void onBackgroundMessage(SmsMessage message) async {
 
     // 3. Match with account
     String? matchedAccountId;
+    String? transferFromAccountId;
+    String? transferToAccountId;
     for (final account in accounts) {
+      if (smsDraft.transactionType == TransactionType.transfer) {
+        if (smsDraft.transferSourceLastFour != null &&
+            account.smsIdentifier == smsDraft.transferSourceLastFour) {
+          transferFromAccountId = account.id;
+          if (smsDraft.transferDirection == SmsTransferDirection.outgoing) {
+            matchedAccountId ??= account.id;
+          }
+        }
+        if (smsDraft.transferDestinationLastFour != null &&
+            account.smsIdentifier == smsDraft.transferDestinationLastFour) {
+          transferToAccountId = account.id;
+          if (smsDraft.transferDirection == SmsTransferDirection.incoming) {
+            matchedAccountId ??= account.id;
+          }
+        }
+      }
+
       final bool hasMatchingCardDigits =
           smsDraft.extractedCardLastFour != null &&
           account.smsIdentifier != null &&
@@ -106,6 +125,8 @@ void onBackgroundMessage(SmsMessage message) async {
     final finalDraft = smsDraft.copyWith(
       id: const Uuid().v4(),
       matchedAccountId: matchedAccountId,
+      transferFromAccountId: transferFromAccountId,
+      transferToAccountId: transferToAccountId,
     );
 
     // 4. Save to pending background drafts
@@ -197,7 +218,26 @@ class SmsService {
     if (smsDraft == null) return null;
 
     String? matchedAccountId;
+    String? transferFromAccountId;
+    String? transferToAccountId;
     for (final account in accounts) {
+      if (smsDraft.transactionType == TransactionType.transfer) {
+        if (smsDraft.transferSourceLastFour != null &&
+            account.smsIdentifier == smsDraft.transferSourceLastFour) {
+          transferFromAccountId = account.id;
+          if (smsDraft.transferDirection == SmsTransferDirection.outgoing) {
+            matchedAccountId ??= account.id;
+          }
+        }
+        if (smsDraft.transferDestinationLastFour != null &&
+            account.smsIdentifier == smsDraft.transferDestinationLastFour) {
+          transferToAccountId = account.id;
+          if (smsDraft.transferDirection == SmsTransferDirection.incoming) {
+            matchedAccountId ??= account.id;
+          }
+        }
+      }
+
       // Decision Flow:
       // 1. Check if last 4 card digits available in SMS and matches account.smsIdentifier
       final bool hasMatchingCardDigits =
@@ -229,7 +269,11 @@ class SmsService {
       }
     }
 
-    return smsDraft.copyWith(matchedAccountId: matchedAccountId);
+    return smsDraft.copyWith(
+      matchedAccountId: matchedAccountId,
+      transferFromAccountId: transferFromAccountId,
+      transferToAccountId: transferToAccountId,
+    );
   }
 
   /// Scans the inbox for messages received after [sinceDateTime].

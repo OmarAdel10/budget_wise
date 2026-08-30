@@ -1,7 +1,11 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 import '../constants/colors.dart';
 import '../constants/text_styles.dart';
@@ -10,36 +14,37 @@ import 'generic_icon_container.dart';
 
 class CategoryListItem extends StatelessWidget {
   final String name;
-  final String amount;
-  final String totalBudget;
+  final double totalSpent;
+  final int totalNumberOfTransaction;
   final IconData icon;
   final VoidCallback onTap;
   final VoidCallback? onDelete;
-  final int? index;
-  final bool hasBudgetAmount;
-  final bool isIncome;
-  final double? progress;
+  final TransactionType type;
+  final bool isOverBudget;
 
   const CategoryListItem({
     super.key,
     required this.name,
-    required this.amount,
-    required this.totalBudget,
+    required this.totalSpent,
+    required this.totalNumberOfTransaction,
     required this.icon,
     required this.onTap,
     this.onDelete,
-    this.index,
-    this.progress,
-    this.hasBudgetAmount = false,
-    this.isIncome = false,
+    this.type = TransactionType.expense,
+    this.isOverBudget = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final progressPercent = progress != null
-        ? (progress! * 100).clamp(0, 999).toInt()
-        : 0;
+    final currencySymbol = context.select<SettingsBloc, String>(
+      (bloc) => bloc.state.currencySymbol,
+    );
+
+    final Color typeColor = switch (type) {
+      TransactionType.income => AppColors.primaryAccent,
+      TransactionType.expense => AppColors.expense,
+      TransactionType.transfer => AppColors.transfer,
+    };
 
     Widget content = GestureDetector(
       onTap: onTap,
@@ -52,93 +57,43 @@ class CategoryListItem extends StatelessWidget {
         color: Colors.transparent,
         child: Row(
           children: [
-            if (index != null)
-              ReorderableDragStartListener(
-                index: index!,
-                child: const Padding(
-                  padding: EdgeInsets.only(right: AppSpacing.sm),
-                  child: Icon(
-                    Icons.drag_handle,
-                    color: AppColors.textSecondary,
-                    size: 20,
-                  ),
-                ),
-              ),
-            GenericIconContainer(
-              icon: icon,
-              color: isIncome ? AppColors.primaryAccent : AppColors.expense,
-            ),
-            const SizedBox(width: AppSpacing.sm),
+            GenericIconContainer(icon: icon, color: typeColor),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: AppTextStyles.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  isIncome
+                  totalNumberOfTransaction != 0
                       ? Text(
-                          '\$$amount',
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
+                          '${totalNumberOfTransaction.toStringAsFixed(0)} transaction',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w400,
                           ),
                         )
-                      : hasBudgetAmount
-                      ? Text(
-                          '\$$amount / \$$totalBudget',
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        )
-                      : Text(
-                          l10n.hasNoBudget,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),
-            // Progress bar with percentage beside chevron
-            if (progress != null) ...[
-              SizedBox(
-                width: 80,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '$progressPercent%',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: progress! > 1.0
-                            ? Colors.red
-                            : AppColors.primaryAccent,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(3),
-                      child: LinearProgressIndicator(
-                        value: progress!.clamp(0.0, 1.0),
-                        backgroundColor: AppColors.cardBackground,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          progress! > 1.0
-                              ? Colors.red
-                              : AppColors.primaryAccent,
-                        ),
-                        minHeight: 4,
-                      ),
-                    ),
-                  ],
-                ),
+            Text(
+              '$currencySymbol ${totalSpent.toStringAsFixed(2)}',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: isOverBudget
+                    ? AppColors.danger
+                    : AppColors.textSecondary,
               ),
-              const SizedBox(width: AppSpacing.xs),
-            ],
-            Icon(Icons.chevron_right, color: AppColors.textSecondary, size: 20),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            const Icon(
+              Icons.chevron_right,
+              color: AppColors.textSecondary,
+              size: 20,
+            ),
           ],
         ),
       ),
@@ -150,12 +105,35 @@ class CategoryListItem extends StatelessWidget {
         endActionPane: ActionPane(
           motion: const StretchMotion(),
           extentRatio: 0.25,
+          closeThreshold: 0.7,
+          dismissible: DismissiblePane(
+            onDismissed: () {}, // Handled by confirmDismiss returning false
+            closeOnCancel: true,
+            confirmDismiss: () async {
+              AppToast.show(
+                context,
+                type: AppToastType.deleteWithUndo,
+                title: context.l10n.categoryDeleted,
+                description: context.l10n.undoDeletionDescription,
+                onCompleted: () => onDelete?.call(),
+              );
+              return false;
+            },
+          ),
           children: [
             SlidableAction(
-              onPressed: (context) => onDelete?.call(),
+              onPressed: (context) async {
+                AppToast.show(
+                  context,
+                  type: AppToastType.deleteWithUndo,
+                  title: context.l10n.categoryDeleted,
+                  description: context.l10n.undoDeletionDescription,
+                  onCompleted: () => onDelete?.call(),
+                );
+              },
               backgroundColor: AppColors.danger,
               foregroundColor: Colors.white,
-              icon: PhosphorIcons.trash(PhosphorIconsStyle.bold),
+              icon: PhosphorIconsBold.trash,
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
           ],

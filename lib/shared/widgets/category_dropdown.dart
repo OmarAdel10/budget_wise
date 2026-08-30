@@ -1,11 +1,12 @@
 import 'package:budget_wise/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
 import 'package:budget_wise/category/view_model/category_state.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/utils/value_listenable_builders.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
@@ -28,8 +29,6 @@ class CategoryDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         if (selectedTypeNotifier != null) {
@@ -37,7 +36,12 @@ class CategoryDropdown extends StatelessWidget {
             first: selectedTypeNotifier!,
             second: selectedCategoryId,
             builder: (context, type, categoryId, _) {
-              return _buildDropdown(context, state, type, categoryId, l10n);
+              return _buildDropdown(
+                context,
+                state,
+                type,
+                categoryId,
+              );
             },
           );
         } else {
@@ -49,7 +53,6 @@ class CategoryDropdown extends StatelessWidget {
                 state,
                 fixedType!,
                 categoryId,
-                l10n,
               );
             },
           );
@@ -63,10 +66,9 @@ class CategoryDropdown extends StatelessWidget {
     CategoryState state,
     TransactionType type,
     String? categoryId,
-    AppLocalizations l10n,
   ) {
     final categories = state.categoriesList
-        .where((c) => c.type == type)
+        .where((c) => c.type == type && !c.isSystem)
         .toList();
 
     // Auto-reset if the selected category doesn't match the new type
@@ -87,7 +89,7 @@ class CategoryDropdown extends StatelessWidget {
         child: DropdownButton<String>(
           value: categoryId,
           hint: Text(
-            l10n.category,
+            context.l10n.category,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),

@@ -3,7 +3,7 @@ import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/subscriptions/utils/subscription_formatter.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
-import 'package:budget_wise/transaction/view/screens/transaction_detail_screen.dart';
+import 'package:budget_wise/transaction/view/screens/add_transaction_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -22,9 +22,14 @@ class SubscriptionHistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.of(context).pushNamed(
-        TransactionDetailScreen.routeName,
-        arguments: {'transModel': transaction},
+      onTap: () => showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => AddTransactionBottomSheet(
+          transactionToEdit: transaction,
+        ),
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.sm),

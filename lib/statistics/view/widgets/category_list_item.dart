@@ -1,6 +1,6 @@
 import 'package:budget_wise/category/data/models/category_model.dart';
-import 'package:budget_wise/savings/data/models/savings_model.dart';
-import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
+import 'package:budget_wise/buckets/data/models/saving_goal_model.dart';
+import 'package:budget_wise/buckets/view/screens/saving_goal_detail_screen.dart';
 import 'package:budget_wise/subscriptions/data/models/subscription_model.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
@@ -40,6 +40,10 @@ class CategoryListItem extends StatelessWidget {
         color = AppColors.expense;
         symbol = "-";
         break;
+      case ToggleOption.transfer:
+        color = Colors.blue;
+        symbol = "";
+        break;
       case ToggleOption.savings:
         color = AppColors.savings;
         symbol = "+";
@@ -54,16 +58,17 @@ class CategoryListItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        if (source is SavingsModel) {
+        if (source is SavingGoalModel) {
           Navigator.of(context).pushNamed(
             SavingGoalDetailScreen.routeName,
             arguments: {'savingGoalId': source.id},
           );
         } else if (source is CategoryModel) {
-          Navigator.of(context).pushNamed(
-            CategoryDetailScreen.routeName,
-            arguments: {'categoryId': source.id},
-          );
+          //! Implement If Needed
+          // Navigator.of(context).pushNamed(
+          //   CategoryDetailScreen.routeName,
+          //   arguments: {'categoryId': source.id},
+          // );
         } else if (source is SubscriptionModel) {
           Navigator.of(context).pushNamed(
             SubscriptionDetailsScreen.routeName,

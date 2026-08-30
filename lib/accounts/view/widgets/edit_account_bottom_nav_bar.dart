@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -11,7 +11,6 @@ class EditAccountBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.all(AppSpacing.lg),
       child: ElevatedButton(
@@ -31,7 +30,7 @@ class EditAccountBottomNavBar extends StatelessWidget {
             Icon(Icons.save, color: Colors.white),
             SizedBox(width: 8),
             Text(
-              l10n.saveChanges,
+              context.l10n.saveChanges,
               style: AppTextStyles.button.copyWith(color: Colors.white),
             ),
           ],

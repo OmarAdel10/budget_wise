@@ -1,19 +1,18 @@
 import 'package:budget_wise/home/view_model/home_view_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class HomeWarningBar extends StatelessWidget {
   const HomeWarningBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     final shouldShowWarning = context.select((HomeBloc bloc) {
       final state = bloc.state;
@@ -38,13 +37,13 @@ class HomeWarningBar extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            PhosphorIcons.warning(PhosphorIconsStyle.regular),
+            PhosphorIconsRegular.warning,
             color: AppColors.danger,
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              l10n.yourExpensesExceedYourIncome,
+              context.l10n.yourExpensesExceedYourIncome,
               style: AppTextStyles.bodySmall.copyWith(
                 fontSize: language == 'en' ? 13 : 14,
               ),

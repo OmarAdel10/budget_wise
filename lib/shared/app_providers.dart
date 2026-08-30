@@ -8,16 +8,15 @@ import 'package:budget_wise/currency_conversions/data/repositories/currency_repo
 import 'package:budget_wise/currency_conversions/view_model/currency_bloc.dart';
 import 'package:budget_wise/home/view_model/home_view_model.dart';
 import 'package:budget_wise/notifications/view_model/notification_bloc.dart';
-import 'package:budget_wise/savings/data/repositories/savings_repository.dart';
-import 'package:budget_wise/savings/view_model/savings_view_model.dart';
+import 'package:budget_wise/transaction/data/repositories/merchant_category_learning_repository.dart';
+import 'package:budget_wise/transaction/view_model/merchant_category_learning_bloc.dart';
+import 'package:budget_wise/buckets/data/repositories/saving_goal_repository.dart';
+import 'package:budget_wise/buckets/view_model/buckets_view_model.dart';
 import 'package:budget_wise/settings/data/repositories/settings_repository.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
-import 'package:budget_wise/statistics/view_model/statistics_event.dart';
-import 'package:budget_wise/statistics/view_model/statistics_view_model.dart';
 import 'package:budget_wise/subscriptions/data/repositories/subscription_repository.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:budget_wise/transaction/data/repositories/transaction_repository.dart';
-import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/csv_export/service/csv_service.dart';
 import 'package:budget_wise/csv_export/view_model/csv_bloc.dart';
@@ -42,13 +41,12 @@ class AppProviders {
             CategoryRepository(authRepository: context.read<AuthRepository>()),
       ),
       RepositoryProvider(
-        create: (context) => AccountRepository(
-          authRepo: context.read<AuthRepository>(),
-        ),
+        create: (context) =>
+            AccountRepository(authRepo: context.read<AuthRepository>()),
       ),
       RepositoryProvider(create: (context) => SettingsRepository()),
       RepositoryProvider(
-        create: (context) => SavingsRepository(
+        create: (context) => SavingGoalRepository(
           authRepo: context.read<AuthRepository>(),
           accountRepo: context.read<AccountRepository>(),
           transactionRepo: context.read<TransactionRepository>(),
@@ -60,6 +58,12 @@ class AppProviders {
       ),
       RepositoryProvider(create: (context) => CurrencyRepository(prefs)),
       RepositoryProvider(create: (context) => CsvService()),
+      RepositoryProvider(
+        create: (context) => MerchantCategoryLearningRepository(
+          prefs: prefs,
+          authRepository: context.read<AuthRepository>(),
+        ),
+      ),
     ],
     child: MultiBlocProvider(
       providers: [
@@ -74,23 +78,25 @@ class AppProviders {
               AuthBloc(authRepository: context.read<AuthRepository>()),
         ),
         BlocProvider(
-          create: (context) => AccountBloc(
-            settingsBloc: context.read<SettingsBloc>(),
-            accountRepo: context.read<AccountRepository>(),
-            authRepository: context.read<AuthRepository>(),
-          ),
-        ),
-        BlocProvider(
           create: (context) => CategoryBloc(
             authRepository: context.read<AuthRepository>(),
             categoryRepository: context.read<CategoryRepository>(),
             settingsBloc: context.read<SettingsBloc>(),
+            transactionRepository: context.read<TransactionRepository>(),
           ),
         ),
         BlocProvider(
-          create: (context) => SavingsBloc(
+          create: (context) => AccountBloc(
             settingsBloc: context.read<SettingsBloc>(),
-            savingsRepo: context.read<SavingsRepository>(),
+            accountRepo: context.read<AccountRepository>(),
+            authRepository: context.read<AuthRepository>(),
+            transactionRepo: context.read<TransactionRepository>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => BucketsBloc(
+            settingsBloc: context.read<SettingsBloc>(),
+            savingGoalRepo: context.read<SavingGoalRepository>(),
             authRepository: context.read<AuthRepository>(),
             accountBloc: context.read<AccountBloc>(),
           ),
@@ -102,7 +108,14 @@ class AppProviders {
             categoryBloc: context.read<CategoryBloc>(),
             transactionRepository: context.read<TransactionRepository>(),
             authRepository: context.read<AuthRepository>(),
-          )..add(const TransactionEventLoadBackgroundDrafts()),
+          ),
+        ),
+        BlocProvider(
+          create: (ctx) => HomeBloc(
+            settingsBloc: ctx.read<SettingsBloc>(),
+            transactionBloc: ctx.read<TransactionBloc>(),
+            categoryBloc: ctx.read<CategoryBloc>(),
+          ),
         ),
         BlocProvider(
           create: (context) => SubscriptionBloc(
@@ -113,40 +126,20 @@ class AppProviders {
             transactionBloc: context.read<TransactionBloc>(),
           ),
         ),
-
         BlocProvider(
-          create: (context) =>
-              CurrencyBloc(context.read<CurrencyRepository>())..add(
-                CurrencyLoadRequested(
-                  baseCurrency: context
-                      .read<SettingsBloc>()
-                      .state
-                      .model
-                      .defaultCurrency,
-                ),
-              ),
+          create: (context) => CurrencyBloc(context.read<CurrencyRepository>()),
         ),
         BlocProvider(
-          create: (context) => HomeBloc(
-            categoryBloc: context.read<CategoryBloc>(),
-            settingsBloc: context.read<SettingsBloc>(),
-            transactionBloc: context.read<TransactionBloc>(),
+          create: (context) => MerchantCategoryLearningBloc(
+            repository: context.read<MerchantCategoryLearningRepository>(),
           ),
         ),
         BlocProvider(
-          create: (context) => StatisticsBloc(
-            transactionBloc: context.read<TransactionBloc>(),
-            categoryBloc: context.read<CategoryBloc>(),
-            savingsBloc: context.read<SavingsBloc>(),
-            subscriptionBloc: context.read<SubscriptionBloc>(),
-          )..add(StatisticsEventLoadRequested(DateTime.now())),
-        ),
-        BlocProvider(
           create: (context) => CsvBloc(
-            csvService: context.read<CsvService>(),
+            csvService: CsvService(),
             transactionBloc: context.read<TransactionBloc>(),
             subscriptionBloc: context.read<SubscriptionBloc>(),
-            savingsBloc: context.read<SavingsBloc>(),
+            savingsBloc: context.read<BucketsBloc>(),
           ),
         ),
       ],

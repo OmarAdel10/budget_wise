@@ -1,5 +1,8 @@
+import 'package:budget_wise/settings/view_model/settings_view_model.dart';
+import 'package:budget_wise/shared/widgets/generic_icon_container.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -10,6 +13,7 @@ class CategoryHeaderCard extends StatelessWidget {
   final double? budgetAmount;
   final bool hasBudgetAmount;
   final IconData icon;
+  final Color color;
   final double? progress;
 
   const CategoryHeaderCard({
@@ -19,18 +23,22 @@ class CategoryHeaderCard extends StatelessWidget {
     this.budgetAmount,
     required this.hasBudgetAmount,
     required this.icon,
+    required this.color,
     this.progress,
   });
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final defaultCurrency = context.select<SettingsBloc, String>(
+      (bloc) => bloc.state.currencySymbol,
+    );
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.borderColor, width: 1.5),
       ),
       child: Column(
         children: [
@@ -41,7 +49,7 @@ class CategoryHeaderCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10n.totalSpent,
+                    context.l10n.totalSpent,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -51,13 +59,13 @@ class CategoryHeaderCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        "\$${totalSpending.toInt()}",
+                        "$defaultCurrency ${totalSpending.toStringAsFixed(1)}",
                         style: AppTextStyles.heading2,
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       if (hasBudgetAmount)
                         Text(
-                          "/ \$${budgetAmount?.toInt() ?? 0}",
+                          "/ $defaultCurrency ${budgetAmount?.toStringAsFixed(1) ?? 0}",
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -66,7 +74,12 @@ class CategoryHeaderCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Icon(icon, size: 40),
+              GenericIconContainer(
+                icon: icon,
+                color: color,
+                size: 55,
+                iconSize: 34,
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.md),

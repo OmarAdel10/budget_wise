@@ -1,22 +1,21 @@
 import 'package:budget_wise/accounts/view/widgets/bank_picker_bottom_sheet.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
 import 'package:budget_wise/shared/utils/string_cases.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class AccountBankNameField extends StatelessWidget {
   const AccountBankNameField({
     super.key,
-    required this.l10n,
     required this.selectedBankName,
     required this.onBankSelected,
     this.hasPadding = true,
   });
 
-  final AppLocalizations l10n;
   final ValueNotifier<String?> selectedBankName;
   final Function(String bankName, List<String>? senderIds) onBankSelected;
   final bool hasPadding;
@@ -33,7 +32,7 @@ class AccountBankNameField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.addAccountBankNameLabel,
+            context.l10n.addAccountBankNameLabel,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -47,7 +46,7 @@ class AccountBankNameField extends StatelessWidget {
                 key: ValueKey(bankName),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return l10n.bankNameCantLeftEmpty;
+                    return context.l10n.bankNameCantLeftEmpty;
                   }
                   return null;
                 },
@@ -61,6 +60,7 @@ class AccountBankNameField extends StatelessWidget {
                             context: context,
                             backgroundColor: Colors.transparent,
                             isScrollControlled: true,
+                            useSafeArea: true,
                             builder: (context) => BankPickerBottomSheet(
                               onBankSelected: (name, senderIds) {
                                 onBankSelected(name, senderIds);
@@ -89,7 +89,7 @@ class AccountBankNameField extends StatelessWidget {
                             children: [
                               Text(
                                 bankName?.toTitleCase() ??
-                                    l10n.addAccountBankNamePlaceholder,
+                                    context.l10n.addAccountBankNamePlaceholder,
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   color: bankName == null
                                       ? AppColors.textSecondary
@@ -97,7 +97,7 @@ class AccountBankNameField extends StatelessWidget {
                                 ),
                               ),
                               Icon(
-                                PhosphorIcons.caretDown(),
+                                PhosphorIconsRegular.caretDown,
                                 size: 20,
                                 color: AppColors.textSecondary,
                               ),

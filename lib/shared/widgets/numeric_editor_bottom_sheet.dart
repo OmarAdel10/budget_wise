@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -36,6 +36,7 @@ class NumericEditorBottomSheet extends StatefulWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (context) => NumericEditorBottomSheet(
         title: title,
@@ -72,17 +73,16 @@ class _NumericEditorBottomSheetState extends State<NumericEditorBottomSheet> {
   }
 
   void _validateAndSave() {
-    final l10n = AppLocalizations.of(context)!;
     final value = double.tryParse(_controller.text);
 
     if (value == null) {
-      setState(() => _errorText = l10n.invalidAmount);
+      setState(() => _errorText = context.l10n.invalidAmount);
       return;
     }
 
     if (value < 0) {
       setState(
-        () => _errorText = l10n.invalidAmount,
+        () => _errorText = context.l10n.invalidAmount,
       ); // Or a specific "must be positive" message
       return;
     }

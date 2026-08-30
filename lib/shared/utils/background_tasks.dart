@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:budget_wise/accounts/data/models/account_model.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:workmanager/workmanager.dart';
-import 'package:budget_wise/savings/data/models/savings_model.dart';
+import 'package:budget_wise/buckets/data/models/saving_goal_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BackgroundTasks {
@@ -72,7 +72,7 @@ void callbackDispatcher() {
       final List<dynamic> savingsListRaw = jsonDecode(savingsJson);
 
       final accounts = accountsListRaw.map((e) => AccountModel.fromMap(e)).toList();
-      final goals = savingsListRaw.map((e) => SavingsModel.fromMap(e)).toList();
+      final goals = savingsListRaw.map((e) => SavingGoalModel.fromMap(e)).toList();
 
       if (task == BackgroundTasks.morningCheckTask) {
         await _handleMorningCheck(goals, accounts);
@@ -99,7 +99,7 @@ void callbackDispatcher() {
   });
 }
 
-Future<void> _handleMorningCheck(List<SavingsModel> goals, List<AccountModel> accounts) async {
+Future<void> _handleMorningCheck(List<SavingGoalModel> goals, List<AccountModel> accounts) async {
   final accountsMap = {for (final acc in accounts) acc.id: acc};
   List<String> lowBalanceAccounts = [];
   List<String> behindScheduleGoals = [];
@@ -158,7 +158,7 @@ Future<void> _handleMorningCheck(List<SavingsModel> goals, List<AccountModel> ac
   }
 }
 
-Future<void> _handlePeriodicCheck(List<SavingsModel> goals, List<AccountModel> accounts) async {
+Future<void> _handlePeriodicCheck(List<SavingGoalModel> goals, List<AccountModel> accounts) async {
   final prefs = await SharedPreferences.getInstance();
   final blockedGoals = prefs.getStringList('blocked_saving_goals') ?? [];
   final newBlockedGoals = <String>[];

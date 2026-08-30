@@ -6,7 +6,6 @@ import 'package:budget_wise/accounts/view/widgets/account_name_input.dart';
 import 'package:budget_wise/accounts/view/widgets/account_phone_number_field.dart';
 import 'package:budget_wise/accounts/view/widgets/account_wallet_provider_field.dart';
 import 'package:budget_wise/accounts/utils/card_validation_mixin.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +36,6 @@ class AccountBasicInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -49,14 +47,12 @@ class AccountBasicInfoCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AccountNameInput(
-            l10n: l10n,
             accountNameController: accountNameController,
             hasPadding: false,
           ),
           if (accountType == AccountType.card) ...[
             const SizedBox(height: AppSpacing.md),
             AccountBankNameField(
-              l10n: l10n,
               selectedBankName: selectedBankNameNotifier,
               onBankSelected: (bankName, senderIds) {
                 selectedBankNameNotifier.value = bankName;
@@ -66,7 +62,6 @@ class AccountBasicInfoCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             AccountCardNumberField(
-              l10n: l10n,
               cardNumberController: cardNumberController,
               isCardValid: cardValidationMixin.isCardValidNotifier,
               onValidateCardNumber: cardValidationMixin.validateCardNumber,
@@ -77,7 +72,6 @@ class AccountBasicInfoCard extends StatelessWidget {
             Row(
               children: [
                 AccountExpiryDateField(
-                  l10n: l10n,
                   expiryController: expiryController,
                   isExpiryValid: cardValidationMixin.isExpiryValidNotifier,
                   onValidateExpiryDate: cardValidationMixin.validateExpiryDate,
@@ -88,7 +82,6 @@ class AccountBasicInfoCard extends StatelessWidget {
           ] else if (accountType == AccountType.wallet) ...[
             const SizedBox(height: AppSpacing.md),
             AccountWalletProviderField(
-              l10n: l10n,
               selectedProvider: selectedWalletProviderNotifier!,
               onProviderSelected: (providerName) {
                 selectedWalletProviderNotifier!.value = providerName;
@@ -96,7 +89,6 @@ class AccountBasicInfoCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             AccountPhoneNumberField(
-              l10n: l10n,
               phoneNumberController: phoneNumberController!,
             ),
           ],

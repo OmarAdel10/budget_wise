@@ -1,7 +1,8 @@
 import 'package:budget_wise/shared/data/models/financial_breakdown_item.dart';
 import 'package:budget_wise/shared/utils/toggle_option_enum.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/statistics/data/models/statistics_model.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -22,7 +23,6 @@ class CategoryListHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         // Header with Filter
@@ -32,12 +32,12 @@ class CategoryListHeader extends StatelessWidget {
             Expanded(
               child: Text(
                 toggleType == ToggleOption.income
-                    ? l10n.earningsByCategory
+                    ? context.l10n.earningsByCategory
                     : toggleType == ToggleOption.expense
-                    ? l10n.spendingByCategory
+                    ? context.l10n.spendingByCategory
                     : toggleType == ToggleOption.savings
-                    ? l10n.savingsByCategory
-                    : l10n.totalSubscriptions,
+                    ? context.l10n.savingsByCategory
+                    : context.l10n.totalSubscriptions,
                 style: AppTextStyles.heading3,
               ),
             ),
@@ -57,15 +57,15 @@ class CategoryListHeader extends StatelessWidget {
               itemBuilder: (context) => [
                 PopupMenuItem(
                   value: StatisticsSorting.highestAmount,
-                  child: Text(l10n.sortHighest),
+                  child: Text(context.l10n.sortHighest),
                 ),
                 PopupMenuItem(
                   value: StatisticsSorting.lowestAmount,
-                  child: Text(l10n.sortLowest),
+                  child: Text(context.l10n.sortLowest),
                 ),
                 PopupMenuItem(
                   value: StatisticsSorting.alphabetical,
-                  child: Text(l10n.sortAZ),
+                  child: Text(context.l10n.sortAZ),
                 ),
               ],
             ),
@@ -80,13 +80,13 @@ class CategoryListHeader extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                l10n.category,
+                context.l10n.category,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
               Text(
-                l10n.amount,
+                context.l10n.amount,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),

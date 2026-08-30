@@ -286,7 +286,7 @@ class SubscriptionBloc
       final transaction = TransactionModel(
         id: const Uuid().v4(),
         userId: authRepository.currentUser?.uid ?? '',
-        transactionTitle: '${sub.name} Payment',
+        description: '${sub.name} Payment',
         transactionAmount: sub.amount,
         transactionCurrency: sub.currency,
         categoryId: sub.categoryId,

@@ -1,8 +1,9 @@
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/shared/widgets/summary_card.dart' as shared;
+import 'package:budget_wise/transaction/view/widgets/all_transactions_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:budget_wise/transaction/view/screens/transaction_type_detail_screen.dart';
+
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../../shared/constants/colors.dart';
@@ -24,7 +25,6 @@ class SummaryCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final currencySymbol = NumberFormat.currency(
       name: context.read<SettingsBloc>().state.model.defaultCurrency,
     ).currencySymbol;
@@ -36,13 +36,13 @@ class SummaryCards extends StatelessWidget {
             Expanded(
               child: shared.SummaryCard(
                 isCompact: true,
-                title: l10n.totalIncome,
+                title: context.l10n.totalIncome,
                 amount: "$currencySymbol ${totalIncome.toStringAsFixed(0)}",
                 amountColor: AppColors.income,
                 onTap: () {
-                  Navigator.of(context).pushNamed(
-                    TransactionTypeDetailScreen.routeName,
-                    arguments: {'type': 'income'},
+                  AllTransactionsBottomSheet.show(
+                    context,
+                    initialTab: 'income',
                   );
                 },
                 hasFixedHeight: true,
@@ -52,13 +52,13 @@ class SummaryCards extends StatelessWidget {
             Expanded(
               child: shared.SummaryCard(
                 isCompact: true,
-                title: l10n.totalExpenses,
+                title: context.l10n.totalExpenses,
                 amount: "$currencySymbol ${totalExpenses.toStringAsFixed(0)}",
                 amountColor: AppColors.expense,
                 onTap: () {
-                  Navigator.of(context).pushNamed(
-                    TransactionTypeDetailScreen.routeName,
-                    arguments: {'type': 'outcome'},
+                  AllTransactionsBottomSheet.show(
+                    context,
+                    initialTab: 'expense',
                   );
                 },
                 hasFixedHeight: true,
@@ -72,7 +72,7 @@ class SummaryCards extends StatelessWidget {
             Expanded(
               child: shared.SummaryCard(
                 isCompact: true,
-                title: l10n.currentSavings,
+                title: context.l10n.currentSavings,
                 amount: "$currencySymbol ${totalSavings.toStringAsFixed(0)}",
                 amountColor: AppColors.savings,
                 hasFixedHeight: true,
@@ -82,7 +82,7 @@ class SummaryCards extends StatelessWidget {
             Expanded(
               child: shared.SummaryCard(
                 isCompact: true,
-                title: l10n.totalSubscriptions,
+                title: context.l10n.totalSubscriptions,
                 amount:
                     "$currencySymbol ${totalSubscriptions.toStringAsFixed(0)}",
                 amountColor: AppColors.subscription,

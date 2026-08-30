@@ -26,6 +26,7 @@ class AccountModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isSynced;
+  final bool isDefault;
   final bool lowBalanceAlertEnabled;
   final List<String>? smsSenderIds;
   final String? smsIdentifier;
@@ -50,6 +51,7 @@ class AccountModel {
     required this.createdAt,
     required this.updatedAt,
     this.isSynced = false,
+    this.isDefault = false,
     this.lowBalanceAlertEnabled = false,
     this.smsSenderIds,
     this.smsIdentifier,
@@ -75,6 +77,7 @@ class AccountModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isSynced,
+    bool? isDefault,
     bool? lowBalanceAlertEnabled,
     List<String>? smsSenderIds,
     String? smsIdentifier,
@@ -99,6 +102,7 @@ class AccountModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isSynced: isSynced ?? this.isSynced,
+      isDefault: isDefault ?? this.isDefault,
       lowBalanceAlertEnabled:
           lowBalanceAlertEnabled ?? this.lowBalanceAlertEnabled,
       smsSenderIds: smsSenderIds ?? this.smsSenderIds,
@@ -130,6 +134,7 @@ class AccountModel {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'isSynced': isSynced,
+      'isDefault': isDefault,
       'lowBalanceAlertEnabled': lowBalanceAlertEnabled,
       'smsSenderIds': smsSenderIds,
       'smsIdentifier': smsIdentifier,
@@ -184,6 +189,7 @@ class AccountModel {
           ? (map['updatedAt'] as Timestamp).toDate()
           : DateTime.parse(map['updatedAt'] as String),
       isSynced: map['isSynced'] as bool,
+      isDefault: map['isDefault'] as bool? ?? false,
       lowBalanceAlertEnabled: map['lowBalanceAlertEnabled'] ?? false,
       smsSenderIds: (map['smsSenderIds'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -209,5 +215,6 @@ class AccountModel {
     currency: '',
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
+    isDefault: false,
   );
 }

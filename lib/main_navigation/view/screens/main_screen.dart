@@ -1,13 +1,14 @@
 import 'dart:async';
-import 'package:another_telephony/telephony.dart';
+import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
+import 'package:budget_wise/shared/vendor/telephony/telephony.dart';
 import 'package:budget_wise/accounts/view/screens/account_detail_screen.dart';
 import 'package:budget_wise/category/view/screens/category_detail_screen.dart';
 import 'package:budget_wise/notifications/data/repositories/notification_repository.dart';
 import 'package:budget_wise/notifications/view_model/notification_bloc.dart';
 import 'package:budget_wise/notifications/view_model/notification_event.dart';
 import 'package:budget_wise/notifications/view_model/notification_state.dart';
-import 'package:budget_wise/savings/view/screens/saving_goal_detail_screen.dart';
-import 'package:budget_wise/savings/view/screens/savings_screen.dart';
+import 'package:budget_wise/buckets/view/screens/saving_goal_detail_screen.dart';
+import 'package:budget_wise/buckets/view/screens/buckets_screen.dart';
 import 'package:budget_wise/subscriptions/view/screens/subscription_details_screen.dart';
 import 'package:budget_wise/transaction/data/models/sms_draft_model.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
@@ -15,9 +16,9 @@ import 'package:budget_wise/accounts/view_model/account_event.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/category/view_model/category_event.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
-import 'package:budget_wise/transaction/view/screens/add_transaction_screen.dart';
-import 'package:budget_wise/transaction/view/screens/all_transactions_screen.dart';
-import 'package:budget_wise/transaction/view/screens/pending_sms_transactions_screen.dart';
+import 'package:budget_wise/transaction/view/screens/add_transaction_bottom_sheet.dart';
+import 'package:budget_wise/transaction/view/widgets/all_transactions_bottom_sheet.dart';
+import 'package:budget_wise/transaction/view/widgets/pending_sms_bottom_sheet.dart';
 import 'package:budget_wise/transaction/view_model/transaction_event.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
@@ -32,7 +33,6 @@ import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../home/view/screens/home_screen.dart';
-import '../../../accounts/view/screens/accounts_screen.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routeName = '/main';
@@ -48,12 +48,16 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   final Duration _syncInterval = const Duration(minutes: 15);
   Timer? _periodicCheckTimer;
   final SmsService _smsService = SmsService();
+  final Map<int, Widget> _screenCache = {};
 
-  final List<Widget> _screens = [
+  Widget _screenForIndex(int index) {
+    return _screenCache.putIfAbsent(index, () => _buildScreens()[index]);
+  }
+
+  List<Widget> _buildScreens() => [
     const HomeScreen(),
-    const AccountsScreen(),
     const SubscriptionScreen(),
-    const SavingsScreen(),
+    const BucketsScreen(),
     const StatisticsScreen(),
     const SettingsScreen(),
   ];
@@ -66,29 +70,35 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _performInitialSync();
-    _startPeriodicCheck();
-    _initSmsService();
-    // Background SMS drafts are checked on initialization
-    _checkBackgroundSmsDrafts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _performInitialSync();
+      Future.microtask(() => _initSmsService());
+      Future.microtask(() => _checkBackgroundSmsDrafts());
+      Future.microtask(() => _startPeriodicCheck());
 
-    if (context.read<SettingsBloc>().state.model.allNotificationsEnabled &&
-        context
-            .read<SettingsBloc>()
-            .state
-            .model
-            .dailyReminderNotificationsEnabled) {
-      _scheduleDailyReminder();
-    }
+      Future.microtask(() {
+        final settings = context.read<SettingsBloc>().state.model;
+        if (settings.allNotificationsEnabled &&
+            settings.dailyReminderNotificationsEnabled) {
+          _scheduleDailyReminder();
+        }
+      });
+    });
   }
 
   void _handleNotificationRouting(String payload) {
     log('MainScreen: Routing notification with payload: $payload');
 
     if (payload == 'sms_draft_confirm') {
-      Navigator.pushNamed(context, PendingSmsTransactionsScreen.routeName);
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => const PendingSmsBottomSheet(),
+      );
     } else if (payload == 'nav_savings') {
-      Navigator.pushNamed(context, SavingsScreen.routeName);
+      Navigator.pushNamed(context, BucketsScreen.routeName);
     } else if (payload.startsWith('saving_goal_')) {
       final goalId = payload.replaceFirst('saving_goal_', '');
       Navigator.pushNamed(
@@ -108,27 +118,43 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       if (parts.length >= 3) {
         final accountId = parts[1];
         final amount = parts[2];
-        Navigator.pushNamed(
-          context,
-          AddTransactionScreen.routeName,
-          arguments: {
-            'initialAccountId': accountId,
-            'initialAmount': double.tryParse(amount),
-          },
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          useSafeArea: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => Navigator(
+            onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => AddTransactionBottomSheet(
+                initialAccountId: accountId,
+                initialAmount: double.tryParse(amount),
+              ),
+            ),
+          ),
         );
       }
     } else if (payload.startsWith('nav_account_')) {
       final accountId = payload.replaceFirst('nav_account_', '');
-      Navigator.pushNamed(context, AccountDetailScreen.routeName, arguments: {
-        'accountId': accountId,
-      });
+      // Navigator.pushNamed(
+      //   context,
+      //   AccountDetailScreen.routeName,
+      //   arguments: {'accountId': accountId},
+      // );
+      Navigator.of(context).push(
+        BottomSheetService.pageRoute(
+          child: (context) => AccountDetailScreen(accountId: accountId),
+        ),
+      );
     } else if (payload.startsWith('nav_category_')) {
       final categoryId = payload.replaceFirst('nav_category_', '');
-      Navigator.pushNamed(context, CategoryDetailScreen.routeName, arguments: {
-        'categoryId': categoryId,
-      });
+      //! Implement If Needed
+      // Navigator.pushNamed(
+      //   context,
+      //   CategoryDetailScreen.routeName,
+      //   arguments: {'categoryId': categoryId},
+      // );
     } else if (payload == 'nav_transactions') {
-      Navigator.pushNamed(context, AllTransactionsScreen.routeName);
+      AllTransactionsBottomSheet.show(context);
     }
 
     // Mark as handled
@@ -319,7 +345,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         body: ValueListenableBuilder<int>(
           valueListenable: _currentIndexNotifier,
           builder: (context, currentIndex, child) {
-            return IndexedStack(index: currentIndex, children: _screens);
+            return _screenForIndex(currentIndex);
           },
         ),
         bottomNavigationBar: CustomBottomNavBar(

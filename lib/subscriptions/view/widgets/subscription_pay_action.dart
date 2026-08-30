@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -10,17 +10,15 @@ import 'package:budget_wise/currency_conversions/view/currency_conversion_previe
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class SubscriptionPayAction extends StatefulWidget {
   final SubscriptionModel subscriptionModel;
-  final AppLocalizations l10n;
   final ValueNotifier<bool> isOverdueNotifier;
 
   const SubscriptionPayAction({
     super.key,
     required this.subscriptionModel,
-    required this.l10n,
     required this.isOverdueNotifier,
   });
 
@@ -71,11 +69,11 @@ class _SubscriptionPayActionState extends State<SubscriptionPayAction> {
                         SubscriptionPaid(
                           widget.subscriptionModel.id,
                           convertedAmount: _convertedAmount,
-                          l10n: widget.l10n,
+                          l10n: context.l10n,
                           toastCallback: () {
                             AppToast.show(
                               context,
-                              title: widget.l10n.budgetLimitExceeded,
+                              title: context.l10n.budgetLimitExceeded,
                               type: AppToastType.warning,
                             );
                           },
@@ -85,6 +83,7 @@ class _SubscriptionPayActionState extends State<SubscriptionPayAction> {
                       showModalBottomSheet(
                         context: context,
                         backgroundColor: Colors.transparent,
+                        useSafeArea: true,
                         builder: (context) => Container(
                           padding: const EdgeInsets.all(AppSpacing.lg),
                           decoration: const BoxDecoration(
@@ -98,15 +97,13 @@ class _SubscriptionPayActionState extends State<SubscriptionPayAction> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                PhosphorIcons.checkCircle(
-                                  PhosphorIconsStyle.fill,
-                                ),
+                                PhosphorIconsFill.checkCircle,
                                 color: AppColors.success,
                                 size: 80,
                               ),
                               const SizedBox(height: AppSpacing.md),
                               Text(
-                                widget.l10n.markedAsPaid,
+                                context.l10n.markedAsPaid,
                                 style: AppTextStyles.heading3,
                                 textAlign: TextAlign.center,
                               ),
@@ -116,7 +113,9 @@ class _SubscriptionPayActionState extends State<SubscriptionPayAction> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.pop(context); // Close sheet
-                                    Navigator.pop(context); // Close detail screen
+                                    Navigator.pop(
+                                      context,
+                                    ); // Close detail screen
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primaryAccent,
@@ -130,7 +129,7 @@ class _SubscriptionPayActionState extends State<SubscriptionPayAction> {
                                       ),
                                     ),
                                   ),
-                                  child: Text(widget.l10n.continueWord),
+                                  child: Text(context.l10n.continueWord),
                                 ),
                               ),
                             ],
@@ -150,7 +149,7 @@ class _SubscriptionPayActionState extends State<SubscriptionPayAction> {
                         ),
                       ),
                     ),
-                    child: Text(widget.l10n.payToRenew),
+                    child: Text(context.l10n.payToRenew),
                   ),
                 ),
               ),

@@ -17,6 +17,8 @@
   "income": "Income",
   "expense": "Expense",
   "expenses": "Expenses",
+  "all": "All",
+  "transfer": "Transfer",
   "categories": "Categories",
   "addCategory": "Add Category",
   "allSavingGoals": "All Saving Goals",
@@ -109,7 +111,7 @@
   "saveChanges": "Save Changes",
   "newPassword": "New Password",
   "syncToCloud": "Sync To Cloud",
-  "recentTransactions": "Recent Transactions",
+  "recentActivity": "Recent Activity",
   "seeAll": "See All",
   "expenseDetails": "Expense Details",
   "incomeDetails": "Income Details",
@@ -119,6 +121,7 @@
   "delete": "Delete",
   "edit": "Edit",
   "title": "Title",
+  "titleLabel": "Title (optional)",
   "transactionHistory": "Transaction History",
   "total": "Total",
   "totalSpent": "Total Spent",
@@ -128,6 +131,11 @@
   "hasNoBudget": "Has No Budget",
   "undo": "Undo",
   "transactionDeleted": "Transaction Deleted",
+  "undoDeletionDescription": "Tap Undo to cancel deletion.",
+  "transactionDeletedSuccessfully": "Transaction deleted successfully.",
+  "transactionSavedSuccessfully": "Transaction saved successfully.",
+  "categoryDeletedSuccessfully": "Category deleted successfully.",
+  "categorySavedSuccessfully": "Category saved successfully.",
   "categoryDeleted": "Category Deleted",
   "yourExpensesExceedYourIncome": "Your expenses exceed your income",
   "noEarningsThisMonth": "No earnings for this month",
@@ -173,6 +181,7 @@
   "addAccountCardSaved": "Card saved",
   "addAccountWalletSaved": "Wallet saved",
   "netWorth": "Net Worth",
+  "allAccounts": "All Accounts",
   "yourAssets": "Your Assets",
   "account": "Account",
   "linkMoreAccounts": "Add/Link More Accounts",
@@ -240,8 +249,9 @@
   "monthlyBudget": "Monthly Budget",
   "enterTitle": "Please enter a title",
   "enterValidAmount": "Please enter a valid amount",
-  "selectCategory": "Please select a category",
-  "selectAccount": "Please select an account",
+  "selectCategory": "Select Category",
+  "mostUsed": "Most Used",
+  "selectAccount": "Select Account",
   "editTransaction": "Edit Transaction",
   "editCategory": "Edit Category",
   "addTransactionTitle": "Add Transaction",
@@ -497,6 +507,7 @@
   "sttInputMode": "Transaction Input",
   "sttModeManual": "Manual",
   "sttModeVoice": "Voice",
+  "voiceNote": "Voice Note",
   "sttActivationTitle": "Activating Voice Search",
   "sttActivationDesc": "Downloading Egyptian language pack for offline performance",
   "sttListening": "Listening...",
@@ -509,6 +520,23 @@
   "sttPhrase5": "Paid electricity and water bills for 400",
   "close": "Close",
   "preferences": "Preferences",
+  "merchantRulesEnabled": "Merchant Rules",
+  "merchantRulesEnabledInfo": "Auto-categorize transactions by merchant name",
+  "merchantRules": "Merchant Rules",
+  "addMerchantRule": "Add Merchant Rule",
+  "editMerchantRule": "Edit Merchant Rule",
+  "merchantName": "Merchant Name",
+  "merchantNameHint": "e.g. Starbucks",
+  "saveRule": "Save Rule",
+  "noMerchantRules": "No merchant rules yet",
+  "noMerchantRulesDesc": "Tap + to create your first rule",
+  "deleteRuleTitle": "Delete Rule",
+  "rule": "Rule",
+  "ruleDeleted": "Rule Deleted Successfully",
+  "deleteRuleConfirmation": "Are you sure you want to delete this rule?",
+  "searchByMerchantName": "Search by merchant name...",
+  "recentTransactionsCount": "Recent Transactions Display Count",
+  "recentTransactionsCountInfo": "Number of transactions shown on home screen",
   "categoryNotFound": "Category Not Found",
   "returnToHome": "Return To Home Screen",
   "dayCount": "Day {day}",
@@ -556,5 +584,79 @@
   "mainActionDesc": "Choose What the big button at the bottom of the home screen does.",
   "exportToCSV": "Export to CSV",
   "selectMonth": "Select Month",
-  "customRange": "Custom Range"
+  "customRange": "Custom Range",
+  "balance": "Balance",
+  "appLock": "App Lock",
+  "incomeHint": "What did you earn from?",
+  "expenseHint": "What did you spend on?",
+  "transferNoteHint": "Add a note for this transfer",
+  "noteHint": "Add a note or context...",
+  "note": "Note (optional)",
+  "hint": "Hint (optional)",
+  "selectToAccount": "Select To Account",
+  "fromAccount": "From Account",
+  "toAccount": "To Account",
+  "sameAccountError": "From and To accounts cannot be the same",
+  "descriptionLabel": "Description (optional)",
+  "categoryLabel": "Category",
+  "categoryLabelOptional": "Category (optional)",
+  "accountLabel": "Account",
+  "dateLabel": "Date",
+  "pickDate": "Pick Date",
+  "transferFrom": "Transfer from {fromAccountName}",
+  "@transferFrom": {
+    "placeholders": {
+      "fromAccountName": {
+        "type": "String"
+      }
+    }
+  },
+  "transferTo": "Transfer to {toAccountName}",
+  "@transferTo": {
+    "placeholders": {
+      "toAccountName": {
+        "type": "String"
+      }
+    }
+  },
+  "pendingReview": "{count} Pending Review",
+  "@pendingReview": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "review": "Review",
+  "transactionsRequireReviewing": "Transactions require reviewing",
+  "deleteType": "Delete {type}",
+  "@deleteType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTypeDesc": "Are you sure you want to delete this {type}? This action cannot be undone.",
+  "@deleteTypeDesc": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "transactionLabel": "Transaction",
+  "searchTransactions": "Search transactions...",
+  "searchCategories": "Search categories...",
+  "monthStartDay": "Month Start Day",
+  "monthStartDayInfo": "The day your month starts (e.g. payday)",
+  "weekStartDay": "Week Start Day",
+  "weekStartDayInfo": "The day your week starts",
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sunday": "Sunday"
 }

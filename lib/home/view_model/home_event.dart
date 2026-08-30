@@ -31,6 +31,14 @@ class HomeEventChangeAccountFilter extends HomeEvent {
   List<Object?> get props => [accountId];
 }
 
+class HomeEventFilterByCategory extends HomeEvent {
+  final String? categoryId;
+  const HomeEventFilterByCategory(this.categoryId);
+
+  @override
+  List<Object?> get props => [categoryId];
+}
+
 class HomeEventUpdateCategory extends HomeEvent {
   final CategoryModel category;
   const HomeEventUpdateCategory(this.category);

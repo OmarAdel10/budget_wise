@@ -1,4 +1,4 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -8,12 +8,10 @@ import 'package:intl/intl.dart';
 class AccountInitialBalanceDisplay extends StatelessWidget {
   const AccountInitialBalanceDisplay({
     super.key,
-    required this.l10n,
     required this.selectedCurrency,
     required this.balanceController,
   });
 
-  final AppLocalizations l10n;
   final ValueNotifier<String?> selectedCurrency;
   final TextEditingController balanceController;
 
@@ -24,7 +22,7 @@ class AccountInitialBalanceDisplay extends StatelessWidget {
         const SizedBox(height: AppSpacing.md),
         Center(
           child: Text(
-            l10n.addAccountInitialBalanceLabel,
+            context.l10n.addAccountInitialBalanceLabel,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),

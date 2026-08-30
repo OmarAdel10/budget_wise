@@ -2,7 +2,8 @@ import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_state.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -12,7 +13,7 @@ import 'package:budget_wise/shared/widgets/custom_text_field.dart';
 import 'package:budget_wise/settings/view/widgets/edit_profile_warning_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final AuthRepository authRepository;
@@ -37,7 +38,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  void _showLoadingDialog(AppLocalizations l10n) {
+  void _showLoadingDialog() {
     _isLoadingDialogShowing = true;
     showDialog(
       context: context,
@@ -56,7 +57,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             const Center(child: CircularProgressIndicator()),
             const SizedBox(height: AppSpacing.md),
-            Center(child: Text(l10n.loading)),
+            Center(child: Text(context.l10n.loading)),
           ],
         ),
       ),
@@ -79,7 +80,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final user = widget.authRepository.currentUser;
 
     return Scaffold(
@@ -89,7 +89,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           listener: (context, state) {
             final authRepository = context.read<AuthRepository>();
             if (state is AuthStateLoading) {
-              _showLoadingDialog(l10n);
+              _showLoadingDialog();
             } else if (state is AuthStateError) {
               _hideLoadingDialog();
               AppToast.show(
@@ -107,7 +107,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
-                title: Text(l10n.editProfile, style: AppTextStyles.heading3),
+                title: Text(
+                  context.l10n.editProfile,
+                  style: AppTextStyles.heading3,
+                ),
                 centerTitle: true,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
@@ -124,7 +127,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     const EditProfileWarningCard(),
                     const SizedBox(height: AppSpacing.xl),
                     CustomTextField(
-                      hintText: user?.displayName ?? l10n.name,
+                      hintText: user?.displayName ?? context.l10n.name,
                       controller: _nameController,
                       prefixIcon: const Icon(
                         PhosphorIconsRegular.user,
@@ -133,7 +136,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     CustomTextField(
-                      hintText: user?.email ?? l10n.email,
+                      hintText: user?.email ?? context.l10n.email,
                       controller: _emailController,
                       readOnly: true,
                       enabled: false,
@@ -144,7 +147,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     CustomTextField(
-                      hintText: l10n.newPassword,
+                      hintText: context.l10n.newPassword,
                       controller: _passwordController,
                       isPassword: true,
                       prefixIcon: const Icon(
@@ -154,7 +157,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     const SizedBox(height: AppSpacing.xxl),
                     CustomButton(
-                      text: l10n.saveChanges,
+                      text: context.l10n.saveChanges,
                       onPressed: () {
                         if (_nameController.text.isNotEmpty) {
                           context.read<AuthBloc>().add(

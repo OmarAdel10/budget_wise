@@ -1,12 +1,24 @@
 class RegexPatterns {
+  // static final RegExp instapayPattern = RegExp(
+  //   r'(?:تحويل لحظي|)',
+  //   caseSensitive: false,
+  //   unicode: true,
+  // );
+
+  static final RegExp securityCodeConfirmation = RegExp(
+    r'(?:OTP|PIN|CODE|VERIFICATION|CONFIRMATION|AUTHENTICATION|SECURITY|VALIDATION|الكود|كود|السري|السرى|سري|سرى|عدم|مشاركته|مشاركتة|شخص)',
+    caseSensitive: false,
+    unicode: true,
+  );
+
   static final RegExp lastFourDigitNumberExtraction = RegExp(
-    r'(?:no\.|num|ending in|ending with|\*\*|رقم|بـ|المنتهية بـ)\s*[*X]*(\d{4})',
+    r'(?:no\.|num|ending in|ending with|\*\*|رقم|حساب|بطاقة|بطاقتك|بـ|المنتهية بـ)\s*[*Xx]*(\d{4})',
     caseSensitive: false,
     unicode: true,
   );
 
   static final RegExp merchantExtraction = RegExp(
-    r'(?:at|to|with|from|عند|لدى|إلى|من)\s+([^0-9\r\n]+?)(?=\s|$)',
+    r'(?:merchant|pos|at|with|عند|لدى|لدي|فى|في)\s+([^0-9\r\n]+)',
     caseSensitive: false,
     unicode: true,
   );
@@ -24,39 +36,51 @@ class RegexPatterns {
 
   static String get _currencyPattern => currencyMap.keys.join('|');
 
+  static final amountWithCurrencyPattern = StringBuffer()
+    ..write('(?:(')
+    ..write(_currencyPattern)
+    ..write(
+      ')\\s*([0-9][0-9,\\.\\u066b\\u066c]*))|',
+    ) // Group 1: Currency, Group 2: Amount
+    ..write('(?:([0-9][0-9,\\.\\u066b\\u066c]*)\\s*(')
+    ..write(_currencyPattern)
+    ..write('))'); // Group 3: Amount, Group 4: Currency
+
   static final RegExp amountWithCurrencyRegex = RegExp(
-    r'(?:(' +
-        _currencyPattern +
-        r')\s*(\d+(?:,\d{3})*(?:\.\d+)?))|' + // Group 1: Currency, Group 2: Amount
-        r'(?:(\d+(?:,\d{3})*(?:\.\d+)?)\s*(' +
-        _currencyPattern +
-        r'))', // Group 3: Amount, Group 4: Currency
+    amountWithCurrencyPattern.toString(),
     caseSensitive: false,
     unicode: true,
   );
 
-  //* Matches dates like 10-18, 13/10, 2023-10-18, 18/10/2023
   static final RegExp dateRegex = RegExp(
-    r"(\d{1,4}[-/]\d{1,2}(?:[-/]\d{1,4})?)",
+    r"\b(?:\d{1,2}[-/\.]\d{1,2}(?:[-/\.](?:\d{4}|\d{2}))?)\b",
+    caseSensitive: false,
+    unicode: true,
+  );
+
+  static final RegExp timeRegex = RegExp(
+    r'(\d{1,2}:\d{2})',
     caseSensitive: false,
     unicode: true,
   );
 
   //* Transaction Type Keywords
-  // static const List<String> expenseKeywords = [
-  //   'purchase',
-  //   'debited',
-  //   'transfer from',
-  //   'payment',
-  //   'withdrawal',
-  //   'spent',
-  //   'خصم',
-  //   'شراء',
-  //   'تحويل من',
-  //   'سحب',
-  //   'تنفيذ تحويل',
-  //   'مدفوعات',
-  // ];
+  static const List<String> expenseKeywords = [
+    'purchase',
+    'debited',
+    'transfer from',
+    'payment',
+    'withdrawal',
+    'spent',
+    'تنفيذ',
+    'خصم',
+    'شراء',
+    'تحويل من',
+    'سحب',
+    'تنفيذ تحويل',
+    'مدفوعات',
+    'مصروف',
+  ];
 
   static const List<String> incomeKeywords = [
     'deposit',
@@ -65,9 +89,8 @@ class RegexPatterns {
     'refund',
     'received',
     'إضافة',
-    'تحويل لـ',
+    'إضافة تحويل',
     'إيداع',
     'استرداد',
-    'تحويل لحظي لبطاقتكم', // Specific for NBE incoming
   ];
 }

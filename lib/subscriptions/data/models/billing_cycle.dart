@@ -1,20 +1,21 @@
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+import 'package:flutter/material.dart';
 
 enum BillingCycle { weekly, monthly, quarterly, halfYearly, yearly }
 
 extension BillingCycleExtension on BillingCycle {
-  String label(AppLocalizations l10n) {
+  String label(BuildContext context) {
     switch (this) {
       case BillingCycle.weekly:
-        return l10n.weekly;
+        return context.l10n.weekly;
       case BillingCycle.monthly:
-        return l10n.monthly;
+        return context.l10n.monthly;
       case BillingCycle.quarterly:
-        return l10n.quarterly;
+        return context.l10n.quarterly;
       case BillingCycle.halfYearly:
-        return l10n.halfYearly;
+        return context.l10n.halfYearly;
       case BillingCycle.yearly:
-        return l10n.yearly;
+        return context.l10n.yearly;
     }
   }
 }

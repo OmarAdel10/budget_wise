@@ -1,28 +1,30 @@
+import 'package:budget_wise/buckets/view_model/buckets_view_model.dart';
 import 'package:budget_wise/csv_export/view_model/csv_bloc.dart';
 import 'package:budget_wise/main_navigation/view/screens/main_screen.dart';
-import 'package:budget_wise/savings/view_model/savings_view_model.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/accounts_tile.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/categories_tile.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/merchant_rules_list_tile.dart';
 import 'package:budget_wise/settings/view/widgets/data_import_export_card.dart';
-import 'package:budget_wise/settings/view/widgets/notification_settings_tile.dart';
-import 'package:budget_wise/settings/view/widgets/preferences_tile.dart';
-import 'package:budget_wise/settings/view/widgets/preferences_tile_content.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/notification_settings_tile.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/preferences_tile.dart';
 import 'package:budget_wise/settings/view/widgets/profile_header_section.dart';
-import 'package:budget_wise/settings/view/widgets/security_settings_tile.dart';
+import 'package:budget_wise/settings/view/widgets/tiles/security_settings_tile.dart';
 import 'package:budget_wise/shared/constants/app_constants.dart';
 import 'package:budget_wise/auth/data/repositories/auth_repository.dart';
 import 'package:budget_wise/auth/view_model/auth_event.dart';
 import 'package:budget_wise/auth/view_model/auth_view_model.dart';
 import 'package:budget_wise/category/view_model/category_view_model.dart';
+import 'package:budget_wise/shared/utils/app_toast.dart';
 import 'package:budget_wise/subscriptions/view_model/subscription_view_model.dart';
 import 'package:budget_wise/transaction/view_model/transaction_view_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/settings/view_model/settings_event.dart';
 import 'package:budget_wise/settings/view_model/settings_view_model.dart';
 import 'package:budget_wise/accounts/view_model/account_view_model.dart';
 import 'package:budget_wise/auth/utils/auth_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:toastification/toastification.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import 'package:url_launcher/link.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
@@ -53,7 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     context.read<TransactionBloc>().clear();
     context.read<CategoryBloc>().clear();
     context.read<AccountBloc>().clear();
-    context.read<SavingsBloc>().clear();
+    context.read<BucketsBloc>().clear();
     context.read<SubscriptionBloc>().clear();
     context.read<SettingsBloc>().clear();
     Navigator.of(context).pop();
@@ -64,41 +66,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final AuthRepository authRepository = context.read<AuthRepository>();
     final user = authRepository.currentUser;
-    final l10n = AppLocalizations.of(context)!;
 
     return BlocListener<CsvBloc, CsvState>(
       listener: (context, state) {
         if (state is CsvLoading) {
-          toastification.show(
-            context: context,
-            title: Text(state.message),
-            type: ToastificationType.info,
-            autoCloseDuration: const Duration(seconds: 2),
-          );
+          AppToast.show(context, title: state.message, type: AppToastType.info);
         } else if (state is CsvExportSuccess) {
-          toastification.show(
-            context: context,
-            title: Text(l10n.exportSuccess),
-            type: ToastificationType.success,
-            autoCloseDuration: const Duration(seconds: 3),
+          AppToast.show(
+            context,
+            title: context.l10n.exportSuccess,
+            type: AppToastType.success,
           );
         } else if (state is CsvImportSuccess) {
-          toastification.show(
-            context: context,
-            title: Text(l10n.importSuccess(state.count)),
+          AppToast.show(
+            context,
+            title: context.l10n.importSuccess(state.count),
             description: state.skipped > 0
-                ? Text(l10n.skippedDuplicates(state.skipped))
+                ? context.l10n.skippedDuplicates(state.skipped)
                 : null,
-            type: ToastificationType.success,
-            autoCloseDuration: const Duration(seconds: 4),
+            type: AppToastType.success,
           );
         } else if (state is CsvFailure) {
-          toastification.show(
-            context: context,
-            title: Text(l10n.operationFailed),
-            description: Text(state.message),
-            type: ToastificationType.error,
-            autoCloseDuration: const Duration(seconds: 5),
+          AppToast.show(
+            context,
+            title: context.l10n.operationFailed,
+            description: state.message,
+            type: AppToastType.error,
           );
         }
       },
@@ -114,7 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 pinned: true,
                 centerTitle: true,
                 title: Text(
-                  l10n.navSettings,
+                  context.l10n.navSettings,
                   style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
@@ -152,7 +145,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           child: Text(
-                            l10n.login,
+                            context.l10n.login,
                             style: AppTextStyles.bodyLarge.copyWith(
                               color: AppColors.danger,
                               fontWeight: FontWeight.bold,
@@ -163,7 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // App Settings Section
-                    Text(l10n.appSettings, style: AppTextStyles.heading3),
+                    Text(context.l10n.appSettings, style: AppTextStyles.heading3),
                     const SizedBox(height: AppSpacing.md),
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
@@ -175,26 +168,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       child: Column(
                         children: [
+                          const PreferencesTile(),
+                          const CategoriesTile(),
+                          const AccountsTile(),
+                          const MerchantRulesListTile(),
                           const SecuritySettingsTile(),
-                          GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                backgroundColor: Colors.transparent,
-                                // isScrollControlled: true,
-                                builder: (context) =>
-                                    const PreferencesTileContent(),
-                              );
-                            },
-                            child: const PreferencesTile(),
-                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     // Notification Settings Section
                     Text(
-                      l10n.notificationSettings,
+                      context.l10n.notificationSettings,
                       style: AppTextStyles.heading3,
                     ),
                     const SizedBox(height: AppSpacing.md),
@@ -239,11 +224,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     //     ],
                     //   ),
                     // ),
-
                     const SizedBox(height: AppSpacing.md),
 
                     // About Section
-                    Text(l10n.about, style: AppTextStyles.heading3),
+                    Text(context.l10n.about, style: AppTextStyles.heading3),
                     const SizedBox(height: AppSpacing.md),
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
@@ -259,7 +243,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                l10n.appVersion,
+                                context.l10n.appVersion,
                                 style: AppTextStyles.bodyLarge,
                               ),
                               Text(
@@ -302,7 +286,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Align(
                             alignment: AlignmentGeometry.bottomEnd,
                             child: Text(
-                              l10n.madeByOmarAdel,
+                              context.l10n.madeByOmarAdel,
                               style: AppTextStyles.bodySmall.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -330,7 +314,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           child: Text(
-                            l10n.logout,
+                            context.l10n.logout,
                             style: AppTextStyles.bodyLarge.copyWith(
                               color: AppColors.danger,
                               fontWeight: FontWeight.bold,

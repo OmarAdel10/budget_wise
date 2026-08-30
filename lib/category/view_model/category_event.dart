@@ -1,4 +1,5 @@
 import 'package:budget_wise/category/data/models/category_model.dart';
+import 'package:budget_wise/transaction/data/models/transaction_model.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class CategoryEvent extends Equatable {
@@ -55,16 +56,6 @@ class CategoryEventDeleteCategory extends CategoryEvent {
   List<Object?> get props => [categoryId];
 }
 
-class CategoryEventReorder extends CategoryEvent {
-  final int oldIndex;
-  final int newIndex;
-
-  const CategoryEventReorder({required this.oldIndex, required this.newIndex});
-
-  @override
-  List<Object?> get props => [oldIndex, newIndex];
-}
-
 class CategoryEventSyncPendingOnLogin extends CategoryEvent {
   const CategoryEventSyncPendingOnLogin();
 
@@ -77,4 +68,20 @@ class CategoryEventCheckAndSyncPending extends CategoryEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+class CategoryEventPreSeedDefaults extends CategoryEvent {
+  const CategoryEventPreSeedDefaults();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class CategoryEventRefreshTotals extends CategoryEvent {
+  final List<TransactionModel> transactions;
+
+  const CategoryEventRefreshTotals({required this.transactions});
+
+  @override
+  List<Object?> get props => [transactions];
 }

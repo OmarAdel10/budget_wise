@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:budget_wise/category/data/models/category_model.dart';
 import 'package:budget_wise/transaction/data/models/transaction_model.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 import '../../../shared/constants/colors.dart';
 import '../../../shared/constants/spacing.dart';
 import '../../../shared/constants/text_styles.dart';
@@ -59,32 +59,31 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
   }
 
   String _getLocalizedCategoryName(BuildContext context, String key) {
-    final l10n = AppLocalizations.of(context)!;
     switch (key) {
       case 'Smoking':
-        return l10n.catSmoking;
+        return context.l10n.catSmoking;
       case 'Eating':
-        return l10n.catEating;
+        return context.l10n.catEating;
       case 'Transport':
-        return l10n.catTransport;
+        return context.l10n.catTransport;
       case 'Utils':
-        return l10n.catUtils;
+        return context.l10n.catUtils;
       case 'Debts':
-        return l10n.catDebts;
+        return context.l10n.catDebts;
       case 'Investments':
-        return l10n.catInvestments;
+        return context.l10n.catInvestments;
       case 'Mobile':
-        return l10n.catMobile;
+        return context.l10n.catMobile;
       case 'Rent':
-        return l10n.catRent;
+        return context.l10n.catRent;
       case 'Health':
-        return l10n.catHealth;
+        return context.l10n.catHealth;
       case 'Entertainment':
-        return l10n.catEntertainment;
+        return context.l10n.catEntertainment;
       case 'Education':
-        return l10n.catEducation;
+        return context.l10n.catEducation;
       case 'Groceries':
-        return l10n.catGroceries;
+        return context.l10n.catGroceries;
       default:
         return key;
     }
@@ -92,7 +91,6 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -100,13 +98,13 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
         children: [
           const SizedBox(height: AppSpacing.xl),
           Text(
-            l10n.categorySelectionTitle,
+            context.l10n.categorySelectionTitle,
             style: AppTextStyles.heading1,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            l10n.categorySelectionDesc,
+            context.l10n.categorySelectionDesc,
             style: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.textSecondary,
             ),

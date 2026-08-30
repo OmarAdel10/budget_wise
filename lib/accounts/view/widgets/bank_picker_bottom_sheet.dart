@@ -1,5 +1,5 @@
 import 'package:budget_wise/accounts/data/data_source/account_constants.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -44,9 +44,9 @@ class _BankPickerBottomSheetState extends State<BankPickerBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return DraggableScrollableSheet(
+            shouldCloseOnMinExtent: false,
+
       initialChildSize: 0.7,
       minChildSize: 0.5,
       maxChildSize: 0.9,
@@ -76,11 +76,11 @@ class _BankPickerBottomSheetState extends State<BankPickerBottomSheet> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    Text(l10n.selectBankTitle, style: AppTextStyles.heading2),
+                    Text(context.l10n.selectBankTitle, style: AppTextStyles.heading2),
                     const SizedBox(height: AppSpacing.md),
                     CustomTextField(
                       controller: _searchController,
-                      hintText: l10n.searchBankPlaceholder,
+                      hintText: context.l10n.searchBankPlaceholder,
                       prefixIcon: const Icon(Icons.search),
                       onChanged: (value) {
                         setState(() {

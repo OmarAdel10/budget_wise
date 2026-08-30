@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:budget_wise/shared/utils/app_box_shadow.dart';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../constants/text_styles.dart';
@@ -58,10 +59,9 @@ class SummaryCard extends StatelessWidget {
           color: isCompact
               ? AppColors.cardBackground
               : AppColors.cardBackground.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(
-            isCompact ? AppSpacing.radiusMd : AppSpacing.radiusSm,
-          ),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: isCompact ? null : Border.all(color: AppColors.borderColor),
+          boxShadow: [AppBoxShadow()]
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -42,10 +42,7 @@ class SubscriptionBulkCreate extends SubscriptionEvent {
   final List<SubscriptionModel> subscriptions;
   final Completer<void>? completer;
 
-  const SubscriptionBulkCreate({
-    required this.subscriptions,
-    this.completer,
-  });
+  const SubscriptionBulkCreate({required this.subscriptions, this.completer});
 
   @override
   List<Object?> get props => [subscriptions];

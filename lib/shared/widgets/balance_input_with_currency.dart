@@ -1,5 +1,5 @@
 import 'package:budget_wise/shared/widgets/currency_prefix.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
@@ -7,7 +7,7 @@ import 'package:budget_wise/shared/utils/thousands_formatter.dart';
 import 'package:budget_wise/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class BalanceInputWithCurrency extends StatelessWidget {
   final TextEditingController balanceController;
@@ -118,7 +118,6 @@ class BalanceInputWithCurrency extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,14 +127,14 @@ class BalanceInputWithCurrency extends StatelessWidget {
             fieldCustomTitle != null && fieldCustomTitle!.isNotEmpty
                 ? fieldCustomTitle!
                 : isSavingBalanceField
-                ? l10n.targetAmount
+                ? context.l10n.targetAmount
                 : isReminderBalanceField
-                ? l10n.reminderBeforeDays
+                ? context.l10n.reminderBeforeDays
                 : isInitialBalanceField
                 ? isLowBalanceField
-                      ? l10n.lowBalanceAlertAmount
-                      : l10n.addAccountInitialBalanceLabel
-                : l10n.currentBalance,
+                      ? context.l10n.lowBalanceAlertAmount
+                      : context.l10n.addAccountInitialBalanceLabel
+                : context.l10n.currentBalance,
             style: isSavingBalanceField
                 ? AppTextStyles.bodyMedium
                 : AppTextStyles.bodySmall.copyWith(
@@ -147,7 +146,7 @@ class BalanceInputWithCurrency extends StatelessWidget {
         CustomTextField(
           bgColor: backgroundColor,
           controller: balanceController,
-          hintText: hint ?? l10n.addAccountInitialBalancePlaceholder,
+          hintText: hint ?? context.l10n.addAccountInitialBalancePlaceholder,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),

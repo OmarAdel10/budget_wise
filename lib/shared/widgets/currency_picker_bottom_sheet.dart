@@ -1,10 +1,11 @@
 import 'package:budget_wise/accounts/data/data_source/account_constants.dart';
-import 'package:budget_wise/l10n/app_localizations.dart';
+import 'package:budget_wise/l10n/l10n_extension.dart';
 import 'package:budget_wise/shared/constants/colors.dart';
 import 'package:budget_wise/shared/constants/spacing.dart';
 import 'package:budget_wise/shared/constants/text_styles.dart';
+import 'package:budget_wise/shared/data/services/bottom_sheet_service.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
 class CurrencyPickerBottomSheet extends StatelessWidget {
   final String selectedCurrency;
@@ -31,28 +32,14 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header Indicator
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.borderColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
+          BottomSheetService.header(
+            title: context.l10n.selectCurrency,
+            onTap: () => Navigator.of(context).pop(),
           ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            AppLocalizations.of(context)!.selectCurrency,
-            style: AppTextStyles.heading3,
-          ),
-          const SizedBox(height: AppSpacing.md),
-
           Flexible(
             child: ListView.separated(
               shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              padding: const EdgeInsets.only(top: AppSpacing.md),
               itemCount: AccountConstants.supportedCurrencies.length,
               separatorBuilder: (context, index) =>
                   const Divider(color: AppColors.borderColor, height: 1),
@@ -71,10 +58,6 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                     })
                     .expand((i) => i)
                     .elementAt(index);
-                // final code = AccountConstants.supportedCurrencies.values.
-                // .elementAt(index);
-                // final name = AccountConstants.supportedCurrencies.values
-                //     .elementAt(index);
                 final isSelected = code == selectedCurrency;
 
                 return InkWell(
@@ -146,7 +129,7 @@ class CurrencyPickerBottomSheet extends StatelessWidget {
                         ),
                         if (isSelected)
                           Icon(
-                            PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
+                            PhosphorIconsFill.checkCircle,
                             color: selectionColor,
                             size: 24,
                           ),
