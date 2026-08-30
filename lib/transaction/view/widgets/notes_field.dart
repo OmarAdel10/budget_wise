@@ -15,7 +15,6 @@ class NotesField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final noteLabel = selectedType == TransactionType.transfer
         ? context.l10n.note
         : context.l10n.hint;

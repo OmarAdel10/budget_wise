@@ -221,16 +221,18 @@ class BucketsBloc extends HydratedBloc<BucketsEvent, BucketsState> {
               savingAccount: savingAccount,
             );
             accountBloc.add(const AccountEventFetchAll());
-            
+
             final remoteGoals = await savingGoalRepo.fetchAllSavingGoals();
             final updatedGoal = remoteGoals.firstWhere((g) => g.id == goal.id);
             final bool nowCompleted = updatedGoal.isCompleted;
 
-            emit(BucketsStateSuccess(
-              savingsList: remoteGoals,
-              showCompletionToast: !wasCompletedBefore && nowCompleted,
-              completedGoalName: updatedGoal.name,
-            ));
+            emit(
+              BucketsStateSuccess(
+                savingsList: remoteGoals,
+                showCompletionToast: !wasCompletedBefore && nowCompleted,
+                completedGoalName: updatedGoal.name,
+              ),
+            );
           }
         }
       } catch (e) {
@@ -293,11 +295,13 @@ class BucketsBloc extends HydratedBloc<BucketsEvent, BucketsState> {
         final bool nowCompleted = updatedGoal.isCompleted;
 
         _syncToSharedPreferences(updatedList);
-        emit(BucketsStateSuccess(
-          savingsList: updatedList,
-          showCompletionToast: !wasCompletedBefore && nowCompleted,
-          completedGoalName: updatedGoal.name,
-        ));
+        emit(
+          BucketsStateSuccess(
+            savingsList: updatedList,
+            showCompletionToast: !wasCompletedBefore && nowCompleted,
+            completedGoalName: updatedGoal.name,
+          ),
+        );
 
         if (settingsBloc.state.model.hasLoggedIn) {
           savingGoalRepo
@@ -422,9 +426,8 @@ class BucketsBloc extends HydratedBloc<BucketsEvent, BucketsState> {
           final syncedGoals = normalizedGoals
               .map((goal) => goal.copyWith(isSynced: true))
               .toList();
-          final persistedGoals = await savingGoalRepo.bulkCreateGoalsWithAccounts(
-            syncedGoals,
-          );
+          final persistedGoals = await savingGoalRepo
+              .bulkCreateGoalsWithAccounts(syncedGoals);
 
           final persistedById = {
             for (final goal in persistedGoals)
@@ -453,8 +456,9 @@ class BucketsBloc extends HydratedBloc<BucketsEvent, BucketsState> {
   }
 
   void _syncToSharedPreferences(List<SavingGoalModel> goals) {
-    final List<Map<String, dynamic>> mapList =
-        goals.map((s) => s.toMap()).toList();
+    final List<Map<String, dynamic>> mapList = goals
+        .map((s) => s.toMap())
+        .toList();
     settingsBloc.add(SettingsEventSyncSavingsSnapshot(mapList));
   }
 

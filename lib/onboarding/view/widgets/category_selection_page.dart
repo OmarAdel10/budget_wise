@@ -91,7 +91,6 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(

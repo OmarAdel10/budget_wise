@@ -52,7 +52,9 @@ class NotificationSettingsTile extends StatelessWidget {
         backgroundColor: AppColors.cardBackground,
         title: Text(context.l10n.permissionRequired),
         content: Text(
-          context.l10n.disableNotificationsWarningTitle, // Reusing similar warning or add new one
+          context
+              .l10n
+              .disableNotificationsWarningTitle, // Reusing similar warning or add new one
         ),
         actions: [
           TextButton(
@@ -103,7 +105,6 @@ class NotificationSettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {
         final model = state.model;
@@ -193,7 +194,9 @@ class NotificationSettingsTile extends StatelessWidget {
                             model.dailyReminderNotificationsEnabled,
                             const SettingsEventToggleDailyReminderNotifications(),
                             context.l10n.disableNotificationsWarningTitle,
-                            context.l10n.disableDailyReminderNotificationsWarningDesc,
+                            context
+                                .l10n
+                                .disableDailyReminderNotificationsWarningDesc,
                           ),
                         ),
                       ),
@@ -211,7 +214,8 @@ class NotificationSettingsTile extends StatelessWidget {
                           activeTrackColor: AppColors.primaryAccent.withValues(
                             alpha: 0.3,
                           ),
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           onChanged: (_) => _handleToggle(
                             context,
                             model.smsNotificationsEnabled,
@@ -235,13 +239,16 @@ class NotificationSettingsTile extends StatelessWidget {
                           activeTrackColor: AppColors.primaryAccent.withValues(
                             alpha: 0.3,
                           ),
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           onChanged: (_) => _handleToggle(
                             context,
                             model.categoryBudgetNotificationsEnabled,
                             const SettingsEventToggleCategoryBudgetNotifications(),
                             context.l10n.disableNotificationsWarningTitle,
-                            context.l10n.disableCategoryBudgetNotificationsWarningDesc,
+                            context
+                                .l10n
+                                .disableCategoryBudgetNotificationsWarningDesc,
                           ),
                         ),
                       ),
@@ -259,7 +266,8 @@ class NotificationSettingsTile extends StatelessWidget {
                           activeTrackColor: AppColors.primaryAccent.withValues(
                             alpha: 0.3,
                           ),
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           onChanged: (_) => _handleToggle(
                             context,
                             model.subscriptionNotificationsEnabled,

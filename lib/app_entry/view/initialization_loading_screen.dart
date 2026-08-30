@@ -4,7 +4,7 @@ import 'package:budget_wise/shared/constants/colors.dart';
 
 class InitializationLoadingScreen extends StatelessWidget {
   static const String routeName = '/initialization-loading';
-  
+
   final ValueNotifier<double> progressNotifier;
   final ValueNotifier<String> statusNotifier;
 
@@ -49,7 +49,9 @@ class InitializationLoadingScreen extends StatelessWidget {
                     LinearProgressIndicator(
                       value: progress,
                       backgroundColor: AppColors.secondaryBackground,
-                      valueColor: const AlwaysStoppedAnimation(AppColors.primaryAccent),
+                      valueColor: const AlwaysStoppedAnimation(
+                        AppColors.primaryAccent,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     Text(

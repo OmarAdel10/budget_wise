@@ -21,50 +21,51 @@ class AppToast {
     // Capture the undo label from the provided context (still valid for strings)
     final String undoLabel = context.l10n.undo;
     // Use a stable root context (navigator key) to avoid deactivated widget errors
-    final BuildContext safeContext = BudgetWise.navigatorKey.currentContext ?? context;
+    final BuildContext safeContext =
+        BudgetWise.navigatorKey.currentContext ?? context;
     toastification.show(
       context: safeContext,
-        type: _getToastType(type),
-        alignment: Alignment.topCenter,
-        backgroundColor: AppColors.secondaryBackground,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        borderSide: BorderSide(color: AppColors.borderColor),
-        boxShadow: [AppBoxShadow()],
-        dragToClose: true,
-        dismissDirection: DismissDirection.none,
-        autoCloseDuration: const Duration(seconds: 3),
-        title: Text(
-          title,
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textPrimary),
-        ),
-        description: description != null
-            ? Text(description, style: AppTextStyles.bodySmall)
-            : null,
-        closeButton: type == AppToastType.deleteWithUndo
-            ? ToastCloseButton(
-                showType: CloseButtonShowType.always,
-                buttonBuilder: (_, onClose) {
-                  return GestureDetector(
-                    onTap: () {
-                      if (onUndo != null) onUndo();
-                      onClose();
-                    },
-                    child: Text(
-                      undoLabel,
-                      style: AppTextStyles.button.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+      type: _getToastType(type),
+      alignment: Alignment.topCenter,
+      backgroundColor: AppColors.secondaryBackground,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      borderSide: BorderSide(color: AppColors.borderColor),
+      boxShadow: [AppBoxShadow()],
+      dragToClose: true,
+      dismissDirection: DismissDirection.none,
+      autoCloseDuration: const Duration(seconds: 3),
+      title: Text(
+        title,
+        style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textPrimary),
+      ),
+      description: description != null
+          ? Text(description, style: AppTextStyles.bodySmall)
+          : null,
+      closeButton: type == AppToastType.deleteWithUndo
+          ? ToastCloseButton(
+              showType: CloseButtonShowType.always,
+              buttonBuilder: (_, onClose) {
+                return GestureDetector(
+                  onTap: () {
+                    if (onUndo != null) onUndo();
+                    onClose();
+                  },
+                  child: Text(
+                    undoLabel,
+                    style: AppTextStyles.button.copyWith(
+                      color: AppColors.textSecondary,
                     ),
-                  );
-                },
-              )
-            : ToastCloseButton(showType: CloseButtonShowType.none),
-        callbacks: ToastificationCallbacks(
-          onAutoCompleteCompleted: (item) {
-            if (onCompleted != null) onCompleted();
-          },
-        ),
-      );
+                  ),
+                );
+              },
+            )
+          : ToastCloseButton(showType: CloseButtonShowType.none),
+      callbacks: ToastificationCallbacks(
+        onAutoCompleteCompleted: (item) {
+          if (onCompleted != null) onCompleted();
+        },
+      ),
+    );
   }
 
   static ToastificationType _getToastType(AppToastType type) {

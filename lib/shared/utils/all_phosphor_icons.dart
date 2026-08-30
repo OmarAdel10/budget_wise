@@ -753,8 +753,7 @@ abstract class AllIcons {
     'dots-three-circle': PhosphorIconsBold.dotsThreeCircle,
     'dots-three-circle-vertical': PhosphorIconsBold.dotsThreeCircleVertical,
     'dots-three-outline': PhosphorIconsBold.dotsThreeOutline,
-    'dots-three-outline-vertical':
-        PhosphorIconsBold.dotsThreeOutlineVertical,
+    'dots-three-outline-vertical': PhosphorIconsBold.dotsThreeOutlineVertical,
     'dots-three-vertical': PhosphorIconsBold.dotsThreeVertical,
     'flag': PhosphorIconsBold.flag,
     'flag-banner': PhosphorIconsBold.flagBanner,
@@ -1252,8 +1251,7 @@ abstract class AllIcons {
     'dots-three-circle': PhosphorIconsFill.dotsThreeCircle,
     'dots-three-circle-vertical': PhosphorIconsFill.dotsThreeCircleVertical,
     'dots-three-outline': PhosphorIconsFill.dotsThreeOutline,
-    'dots-three-outline-vertical':
-        PhosphorIconsFill.dotsThreeOutlineVertical,
+    'dots-three-outline-vertical': PhosphorIconsFill.dotsThreeOutlineVertical,
     'dots-three-vertical': PhosphorIconsFill.dotsThreeVertical,
     'flag': PhosphorIconsFill.flag,
     'flag-banner': PhosphorIconsFill.flagBanner,

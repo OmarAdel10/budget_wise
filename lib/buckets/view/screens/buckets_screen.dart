@@ -21,7 +21,6 @@ class BucketsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
@@ -78,7 +77,9 @@ class BucketsScreen extends StatelessWidget {
 
                 return SavingGoalCard(
                   goal: goal,
-                  formattedProgress: context.l10n.savingsGoalProgress(percentage),
+                  formattedProgress: context.l10n.savingsGoalProgress(
+                    percentage,
+                  ),
                   formattedAmount: context.l10n.savingsGoalAmountProgress(
                     goal.currency,
                     goal.currentAmount,

@@ -13,7 +13,6 @@ class HomeWarningBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final shouldShowWarning = context.select((HomeBloc bloc) {
       final state = bloc.state;
       return state.model.totalExpenses > state.model.totalIncome;
@@ -36,10 +35,7 @@ class HomeWarningBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            PhosphorIconsRegular.warning,
-            color: AppColors.danger,
-          ),
+          Icon(PhosphorIconsRegular.warning, color: AppColors.danger),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(

@@ -39,9 +39,11 @@ class AppBootstrapper extends StatefulWidget {
 
 class _AppBootstrapperState extends State<AppBootstrapper> {
   final ValueNotifier<double> _progressNotifier = ValueNotifier(0.0);
-  final ValueNotifier<String> _statusNotifier = ValueNotifier("Securing your financial vault...");
+  final ValueNotifier<String> _statusNotifier = ValueNotifier(
+    "Securing your financial vault...",
+  );
   final ValueNotifier<bool> _isInitializedNotifier = ValueNotifier(false);
-  
+
   SharedPreferences? _prefs;
 
   @override
@@ -75,8 +77,10 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
       _statusNotifier.value = "Gathering your latest transactions...";
 
       // 3. Feature Init (Milestone 3 & 4)
-      final bool isNotificationGranted = await NotificationRepository.isPermissionGranted();
-      final bool isMicrophonePermissionGranted = await Permission.microphone.isGranted;
+      final bool isNotificationGranted =
+          await NotificationRepository.isPermissionGranted();
+      final bool isMicrophonePermissionGranted =
+          await Permission.microphone.isGranted;
 
       final SmsService smsService = SmsService();
       await smsService.requestPermissions();
@@ -84,9 +88,10 @@ class _AppBootstrapperState extends State<AppBootstrapper> {
       _progressNotifier.value = 0.8;
       _statusNotifier.value = "Syncing with your budget goals...";
 
-        await NotificationRepository.notificationInit();
-        if (!isNotificationGranted) await NotificationRepository.requestPermissions();
-        if (!isMicrophonePermissionGranted) await Permission.microphone.request();
+      await NotificationRepository.notificationInit();
+      if (!isNotificationGranted)
+        await NotificationRepository.requestPermissions();
+      if (!isMicrophonePermissionGranted) await Permission.microphone.request();
 
       BackgroundTasks.initialize();
       BackgroundTasks.scheduleTasks();

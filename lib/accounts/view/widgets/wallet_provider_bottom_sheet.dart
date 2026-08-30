@@ -8,13 +8,15 @@ import 'package:flutter/material.dart';
 class WalletProviderBottomSheet extends StatelessWidget {
   final Function(String providerName) onProviderSelected;
 
-  const WalletProviderBottomSheet({super.key, required this.onProviderSelected});
+  const WalletProviderBottomSheet({
+    super.key,
+    required this.onProviderSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
-
     return DraggableScrollableSheet(
-            shouldCloseOnMinExtent: false,
+      shouldCloseOnMinExtent: false,
 
       initialChildSize: 0.5,
       minChildSize: 0.3,
@@ -45,7 +47,10 @@ class WalletProviderBottomSheet extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    Text(context.l10n.addAccountProviderLabel, style: AppTextStyles.heading2),
+                    Text(
+                      context.l10n.addAccountProviderLabel,
+                      style: AppTextStyles.heading2,
+                    ),
                   ],
                 ),
               ),
@@ -61,7 +66,10 @@ class WalletProviderBottomSheet extends StatelessWidget {
                   ),
                   itemCount: AccountConstants.walletProviders.length,
                   itemBuilder: (context, index) {
-                    final providerEntry = AccountConstants.walletProviders.entries.elementAt(index);
+                    final providerEntry = AccountConstants
+                        .walletProviders
+                        .entries
+                        .elementAt(index);
                     final providerName = providerEntry.key;
                     final logoFileName = providerEntry.value;
                     final logoPath = 'assets/wallet_logos/$logoFileName.png';

@@ -17,11 +17,7 @@ class DataImportExportCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: const Column(
-        children: [
-          ImportCsvTile(),
-          ExportCsvTile(),
-          ResetAllDataTile(),
-        ],
+        children: [ImportCsvTile(), ExportCsvTile(), ResetAllDataTile()],
       ),
     );
   }

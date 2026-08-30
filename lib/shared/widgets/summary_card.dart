@@ -61,7 +61,7 @@ class SummaryCard extends StatelessWidget {
               : AppColors.cardBackground.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: isCompact ? null : Border.all(color: AppColors.borderColor),
-          boxShadow: [AppBoxShadow()]
+          boxShadow: [AppBoxShadow()],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

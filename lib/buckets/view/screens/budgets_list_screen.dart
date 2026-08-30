@@ -35,7 +35,9 @@ class BudgetsListScreen extends StatelessWidget {
               return Center(
                 child: Text(
                   "No budgets set yet",
-                  style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               );
             }
@@ -43,7 +45,8 @@ class BudgetsListScreen extends StatelessWidget {
             return ListView.separated(
               padding: const EdgeInsets.all(AppSpacing.lg),
               itemCount: budgetCategories.length,
-              separatorBuilder: (ctx, i) => const SizedBox(height: AppSpacing.md),
+              separatorBuilder: (ctx, i) =>
+                  const SizedBox(height: AppSpacing.md),
               itemBuilder: (context, index) {
                 final category = budgetCategories[index];
                 return _BudgetCategoryItem(category: category);
@@ -64,7 +67,7 @@ class _BudgetCategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Mock spending - in production this would be calculated from transactions
-    final double spent = 0.0; 
+    final double spent = 0.0;
     final double limit = category.budgetAmount ?? 0.0;
     final double progress = limit > 0 ? (spent / limit).clamp(0.0, 1.0) : 0.0;
 
@@ -93,11 +96,15 @@ class _BudgetCategoryItem extends StatelessWidget {
                   children: [
                     Text(
                       category.categoryTitle,
-                      style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       "${spent.toStringAsFixed(0)} / ${limit.toStringAsFixed(0)} EGP",
-                      style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -106,7 +113,11 @@ class _BudgetCategoryItem extends StatelessWidget {
                 onPressed: () {
                   // TODO: Quick Edit Budget
                 },
-                icon: const Icon(PhosphorIconsBold.pencilSimple, size: 20, color: AppColors.textSecondary),
+                icon: const Icon(
+                  PhosphorIconsBold.pencilSimple,
+                  size: 20,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),

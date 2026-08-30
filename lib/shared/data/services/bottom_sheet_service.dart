@@ -36,7 +36,11 @@ class BottomSheetService {
     required String title,
     void Function()? onTap,
     bool hasPadding = false,
-    EdgeInsets padding = const EdgeInsets.only(left: AppSpacing.lg, right: AppSpacing.lg, top: AppSpacing.lg),
+    EdgeInsets padding = const EdgeInsets.only(
+      left: AppSpacing.lg,
+      right: AppSpacing.lg,
+      top: AppSpacing.lg,
+    ),
     bool isRoot = false,
     bool hasDrag = false,
     List<Widget>? actions,

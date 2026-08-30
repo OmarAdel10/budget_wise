@@ -20,7 +20,8 @@ class VoiceRecordingOverlay extends StatelessWidget {
             children: [
               AudioWaveforms(
                 size: Size(constraints.maxWidth * 0.6, 40),
-                recorderController: controller, // This would be the recorder controller
+                recorderController:
+                    controller, // This would be the recorder controller
                 // For now, assume this is for playback or visualization
               ),
               const SizedBox(width: 16),

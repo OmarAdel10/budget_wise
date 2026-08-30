@@ -118,7 +118,6 @@ class BalanceInputWithCurrency extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -16,8 +16,8 @@ List<TransactionModel> migrateLegacyTransfers(List<TransactionModel> list) {
     changed = true;
     final groupId = const Uuid().v4();
     final now = DateTime.now();
-    final categoryId = SystemCategoryIds.isSystem(t.categoryId) ||
-            t.categoryId == 'transfer'
+    final categoryId =
+        SystemCategoryIds.isSystem(t.categoryId) || t.categoryId == 'transfer'
         ? SystemCategoryIds.accountTransfer
         : t.categoryId;
 

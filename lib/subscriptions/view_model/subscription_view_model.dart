@@ -139,9 +139,7 @@ class SubscriptionBloc
 
         for (final subscription in event.subscriptions) {
           final normalized = subscription.copyWith(
-            id: subscription.id.isEmpty
-                ? const Uuid().v4()
-                : subscription.id,
+            id: subscription.id.isEmpty ? const Uuid().v4() : subscription.id,
             userId: userId,
             isSynced: false,
           );
@@ -156,7 +154,10 @@ class SubscriptionBloc
           return;
         }
 
-        final updatedList = [...normalizedSubscriptions, ...state.subscriptions];
+        final updatedList = [
+          ...normalizedSubscriptions,
+          ...state.subscriptions,
+        ];
         for (final subscription in normalizedSubscriptions) {
           _scheduleNotification(subscription);
         }
@@ -361,8 +362,9 @@ class SubscriptionBloc
   }
 
   String _subscriptionImportKey(SubscriptionModel subscription) {
-    final dateKey =
-        DateFormat('yyyy-MM-dd').format(subscription.nextBillingDate);
+    final dateKey = DateFormat(
+      'yyyy-MM-dd',
+    ).format(subscription.nextBillingDate);
     return [
       subscription.name.toLowerCase(),
       subscription.amount.toStringAsFixed(2),

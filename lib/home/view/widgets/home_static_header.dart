@@ -130,7 +130,7 @@ class _AllAccountsCardState extends State<_AllAccountsCard> {
               color: AppColors.cardBackground.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               border: Border.all(color: AppColors.borderColor),
-              boxShadow: [AppBoxShadow()]
+              boxShadow: [AppBoxShadow()],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,

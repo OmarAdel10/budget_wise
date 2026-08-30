@@ -66,14 +66,19 @@ class SavingDayItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
-                Text(context.l10n.dayCount(dayNum), style: AppTextStyles.bodyLarge),
+                Text(
+                  context.l10n.dayCount(dayNum),
+                  style: AppTextStyles.bodyLarge,
+                ),
               ],
             ),
             Row(
               children: [
                 if (goal.method == SavingGoalMethod.custom && amount == 0)
                   Text(
-                    context.l10n.tapToChangeIcon, // Reusing existing key or we could add "tapToSet"
+                    context
+                        .l10n
+                        .tapToChangeIcon, // Reusing existing key or we could add "tapToSet"
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -124,7 +129,10 @@ class SavingDayItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(context.l10n.setAmountForDay(day), style: AppTextStyles.heading3),
+            Text(
+              context.l10n.setAmountForDay(day),
+              style: AppTextStyles.heading3,
+            ),
             const SizedBox(height: 20),
             CustomTextField(
               hintText: context.l10n.enterAmount,

@@ -74,7 +74,9 @@ class CsvService {
 
     // Add Transactions
     for (var tx in transactions) {
-      if (tx.transactionDate.isAfter(start.subtract(const Duration(seconds: 1))) &&
+      if (tx.transactionDate.isAfter(
+            start.subtract(const Duration(seconds: 1)),
+          ) &&
           tx.transactionDate.isBefore(end.add(const Duration(days: 1)))) {
         rows.add([
           dateFormat.format(tx.transactionDate),
@@ -126,12 +128,16 @@ class CsvService {
     }
 
     // Manual CSV generation
-    final csv = rows.map((row) {
-      return row.map((cell) {
-        final escaped = cell.replaceAll('"', '""');
-        return '"$escaped"';
-      }).join(',');
-    }).join('\n');
+    final csv = rows
+        .map((row) {
+          return row
+              .map((cell) {
+                final escaped = cell.replaceAll('"', '""');
+                return '"$escaped"';
+              })
+              .join(',');
+        })
+        .join('\n');
 
     dev.log('CSV generation complete. Rows: ${rows.length}');
     return csv;
@@ -151,7 +157,9 @@ class CsvService {
 
   String extractSavingGoalName(String title, String notes) {
     final normalizedNotes = notes.trim();
-    if (normalizedNotes.toLowerCase().startsWith(_savingGoalPrefix.toLowerCase())) {
+    if (normalizedNotes.toLowerCase().startsWith(
+      _savingGoalPrefix.toLowerCase(),
+    )) {
       return normalizedNotes.substring(_savingGoalPrefix.length).trim();
     }
 
@@ -176,7 +184,10 @@ class CsvService {
     }
 
     // Basic CSV splitting (handling quotes simply)
-    final lines = csvContent.split('\n').where((l) => l.trim().isNotEmpty).toList();
+    final lines = csvContent
+        .split('\n')
+        .where((l) => l.trim().isNotEmpty)
+        .toList();
     if (lines.isEmpty) {
       throw CsvValidationException('No data found in the CSV file.');
     }
@@ -217,17 +228,19 @@ class CsvService {
         final accountId = cells[7].trim();
         final notes = cells[8].trim();
 
-        importedRows.add(CsvImportRow(
-          date: date,
-          entryType: entryType,
-          financialType: financialType,
-          title: title,
-          amount: amount,
-          currency: currency,
-          categoryId: categoryId,
-          accountId: accountId,
-          notes: notes,
-        ));
+        importedRows.add(
+          CsvImportRow(
+            date: date,
+            entryType: entryType,
+            financialType: financialType,
+            title: title,
+            amount: amount,
+            currency: currency,
+            categoryId: categoryId,
+            accountId: accountId,
+            notes: notes,
+          ),
+        );
       } catch (e) {
         throw CsvValidationException('Error in row ${i + 1}: ${e.toString()}');
       }

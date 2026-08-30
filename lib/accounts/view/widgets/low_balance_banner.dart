@@ -10,8 +10,8 @@ class LowBalanceBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final warningText = 
-      context.l10n.yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount;
+    final warningText =
+        context.l10n.yourAccountBalanceIsBelowTheSpecifiedLowBalanceAmount;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(

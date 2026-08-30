@@ -216,7 +216,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     const DragHandle(),
-                    Text(context.l10n.newSavingGoal, style: AppTextStyles.heading2),
+                    Text(
+                      context.l10n.newSavingGoal,
+                      style: AppTextStyles.heading2,
+                    ),
                     const SizedBox(height: AppSpacing.lg),
                     // Toggle Amount/Days
                     SavingGoalModeToggle(
@@ -308,7 +311,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                       },
                     ),
 
-                    Text(context.l10n.targetDate, style: AppTextStyles.bodyMedium),
+                    Text(
+                      context.l10n.targetDate,
+                      style: AppTextStyles.bodyMedium,
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     TargetDateDisplay(
                       targetDateNotifier: _targetDateNotifier,
@@ -342,7 +348,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                       isByAmountNotifier: _isByAmountNotifier,
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    CustomButton(text: context.l10n.createGoal, onPressed: _submit),
+                    CustomButton(
+                      text: context.l10n.createGoal,
+                      onPressed: _submit,
+                    ),
                   ]),
                 ),
               ),

@@ -11,9 +11,7 @@ class BackgroundTasks {
   static const String periodicBalanceCheckTask = "periodicBalanceCheckTask";
 
   static void initialize() {
-    Workmanager().initialize(
-      callbackDispatcher,
-    );
+    Workmanager().initialize(callbackDispatcher);
   }
 
   static void scheduleTasks() {
@@ -52,11 +50,12 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Check if notifications are enabled globally
       final allEnabled = prefs.getBool('all_notifications_enabled') ?? true;
-      final savingsEnabled = prefs.getBool('savings_notifications_enabled') ?? true;
-      
+      final savingsEnabled =
+          prefs.getBool('savings_notifications_enabled') ?? true;
+
       if (!allEnabled || !savingsEnabled) return true;
 
       // Load data from snapshots
@@ -65,21 +64,31 @@ void callbackDispatcher() {
 
       if (accountsJson == null || savingsJson == null) {
         log('Background task: No snapshots found.');
-        return true; 
+        return true;
       }
 
       final List<dynamic> accountsListRaw = jsonDecode(accountsJson);
       final List<dynamic> savingsListRaw = jsonDecode(savingsJson);
 
-      final accounts = accountsListRaw.map((e) => AccountModel.fromMap(e)).toList();
-      final goals = savingsListRaw.map((e) => SavingGoalModel.fromMap(e)).toList();
+      final accounts = accountsListRaw
+          .map((e) => AccountModel.fromMap(e))
+          .toList();
+      final goals = savingsListRaw
+          .map((e) => SavingGoalModel.fromMap(e))
+          .toList();
 
       if (task == BackgroundTasks.morningCheckTask) {
         await _handleMorningCheck(goals, accounts);
-        
+
         // Reschedule for next day
         final now = DateTime.now();
-        final scheduledDate = DateTime(now.year, now.month, now.day, 9, 0).add(const Duration(days: 1));
+        final scheduledDate = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          9,
+          0,
+        ).add(const Duration(days: 1));
         final delay = scheduledDate.difference(now);
         await Workmanager().registerOneOffTask(
           "morning_check_unique",
@@ -99,7 +108,10 @@ void callbackDispatcher() {
   });
 }
 
-Future<void> _handleMorningCheck(List<SavingGoalModel> goals, List<AccountModel> accounts) async {
+Future<void> _handleMorningCheck(
+  List<SavingGoalModel> goals,
+  List<AccountModel> accounts,
+) async {
   final accountsMap = {for (final acc in accounts) acc.id: acc};
   List<String> lowBalanceAccounts = [];
   List<String> behindScheduleGoals = [];
@@ -108,13 +120,13 @@ Future<void> _handleMorningCheck(List<SavingGoalModel> goals, List<AccountModel>
 
   for (final goal in goals) {
     if (goal.isCompleted) continue;
-    
+
     // 1. Low Balance Check
     final todayIndex = DateTime.now().difference(goal.createdAt).inDays + 1;
     if (!goal.completedDays.contains(todayIndex)) {
       final dailyAmount = goal.getAmountForDay(todayIndex);
       final sourceAccount = accountsMap[goal.sourceAccountId];
-      
+
       if (sourceAccount != null && sourceAccount.balance < dailyAmount) {
         if (!lowBalanceAccounts.contains(sourceAccount.title)) {
           lowBalanceAccounts.add(sourceAccount.title);
@@ -140,8 +152,10 @@ Future<void> _handleMorningCheck(List<SavingGoalModel> goals, List<AccountModel>
       channelDescription: 'Alerts for savings goals',
       id: 999,
       title: 'Action Needed: Savings',
-      body: 'Your balance in ${lowBalanceAccounts.join(", ")} is low. Update it to stay on track!',
-      payload: 'add_transaction_with_context|$firstSourceId|$firstRequiredAmount',
+      body:
+          'Your balance in ${lowBalanceAccounts.join(", ")} is low. Update it to stay on track!',
+      payload:
+          'add_transaction_with_context|$firstSourceId|$firstRequiredAmount',
     );
   }
 
@@ -152,13 +166,17 @@ Future<void> _handleMorningCheck(List<SavingGoalModel> goals, List<AccountModel>
       channelDescription: 'Alerts for savings goals',
       id: 998,
       title: 'Savings Progress Update',
-      body: 'You are slightly behind schedule on: ${behindScheduleGoals.join(", ")}. Every small bit counts!',
+      body:
+          'You are slightly behind schedule on: ${behindScheduleGoals.join(", ")}. Every small bit counts!',
       payload: 'nav_savings',
     );
   }
 }
 
-Future<void> _handlePeriodicCheck(List<SavingGoalModel> goals, List<AccountModel> accounts) async {
+Future<void> _handlePeriodicCheck(
+  List<SavingGoalModel> goals,
+  List<AccountModel> accounts,
+) async {
   final prefs = await SharedPreferences.getInstance();
   final blockedGoals = prefs.getStringList('blocked_saving_goals') ?? [];
   final newBlockedGoals = <String>[];
@@ -172,7 +190,7 @@ Future<void> _handlePeriodicCheck(List<SavingGoalModel> goals, List<AccountModel
 
     final dailyAmount = goal.getAmountForDay(todayIndex);
     final sourceAccount = accountsMap[goal.sourceAccountId];
-    
+
     if (sourceAccount != null) {
       if (sourceAccount.balance >= dailyAmount) {
         if (blockedGoals.contains(goal.id)) {
@@ -181,9 +199,10 @@ Future<void> _handlePeriodicCheck(List<SavingGoalModel> goals, List<AccountModel
             channelId: 'saving_alerts',
             channelName: 'Savings Alerts',
             channelDescription: 'Alerts for savings goals',
-            id: goal.createdAt.millisecondsSinceEpoch ~/1000,
+            id: goal.createdAt.millisecondsSinceEpoch ~/ 1000,
             title: 'Funds Available!',
-            body: "Your balance in ${sourceAccount.title} is now enough for your '${goal.name}' goal. Mark it as complete!",
+            body:
+                "Your balance in ${sourceAccount.title} is now enough for your '${goal.name}' goal. Mark it as complete!",
             payload: 'saving_goal_${goal.id}',
           );
         }

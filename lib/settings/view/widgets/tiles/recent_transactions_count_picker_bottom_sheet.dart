@@ -88,7 +88,6 @@ class _RecentTransactionsCountPickerBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
       decoration: const BoxDecoration(
@@ -102,7 +101,10 @@ class _RecentTransactionsCountPickerBottomSheetState
         children: [
           const DragHandle(),
           const SizedBox(height: AppSpacing.sm),
-          Text(context.l10n.recentTransactionsCount, style: AppTextStyles.heading3),
+          Text(
+            context.l10n.recentTransactionsCount,
+            style: AppTextStyles.heading3,
+          ),
           const SizedBox(height: AppSpacing.xl),
 
           Padding(

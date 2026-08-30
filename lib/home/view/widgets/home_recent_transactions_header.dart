@@ -37,7 +37,6 @@ class _HomeRecentTransactionsHeaderState
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         Padding(

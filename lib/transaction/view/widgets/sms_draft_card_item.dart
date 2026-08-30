@@ -454,7 +454,13 @@ class _SmsDraftCardItemState extends State<SmsDraftCardItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.draft.extractedMerchant ?? (widget._isTransfer ? 'Transfer Transaction' : widget.draft.transactionType == TransactionType.income ? 'Income Transaction' : 'Expense Transaction'),
+                        widget.draft.extractedMerchant ??
+                            (widget._isTransfer
+                                ? 'Transfer Transaction'
+                                : widget.draft.transactionType ==
+                                      TransactionType.income
+                                ? 'Income Transaction'
+                                : 'Expense Transaction'),
                         style: AppTextStyles.heading3.copyWith(
                           fontWeight: FontWeight.bold,
                         ),

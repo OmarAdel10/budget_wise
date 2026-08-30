@@ -73,9 +73,9 @@ class SavingGoalModel implements FinancialRepresentable {
     final now = DateTime.now();
     final totalDays = targetDate.difference(createdAt).inDays;
     final elapsedDays = now.difference(createdAt).inDays;
-    
+
     if (totalDays <= 0 || elapsedDays <= 0) return false;
-    
+
     final expectedAmount = (elapsedDays / totalDays) * targetAmount;
     return currentAmount < (expectedAmount * 0.8);
   }

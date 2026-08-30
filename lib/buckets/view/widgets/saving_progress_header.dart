@@ -31,7 +31,10 @@ class SavingProgressHeader extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(context.l10n.overallProgress, style: AppTextStyles.bodyMedium),
+                Text(
+                  context.l10n.overallProgress,
+                  style: AppTextStyles.bodyMedium,
+                ),
                 Text(
                   "$percentage%",
                   style: AppTextStyles.heading3.copyWith(

@@ -36,7 +36,9 @@ class LanguageSettingsTile extends StatelessWidget {
                 Text(context.l10n.language, style: AppTextStyles.bodyLarge),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  context.l10n.preferences, // Or we could add selectLanguage key
+                  context
+                      .l10n
+                      .preferences, // Or we could add selectLanguage key
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.textPrimary,
                   ),
@@ -66,7 +68,10 @@ class LanguageSettingsTile extends StatelessWidget {
                     );
                     Navigator.of(context).pop();
                   },
-                  child: Text(context.l10n.english, style: AppTextStyles.bodyMedium),
+                  child: Text(
+                    context.l10n.english,
+                    style: AppTextStyles.bodyMedium,
+                  ),
                 ),
                 const Divider(color: AppColors.borderColor),
                 GestureDetector(
@@ -76,7 +81,10 @@ class LanguageSettingsTile extends StatelessWidget {
                     );
                     Navigator.of(context).pop();
                   },
-                  child: Text(context.l10n.arabic, style: AppTextStyles.bodyMedium),
+                  child: Text(
+                    context.l10n.arabic,
+                    style: AppTextStyles.bodyMedium,
+                  ),
                 ),
                 const Divider(color: AppColors.borderColor),
                 GestureDetector(
@@ -102,7 +110,9 @@ class LanguageSettingsTile extends StatelessWidget {
         trailing: Row(
           children: [
             Text(
-              currentLanguage == 'en' ? context.l10n.english : context.l10n.arabic,
+              currentLanguage == 'en'
+                  ? context.l10n.english
+                  : context.l10n.arabic,
               style: AppTextStyles.bodyMedium,
             ),
             const SizedBox(width: AppSpacing.sm),

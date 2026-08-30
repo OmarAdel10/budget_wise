@@ -52,7 +52,8 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
         end: event.end,
       );
 
-      final fileName = 'BudgetWise_Export.csv'; // Could be dynamic based on range
+      final fileName =
+          'BudgetWise_Export.csv'; // Could be dynamic based on range
 
       final success = await csvService.exportToCsv(
         csvContent: csvContent,
@@ -132,7 +133,9 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
 
           final key = _transactionImportKey(candidate);
           if (existingTransactionKeys.contains(key) ||
-              transactionsToImport.any((t) => _transactionImportKey(t) == key)) {
+              transactionsToImport.any(
+                (t) => _transactionImportKey(t) == key,
+              )) {
             skippedCount++;
             continue;
           }
@@ -166,7 +169,9 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
 
           final key = _subscriptionImportKey(candidate);
           if (existingSubscriptionKeys.contains(key) ||
-              subscriptionsToImport.any((s) => _subscriptionImportKey(s) == key)) {
+              subscriptionsToImport.any(
+                (s) => _subscriptionImportKey(s) == key,
+              )) {
             skippedCount++;
             continue;
           }
@@ -178,8 +183,8 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
             row.title,
             row.notes,
           );
-          final dayIndex = csvService.extractSavingDayIndex(row.title) ??
-              row.date.day;
+          final dayIndex =
+              csvService.extractSavingDayIndex(row.title) ?? row.date.day;
           final groupKey = [
             goalName.toLowerCase(),
             row.currency.toLowerCase(),
@@ -204,20 +209,23 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
         }
       }
 
-      final savingsToImport = savingsGroups.values.map((group) {
-        return group.toModel(
-          id: const Uuid().v4(),
-          userId: userId,
-          now: now,
-        );
-      }).where((goal) {
-        final key = _savingsImportKey(goal);
-        if (existingSavingsKeys.contains(key)) {
-          skippedCount++;
-          return false;
-        }
-        return true;
-      }).toList();
+      final savingsToImport = savingsGroups.values
+          .map((group) {
+            return group.toModel(
+              id: const Uuid().v4(),
+              userId: userId,
+              now: now,
+            );
+          })
+          .where((goal) {
+            final key = _savingsImportKey(goal);
+            if (existingSavingsKeys.contains(key)) {
+              skippedCount++;
+              return false;
+            }
+            return true;
+          })
+          .toList();
 
       final importedCount =
           transactionsToImport.length +
@@ -258,10 +266,7 @@ class CsvBloc extends Bloc<CsvEvent, CsvState> {
       if (savingsToImport.isNotEmpty) {
         final completer = Completer<void>();
         savingsBloc.add(
-          BucketsEventBulkCreate(
-            goals: savingsToImport,
-            completer: completer,
-          ),
+          BucketsEventBulkCreate(goals: savingsToImport, completer: completer),
         );
         await completer.future;
       }
@@ -354,9 +359,7 @@ class _SavingsImportGroup {
     );
     final targetDate = _contributionDates.values.isEmpty
         ? now
-        : _contributionDates.values.reduce(
-            (a, b) => a.isAfter(b) ? a : b,
-          );
+        : _contributionDates.values.reduce((a, b) => a.isAfter(b) ? a : b);
     final targetDays = _customAmounts.keys.isEmpty
         ? 0
         : _customAmounts.keys.reduce((a, b) => a > b ? a : b);

@@ -74,15 +74,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
           const SizedBox(height: AppSpacing.sm),
         ],
         Container(
-          decoration: widget.hasOriginalInputDecoration ? null : BoxDecoration(
-            color: widget.bgColor ?? AppColors.secondaryBackground,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(
-              color:AppColors.borderColor,
-              width: 0.2,
-            ),
-            boxShadow: [AppBoxShadow()],
-          ),
+          decoration: widget.hasOriginalInputDecoration
+              ? null
+              : BoxDecoration(
+                  color: widget.bgColor ?? AppColors.secondaryBackground,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  border: Border.all(color: AppColors.borderColor, width: 0.2),
+                  boxShadow: [AppBoxShadow()],
+                ),
           child: TextFormField(
             enabled: widget.enabled,
             controller: widget.controller,
@@ -96,10 +95,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style: AppTextStyles.bodyLarge,
             maxLines: widget.maxLines,
             minLines: widget.minLines,
-            onTapOutside:
-                widget.shouldUnfocusOnTapOutside
-                    ? (event) => FocusScope.of(context).unfocus()
-                    : null,
+            onTapOutside: widget.shouldUnfocusOnTapOutside
+                ? (event) => FocusScope.of(context).unfocus()
+                : null,
             focusNode: widget.focusNode,
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(
@@ -107,7 +105,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 vertical: AppSpacing.md,
               ),
               filled: widget.hasOriginalInputDecoration,
-              fillColor: widget.hasOriginalInputDecoration ? null : Colors.transparent,
+              fillColor: widget.hasOriginalInputDecoration
+                  ? null
+                  : Colors.transparent,
               border: InputBorder.none,
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
@@ -118,20 +118,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 color: AppColors.textSecondary,
               ),
               prefixIcon: widget.prefixIcon,
-              suffixIcon:
-                  widget.isPassword
-                      ? IconButton(
-                        icon: Icon(
-                          _obscureText ? Icons.visibility_off : Icons.visibility,
-                          color: AppColors.textSecondary,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                      )
-                      : widget.suffixIcon,
+              suffixIcon: widget.isPassword
+                  ? IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: AppColors.textSecondary,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    )
+                  : widget.suffixIcon,
             ),
           ),
         ),

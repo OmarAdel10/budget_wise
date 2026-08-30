@@ -14,8 +14,11 @@ class CurrencyPrefix extends StatelessWidget {
   final bool isSettingsTile;
   final Color selectionColor;
 
-  const CurrencyPrefix({super.key, required this.selectedCurrencyNotifier, this.selectionColor = AppColors.primaryAccent, })
-    : isSettingsTile = false;
+  const CurrencyPrefix({
+    super.key,
+    required this.selectedCurrencyNotifier,
+    this.selectionColor = AppColors.primaryAccent,
+  }) : isSettingsTile = false;
 
   const CurrencyPrefix.settings({
     super.key,

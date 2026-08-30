@@ -74,9 +74,7 @@ class AddAccountPart2 extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           if (authRepo.currentUser == null) ...[
-            AccountCardHolderField(
-              cardHolderController: cardHolderController,
-            ),
+            AccountCardHolderField(cardHolderController: cardHolderController),
             const SizedBox(height: AppSpacing.md),
           ],
           AccountCardNumberField(

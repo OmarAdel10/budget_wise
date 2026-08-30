@@ -98,7 +98,6 @@ class _PasscodeSetupScreenState extends State<PasscodeSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(

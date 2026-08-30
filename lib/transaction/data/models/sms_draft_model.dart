@@ -79,7 +79,8 @@ class SmsDraftModel extends Equatable {
           transferSourceLastFour ?? this.transferSourceLastFour,
       transferDestinationLastFour:
           transferDestinationLastFour ?? this.transferDestinationLastFour,
-      transferFromAccountId: transferFromAccountId ?? this.transferFromAccountId,
+      transferFromAccountId:
+          transferFromAccountId ?? this.transferFromAccountId,
       transferToAccountId: transferToAccountId ?? this.transferToAccountId,
       transferDirection: transferDirection ?? this.transferDirection,
       matchedAccountId: matchedAccountId ?? this.matchedAccountId,

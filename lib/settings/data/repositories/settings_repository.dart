@@ -6,8 +6,10 @@ import 'dart:developer';
 class SettingsRepository {
   static const String _allNotificationsKey = 'all_notifications_enabled';
   static const String _smsNotificationsKey = 'sms_notifications_enabled';
-  static const String _subscriptionNotificationsKey = 'subscription_notifications_enabled';
-  static const String _savingsNotificationsKey = 'savings_notifications_enabled';
+  static const String _subscriptionNotificationsKey =
+      'subscription_notifications_enabled';
+  static const String _savingsNotificationsKey =
+      'savings_notifications_enabled';
   static const String _accountsSnapshotKey = 'bg_accounts_snapshot';
   static const String _savingsSnapshotKey = 'bg_savings_snapshot';
 
@@ -16,8 +18,14 @@ class SettingsRepository {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_allNotificationsKey, model.allNotificationsEnabled);
       await prefs.setBool(_smsNotificationsKey, model.smsNotificationsEnabled);
-      await prefs.setBool(_subscriptionNotificationsKey, model.subscriptionNotificationsEnabled);
-      await prefs.setBool(_savingsNotificationsKey, model.savingsNotificationsEnabled);
+      await prefs.setBool(
+        _subscriptionNotificationsKey,
+        model.subscriptionNotificationsEnabled,
+      );
+      await prefs.setBool(
+        _savingsNotificationsKey,
+        model.savingsNotificationsEnabled,
+      );
     } catch (e) {
       log('SettingsRepository: Failed to save notification settings: $e');
     }

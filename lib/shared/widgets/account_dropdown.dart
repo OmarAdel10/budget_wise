@@ -27,11 +27,7 @@ class AccountDropdown extends StatelessWidget {
     return BlocBuilder<AccountBloc, AccountState>(
       builder: (context, state) {
         if (selectedCurrency == null) {
-          return _buildDropdown(
-            context,
-            state.accountsList,
-            null,
-          );
+          return _buildDropdown(context, state.accountsList, null);
         }
 
         return ValueListenableBuilder<String?>(

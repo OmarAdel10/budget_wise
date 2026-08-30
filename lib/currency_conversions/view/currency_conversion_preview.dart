@@ -67,7 +67,6 @@ class _CurrencyConversionPreviewState extends State<CurrencyConversionPreview> {
   }
 
   void _showOverrideBottomSheet() {
-
     NumericEditorBottomSheet.show(
       context,
       title: context.l10n.manualOverride,

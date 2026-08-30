@@ -34,7 +34,9 @@ class SavingGoalsListScreen extends StatelessWidget {
               return Center(
                 child: Text(
                   "No goals yet",
-                  style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               );
             }
@@ -42,7 +44,8 @@ class SavingGoalsListScreen extends StatelessWidget {
             return ListView.separated(
               padding: const EdgeInsets.all(AppSpacing.lg),
               itemCount: goals.length,
-              separatorBuilder: (ctx, i) => const SizedBox(height: AppSpacing.md),
+              separatorBuilder: (ctx, i) =>
+                  const SizedBox(height: AppSpacing.md),
               itemBuilder: (context, index) {
                 return _SavingGoalItem(goal: goals[index]);
               },
@@ -86,7 +89,10 @@ class _SavingGoalItem extends StatelessWidget {
                     color: Color(goal.colorValue).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Icon(PhosphorIconsBold.piggyBank, color: Color(goal.colorValue)),
+                  child: Icon(
+                    PhosphorIconsBold.piggyBank,
+                    color: Color(goal.colorValue),
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
@@ -95,11 +101,15 @@ class _SavingGoalItem extends StatelessWidget {
                     children: [
                       Text(
                         goal.name,
-                        style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         "${goal.currentAmount.toStringAsFixed(0)} / ${goal.targetAmount.toStringAsFixed(0)} ${goal.currency}",
-                        style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -119,7 +129,9 @@ class _SavingGoalItem extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 backgroundColor: AppColors.primaryBackground,
-                valueColor: AlwaysStoppedAnimation<Color>(Color(goal.colorValue)),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color(goal.colorValue),
+                ),
                 minHeight: 8,
               ),
             ),

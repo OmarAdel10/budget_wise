@@ -46,13 +46,17 @@ class CurrencySelectionScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                   child: Column(
                     children: [
-                      ...AccountConstants.supportedCurrencies.entries.map((entry) {
+                      ...AccountConstants.supportedCurrencies.entries.map((
+                        entry,
+                      ) {
                         final flag = entry.key;
                         final currencyMap = entry.value;
                         final code = currencyMap.keys.first;
                         final name = currencyMap.values.first;
                         final isSelected = code == selectedCurrency;
-                        final isLastItem = entry.key == AccountConstants.supportedCurrencies.keys.last;
+                        final isLastItem =
+                            entry.key ==
+                            AccountConstants.supportedCurrencies.keys.last;
 
                         return Column(
                           children: [
@@ -121,15 +125,14 @@ class _CurrencyItem extends StatelessWidget {
                   ? AppColors.primaryAccent.withValues(alpha: 0.1)
                   : AppColors.cardBackground,
               border: Border.all(
-                color: isSelected ? AppColors.primaryAccent : AppColors.borderColor,
+                color: isSelected
+                    ? AppColors.primaryAccent
+                    : AppColors.borderColor,
                 width: 0.5,
               ),
               shape: BoxShape.circle,
             ),
-            child: Text(
-              flag,
-              style: const TextStyle(fontSize: 20),
-            ),
+            child: Text(flag, style: const TextStyle(fontSize: 20)),
           ),
           const SizedBox(width: AppSpacing.lg),
           Expanded(
@@ -139,8 +142,12 @@ class _CurrencyItem extends StatelessWidget {
                 Text(
                   name,
                   style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: isSelected ? AppColors.primaryAccent : AppColors.textPrimary,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: isSelected
+                        ? AppColors.primaryAccent
+                        : AppColors.textPrimary,
                   ),
                 ),
                 Text(

@@ -27,7 +27,9 @@ class SavingGoalInfoSection extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
-                  isByAmount ? context.l10n.infoEnterAmount : context.l10n.infoEnterDays,
+                  isByAmount
+                      ? context.l10n.infoEnterAmount
+                      : context.l10n.infoEnterDays,
                   style: AppTextStyles.bodySmall,
                 ),
               ),

@@ -149,7 +149,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _finishOnboarding() {
-
     // Generate IDs
     final accountId = const Uuid().v4();
 
@@ -248,7 +247,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.primaryBackground,
@@ -352,7 +350,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const SizedBox(height: AppSpacing.xl),
                     // Button Logic
                     if (_currentPage == 0)
-                      CustomButton(text: context.l10n.next, onPressed: _nextPage)
+                      CustomButton(
+                        text: context.l10n.next,
+                        onPressed: _nextPage,
+                      )
                     else
                       Column(
                         children: [
@@ -394,7 +395,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const SizedBox(height: AppSpacing.xl),
                     // Button Logic
                     if (_currentPage == 0)
-                      CustomButton(text: context.l10n.next, onPressed: _nextPage)
+                      CustomButton(
+                        text: context.l10n.next,
+                        onPressed: _nextPage,
+                      )
                     else
                       Row(
                         children: [

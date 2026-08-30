@@ -52,7 +52,9 @@ class BucketsHubScreen extends StatelessWidget {
                       _UnbudgetedAlertCard(
                         hasUnbudgeted: unbudgetedCount > 0,
                         onReview: () {
-                          Navigator.of(context).pushNamed(UnbudgetedCategoriesScreen.routeName);
+                          Navigator.of(
+                            context,
+                          ).pushNamed(UnbudgetedCategoriesScreen.routeName);
                         },
                       ),
                       const SizedBox(height: AppSpacing.lg),
@@ -61,7 +63,9 @@ class BucketsHubScreen extends StatelessWidget {
                         subtitle: "Manage your category spending",
                         icon: PhosphorIconsBold.wallet,
                         onTap: () {
-                          Navigator.of(context).pushNamed(BudgetsListScreen.routeName);
+                          Navigator.of(
+                            context,
+                          ).pushNamed(BudgetsListScreen.routeName);
                         },
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -70,7 +74,9 @@ class BucketsHubScreen extends StatelessWidget {
                         subtitle: "Track your progress",
                         icon: PhosphorIconsBold.piggyBank,
                         onTap: () {
-                          Navigator.of(context).pushNamed(SavingGoalsListScreen.routeName);
+                          Navigator.of(
+                            context,
+                          ).pushNamed(SavingGoalsListScreen.routeName);
                         },
                       ),
                     ],
@@ -126,9 +132,17 @@ class _Metric extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(value, style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          value,
+          style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: AppSpacing.xs),
-        Text(label, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
+        Text(
+          label,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
       ],
     );
   }
@@ -138,7 +152,10 @@ class _UnbudgetedAlertCard extends StatelessWidget {
   final bool hasUnbudgeted;
   final VoidCallback onReview;
 
-  const _UnbudgetedAlertCard({required this.hasUnbudgeted, required this.onReview});
+  const _UnbudgetedAlertCard({
+    required this.hasUnbudgeted,
+    required this.onReview,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -149,16 +166,23 @@ class _UnbudgetedAlertCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.cardBackground.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.primaryAccent.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: AppColors.primaryAccent.withValues(alpha: 0.3),
+        ),
       ),
       child: Row(
         children: [
-          const Icon(PhosphorIconsBold.warningCircle, color: AppColors.primaryAccent),
+          const Icon(
+            PhosphorIconsBold.warningCircle,
+            color: AppColors.primaryAccent,
+          ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               "You have unbudgeted spending. Review categories to set limits.",
-              style: AppTextStyles.bodySmall.copyWith(color: AppColors.textPrimary),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
           ElevatedButton(
@@ -168,7 +192,7 @@ class _UnbudgetedAlertCard extends StatelessWidget {
               foregroundColor: Colors.black,
             ),
             child: const Text("Review"),
-          )
+          ),
         ],
       ),
     );
@@ -213,12 +237,25 @@ class _NavigationCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.bold)),
-                  Text(subtitle, style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
+                  Text(
+                    title,
+                    style: AppTextStyles.heading3.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),
-            const Icon(PhosphorIconsBold.caretRight, color: AppColors.textSecondary),
+            const Icon(
+              PhosphorIconsBold.caretRight,
+              color: AppColors.textSecondary,
+            ),
           ],
         ),
       ),

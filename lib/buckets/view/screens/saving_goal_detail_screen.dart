@@ -92,7 +92,9 @@ class _SavingGoalDetailScreenState extends State<SavingGoalDetailScreen> {
               AppToast.show(
                 context,
                 type: AppToastType.success,
-                title: context.l10n.savingsGoalCompleted(state.completedGoalName ?? ''),
+                title: context.l10n.savingsGoalCompleted(
+                  state.completedGoalName ?? '',
+                ),
               );
             }
           },
@@ -119,10 +121,7 @@ class _SavingGoalDetailScreenState extends State<SavingGoalDetailScreen> {
               },
             ),
             IconButton(
-              icon: Icon(
-                PhosphorIconsRegular.trash,
-                color: AppColors.danger,
-              ),
+              icon: Icon(PhosphorIconsRegular.trash, color: AppColors.danger),
               onPressed: () => _showDeleteDialog(context, goal.id),
             ),
           ],
@@ -136,10 +135,15 @@ class _SavingGoalDetailScreenState extends State<SavingGoalDetailScreen> {
                 sliver: SliverToBoxAdapter(
                   child: SavingProgressHeader(
                     goal: goal,
-                    progress: (goal.currentAmount / goal.targetAmount)
-                        .clamp(0.0, 1.0),
+                    progress: (goal.currentAmount / goal.targetAmount).clamp(
+                      0.0,
+                      1.0,
+                    ),
                     percentage:
-                        ((goal.currentAmount / goal.targetAmount).clamp(0.0, 1.0) *
+                        ((goal.currentAmount / goal.targetAmount).clamp(
+                                  0.0,
+                                  1.0,
+                                ) *
                                 100)
                             .toInt(),
                   ),

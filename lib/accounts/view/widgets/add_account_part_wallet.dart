@@ -40,9 +40,7 @@ class AddAccountPartWallet extends StatelessWidget {
             onProviderSelected: onProviderSelected,
           ),
           const SizedBox(height: AppSpacing.md),
-          AccountPhoneNumberField(
-            phoneNumberController: phoneNumberController,
-          ),
+          AccountPhoneNumberField(phoneNumberController: phoneNumberController),
           const SizedBox(height: AppSpacing.xxl),
         ],
       ),

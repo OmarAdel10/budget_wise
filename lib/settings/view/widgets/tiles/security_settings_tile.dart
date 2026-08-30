@@ -51,7 +51,9 @@ class SecuritySettingsTile extends StatelessWidget {
               children: [
                 SettingsTile(
                   icon: PhosphorIconsRegular.key,
-                  title: isPasscodeSet ? context.l10n.changePasscode : context.l10n.setPasscode,
+                  title: isPasscodeSet
+                      ? context.l10n.changePasscode
+                      : context.l10n.setPasscode,
                   hasPadding: true,
                   onTap: () {
                     Navigator.of(

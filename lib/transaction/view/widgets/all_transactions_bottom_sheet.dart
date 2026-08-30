@@ -29,8 +29,7 @@ class AllTransactionsBottomSheet extends StatefulWidget {
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
-      builder: (context) =>
-          AllTransactionsBottomSheet(initialTab: initialTab),
+      builder: (context) => AllTransactionsBottomSheet(initialTab: initialTab),
     );
   }
 

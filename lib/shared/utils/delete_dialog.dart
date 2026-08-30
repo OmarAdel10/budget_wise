@@ -7,11 +7,7 @@ import 'package:flutter/material.dart';
 class DeleteDialog extends StatelessWidget {
   final VoidCallback? onDelete;
   final String deletingType;
-  const DeleteDialog({
-    super.key,
-    this.onDelete,
-    required this.deletingType,
-  });
+  const DeleteDialog({super.key, this.onDelete, required this.deletingType});
 
   @override
   Widget build(BuildContext context) {

@@ -19,17 +19,18 @@ class SavingGoalRepository {
     required this.transactionRepo,
   });
 
-  CollectionReference<SavingGoalModel> getSavingGoalsCollection() => FirebaseFirestore
-      .instance
-      .collection('savings')
-      .withConverter<SavingGoalModel>(
-        fromFirestore: (snapshot, options) =>
-            SavingGoalModel.fromMap(snapshot.data()!),
-        toFirestore: (savingGoalModel, options) => savingGoalModel.toMap(),
-      );
+  CollectionReference<SavingGoalModel> getSavingGoalsCollection() =>
+      FirebaseFirestore.instance
+          .collection('savings')
+          .withConverter<SavingGoalModel>(
+            fromFirestore: (snapshot, options) =>
+                SavingGoalModel.fromMap(snapshot.data()!),
+            toFirestore: (savingGoalModel, options) => savingGoalModel.toMap(),
+          );
 
   Future<void> addSavingGoal(SavingGoalModel model) async {
-    final CollectionReference<SavingGoalModel> collection = getSavingGoalsCollection();
+    final CollectionReference<SavingGoalModel> collection =
+        getSavingGoalsCollection();
     final DocumentReference<SavingGoalModel> doc = collection.doc(model.id);
     await doc.set(model);
   }
@@ -71,7 +72,8 @@ class SavingGoalRepository {
   }
 
   Future<List<SavingGoalModel>> fetchAllSavingGoals() async {
-    final CollectionReference<SavingGoalModel> collection = getSavingGoalsCollection();
+    final CollectionReference<SavingGoalModel> collection =
+        getSavingGoalsCollection();
     final user = authRepo.currentUser;
 
     if (user != null) {
@@ -84,12 +86,14 @@ class SavingGoalRepository {
   }
 
   Future<void> updateSavingGoal(SavingGoalModel model) async {
-    final CollectionReference<SavingGoalModel> collection = getSavingGoalsCollection();
+    final CollectionReference<SavingGoalModel> collection =
+        getSavingGoalsCollection();
     await collection.doc(model.id).update(model.toMap());
   }
 
   Future<void> deleteSavingGoal(String goalId) async {
-    final CollectionReference<SavingGoalModel> collection = getSavingGoalsCollection();
+    final CollectionReference<SavingGoalModel> collection =
+        getSavingGoalsCollection();
     await collection.doc(goalId).delete();
   }
 
@@ -170,7 +174,8 @@ class SavingGoalRepository {
     Map<int, double> customAmounts,
     DateTime updatedAt,
   ) async {
-    final CollectionReference<SavingGoalModel> collection = getSavingGoalsCollection();
+    final CollectionReference<SavingGoalModel> collection =
+        getSavingGoalsCollection();
     await collection.doc(goalId).update({
       'currentAmount': newAmount,
       'completedDays': completedDays,

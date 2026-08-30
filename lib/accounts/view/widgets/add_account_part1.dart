@@ -37,9 +37,7 @@ class AddAccountPart1 extends StatelessWidget {
           AccountIdentitySection(),
 
           //* Account Name
-          AccountNameInput(
-            accountNameController: accountNameController,
-          ),
+          AccountNameInput(accountNameController: accountNameController),
 
           const SizedBox(height: AppSpacing.lg),
           AccountTypeSelection(

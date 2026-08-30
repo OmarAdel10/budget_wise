@@ -77,9 +77,21 @@ class AddAccountNavigationButtons extends StatelessWidget {
                       children: [
                         Text(
                           showCardEntryValue
-                              ? (context.l10n.addAccountButtonSaveCard.contains('Card') || context.l10n.addAccountButtonSaveCard.contains('بطاقة')
-                                  ? (onSaveCard.toString().contains('_onSaveWallet') ? context.l10n.addAccountButtonSaveWallet : context.l10n.addAccountButtonSaveCard)
-                                  : context.l10n.addAccountButtonSaveCard)
+                              ? (context.l10n.addAccountButtonSaveCard.contains(
+                                          'Card',
+                                        ) ||
+                                        context.l10n.addAccountButtonSaveCard
+                                            .contains('بطاقة')
+                                    ? (onSaveCard.toString().contains(
+                                            '_onSaveWallet',
+                                          )
+                                          ? context
+                                                .l10n
+                                                .addAccountButtonSaveWallet
+                                          : context
+                                                .l10n
+                                                .addAccountButtonSaveCard)
+                                    : context.l10n.addAccountButtonSaveCard)
                               : isPart2EnabledValue
                               ? (context.l10n.continueWord)
                               : (context.l10n.addAccountButtonAddAccount),

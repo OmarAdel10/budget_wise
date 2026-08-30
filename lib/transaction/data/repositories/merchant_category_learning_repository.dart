@@ -19,15 +19,11 @@ class MerchantCategoryLearningRepository {
 
   List<MerchantCategoryMapping> loadLocalMappings() {
     final rawMappings = prefs.getStringList(_prefsKey) ?? [];
-    return rawMappings
-        .map(MerchantCategoryMapping.fromJson)
-        .toList()
+    return rawMappings.map(MerchantCategoryMapping.fromJson).toList()
       ..sort((a, b) => b.useCount.compareTo(a.useCount));
   }
 
-  Future<void> saveLocalMappings(
-    List<MerchantCategoryMapping> mappings,
-  ) async {
+  Future<void> saveLocalMappings(List<MerchantCategoryMapping> mappings) async {
     await prefs.setStringList(
       _prefsKey,
       mappings.map((mapping) => mapping.toJson()).toList(),
@@ -39,11 +35,12 @@ class MerchantCategoryLearningRepository {
     required TransactionType transactionType,
     List<MerchantCategoryMapping>? mappings,
   }) {
-    final candidates = (mappings ?? loadLocalMappings())
-        .where((mapping) => mapping.transactionType == transactionType)
-        .where((mapping) => mapping.matchesMerchant(merchantName))
-        .toList()
-      ..sort((a, b) => b.useCount.compareTo(a.useCount));
+    final candidates =
+        (mappings ?? loadLocalMappings())
+            .where((mapping) => mapping.transactionType == transactionType)
+            .where((mapping) => mapping.matchesMerchant(merchantName))
+            .toList()
+          ..sort((a, b) => b.useCount.compareTo(a.useCount));
 
     return candidates.firstOrNull;
   }

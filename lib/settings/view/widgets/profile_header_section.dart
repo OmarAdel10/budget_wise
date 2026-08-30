@@ -20,7 +20,6 @@ class ProfileHeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -93,7 +92,10 @@ class ProfileHeaderSection extends StatelessWidget {
                     size: 20,
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(context.l10n.editProfile, style: AppTextStyles.bodyLarge),
+                  Text(
+                    context.l10n.editProfile,
+                    style: AppTextStyles.bodyLarge,
+                  ),
                 ],
               ),
             ),

@@ -77,7 +77,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     // Extract args without causing full-screen rebuilds on layout changes
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;

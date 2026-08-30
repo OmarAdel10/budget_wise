@@ -165,7 +165,7 @@ class _IdleSecondaryButton extends StatelessWidget {
           color: AppColors.cardBackground.withValues(alpha: 0.2),
           border: Border.all(color: AppColors.borderColor, width: 1.5),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          boxShadow: [AppBoxShadow()]
+          boxShadow: [AppBoxShadow()],
         ),
         child: Row(
           children: [

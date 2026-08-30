@@ -64,7 +64,6 @@ class _HomeCategoriesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       sliver: SliverToBoxAdapter(
@@ -114,7 +113,7 @@ class _HomeCategoriesList extends StatelessWidget {
         delegate: SliverChildBuilderDelegate((context, index) {
           final item = categoryData[index];
           final category = item.source as CategoryModel;
-return;   //! Implement If Needed
+          return; //! Implement If Needed
           // return CategoryListItem(
           //   key: ValueKey(category.id),
           //   name: category.categoryTitle,

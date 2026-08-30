@@ -30,7 +30,6 @@ class BankMarginTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SettingsTile(
       icon: PhosphorIconsRegular.percent,
       title: context.l10n.bankMargin,

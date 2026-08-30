@@ -93,10 +93,9 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
 
         List<AccountModel> updatedList;
         if (newAccount.isDefault) {
-          updatedList =
-              state.accountsList
-                  .map((a) => a.copyWith(isDefault: false))
-                  .toList();
+          updatedList = state.accountsList
+              .map((a) => a.copyWith(isDefault: false))
+              .toList();
           updatedList.add(newAccount);
         } else {
           updatedList = [...state.accountsList, newAccount];
@@ -399,7 +398,8 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
               channelId: 'low_balance_alerts',
               channelName: 'Low Balance Alerts',
               channelDescription: 'Alerts when account balance is low',
-              id: NotificationRepository.accountsRangeStart +
+              id:
+                  NotificationRepository.accountsRangeStart +
                   updatedAccount.id.hashCode.abs() % 1000,
               title: 'Low Balance Warning',
               body:
@@ -536,9 +536,11 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
           final newDefault = updatedList.firstWhere(
             (a) => a.id == event.accountId,
           );
-          accountRepo.addAccount(newDefault).then(
-            (_) => add(AccountEventMarkSynced(accountId: newDefault.id)),
-          );
+          accountRepo
+              .addAccount(newDefault)
+              .then(
+                (_) => add(AccountEventMarkSynced(accountId: newDefault.id)),
+              );
           // Ideally, we'd also sync the one that was previously default but is no longer.
         }
       } catch (e) {
@@ -548,8 +550,9 @@ class AccountBloc extends HydratedBloc<AccountEvent, AccountState> {
   }
 
   void _syncToSharedPreferences(List<AccountModel> accounts) {
-    final List<Map<String, dynamic>> mapList =
-        accounts.map((acc) => acc.toMap()).toList();
+    final List<Map<String, dynamic>> mapList = accounts
+        .map((acc) => acc.toMap())
+        .toList();
     settingsBloc.add(SettingsEventSyncAccountsSnapshot(mapList));
   }
 

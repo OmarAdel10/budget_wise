@@ -19,7 +19,6 @@ class ResetAllDataTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     void resetAll() {
       context.read<TransactionBloc>().clear();
       context.read<CategoryBloc>().clear();
@@ -76,7 +75,10 @@ class ResetAllDataTile extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
-                      child: Text(context.l10n.cancel, style: AppTextStyles.bodyMedium),
+                      child: Text(
+                        context.l10n.cancel,
+                        style: AppTextStyles.bodyMedium,
+                      ),
                     ),
                     const SizedBox(
                       height: 40,

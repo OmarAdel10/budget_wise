@@ -31,7 +31,9 @@ class NotificationRepository {
 
   @pragma('vm:entry-point')
   static void onReciveTap(NotificationResponse notificationResponse) {
-    log('Notification Tapped - ID: ${notificationResponse.id}, Payload: ${notificationResponse.payload}');
+    log(
+      'Notification Tapped - ID: ${notificationResponse.id}, Payload: ${notificationResponse.payload}',
+    );
     _payloadController.add(notificationResponse.payload);
   }
 
@@ -51,10 +53,10 @@ class NotificationRepository {
           AndroidInitializationSettings('@drawable/app_icon_v2_transparent');
       final DarwinInitializationSettings darwinInit =
           DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-      );
+            requestAlertPermission: true,
+            requestBadgePermission: true,
+            requestSoundPermission: true,
+          );
 
       final InitializationSettings initSettings = InitializationSettings(
         android: androidInit,
@@ -75,15 +77,19 @@ class NotificationRepository {
   }
 
   static Future<bool> isPermissionGranted() async {
-    final androidGranted = await notifications
+    final androidGranted =
+        await notifications
             .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
+              AndroidFlutterLocalNotificationsPlugin
+            >()
             ?.areNotificationsEnabled() ??
         false;
 
-    final iosGranted = await notifications
+    final iosGranted =
+        await notifications
             .resolvePlatformSpecificImplementation<
-                IOSFlutterLocalNotificationsPlugin>()
+              IOSFlutterLocalNotificationsPlugin
+            >()
             ?.requestPermissions(alert: true, badge: true, sound: true) ??
         false;
 
@@ -93,17 +99,20 @@ class NotificationRepository {
   static Future<void> requestPermissions() async {
     await notifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
 
     await notifications
         .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
+          IOSFlutterLocalNotificationsPlugin
+        >()
         ?.requestPermissions(alert: true, badge: true, sound: true);
 
     await notifications
         .resolvePlatformSpecificImplementation<
-            MacOSFlutterLocalNotificationsPlugin>()
+          MacOSFlutterLocalNotificationsPlugin
+        >()
         ?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
@@ -121,14 +130,14 @@ class NotificationRepository {
 
       final AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
-        channelId,
-        channelName,
-        channelDescription: channelDescription,
-        channelShowBadge: true,
-        importance: Importance.max,
-        priority: Priority.max,
-        ticker: 'ticker',
-      );
+            channelId,
+            channelName,
+            channelDescription: channelDescription,
+            channelShowBadge: true,
+            importance: Importance.max,
+            priority: Priority.max,
+            ticker: 'ticker',
+          );
 
       const DarwinNotificationDetails darwinDetails = DarwinNotificationDetails(
         presentAlert: true,
@@ -167,14 +176,14 @@ class NotificationRepository {
 
       final AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
-        channelId,
-        channelName,
-        channelDescription: channelDescription,
-        channelShowBadge: true,
-        importance: Importance.max,
-        priority: Priority.max,
-        ticker: 'ticker',
-      );
+            channelId,
+            channelName,
+            channelDescription: channelDescription,
+            channelShowBadge: true,
+            importance: Importance.max,
+            priority: Priority.max,
+            ticker: 'ticker',
+          );
 
       const DarwinNotificationDetails darwinDetails = DarwinNotificationDetails(
         presentAlert: true,
@@ -220,13 +229,13 @@ class NotificationRepository {
 
       final AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
-        channelId,
-        channelName,
-        channelDescription: channelDescription,
-        channelShowBadge: true,
-        importance: Importance.max,
-        priority: Priority.max,
-      );
+            channelId,
+            channelName,
+            channelDescription: channelDescription,
+            channelShowBadge: true,
+            importance: Importance.max,
+            priority: Priority.max,
+          );
 
       const DarwinNotificationDetails darwinDetails = DarwinNotificationDetails(
         presentAlert: true,
@@ -292,4 +301,3 @@ class NotificationRepository {
     _payloadController.close();
   }
 }
-

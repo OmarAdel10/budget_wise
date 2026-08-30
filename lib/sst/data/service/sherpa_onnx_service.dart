@@ -34,7 +34,9 @@ class SherpaOnnxService {
 
     final stream = _recognizer!.createStream();
     stream.acceptWaveform(
-        samples: Float32List.fromList(samples), sampleRate: 16000);
+      samples: Float32List.fromList(samples),
+      sampleRate: 16000,
+    );
 
     _recognizer!.decode(stream);
 

@@ -23,10 +23,7 @@ class SavingGoalColorPicker extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          context.l10n.selectColor,
-          style: AppTextStyles.heading3,
-        ),
+        Text(context.l10n.selectColor, style: AppTextStyles.heading3),
         const SizedBox(height: AppSpacing.md),
         ValueListenableBuilder<Color>(
           valueListenable: selectedColorNotifier,

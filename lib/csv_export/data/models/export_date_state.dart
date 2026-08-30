@@ -9,11 +9,7 @@ class ExportDateState {
     this.isRange = false,
   });
 
-  ExportDateState copyWith({
-    DateTime? start,
-    DateTime? end,
-    bool? isRange,
-  }) {
+  ExportDateState copyWith({DateTime? start, DateTime? end, bool? isRange}) {
     return ExportDateState(
       start: start ?? this.start,
       end: end ?? this.end,

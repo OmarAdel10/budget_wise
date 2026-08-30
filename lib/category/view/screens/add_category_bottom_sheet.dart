@@ -44,7 +44,7 @@ class _AddCategoryBottomSheetState extends State<AddCategoryBottomSheet> {
   @override
   void initState() {
     super.initState();
-    if(_nameFocusNode.canRequestFocus) {
+    if (_nameFocusNode.canRequestFocus) {
       _nameFocusNode.requestFocus();
     }
     if (_isEditMode) {

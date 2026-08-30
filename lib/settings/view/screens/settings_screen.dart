@@ -156,7 +156,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // App Settings Section
-                    Text(context.l10n.appSettings, style: AppTextStyles.heading3),
+                    Text(
+                      context.l10n.appSettings,
+                      style: AppTextStyles.heading3,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),

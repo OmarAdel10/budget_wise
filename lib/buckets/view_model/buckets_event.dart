@@ -84,10 +84,7 @@ class BucketsEventBulkCreate extends BucketsEvent {
   final List<SavingGoalModel> goals;
   final Completer<void>? completer;
 
-  const BucketsEventBulkCreate({
-    required this.goals,
-    this.completer,
-  });
+  const BucketsEventBulkCreate({required this.goals, this.completer});
 
   @override
   List<Object?> get props => [goals];

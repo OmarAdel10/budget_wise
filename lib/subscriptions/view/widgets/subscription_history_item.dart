@@ -27,9 +27,8 @@ class SubscriptionHistoryItem extends StatelessWidget {
         isScrollControlled: true,
         useSafeArea: true,
         backgroundColor: Colors.transparent,
-        builder: (context) => AddTransactionBottomSheet(
-          transactionToEdit: transaction,
-        ),
+        builder: (context) =>
+            AddTransactionBottomSheet(transactionToEdit: transaction),
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.sm),

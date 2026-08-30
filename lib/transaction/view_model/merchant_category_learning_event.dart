@@ -40,9 +40,7 @@ class MerchantCategoryLearningEventMappingDeleted
     extends MerchantCategoryLearningEvent {
   final String id;
 
-  const MerchantCategoryLearningEventMappingDeleted({
-    required this.id,
-  });
+  const MerchantCategoryLearningEventMappingDeleted({required this.id});
 
   @override
   List<Object?> get props => [id];

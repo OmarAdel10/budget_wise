@@ -24,7 +24,11 @@ class BucketsStateSuccess extends BucketsState {
   });
 
   @override
-  List<Object?> get props => [savingsList, showCompletionToast, completedGoalName];
+  List<Object?> get props => [
+    savingsList,
+    showCompletionToast,
+    completedGoalName,
+  ];
 }
 
 class BucketsStateLoading extends BucketsState {

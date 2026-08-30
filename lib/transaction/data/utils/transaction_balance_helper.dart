@@ -33,7 +33,8 @@ void applyTransactionBalanceDelta({
     if (transaction.accountId.isNotEmpty) {
       updateBalance(transaction.accountId, sign * -amount);
     }
-    if (transaction.toAccountId != null && transaction.toAccountId!.isNotEmpty) {
+    if (transaction.toAccountId != null &&
+        transaction.toAccountId!.isNotEmpty) {
       updateBalance(transaction.toAccountId!, sign * amount);
     }
   }

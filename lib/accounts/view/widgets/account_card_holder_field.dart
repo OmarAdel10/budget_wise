@@ -7,11 +7,7 @@ import 'package:flutter/material.dart';
 
 class AccountCardHolderField extends StatelessWidget {
   final TextEditingController cardHolderController;
-  const AccountCardHolderField({
-    super.key,
-    required this.cardHolderController,
-  });
-  
+  const AccountCardHolderField({super.key, required this.cardHolderController});
 
   @override
   Widget build(BuildContext context) {

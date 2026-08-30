@@ -22,10 +22,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     emit(NotificationPending(event.payload));
   }
 
-  void _onHandled(
-    NotificationHandled event,
-    Emitter<NotificationState> emit,
-  ) {
+  void _onHandled(NotificationHandled event, Emitter<NotificationState> emit) {
     emit(const NotificationInitial());
   }
 
@@ -41,9 +38,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   Future<void> _checkInitialPayload() async {
-    final details =
-        await NotificationRepository.notifications
-            .getNotificationAppLaunchDetails();
+    final details = await NotificationRepository.notifications
+        .getNotificationAppLaunchDetails();
     if (details?.didNotificationLaunchApp ?? false) {
       final payload = details?.notificationResponse?.payload;
       if (payload != null) {

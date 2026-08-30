@@ -45,7 +45,7 @@ class _BankPickerBottomSheetState extends State<BankPickerBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-            shouldCloseOnMinExtent: false,
+      shouldCloseOnMinExtent: false,
 
       initialChildSize: 0.7,
       minChildSize: 0.5,
@@ -76,7 +76,10 @@ class _BankPickerBottomSheetState extends State<BankPickerBottomSheet> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    Text(context.l10n.selectBankTitle, style: AppTextStyles.heading2),
+                    Text(
+                      context.l10n.selectBankTitle,
+                      style: AppTextStyles.heading2,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     CustomTextField(
                       controller: _searchController,

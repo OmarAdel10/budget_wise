@@ -22,25 +22,17 @@ class MonthSelector extends StatelessWidget {
       children: [
         IconButton(
           onPressed: onPrevious,
-          icon: const Icon(
-            Icons.chevron_left,
-            color: AppColors.textSecondary,
-          ),
+          icon: const Icon(Icons.chevron_left, color: AppColors.textSecondary),
         ),
         Text(
           DateFormat.yMMMM(
             Localizations.localeOf(context).languageCode,
           ).format(selectedMonth),
-          style: AppTextStyles.bodyLarge.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
         ),
         IconButton(
           onPressed: onNext,
-          icon: const Icon(
-            Icons.chevron_right,
-            color: AppColors.textSecondary,
-          ),
+          icon: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
         ),
       ],
     );

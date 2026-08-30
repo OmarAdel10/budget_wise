@@ -39,8 +39,10 @@ class ExportDatePickerSheet extends StatelessWidget {
   ) async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,
-      initialDateRange:
-          DateTimeRange(start: notifier.value.start, end: notifier.value.end),
+      initialDateRange: DateTimeRange(
+        start: notifier.value.start,
+        end: notifier.value.end,
+      ),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
@@ -57,10 +59,9 @@ class ExportDatePickerSheet extends StatelessWidget {
     BuildContext context,
     ValueNotifier<ExportDateState> notifier,
   ) async {
-    context.read<CsvBloc>().add(CsvExportRequested(
-          start: notifier.value.start,
-          end: notifier.value.end,
-        ));
+    context.read<CsvBloc>().add(
+      CsvExportRequested(start: notifier.value.start, end: notifier.value.end),
+    );
     Navigator.pop(context);
   }
 
@@ -80,8 +81,9 @@ class ExportDatePickerSheet extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: const BoxDecoration(
         color: AppColors.primaryBackground,
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.radiusLg),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -113,7 +115,9 @@ class ExportDatePickerSheet extends StatelessWidget {
                   Expanded(
                     child: _SelectionCard(
                       title: context.l10n.selectMonth,
-                      value: state.isRange ? '-' : dateFormat.format(state.start),
+                      value: state.isRange
+                          ? '-'
+                          : dateFormat.format(state.start),
                       icon: PhosphorIconsRegular.calendar,
                       isSelected: !state.isRange,
                       onTap: () => _selectMonth(context, notifier),
@@ -191,8 +195,9 @@ class _SelectionCard extends StatelessWidget {
             Text(
               title,
               style: AppTextStyles.bodySmall.copyWith(
-                color:
-                    isSelected ? AppColors.primaryAccent : AppColors.textSecondary,
+                color: isSelected
+                    ? AppColors.primaryAccent
+                    : AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -200,8 +205,9 @@ class _SelectionCard extends StatelessWidget {
               value,
               style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.bold,
-                color:
-                    isSelected ? AppColors.textPrimary : AppColors.textSecondary,
+                color: isSelected
+                    ? AppColors.textPrimary
+                    : AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,

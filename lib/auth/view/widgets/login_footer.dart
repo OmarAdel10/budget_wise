@@ -23,7 +23,6 @@ class LoginFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         // Login Button with isolated rebuilds

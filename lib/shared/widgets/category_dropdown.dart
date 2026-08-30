@@ -36,24 +36,14 @@ class CategoryDropdown extends StatelessWidget {
             first: selectedTypeNotifier!,
             second: selectedCategoryId,
             builder: (context, type, categoryId, _) {
-              return _buildDropdown(
-                context,
-                state,
-                type,
-                categoryId,
-              );
+              return _buildDropdown(context, state, type, categoryId);
             },
           );
         } else {
           return ValueListenableBuilder<String?>(
             valueListenable: selectedCategoryId,
             builder: (context, categoryId, _) {
-              return _buildDropdown(
-                context,
-                state,
-                fixedType!,
-                categoryId,
-              );
+              return _buildDropdown(context, state, fixedType!, categoryId);
             },
           );
         }

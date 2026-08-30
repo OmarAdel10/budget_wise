@@ -273,7 +273,10 @@ class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
                       },
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    Text(context.l10n.targetDate, style: AppTextStyles.bodyMedium),
+                    Text(
+                      context.l10n.targetDate,
+                      style: AppTextStyles.bodyMedium,
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     TargetDateDisplay(
                       targetDateNotifier: _targetDateNotifier,
@@ -296,11 +299,18 @@ class _EditSavingGoalScreenState extends State<EditSavingGoalScreen> {
                       },
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    SavingGoalColorPicker(selectedColorNotifier: _selectedColor),
+                    SavingGoalColorPicker(
+                      selectedColorNotifier: _selectedColor,
+                    ),
                     const SizedBox(height: AppSpacing.xl),
-                    SavingGoalInfoSection(isByAmountNotifier: _isByAmountNotifier),
+                    SavingGoalInfoSection(
+                      isByAmountNotifier: _isByAmountNotifier,
+                    ),
                     const SizedBox(height: AppSpacing.xl),
-                    CustomButton(text: context.l10n.saveChanges, onPressed: _submit),
+                    CustomButton(
+                      text: context.l10n.saveChanges,
+                      onPressed: _submit,
+                    ),
                   ]),
                 ),
               ),

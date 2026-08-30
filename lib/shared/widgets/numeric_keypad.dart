@@ -31,12 +31,11 @@ class NumericKeypad extends StatelessWidget {
             SizedBox(
               width: 75,
               height: 70,
-              child: leftButton != null ? _KeyWrapper(child: leftButton!) : null,
+              child: leftButton != null
+                  ? _KeyWrapper(child: leftButton!)
+                  : null,
             ),
-            _NumericKey(
-              label: '0',
-              onPressed: () => onDigitPressed('0'),
-            ),
+            _NumericKey(label: '0', onPressed: () => onDigitPressed('0')),
             _NumericKey(
               label: 'backspace',
               isIcon: true,
@@ -51,15 +50,14 @@ class NumericKeypad extends StatelessWidget {
   Widget _buildRow(List<String> labels) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children:
-          labels
-              .map(
-                (label) => _NumericKey(
-                  label: label,
-                  onPressed: () => onDigitPressed(label),
-                ),
-              )
-              .toList(),
+      children: labels
+          .map(
+            (label) => _NumericKey(
+              label: label,
+              onPressed: () => onDigitPressed(label),
+            ),
+          )
+          .toList(),
     );
   }
 }
@@ -122,22 +120,21 @@ class _NumericKeyState extends State<_NumericKey> {
               onTap: widget.onPressed,
               borderRadius: BorderRadius.circular(16),
               child: Center(
-                child:
-                    widget.isIcon && widget.label == 'backspace'
-                        ? const Icon(
-                          PhosphorIconsRegular.backspace,
+                child: widget.isIcon && widget.label == 'backspace'
+                    ? const Icon(
+                        PhosphorIconsRegular.backspace,
+                        color: AppColors.textPrimary,
+                        size: 28,
+                      )
+                    : Text(
+                        widget.label,
+                        style: const TextStyle(
                           color: AppColors.textPrimary,
-                          size: 28,
-                        )
-                        : Text(
-                          widget.label,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Inter',
-                          ),
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Inter',
                         ),
+                      ),
               ),
             ),
           ),

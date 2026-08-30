@@ -9,5 +9,6 @@ extension TransactionModelX on TransactionModel {
 
   bool get isSystemTransaction => SystemCategoryIds.isSystem(categoryId);
 
-  bool get isTransferLeg => transferGroupId != null && transferGroupId!.isNotEmpty;
+  bool get isTransferLeg =>
+      transferGroupId != null && transferGroupId!.isNotEmpty;
 }
